@@ -9,5 +9,7 @@ class CreateBacteriaGrowthData < ActiveRecord::Migration
 
       t.timestamps
     end
+    
+    add_index :bacteria_growth_data, :result_id
   end
 end

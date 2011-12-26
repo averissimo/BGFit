@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111226141659) do
+ActiveRecord::Schema.define(:version => 20111226142159) do
 
   create_table "bacteria_growth_data", :force => true do |t|
     t.integer  "result_id"
@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(:version => 20111226141659) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "bacteria_growth_data", ["result_id"], :name => "index_bacteria_growth_data_on_result_id"
 
   create_table "results", :force => true do |t|
     t.string   "title"
