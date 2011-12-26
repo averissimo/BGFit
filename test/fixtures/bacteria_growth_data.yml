@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  result: 
+  time: 9.99
+  OD600: 9.99
+  LN_OD600: 9.99
+  pH: 9.99
+
+two:
+  result: 
+  time: 9.99
+  OD600: 9.99
+  LN_OD600: 9.99
+  pH: 9.99

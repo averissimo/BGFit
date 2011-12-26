@@ -1,0 +1,27 @@
+<h1>Listing results</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Original data</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @results.each do |result| %>
+  <tr>
+    <td><%= result.title %></td>
+    <td><%= result.description %></td>
+    <td><%= result.original_data[0..30] + "..." %></td>
+    <td><%= link_to 'Show', result %></td>
+    <td><%= link_to 'Edit', edit_result_path(result) %></td>
+    <td><%= link_to 'Destroy', result, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Result', new_result_path %>

@@ -1,4 +1,6 @@
 BacteriaGrowth::Application.routes.draw do
+  resources :results
+
   get "home/index"
 
   root :to => "home#index"
