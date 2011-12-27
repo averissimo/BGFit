@@ -1,24 +1,18 @@
 class ResultsController < ApplicationController
+  respond_to :html, :json
+  
   # GET /results
   # GET /results.json
   def index
     @results = Result.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @results }
-    end
+    respond_with(@results)
   end
 
   # GET /results/1
   # GET /results/1.json
   def show
     @result = Result.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @result }
-    end
+    respond_with(@result)
   end
 
   # GET /results/new
@@ -26,15 +20,13 @@ class ResultsController < ApplicationController
   def new
     @result = Result.new
 
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @result }
-    end
+    respond_with(@result)
   end
 
   # GET /results/1/edit
   def edit
     @result = Result.find(params[:id])
+    respond_with(@result)
   end
 
   # POST /results
@@ -69,6 +61,16 @@ class ResultsController < ApplicationController
     end
   end
 
+  # CONVERT /results/1/convert
+  # CONVERT /results/1.json
+  def convert
+    @result = Result.find(params[:id])
+    print "1234544"
+    @result.convert_original_data
+    success = @result.save
+    redirect_to @result, :notice => "Successfully converted original data."        
+  end
+
   # DELETE /results/1
   # DELETE /results/1.json
   def destroy
@@ -80,4 +82,5 @@ class ResultsController < ApplicationController
       format.json { head :ok }
     end
   end
+  
 end

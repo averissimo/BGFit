@@ -17,6 +17,7 @@
     <td><%= result.original_data[0..30] + "..." %></td>
     <td><%= link_to 'Show', result %></td>
     <td><%= link_to 'Edit', edit_result_path(result) %></td>
+    <td><%= link_to 'Convert', convert_result_path(result) %></td>
     <td><%= link_to 'Destroy', result, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>

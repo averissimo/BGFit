@@ -1,13 +1,14 @@
 BacteriaGrowth::Application.routes.draw do
-  resources :results
 
-  get "home/index"
+  resources :results do
+    member do
+      get :convert
+    end
+    resources :lines
+  end
 
   root :to => "home#index"
-  
-  resource :results do
-    resource :bacteria_growth_datas
-  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

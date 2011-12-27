@@ -12,9 +12,18 @@
 
 <p>
   <b>Original data:</b>
-  <%= @result.original_data %>
+  <%= raw @result.original_data %>
 </p>
 
+<p>
+	<b>Data</b>
+	<%= render @result.lines %>
+</p>
+
+<h2>Add a line:</h2>
+<%= render "lines/form" %>
+ 
+<br />
 
 <%= link_to 'Edit', edit_result_path(@result) %> |
 <%= link_to 'Back', results_path %>

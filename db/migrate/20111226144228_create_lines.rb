@@ -2,10 +2,10 @@ class CreateLines < ActiveRecord::Migration
   def change
     create_table :lines do |t|
       t.references :result
-      t.decimal :time
-      t.decimal :OD600
-      t.decimal :LN_OD600
-      t.decimal :pH
+      t.decimal :time     , :precision => 15, :scale => 5
+      t.decimal :od600    , :precision => 15, :scale => 5
+      t.decimal :ln_od600 , :precision => 15, :scale => 5
+      t.decimal :ph       , :precision => 15, :scale => 5
 
       t.timestamps
     end

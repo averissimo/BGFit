@@ -11,19 +11,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111226142159) do
+ActiveRecord::Schema.define(:version => 20111226144228) do
 
-  create_table "bacteria_growth_data", :force => true do |t|
+  create_table "lines", :force => true do |t|
     t.integer  "result_id"
     t.decimal  "time",       :precision => 10, :scale => 0
-    t.decimal  "OD600",      :precision => 10, :scale => 0
-    t.decimal  "LN_OD600",   :precision => 10, :scale => 0
-    t.decimal  "pH",         :precision => 10, :scale => 0
+    t.decimal  "od600",      :precision => 10, :scale => 0
+    t.decimal  "ln_od600",   :precision => 10, :scale => 0
+    t.decimal  "ph",         :precision => 10, :scale => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "bacteria_growth_data", ["result_id"], :name => "index_bacteria_growth_data_on_result_id"
+  add_index "lines", ["result_id"], :name => "index_lines_on_result_id"
 
   create_table "results", :force => true do |t|
     t.string   "title"
