@@ -1,0 +1,3 @@
+[submodule "vendor/plugins/table_helper"]
+	path = vendor/plugins/table_helper
+	url = git://github.com/pluginaweek/table_helper.git
