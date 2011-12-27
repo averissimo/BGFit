@@ -1,5 +1,4 @@
 class Result < ActiveRecord::Base
- after_create :convert_to_html
  validates :title, :presence => true
  
  has_many :lines, :dependent => :destroy
