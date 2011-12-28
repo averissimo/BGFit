@@ -38,5 +38,13 @@ class Result < ActiveRecord::Base
        self.lines << line
      end
     end
+    
+    def original_data_trimmed
+      if original_data.length > 27
+        return original_data[0..30] + "..." 
+      else
+        return original_data
+      end
+    end
  
 end

@@ -1,5 +1,5 @@
 class ResultsController < ApplicationController
-  respond_to :html, :json
+  respond_to :html, :json, :csv
 
   def index
     @results = Result.all

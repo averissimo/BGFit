@@ -1,10 +1,11 @@
 <h1>Listing results</h1>
 
-<table>
+<table class="formatted ui-collection">
   <tr>
     <th>Title</th>
     <th>Description</th>
     <th>Original data</th>
+    <th></th>
     <th></th>
     <th></th>
     <th></th>
@@ -14,11 +15,11 @@
   <tr>
     <td><%= result.title %></td>
     <td><%= result.description %></td>
-    <td><%= result.original_data[0..30] + "..." %></td>
-    <td><%= link_to 'Show', result %></td>
-    <td><%= link_to 'Edit', edit_result_path(result) %></td>
-    <td><%= link_to 'Convert', convert_result_path(result) %></td>
-    <td><%= link_to 'Destroy', result, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= result.original_data_trimmed %></td>
+    <td><%= link_to 'show', result %></td>
+    <td><%= link_to 'edit', edit_result_path(result) %></td>
+    <td><%= link_to 'convert', convert_result_path(result) %></td>
+    <td><%= link_to 'destroy', result, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>
 </table>
