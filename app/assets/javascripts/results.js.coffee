@@ -5,21 +5,32 @@
 #$('#chart').ready ()=> 
 #  alert("yada")
 
-REGRESSION_COLUMN = 1
 google.load 'visualization', '1.0', {'packages':['corechart','table']}
 
 # waits for document to load before calling chart callback
 $(document).ready () =>
+  # default column to calculate data for regression
+  REGRESSION_COLUMN = 1
+  # default options for the chart
+  options = {
+    curveType: 'function',
+    lineWidth: 1,
+    pointSize: 2,
+    width: 1000,
+    height: 500,
+    title: 'Bacterial Growth'
+  }
   
-  drawRegression = (data, chart, a ,b) ->
-    data_reg = data.clone
+  drawRegression = (data, chart, table, a ,b) ->
+    data_reg = data.clone()
     col_num = data_reg.addColumn 'number' , 'Regression'
     row = 0 
     while row < data_reg.getNumberOfRows()
       do (data_reg, a ,b) ->
-        
-        data_reg.setCell row, col, a + b * data_reg.getValue(row,REGRESSION_COLUMN) 
+        # set all cells in recorded time with the regression values
+        data_reg.setCell row, col_num, a + b * data_reg.getValue(row,0) 
         row += 1
+    chart.draw(data_reg, options)
   
   # Callback method that renders the chart  
   drawChart = () ->
@@ -29,21 +40,15 @@ $(document).ready () =>
         JSONObject=json;
         # build the datasource
         data = new google.visualization.DataTable JSONObject, 0.5
-        # default options for the chart
-        options = {
-              curveType: 'function',
-              lineWidth: 1,
-              pointSize: 2,
-              width: 1000,
-              height: 500,
-              title: 'Bacterial Growth'
-        }
         # draw the actual chart
         chart = new google.visualization.ScatterChart document.getElementById('chart')
         chart.draw(data, options)
         # draw the auxiliary table (used for the regression)
         table = new google.visualization.Table document.getElementById('table')
-        table.draw(data,null)
+        data_t = data.clone()
+        data_t.removeColumn(3)
+        data_t.removeColumn(2)
+        table.draw(data_t,null)
         #
         # add listener to the table (reflecting the selections to the chart)
         google.visualization.events.addListener table, 'select', () =>
@@ -71,6 +76,7 @@ $(document).ready () =>
           b_bot = count * sum_x2 - sum_x * sum_x  # bottom of B
           a = a_top / a_bot
           b = b_top / b_bot
+          drawRegression data, chart, table, a, b
         #
         # add listener to the chart (reflecting the selection to the table)
         google.visualization.events.addListener chart, 'select', () =>
