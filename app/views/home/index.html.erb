@@ -1,39 +1,3 @@
 <% javascript 'https://www.google.com/jsapi' %>
 <h1>Hello World!</h1>
 <%= link_to "Resultados" , results_path %>
-
-<!--Load the AJAX API-->
-<script type="text/javascript">
-
-  // Load the Visualization API library and the piechart library.
-  google.load('visualization', '1.0', {'packages':['corechart']});
-  google.setOnLoadCallback(drawChart);
-     
-  function drawChart(){
-  var JSONObject;	
-  	$.getJSON('http://localhost:3000/results/3.json',function(json) {
-		JSONObject=json;
-		var data = new google.visualization.DataTable(JSONObject, 0.5);
-		visualization = new google.visualization.ScatterChart(document.getElementById('table'));
-		
-		var options = {
-		  lineWidth: 1,
-		  hAxis: {gridlines: { count: 24},
-		  		viewWindowMode:'explicit',
-		  		viewWindow: {max: 24,
-		  					 min: 0}},
-		  pointSize: 2,
-		  width: 1000,
-		  height: 500,
-          title: 'Company Performance'
-        };
-
-		
-		visualization.draw(data, options);
-  });
-
-  }
-     
-</script>
-
-<div id="table"></div>
