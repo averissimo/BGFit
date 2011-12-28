@@ -34,11 +34,6 @@ class ResultsController < ApplicationController
     end
   end
 
-  def render_json
-    @result = Result.find(params[:id])
-    render :json => @result, :include => :lines
-  end
-
   def update
     @result = Result.find(params[:id])
     if @result.update_attributes(params[:result])

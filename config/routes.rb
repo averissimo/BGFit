@@ -3,7 +3,6 @@ BacteriaGrowth::Application.routes.draw do
   resources :results do
     member do
       get :convert
-      get :render_json
     end
     resources :lines
   end
