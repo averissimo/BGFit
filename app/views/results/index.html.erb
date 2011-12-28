@@ -1,32 +1,33 @@
 <h1>Listing results</h1>
 
-<table class="formatted ui-collection">
-  <tr>
-    <th>Title</th>
-    <th>Description</th>
-    <th>Original data</th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
 
-<% @results.each do |result| %>
-  <tr>
-    <td><%= result.title %></td>
-    <td><%= result.description %></td>
-    <td><%= result.original_data_trimmed %></td>
-    <td><%= link_to 'show', result %></td>
-    <td><%= link_to 'edit', edit_result_path(result) %></td>
-    <td><%= link_to 'convert', convert_result_path(result) %></td>
-    <td><%= link_to 'destroy', result, confirm: 'Are you sure?', method: :delete %></td>
-    <td><%= link_to 'csv', result_path(result,:format => :csv) %></td>
-    	
-  </tr>
-<% end %>
-</table>
+<%= 
+	collection_table(@results, :id => 'results' , :class => 'formatted') do |t|
+		t.header :title
+		t.header :date
+		t.header :description
+		#t.header :original_data
+		t.header :show_h,		"Show"
+		t.header :csv_h,		".csv (matlab)"
+		t.header :edit_h,		"Edit"
+		#t.header :convert_h,	"convert"
+		t.header :destroy_h,	"Destroy"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, result, index|
+			# Notice there's no need to explicitly define the title
+			row.title			result.title
+			row.date			result.date
+			row.description		result.description
+			#row.original_data	result.original_data_trimmed
+			row.show_h			link_to 'show', result
+			row.edit_h			link_to 'edit', edit_result_path(result)
+			#row.convert_h		link_to 'convert', convert_result_path(result)
+			row.destroy_h		link_to 'destroy', result, confirm: 'Are you sure?', method: :delete
+			row.csv_h			link_to 'download', result_path(result,:format => :csv)
+		end
+	end
+%>
 
 <br />
-
 <%= link_to 'New Result', new_result_path %>

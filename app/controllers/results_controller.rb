@@ -2,7 +2,7 @@ class ResultsController < ApplicationController
   respond_to :html, :json, :csv
 
   def index
-    @results = Result.all
+    @results = Result.all(:order => [:date,:title])
     respond_with(@results)
   end
 
@@ -25,7 +25,7 @@ class ResultsController < ApplicationController
 
   def create
     @result = Result.new(params[:result])
-
+    @result.convert_original_data
     if @result.save
       flash[:notice] = "Result was successfully created."
       respond_with(@result, status: :created )

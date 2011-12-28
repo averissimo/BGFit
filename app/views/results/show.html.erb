@@ -46,13 +46,15 @@
 	 %>
 </p>
 
-<h2 class="add_h2">Add a line (click here):</h2>
-<h2 class="add_h2" style="display:none;">Add a line (click here to hide):</h2>
+<h3 class="add_h2">Add a line (click here):</h3>
+<h3 class="add_h2" style="display:none;">Add a line (click here to hide):</h3>
 <div class="add">
 <%= render "lines/form" %>
 </div>
 
 <div id="chart" link-to="<%= result_path(@result) %>"></div>
+
+<div id="table" link-to="<%= result_path(@result) %>"></div>
 
 
 <%= link_to 'Edit', edit_result_path(@result) %> |
