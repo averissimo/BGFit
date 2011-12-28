@@ -8,6 +8,7 @@ class ResultsController < ApplicationController
 
   def show
     @result = Result.find(params[:id])
+    @line = @result.lines.build
     respond_with(@result)
   end
 
@@ -33,6 +34,11 @@ class ResultsController < ApplicationController
     end
   end
 
+  def render_json
+    @result = Result.find(params[:id])
+    render :json => @result, :include => :lines
+  end
+
   def update
     @result = Result.find(params[:id])
     if @result.update_attributes(params[:result])
@@ -47,7 +53,7 @@ class ResultsController < ApplicationController
     @result = Result.find(params[:id])
     @result.convert_original_data
     success = @result.save
-    redirect_to results_url,  :notice => "Successfully converted original data."        
+    redirect_to result_path(@result),  :notice => "Successfully converted original data."        
   end
 
   def destroy

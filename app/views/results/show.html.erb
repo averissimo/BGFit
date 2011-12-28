@@ -1,3 +1,4 @@
+<% javascript 'https://www.google.com/jsapi' %>
 <p id="notice"><%= notice %></p>
 
 <p>
@@ -25,22 +26,29 @@
     t.header :od600, 'OD600'
     t.header :ln_od600, 'ln( OD600 )'
     t.header :ph, 'pH'
+    t.header :edit_h, ''
+    t.header :destroy_h, ''
 
     t.rows.alternate = :odd
-    t.rows.each do |row, result, index|
+    t.rows.each do |row, line, index|
       # Notice there's no need to explicitly define the title
-      row.time		result.time
-      row.od600		result.od600
-      row.ln_od600	result.ln_od600
-      row.ph		result.ph
+      next if line.id == nil
+      row.time		line.time
+      row.od600		line.od600
+      row.ln_od600	line.ln_od600
+      row.ph		line.ph
+      row.edit_h	link_to 'Edit', edit_result_line_path(line.result, line) 
+      row.destroy_h	link_to 'Destroy', [line.result, line], :confirm => 'Are you sure?', :method => :delete
     end
 
   end
  
 	 %>
-	<!--<%= collection_table @result.lines %>
-	<%= render @result.lines %>-->
 </p>
+
+
+
+<div id="chart"></div>
 
 <h2>Add a line:</h2>
 <%= render "lines/form" %>
