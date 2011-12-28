@@ -1,10 +1,13 @@
-{"cols":[{"id":"time","label":"Time","type":"number"},{"id":"od600","label":"OD600","type":"number"},{"id":"ln_od600","label":"Ln( OD600 )","type":"number"}],<% 
-@result.lines.delete_if{ |x| x.time == nil } %>
+[NAME]
+<%= @result.title %>
 
-"rows": [<%= 
-	@result.lines.map{ |line| 
-		if line.time == nil
-			next 
-		end 
-		'{"c": [{"v": ' + "#{line.time}" + '},{"v": ' + "#{line.od600}" + '},{"v": ' + "#{line.ln_od600}" + '} ]}'
-	}.join(",").html_safe %>]}
+[NOTES]
+<%= @result.description %>
+
+[Components]
+time,N
+
+[Componentnotes]
+
+[Values]
+<%= @result.lines.map { |l| l.time.to_s + "," + l.ln_od600.to_s }.join("\n").html_safe %>
