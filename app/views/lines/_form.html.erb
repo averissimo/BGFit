@@ -1,21 +1,25 @@
 <%= form_for([@result, @line]) do |f| %>
-  <div class="field">
-    <%= f.label :time %><br />
-    <%= f.text_field :time %>
-  </div>
-  <div class="field">
-    <%= f.label :od600 %><br />
-    <%= f.text_field :od600 %>
-  </div>
-  <div class="field">
-    <%= f.label :ln_od600 %><br />
-    <%= f.text_field :ln_od600 %>
-  </div>
-  <div class="field">
-    <%= f.label :ph %><br />
-    <%= f.text_field :ph %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+<table>
+	<thead>
+		<tr>
+			<th scope="col"><%= f.label :time %></th>
+			<th scope="col"><%= f.label :od600 %></th>
+			<th scope="col"><%= f.label :ln_od600 %></th>
+			<th scope="col"><%= f.label :ph %></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><%= f.text_field :time %></td>
+			<td><%= f.text_field :od600 %></td>
+			<td><%= f.text_field :ln_od600 %></td>
+			<td><%= f.text_field :ph %></td>
+		</tr>
+	</tbody>
+</table>
+<div class="actions">
+	<%= f.submit %>
+</div>
+  
+
 <% end %>

@@ -2,26 +2,26 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Title:</b>
+  <h2>Title:</h2>
   <%= @result.title %>
 </p>
 
 <p>
-  <b>Description:</b>
+  <h2>Description:</h2>
   <%= @result.description %>
 </p>
 
 <p>
-  <b>Original data:</b>
+  <h2>Original data:</h2>
   <%= @result.original_data %>
 </p>
 
 <p>
-	<b>Data</b>
+	<h2>Data</h2>
 	
 	<%= 
 	
-	 a = collection_table(@result.lines, :id => 'lines') do |t|
+	 a = collection_table(@result.lines, :id => 'lines' , :class => 'formatted') do |t|
     t.header :time
     t.header :od600, 'OD600'
     t.header :ln_od600, 'ln( OD600 )'
@@ -37,8 +37,8 @@
       row.od600		line.od600
       row.ln_od600	line.ln_od600
       row.ph		line.ph
-      row.edit_h	link_to 'Edit', edit_result_line_path(line.result, line) 
-      row.destroy_h	link_to 'Destroy', [line.result, line], :confirm => 'Are you sure?', :method => :delete
+      row.edit_h	link_to 'edit', edit_result_line_path(line.result, line) 
+      row.destroy_h	link_to 'destroy', [line.result, line], :confirm => 'Are you sure?', :method => :delete
     end
 
   end
@@ -46,14 +46,15 @@
 	 %>
 </p>
 
-
-
-<div id="chart"></div>
-
-<h2>Add a line:</h2>
+<h2 class="add_h2">Add a line (click here):</h2>
+<h2 class="add_h2" style="display:none;">Add a line (click here to hide):</h2>
+<div class="add">
 <%= render "lines/form" %>
- 
-<br />
+</div>
+
+<div id="chart" link-to="l"></div>
+
 
 <%= link_to 'Edit', edit_result_path(@result) %> |
-<%= link_to 'Back', results_path %>
+<%= link_to 'Back to index', results_path %>
+

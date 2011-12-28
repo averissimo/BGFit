@@ -5,3 +5,36 @@
  *= require_self
  *= require_tree . 
 */
+
+a {
+	text-decoration: none;
+}
+
+a:active,
+a:hover,
+a:focus {
+	text-decoration: underline;
+	background-color: inherit!important;
+	color: black!important;
+}
+div.actions {
+	margin-left: auto;
+}
+
+table.formatted {
+	margin-left: 3em;
+}
+
+table.formatted tr th,
+table.formatted tr td {
+	padding-right: 10px;
+}
+
+table.formatted tr td,
+table.formatted tr th {
+	border-bottom: solid 1px #808080;
+}
+
+table.formatted tr.ui-state-alternate {
+	background-color: #DCDCDC;
+}

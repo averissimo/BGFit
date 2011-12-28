@@ -7,7 +7,7 @@
 
 
 google.load 'visualization', '1.0', {'packages':['corechart']}
-google.setOnLoadCallback drawChart
+
 
 drawChart = () ->
    
@@ -29,4 +29,12 @@ drawChart = () ->
             height: 500,
             title: 'Company Performance'
       }
-    visualization.draw(data, options)
+      visualization.draw(data, options)
+
+# waits for document to load before calling chart callback
+$(document).ready () =>
+  if $('#chart')[0]
+    google.setOnLoadCallback drawChart
+  $('h2.add_h2').click () =>
+    $('.add').toggle('fast')
+    $('.add_h2').toggle()
