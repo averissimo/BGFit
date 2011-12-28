@@ -9,5 +9,6 @@ time,N
 
 [Componentnotes]
 
-[Values]
+[Values]<% @result.lines.delete_if{ |x| x.time == nil } %>
 <%= @result.lines.map { |l| l.time.to_s + "," + l.ln_od600.to_s }.join("\n").html_safe %>
+

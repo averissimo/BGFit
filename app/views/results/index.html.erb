@@ -9,6 +9,7 @@
     <th></th>
     <th></th>
     <th></th>
+    <th></th>
   </tr>
 
 <% @results.each do |result| %>
@@ -20,6 +21,8 @@
     <td><%= link_to 'edit', edit_result_path(result) %></td>
     <td><%= link_to 'convert', convert_result_path(result) %></td>
     <td><%= link_to 'destroy', result, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= link_to 'csv', result_path(result,:format => :csv) %></td>
+    	
   </tr>
 <% end %>
 </table>
