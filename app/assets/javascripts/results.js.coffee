@@ -16,9 +16,13 @@ $(document).ready () =>
     curveType: 'function',
     lineWidth: 1,
     pointSize: 2,
-    width: 700,
-    height: 500,
-    title: 'Bacterial Growth'
+    width: 1000,
+    height: 400,
+    chartArea: {
+      top:10,
+      height:"90%"
+    }#,
+    #title: 'Bacterial Growth'
   }
   
   number_format = new google.visualization.NumberFormat(
