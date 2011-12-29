@@ -58,6 +58,11 @@
 
 <div class="clear"></div>
 
-<%= link_to 'Edit', edit_result_path(@result) %> |
-<%= link_to 'Back to index', results_path %>
+
+<% content_for :menu do %>
+<ol class="menu">
+	<li><%= link_to 'Edit', edit_result_path(@result) %></li>
+	<li><%= link_to 'Back to index', results_path %></li>
+</ol>
+<% end %>
 

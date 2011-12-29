@@ -12,8 +12,12 @@
 
 </head>
 <body>
-
-<%= yield %>
+<div id="menu">
+	<%= yield(:menu)%>
+</div>
+<div id="content">
+	<%= yield %>
+</div>
 
 </body>
 </html>

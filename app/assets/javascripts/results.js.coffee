@@ -20,6 +20,7 @@ $(document).ready () =>
     height: 400,
     chartArea: {
       top:10,
+      left:50,
       height:"90%"
     }#,
     #title: 'Bacterial Growth'

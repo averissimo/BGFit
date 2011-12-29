@@ -1,0 +1,81 @@
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+a,
+a:visited {
+  text-decoration: none;
+  &:active,
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+    color: black;
+  }
+}
+
+div.actions {
+  margin-left: auto;
+}
+
+table.formatted {
+  margin-left: 3em;
+  & tr {
+    & th,
+    & td {
+      padding-right: 10px;
+      border-bottom: solid 1px #808080;
+    }
+    &.ui-state-alternate {
+      background-color: #DCDCDC;
+    }  
+  }
+  
+  
+}
+
+#content {
+  margin-left:auto;
+  margin-right:auto;
+  margin-top: 40px;
+  width: 1000px;
+  border: 1px solid black;
+}
+
+body {
+  margin: 0px;
+  padding:0px;
+}
+
+#menu {
+  background-color: #2D2D2D;
+  border-bottom: 1px solid #000000;
+  font-size: 24px;
+  height: 29px;
+  opacity: 1;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 990;
+  margin:0px;
+  padding:0px;
+    
+  & a,
+  & a:hover,
+  & a:focus,
+  & a:active {
+    color: #CCCCCC;
+    text-decoration: none;
+  }
+  & ol.menu {
+    margin-top: 0px;
+    display: block;
+    list-style: none outside none;
+    & li {
+      display: inline-block;
+      line-height: 27px;
+      padding: 0;
+      position: relative;
+      vertical-align: top;
+    }
+
+  }
+}
