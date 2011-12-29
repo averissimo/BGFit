@@ -63,8 +63,8 @@ $(document).ready () =>
         # draw the auxiliary table (used for the regression)
         table = new google.visualization.Table document.getElementById('table')
         data_t = data.clone()
-        #data_t.removeColumn(3)
-        #data_t.removeColumn(2)
+        data_t.removeColumn(3)
+        data_t.removeColumn(2)
         number_format.format(data_t,0)
         number_format.format(data_t,1)
         table.draw(data_t,options_t)
@@ -99,7 +99,9 @@ $(document).ready () =>
         #
         # add listener to the chart (reflecting the selection to the table)
         google.visualization.events.addListener chart, 'select', () =>
-          table.setSelection(chart.getSelection())
+          # chart can only select one point at a time
+          if chart.getSelection() && chart.getSelection()[0] && chart.getSelection()[0].row
+            table.setSelection([{row: chart.getSelection()[0].row}])
         
   # only calls drawchart if an element with id ="chart" exists
   if $('#chart')[0]
