@@ -1,6 +1,29 @@
 // Place all the styles related to the Results controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.add {
+.add,
+.yada {
   display:none;
+}
+
+div#table > div {
+  bottom:-100%;
+}
+
+#chart {
+  width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  float:left;
+}
+
+#table {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  float:left;
+}
+
+.clear {
+  clear:both;
 }

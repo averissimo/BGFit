@@ -16,21 +16,38 @@ $(document).ready () =>
     curveType: 'function',
     lineWidth: 1,
     pointSize: 2,
-    width: 1000,
+    width: 700,
     height: 500,
     title: 'Bacterial Growth'
   }
   
-  drawRegression = (data, chart, table, a ,b) ->
+  number_format = new google.visualization.NumberFormat(
+      {fractionDigits: 3});
+
+  
+  options_t = {
+    allowHtml: true,
+    width: 300,
+  #  height: 500,
+    title: 'Tabela para cálculo da Regressão Linear'
+  }
+  
+  drawRegression = (data, chart, data_t, table, a ,b) ->
     data_reg = data.clone()
+    data_t_reg = data_t.clone()
     col_num = data_reg.addColumn 'number' , 'Regression'
+    col_t_num = data_t_reg.addColumn 'number' , 'Regression'
     row = 0 
     while row < data_reg.getNumberOfRows()
       do (data_reg, a ,b) ->
         # set all cells in recorded time with the regression values
-        data_reg.setCell row, col_num, a + b * data_reg.getValue(row,0) 
+        temp = a + b * data_reg.getValue(row,0)
+        data_reg.setCell row, col_num, temp
+        data_t_reg.setCell row, col_t_num, temp 
         row += 1
     chart.draw(data_reg, options)
+    number_format.format(data_t_reg,col_t_num)
+    table.draw(data_t_reg, options_t)
   
   # Callback method that renders the chart  
   drawChart = () ->
@@ -46,9 +63,11 @@ $(document).ready () =>
         # draw the auxiliary table (used for the regression)
         table = new google.visualization.Table document.getElementById('table')
         data_t = data.clone()
-        data_t.removeColumn(3)
-        data_t.removeColumn(2)
-        table.draw(data_t,null)
+        #data_t.removeColumn(3)
+        #data_t.removeColumn(2)
+        number_format.format(data_t,0)
+        number_format.format(data_t,1)
+        table.draw(data_t,options_t)
         #
         # add listener to the table (reflecting the selections to the chart)
         google.visualization.events.addListener table, 'select', () =>
@@ -76,7 +95,7 @@ $(document).ready () =>
           b_bot = count * sum_x2 - sum_x * sum_x  # bottom of B
           a = a_top / a_bot
           b = b_top / b_bot
-          drawRegression data, chart, table, a, b
+          drawRegression data, chart, data_t, table, a, b
         #
         # add listener to the chart (reflecting the selection to the table)
         google.visualization.events.addListener chart, 'select', () =>
