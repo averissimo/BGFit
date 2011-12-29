@@ -1,6 +1,3 @@
 [submodule "vendor/plugins/table_helper"]
 	path = vendor/plugins/table_helper
 	url = git://github.com/pluginaweek/table_helper.git
-[submodule "vendor/plugins/navigation"]
-	path = vendor/plugins/navigation
-	url = git://github.com/rpheath/navigation.git
