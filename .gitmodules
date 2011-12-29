@@ -4,3 +4,6 @@
 [submodule "vendor/plugins/simple-navigation4"]
 	path = vendor/plugins/simple-navigation
 	url = git://github.com/andi/simple-navigation.git
+[submodule "vendor/plugins/devise"]
+	path = vendor/plugins/devise
+	url = git://github.com/plataformatec/devise.git
