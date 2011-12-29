@@ -52,8 +52,17 @@ table.formatted {
   }  
 }
 
+h1 {
+  margin-bottom: 2em;
+}
+
 #footer {
+  text-align:center;
   margin-top: 5px;
+  margin-bottom: 20px;
+  span {
+    font-size: 85%;
+  }
   ul.menu{
     text-align: center;;
     padding-left: 0px;
@@ -71,9 +80,6 @@ table.formatted {
         display: block;
         padding-right: 5px;
         padding-left: 5px;
-        &.selected {
-          text-decoration: underline;
-        }
       }
 
     }

@@ -8,7 +8,6 @@ class ResultsController < ApplicationController
 
   def show
     @result = Result.find(params[:id])
-    @line = @result.lines.build
     respond_with(@result)
   end
 
@@ -20,6 +19,7 @@ class ResultsController < ApplicationController
 
   def edit
     @result = Result.find(params[:id])
+    @line = @result.lines.build
     respond_with(@result)
   end
 
