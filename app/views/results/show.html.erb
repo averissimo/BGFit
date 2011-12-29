@@ -1,68 +1,51 @@
 <% javascript 'https://www.google.com/jsapi' %>
 <p id="notice"><%= notice %></p>
 
+<h1><%= @result.title %></h1>
+
+
+<h3>Description:</h3>
 <p>
-  <h2>Title:</h2>
-  <%= @result.title %>
+	<%= @result.description %>
 </p>
 
+<hr/>
+<h2>Data Visualization</h2>
 <p>
-  <h2>Description:</h2>
-  <%= @result.description %>
+	To determine the linear regression for the <i>"Time x LN( OD600 )"</i> data you need to select multiple lines in the table below.<br/>
+	This can be performed by clicking on multiple lines pressing "Shift" or "Ctrl" keys.
 </p>
 
-<p>
-  <h2>Original data:</h2>
-  <%= @result.original_data %>
-</p>
+<div id="table" link-to="<%= result_path(@result) %>"></div>
 
-<p>
-	<h2>Data</h2>
-	
-	<%= 
-	
-	 a = collection_table(@result.lines, :id => 'lines' , :class => 'formatted') do |t|
-    t.header :time
-    t.header :od600, 'OD600'
-    t.header :ln_od600, 'ln( OD600 )'
-    t.header :ph, 'pH'
-    t.header :edit_h, ''
-    t.header :destroy_h, ''
-
-    t.rows.alternate = :odd
-    t.rows.each do |row, line, index|
-      # Notice there's no need to explicitly define the title
-      next if line.id == nil
-      row.time		line.time
-      row.od600		line.od600
-      row.ln_od600	line.ln_od600
-      row.ph		line.ph
-      row.edit_h	link_to 'edit', edit_result_line_path(line.result, line) 
-      row.destroy_h	link_to 'destroy', [line.result, line], :confirm => 'Are you sure?', :method => :delete
-    end
-
-  end
- 
-	 %>
-</p>
-
-<h3 class="add_h2">Add a line (click here):</h3>
-<h3 class="add_h2" style="display:none;">Add a line (click here to hide):</h3>
-<div class="add">
-<%= render "lines/form" %>
+<div class="center">
+			<span id="mu"><b>&mu;<sub>max</sub></b> = <span id="mu-value">(select multiple lines in the table)</span>
+			<span id="mu-blank" style="display: none;">(select multiple lines in the table)</span></span>
 </div>
 
 <div id="chart" link-to="<%= result_path(@result) %>"></div>
 
-<div id="table" link-to="<%= result_path(@result) %>"></div>
-
 <div class="clear"></div>
 
+<% 
+	context_menu = [
+		{
+			:key => :edit, 
+			:name => 'Edit this result', 
+			:url => edit_result_path(@result),
+			:options => {
+				:dom_class => 'menu'
+			}
+		},
+		{
+			:key => :edit, 
+			:name => 'Goto index', 
+			:url => results_path,
+			:options => {
+				:container_class => 'menu'
+			}
+		}]
+	
+%>
 
-<% content_for :menu do %>
-<ol class="menu">
-	<li><%= link_to 'Edit', edit_result_path(@result) %></li>
-	<li><%= link_to 'Back to index', results_path %></li>
-</ol>
-<% end %>
-
+<% content_for(:context_menu) { render_navigation :items => context_menu }%>

@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>BacteriaGrowth</title>
-  
-    <!-- Custom head -->
-  <%= yield(:head) %>
-  
-  <%= stylesheet_link_tag    "application" %>
-  <%= javascript_include_tag "application"  %>
-  <%= csrf_meta_tags %>
-
-</head>
-<body>
-<div id="menu">
-	<%= yield(:menu)%>
-</div>
-<div id="content">
-	<%= yield %>
-</div>
-
-</body>
+	<head>
+	  <title>BacteriaGrowth</title>
+	  
+	    <!-- Custom head -->
+	  <%= yield(:head) %>
+	  
+	  <%= stylesheet_link_tag    "application" %>
+	  <%= javascript_include_tag "application"  %>
+	  <%= csrf_meta_tags %>
+	
+	</head>
+	<body>
+		<div id="fixed-header">
+			<div id="header">
+				<strong>KDBIO INESC-ID</strong>&nbsp;&nbsp; Instituto de Engenharia de Sistemas e Computadores Investigação e Desenvolvimento em Lisboa
+			</div>
+				
+			<div id="menu">
+				<div class="menu-wrapper">
+					<%= render_navigation %>
+				</div>
+				<% if content_for?(:context_menu) %>
+				<div><span>&gt;</span></div>
+				<div class="menu-wrapper">
+					<%= yield(:context_menu) %>
+				</div>
+				<% end %>
+			</div>
+		</div>
+		
+		<div id="content">
+			<%= yield %>
+		</div>
+		
+		<div id="footer">
+			<%= render_navigation %>
+		</div>
+	</body>
 </html>

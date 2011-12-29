@@ -1,27 +1,32 @@
 // Place all the styles related to the Results controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$tab: 3em; // also in default.css
+
 .add,
 .yada {
   display:none;
 }
 
-div#table > div {
-  bottom:-100%;
+#table > div > div,
+#chart > div > div,
+div.center {
+  margin-left: auto;
+  margin-right:auto;
 }
 
-#chart {
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
-  float:left;
+.float {
+  float: left;
 }
 
-#table {
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
-  float:left;
+#mu {
+  line-height: 33px;
+  height:100%;
+  display:inline-block;
+  padding:10px;
+  margin-left:$tab;
+  font-size:1.2em;
 }
 
 .clear {
