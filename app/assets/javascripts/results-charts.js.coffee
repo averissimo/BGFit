@@ -8,7 +8,7 @@ if typeof google isnt 'undefined'
   # waits for document to load before calling chart callback
   $(document).ready () => 
   # default column to calculate data for regression
-    REGRESSION_COLUMN = 1
+    REGRESSION_COLUMN = 2
     # default options for the chart
     options = {
       curveType: 'function',
