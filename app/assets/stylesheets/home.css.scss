@@ -1,3 +1,30 @@
 // Place all the styles related to the home controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+a.btn {
+  width: 250px;
+  padding: 10px 25px 10px 25px;
+  font-family: Arial;
+  font-size: 16px;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #98ba3f;
+  text-shadow: -1px -1px 2px #618926;
+  border: 1px solid #618926;
+  
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  
+  background: -moz-linear-gradient(#98ba40, #a6c250 35%, #618926);
+  background: -webkit-gradient(linear,left top,left bottom,color-stop(0, #98ba40),color-stop(.35, #a6c250),color-stop(1, #618926));
+  &:hover {
+    background-color: #245191;
+    text-shadow: -1px -1px 2px #465f97;
+    border: 1px solid #0f2557;
+    background: -moz-linear-gradient(#245192, #1e3b73 75%, #12295d);
+    background: -webkit-gradient(linear,left top,left bottom,color-stop(0, #245192),color-stop(.75, #1e3b73),color-stop(1, #12295d));
+  }
+}
+
