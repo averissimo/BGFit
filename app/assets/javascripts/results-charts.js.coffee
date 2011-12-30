@@ -15,7 +15,7 @@ if typeof google isnt 'undefined'
       lineWidth: 1,
       pointSize: 2,
       width: '100%',
-      height: 400,
+      height: 600,
       title: 'Bacterial Growth'
       series: {
         3: {
