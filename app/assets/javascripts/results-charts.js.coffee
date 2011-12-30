@@ -17,6 +17,11 @@ if typeof google isnt 'undefined'
       width: '100%',
       height: 400,
       title: 'Bacterial Growth'
+      series: {
+        3: {
+          pointSize: 0
+        }
+      }
     }
     #
     number_format = new google.visualization.NumberFormat(
@@ -85,6 +90,7 @@ if typeof google isnt 'undefined'
             count = table.getSelection().length
             if count < 2 # it requires at least two points to calculate the regression
               redrawChart(data,chart,data_t,table)
+              chart.setSelection(table.getSelection())
               return
             sum_x   = 0 # sum of time
             sum_y   = 0 # sum of value
@@ -106,6 +112,10 @@ if typeof google isnt 'undefined'
             a = a_top / a_bot
             b = b_top / b_bot
             drawRegression data, chart, data_t, table, a, b
+            sel = table.getSelection().map (val,i) =>
+              val.column = REGRESSION_COLUMN
+              return val
+            chart.setSelection(sel)
           #
           # add listener to the chart (reflecting the selection to the table)
           google.visualization.events.addListener chart, 'select', () =>

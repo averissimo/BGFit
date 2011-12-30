@@ -60,9 +60,7 @@ table.formatted {
   }  
 }
 
-h1 {
-  margin-bottom: 2em;
-}
+
 
 #footer {
   text-align:center;
@@ -116,13 +114,6 @@ h1 {
   margin:0px;
   padding:0px;
   padding-left: 40px;
-  a,
-  a:hover,
-  a:focus,
-  a:active {
-    color: #CCCCCC;
-    text-decoration: none;
-  }
   span {
       margin-left: 10px;
       vertical-align: middle;
@@ -136,35 +127,45 @@ h1 {
     float:left;
   }
   ul.menu {
-    padding-left: 0px;
     margin-top: 0px;
-    display: block;
-    list-style: none outside none;
     li {
-      display: inline-block;
       line-height: $header_line;
       padding: 0;
       position: relative;
       vertical-align: top;
       a {
-        display: block;
-        padding-right: 5px;
-        padding-left: 5px;
         border-top: 2px solid transparent;
         color: white;
+        text-decoration: none;
         &:hover,
         &:active,
         &:focus {
-          background-color: #8FB77C!important;
+          background-color: #8FB77C;
         }
         &.selected {
           border-top: 2px solid #DD4B39;
           color: white;
+        }
+      }
+    }
+  }
+}
+
+div.menu {
+  ul.menu {
+    padding-left: 0px;
+    display: block;
+    list-style: none outside none;
+    li {
+      display: inline-block;
+      a {
+        display: block;
+        padding-right: 5px;
+        padding-left: 5px;
+        &.selected {
           font-weight: bold;
         }
       }
-
     }
-
   }
 }

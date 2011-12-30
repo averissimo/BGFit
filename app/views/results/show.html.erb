@@ -1,8 +1,32 @@
-<% javascript 'https://www.google.com/jsapi' %>
+<% 
+	javascript 'https://www.google.com/jsapi' 
+	
+	context_menu = [
+		{
+			:key => :edit, 
+			:name => 'Edit this result', 
+			:url => edit_result_path(@result),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto index', 
+			:url => results_path,
+			:options => {
+				:container_class => 'menu'
+			}
+		}]
+	
+%>
 <p id="notice"><%= notice %></p>
 
 <h1><%= @result.title %></h1>
 
+<div class="menu">
+	<%= menu = render_navigation :items => context_menu %>
+</div>
 
 <h3>Description:</h3>
 <p>
@@ -26,25 +50,4 @@
 
 <div class="clear"></div>
 
-<% 
-	context_menu = [
-		{
-			:key => :edit, 
-			:name => 'Edit this result', 
-			:url => edit_result_path(@result),
-			:options => {
-				:dom_class => 'menu'
-			}
-		},
-		{
-			:key => :edit, 
-			:name => 'Goto index', 
-			:url => results_path,
-			:options => {
-				:container_class => 'menu'
-			}
-		}]
-	
-%>
-
-<% content_for(:context_menu) { render_navigation :items => context_menu }%>
+<% content_for(:context_menu) { menu }%>
