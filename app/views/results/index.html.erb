@@ -1,6 +1,6 @@
 <h1>Listing results</h1>
 
-
+<% content_for(:title) { "Results listing" } %>
 <%= 
 	collection_table(@results, :id => 'results' , :class => 'formatted') do |t|
 		t.header :title

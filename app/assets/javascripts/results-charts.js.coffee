@@ -7,8 +7,10 @@ if typeof google isnt 'undefined'
 
   # waits for document to load before calling chart callback
   $(document).ready () => 
-  # default column to calculate data for regression
-    REGRESSION_COLUMN = 2
+    # default column to calculate data for regression
+    REGRESSION_COLUMN = 1
+    # offset for the window view
+    OFFSET_RATIO = .1
     # default options for the chart
     options = {
       curveType: 'function',
@@ -18,7 +20,7 @@ if typeof google isnt 'undefined'
       height: 600,
       title: 'Bacterial Growth'
       series: {
-        3: {
+        1: {
           pointSize: 0
         }
       }
@@ -72,12 +74,24 @@ if typeof google isnt 'undefined'
           data = new google.visualization.DataTable JSONObject, 0.5
           # draw the actual chart
           chart = new google.visualization.ScatterChart document.getElementById('chart')
+          data.removeColumn(3)
+          data.removeColumn(1)
+          range = data.getColumnRange(1)
+          offset = Math.abs( range.max - range.min ) * OFFSET_RATIO
+          options.vAxis = { 
+            viewWindowMode: "explicit"
+            viewWindow: {
+              max: range.max +  offset,
+              min: range.min - offset
+              }
+            }
+          
           chart.draw(data, options)
           # draw the auxiliary table (used for the regression)
           table = new google.visualization.Table document.getElementById('table')
           data_t = data.clone()
-          data_t.removeColumn(3)
-          data_t.removeColumn(2)
+          #data_t.removeColumn(3)
+          #data_t.removeColumn(1)
           number_format.format(data_t,0)
           number_format.format(data_t,1)
           col_t_num = data_t.addColumn 'number' , 'Regression'

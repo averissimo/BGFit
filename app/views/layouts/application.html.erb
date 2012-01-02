@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	  <title>BacteriaGrowth</title>
+		<% if content_for?(:title) %>
+		<title><%= yield(:title) %> | BacteriaGrowth</title>
+		<% else %>
+		<title>BacteriaGrowth</title>
+		<% end %>
 	  
 	    <!-- Custom head -->
 	  <%= yield(:head) %>
