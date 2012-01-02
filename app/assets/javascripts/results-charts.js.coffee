@@ -130,12 +130,6 @@ if typeof google isnt 'undefined'
               val.column = REGRESSION_COLUMN
               return val
             chart.setSelection(sel)
-          #
-          # add listener to the chart (reflecting the selection to the table)
-          google.visualization.events.addListener chart, 'select', () =>
-            # chart can only select one point at a time
-            if chart.getSelection() && chart.getSelection()[0] && chart.getSelection()[0].row
-              table.setSelection([{row: chart.getSelection()[0].row}])
           
     # only calls drawchart if an element with id ="chart" exists
     if $('#chart')[0]
