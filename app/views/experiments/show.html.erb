@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Description:</b>
+  <%= @experiment.description %>
+</p>
+
+<p>
+  <b>Model:</b>
+  <%= @experiment.model %>
+</p>
+
+
+<%= link_to 'Edit', edit_model_experiment_path(@model,@experiment) %> |
+<%= link_to 'Back', model_experiments_path(@model) %>

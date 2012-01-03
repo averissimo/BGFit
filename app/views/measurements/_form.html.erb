@@ -1,0 +1,29 @@
+<%= form_for([@model,@experiment,@measurement]) do |f| %>
+  <% if @measurement.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@measurement.errors.count, "error") %> prohibited this measurement from being saved:</h2>
+
+      <ul>
+      <% @measurement.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :experiment %><br />
+    <%= @experiment.id %>
+    <br />
+    <%= @experiment.description %>
+  </div>
+
+  <div class="field">
+    <%= f.label :original_data %><br />
+    <%= f.text_area :original_data %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

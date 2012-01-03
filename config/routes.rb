@@ -1,5 +1,13 @@
 BacteriaGrowth::Application.routes.draw do
 
+  resources :models do
+    resources :experiments do
+      resources :measurements do
+        resources :measurement_lines
+      end
+    end
+  end
+
   resources :results do
     member do
       get :convert
