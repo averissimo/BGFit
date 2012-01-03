@@ -41,23 +41,23 @@
 <p>
 	<%= @result.description %>
 </p>
-
-<h3>Data Visualization</h3>
-<p>
-	To determine the linear regression for the <i>"Time x LN( OD600 )"</i> data you need to select multiple lines in the table below.<br/>
-	This can be performed by clicking on multiple lines pressing "Shift" or "Ctrl" keys.
-</p>
-
-<div id="table" link-to="<%= result_path(@result) %>"></div>
-
-<div class="center">
-			<span id="mu"><b>&mu;<sub>max</sub></b> = <span id="mu-value">(select multiple lines in the table)</span>
-			<span id="mu-blank" style="display: none;">(select multiple lines in the table)</span></span>
-			<%= render "hidden_lines" %>
+<div id ="result_charts">
+	<h3>Data Visualization</h3>
+	<p>
+		To determine the linear regression for the <i>"Time x LN( OD600 )"</i> data you need to select multiple lines in the table below.<br/>
+		This can be performed by clicking on multiple lines pressing "Shift" or "Ctrl" keys.
+	</p>
+	
+	<div id="table" link-to="<%= result_path(@result) %>"></div>
+	
+	<div class="center">
+				<span id="mu"><b>&mu;<sub>max</sub></b> = <span id="mu-value">(select multiple lines in the table)</span>
+				<span id="mu-blank" style="display: none;">(select multiple lines in the table)</span></span>
+				<%= render "hidden_lines" %>
+	</div>
+	
+	<div id="chart" link-to="<%= result_path(@result) %>"></div>
 </div>
-
-<div id="chart" link-to="<%= result_path(@result) %>"></div>
-
 <div class="clear"></div>
 
 <% content_for(:context_menu) { menu }%>

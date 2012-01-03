@@ -1,4 +1,6 @@
 class MeasurementsController < ApplicationController
+  respond_to :html, :json, :csv
+
   # GET /measurements
   # GET /measurements.json
   def index
@@ -19,10 +21,11 @@ class MeasurementsController < ApplicationController
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @measurement }
-    end
+    respond_with(@model,@experiment,@measurement)
+    #respond_to do |format|
+    #  format.html # show.html.erb
+    #  format.json { render json: @measurement }
+    #end
   end
 
   # GET /measurements/new
@@ -75,6 +78,23 @@ class MeasurementsController < ApplicationController
     respond_to do |format|
       if @measurement.update_attributes(params[:measurement])
         format.html { redirect_to [@model,@experiment,@measurement], notice: 'Measurement was successfully updated.' }
+        format.json { head :ok }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @measurement.errors, status: :unprocessable_entity , location: [@model,@experimento,@measurement]  }
+      end
+    end
+  end
+
+  def update_regression
+    @model = Model.find(params[:model_id])
+    @experiment = @model.experiments.find(params[:experiment_id])
+    @measurement = @experiment.measurements.find(params[:id])
+
+    respond_to do |format|
+      if @measurement.update_attributes(params[:measurement])
+        format.html { render action: "regression" }
+        #format.html { redirect_to regression_model_experiment_measurement(@model,@experiment,@measurement) , notice: 'Measurement was successfully updated.' }
         format.json { head :ok }
       else
         format.html { render action: "edit" }

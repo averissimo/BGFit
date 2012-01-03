@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-a.btn {
+a.btn, {
   padding: 10px 15px 10px 15px;
   margin-right: 10px;
   display: inline-block;
@@ -29,6 +29,10 @@ a.btn {
   }
 }
 
+input.btn {
+  @extend a.btn;
+  margin-left: 3em;
+}
 
 #content .menu li.text a {
   color: #000;

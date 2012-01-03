@@ -1,0 +1,35 @@
+
+
+<%= form_for([@model,@experiment,@measurement], :url => {:action => :update_regression}) do |f| %>
+	
+	<div style="display:none;">
+	<%= 
+
+	a = collection_table(@measurement.measurement_lines, :id => 'measurement_lines' , :class => 'formatted') do |t|
+		t.header :id
+		t.header :x
+		t.header :regression, 'Regression'
+		
+		t.rows.alternate = :odd
+		t.rows.each do |row, line, index|
+		  # Notice there's no need to explicitly define the title
+		  next if line.id == nil
+		  f.fields_for :measurement_lines, line do |builder|
+			  row.id			builder.text_field :id
+			  row.x				line.x
+			  row.regression	builder.check_box :regression_flag, :class => 'regression'
+		  end
+		end
+	
+	end
+%>
+
+	</div>
+	<div class="actions">
+		<%= f.submit "Save regression", :class => "btn" %>
+	</div>
+
+<% end %>
+	
+	
+	

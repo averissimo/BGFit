@@ -6,6 +6,8 @@ if typeof google isnt 'undefined'
   google.load 'visualization', '1.0', {'packages':['corechart','table']}
   # waits for document to load before calling chart callback
   $(document).ready () => 
+    if not $("#result_charts").length
+      return
     # prepare the regression active rows
     #  from db
     countJson = 0
