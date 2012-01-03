@@ -1,15 +1,68 @@
+<% 
+	context_menu = [
+		{
+			:key => :edit, 
+			:name => 'Edit this experiment', 
+			:url => edit_model_experiment_path(@model,@experiment),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New measurement', 
+			:url => new_model_experiment_measurement_path(@model,@experiment),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto model', 
+			:url => model_path(@model),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+		}}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
 <p id="notice"><%= notice %></p>
 
+<h1><%= @experiment.title %> (experiment)</h1>
+
+<h3>Using <%= @model.title %> model</h3>
 <p>
-  <b>Description:</b>
+	<%= @model.description %>
+</p>
+
+<h2>Experiment Description</h2>
+<p>
   <%= @experiment.description %>
 </p>
 
-<p>
-  <b>Model:</b>
-  <%= @experiment.model %>
-</p>
+<h2>Measurements</h2>
 
+<%= 
+	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|
+		t.header :title
+		t.header :date
+		t.header :show_h,		"Show"
+		t.header :edit_h,		"Edit"
+		t.header :destroy_h,	"Destroy"
 
-<%= link_to 'Edit', edit_model_experiment_path(@model,@experiment) %> |
-<%= link_to 'Back', model_experiments_path(@model) %>
+		t.rows.alternate = :odd
+    	t.rows.each do |row, measurement, index|
+			# Notice there's no need to explicitly define the title
+			row.title			measurement
+			row.date			measurement.date
+			row.show_h			link_to 'show', [@model,@experiment,measurement]
+			row.edit_h			link_to 'edit', edit_model_experiment_measurement_path(@model,@experiment,measurement)
+			row.destroy_h		link_to 'destroy', [@model,@experiment,measurement], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+<div class="menu">
+	<%= menu %>
+</div>

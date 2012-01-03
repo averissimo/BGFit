@@ -7,7 +7,7 @@ class MeasurementsController < ApplicationController
     @measurements = @experiment.measurements
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { redirect_to [@model,@experiment] }
       format.json { render json: @measurements }
     end
   end
@@ -52,6 +52,7 @@ class MeasurementsController < ApplicationController
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = Measurement.new(params[:measurement])
     @measurement.experiment = @experiment
+    @measurement.convert_original_data
 
     respond_to do |format|
       if @measurement.save
@@ -79,6 +80,17 @@ class MeasurementsController < ApplicationController
         format.html { render action: "edit" }
         format.json { render json: @measurement.errors, status: :unprocessable_entity , location: [@model,@experimento,@measurement]  }
       end
+    end
+  end
+
+  def regression
+    @model = Model.find(params[:model_id])
+    @experiment = @model.experiments.find(params[:experiment_id])
+    @measurement = @experiment.measurements.find(params[:id])
+    
+    respond_to do |format|
+      format.html
+      format.json
     end
   end
 

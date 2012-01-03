@@ -52,6 +52,7 @@ SimpleNavigation::Configuration.run do |navigation|
     primary.dom_class = 'menu'
     primary.item :home, 'Home', root_path
     primary.item :results, 'Results', results_path , :highlights_on => /results/
+    primary.item :models, 'Models', models_path , :highlights_on => /models/
 
     # Add an item which has a sub navigation (same params, but with block)
     ##primary.item :key_2, 'name', url, options do |sub_nav|

@@ -6,7 +6,7 @@ class ExperimentsController < ApplicationController
     @experiments = @model.experiments
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { redirect_to [@model] }
       format.json { render json: @experiments }
     end
   end

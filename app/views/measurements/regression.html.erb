@@ -1,14 +1,6 @@
 <% 
 	context_menu = [
 		{
-			:key => :regression, 
-			:name => 'Linear regression', 
-			:url => regression_model_experiment_measurement_path(@model,@experiment,@measurement),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
 			:key => :edit, 
 			:name => 'Edit this measurement', 
 			:url => edit_model_experiment_measurement_path(@model,@experiment,@measurement),

@@ -11,13 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120103150222) do
+ActiveRecord::Schema.define(:version => 20120103172139) do
 
   create_table "experiments", :force => true do |t|
     t.text     "description"
     t.integer  "model_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "title"
   end
 
   add_index "experiments", ["model_id"], :name => "index_experiments_on_model_id"
@@ -43,6 +44,8 @@ ActiveRecord::Schema.define(:version => 20120103150222) do
     t.integer  "measurement_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "ln_y"
+    t.boolean  "regression_flag"
   end
 
   add_index "measurement_lines", ["measurement_id"], :name => "index_measurement_lines_on_measurement_id"
@@ -52,6 +55,8 @@ ActiveRecord::Schema.define(:version => 20120103150222) do
     t.integer  "experiment_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "date"
+    t.string   "title"
   end
 
   add_index "measurements", ["experiment_id"], :name => "index_measurements_on_experiment_id"
@@ -60,6 +65,7 @@ ActiveRecord::Schema.define(:version => 20120103150222) do
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "title"
   end
 
   create_table "results", :force => true do |t|

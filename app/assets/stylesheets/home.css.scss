@@ -3,8 +3,9 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 a.btn {
-  width: 250px;
-  padding: 10px 25px 10px 25px;
+  padding: 10px 15px 10px 15px;
+  margin-right: 10px;
+  display: inline-block;
   font-family: Arial;
   font-size: 16px;
   text-decoration: none;
@@ -25,6 +26,23 @@ a.btn {
     border: 1px solid #0f2557;
     background: -moz-linear-gradient(#245192, #1e3b73 75%, #12295d);
     background: -webkit-gradient(linear,left top,left bottom,color-stop(0, #245192),color-stop(.75, #1e3b73),color-stop(1, #12295d));
+  }
+}
+
+
+#content .menu li.text a {
+  color: #000;
+  background: none;
+  border: 0px solid transparent;
+  text-shadow: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+    
+#content .menu li {
+  a {
+    @extend a.btn
   }
 }
 

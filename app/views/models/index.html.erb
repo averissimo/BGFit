@@ -1,3 +1,17 @@
+<% 
+	context_menu = [
+		{
+			:key => :new, 
+			:name => 'new model', 
+			:url => new_model_path,
+			:options => {
+				:container_class => 'menu'
+			}
+		}]
+	content_for(:context_menu) { render_navigation :items => context_menu }
+%>
+<% content_for(:title) { "Model's index" } %>
+
 <h1>Listing models</h1>
 
 <table>
@@ -20,4 +34,6 @@
 
 <br />
 
-<%= link_to 'New Model', new_model_path %>
+<%= link_to 'New Model', new_model_path , :class => "btn"%>
+
+
