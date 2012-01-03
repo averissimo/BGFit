@@ -47,6 +47,7 @@
 	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|
 		t.header :title
 		t.header :date
+		t.header :regression_h,	"Regression"
 		t.header :show_h,		"Show"
 		t.header :edit_h,		"Edit"
 		t.header :destroy_h,	"Destroy"
@@ -54,8 +55,9 @@
 		t.rows.alternate = :odd
     	t.rows.each do |row, measurement, index|
 			# Notice there's no need to explicitly define the title
-			row.title			measurement
+			row.title			measurement.title
 			row.date			measurement.date
+			row.regression_h	link_to 'regression', regression_model_experiment_measurement_path(@model,@experiment,measurement)
 			row.show_h			link_to 'show', [@model,@experiment,measurement]
 			row.edit_h			link_to 'edit', edit_model_experiment_measurement_path(@model,@experiment,measurement)
 			row.destroy_h		link_to 'destroy', [@model,@experiment,measurement], confirm: 'Are you sure?', method: :delete

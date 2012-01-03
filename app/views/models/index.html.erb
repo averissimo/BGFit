@@ -14,25 +14,25 @@
 
 <h1>Listing models</h1>
 
-<table>
-  <tr>
-    <th>Description</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+<%= 
+	collection_table(@models, :id => 'models' , :class => 'formatted') do |t|
+		t.header :title
+		t.header :description
+		t.header :show_h,		"Show"
+		t.header :edit_h,		"Edit"
+		t.header :destroy_h,	"Destroy"
 
-<% @models.each do |model| %>
-  <tr>
-    <td><%= model.description %></td>
-    <td><%= link_to 'Show', model %></td>
-    <td><%= link_to 'Edit', edit_model_path(model) %></td>
-    <td><%= link_to 'Destroy', model, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
+		t.rows.alternate = :odd
+    	t.rows.each do |row, model, index|
+			# Notice there's no need to explicitly define the title
+			row.title			model.title
+			row.description		model.description_trimmed
+			row.show_h			link_to 'show', model
+			row.edit_h			link_to 'edit', edit_model_path(model)
+			row.destroy_h		link_to 'destroy', model, confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
 
 <%= link_to 'New Model', new_model_path , :class => "btn"%>
 
