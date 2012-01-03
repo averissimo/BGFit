@@ -26,14 +26,15 @@ class Result < ActiveRecord::Base
             print el + "\n"
             print line.od600.to_s + "\n"
             line.od600 = Float(el)
-          when 2 # ln( OD600 )
-            print el + "\n"
-            print line.ln_od600.to_s + "\n"
-            line.ln_od600 = Math.log( line.od600 ) 
-          when 3 # pH
+            line.ln_od600 = Math.log( line.od600 )
+          when 2 # pH
             print el + "\n"
             print line.ph.to_s + "\n"
             line.ph = Float(el)
+          when 3 # ln( OD600 )
+            print el + "\n"
+            print line.ln_od600.to_s + "\n"
+            line.ln_od600 = Math.log( line.od600 ) 
           end
           print "-------------\n"
        end
