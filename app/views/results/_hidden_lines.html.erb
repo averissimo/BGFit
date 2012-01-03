@@ -1,31 +1,35 @@
 
 
-<h3>Lines</h3>
-<%= form_for([@result, @line]) do |f| %>
-<%= 
+<%= form_for([@result]) do |f| %>
+	
+	<div style="display:none;">
+	<%= 
 
 	a = collection_table(@result.lines, :id => 'lines' , :class => 'formatted') do |t|
+		t.header :id
 		t.header :time
-		t.header :od600, 'OD600'
-		t.header :ln_od600, 'ln( OD600 )'
-		t.header :ph, 'pH'
-		t.header :edit_h, ''
-		t.header :destroy_h, ''
+		t.header :regression, 'Regression'
 		
 		t.rows.alternate = :odd
 		t.rows.each do |row, line, index|
 		  # Notice there's no need to explicitly define the title
 		  next if line.id == nil
-		  row.time		line.time
-		  row.od600		line.od600
-		  row.ln_od600	line.ln_od600
-		  row.ph		line.ph
-		  row.edit_h	link_to 'edit', edit_result_line_path(line.result, line) 
-		  row.destroy_h	link_to 'destroy', [line.result, line], :confirm => 'Are you sure?', :method => :delete
+		  f.fields_for :lines, line do |builder|
+			  row.id			builder.text_field :id
+			  row.time			line.time
+			  row.regression	builder.check_box :regression, :class => 'regression'
+		  end
 		end
 	
 	end
- 
 %>
 
+	</div>
+	<div class="actions">
+		<%= f.submit "Save regression"%>
+	</div>
+
 <% end %>
+	
+	
+	
