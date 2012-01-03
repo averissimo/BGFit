@@ -4,9 +4,19 @@
 
 if typeof google isnt 'undefined'
   google.load 'visualization', '1.0', {'packages':['corechart','table']}
-
   # waits for document to load before calling chart callback
   $(document).ready () => 
+    # prepare the regression active rows
+    #  from db
+    countJson = 0
+    jsonObj = []
+    for check in $('.edit_result .line-regression input.regression')
+      do (check) ->
+        if check.checked
+          temp = Object()
+          temp.row = countJson
+          jsonObj.push( temp)
+        countJson++
     # default column to calculate data for regression
     REGRESSION_COLUMN = 1
     # offset for the window view
@@ -64,20 +74,58 @@ if typeof google isnt 'undefined'
       $("#mu").stop(true, true).effect('highlight', 3000)
       regression = true
     
+    #
+    calculateRegression = (data,chart,data_t,table) ->
+      count = table.getSelection().length
+      for check in $('.edit_result .line-regression input.regression')
+        do (check) ->
+          check.checked = ''
+      if count < 2 # it requires at least two points to calculate the regression
+        redrawChart(data,chart,data_t,table)
+        chart.setSelection(table.getSelection())
+        return
+      sum_x   = 0 # sum of time
+      sum_y   = 0 # sum of value
+      sum_xy  = 0 # sum of time x value
+      sum_x2  = 0 # sum of time x time
+      for sel in table.getSelection()
+        do (sel) ->
+          # use x and y as auxiliary variables
+          x  = data.getValue( sel.row , 0 )
+          y  = data.getValue( sel.row , REGRESSION_COLUMN )
+          sum_x  += x
+          sum_y  += y
+          sum_xy += x * y
+          sum_x2 += x * x
+          $('.edit_result .line-regression input.regression')[sel.row].checked = 'checked'
+      a_top = sum_y * sum_x2 - sum_x * sum_xy # top of A
+      a_bot = count * sum_x2 - sum_x * sum_x  # bottom of A
+      b_top = count * sum_xy - sum_x * sum_y  # top of B
+      b_bot = count * sum_x2 - sum_x * sum_x  # bottom of B
+      a = a_top / a_bot
+      b = b_top / b_bot
+      drawRegression data, chart, data_t, table, a, b
+      sel = table.getSelection().map (val,i) =>
+        val.column = REGRESSION_COLUMN
+        return val
+      chart.setSelection(sel)
+    #
+    
     # Callback method that renders the chart  
-    drawChart = () ->
-        # datasource is retrieved from a remote json
-        #  its link is in the div's attribute 'link-to'
-        $.getJSON $('#chart').attr('link-to') + '.json',(json) =>
-          JSONObject=json;
-          # build the datasource
-          data = new google.visualization.DataTable JSONObject, 0.5
-          # draw the actual chart
-          chart = new google.visualization.ScatterChart document.getElementById('chart')
-          data.removeColumn(3)
-          data.removeColumn(1)
-          range = data.getColumnRange(1)
-          offset = Math.abs( range.max - range.min ) * OFFSET_RATIO
+    drawChart = () ->     
+      # datasource is retrieved from a remote json
+      #  its link is in the div's attribute 'link-to'
+      $.getJSON $('#chart').attr('link-to') + '.json',(json) =>
+        JSONObject=json;
+        # build the datasource
+        data = new google.visualization.DataTable JSONObject, 0.5
+        data.removeColumn(3) # remove pH
+        data.removeColumn(1) # remove OD600
+        # determine view window range for chart
+        range = data.getColumnRange(1)
+        offset = Math.abs( range.max - range.min ) * OFFSET_RATIO
+        if offset > 0 # with one point chart returns an error if condition
+                      #  does not exists
           options.vAxis = { 
             viewWindowMode: "explicit"
             viewWindow: {
@@ -85,51 +133,43 @@ if typeof google isnt 'undefined'
               min: range.min - offset
               }
             }
+        # apply the format data for the table's data (including the regressn)
+        data_t = data.clone()
+        number_format.format(data_t,0)
+        number_format.format(data_t,1)
+        col_t_num = data_t.addColumn 'number' , 'Regression'
+        # prepare the chart
+        chart = new google.visualization.ScatterChart document.getElementById('chart')
+        # prepare the table
+        table = new google.visualization.Table document.getElementById('table')
+        #
+        # add listener for when the chart is ready
+        table_flag = false
+        chart_flag = false
+        chart_h = google.visualization.events.addListener chart, 'ready', () =>
+          google.visualization.events.removeListener(chart_h)
+          chart_flag = true
+          if table_flag && jsonObj.length > 0
+            table.setSelection(jsonObj)
+            calculateRegression(data,chart,data_t,table)
+        # add listener for when the table is ready
+        table_h = google.visualization.events.addListener table, 'ready', () =>
+          google.visualization.events.removeListener(table_h)
+          table_flag = true
+          if chart_flag && jsonObj.length > 0
+            table.setSelection(jsonObj)
+            calculateRegression(data,chart,data_t,table)
+        #
+        #
+        # draw the table and chart
+        chart.draw(data, options)
+        table.draw(data_t,options_t)
+        # add listener to the table (reflecting the selections to the chart)
+        google.visualization.events.addListener table, 'select', () =>
+          # set the selection of the chart the same as in the table
+          chart.setSelection(table.getSelection())
+          calculateRegression(data,chart,data_t,table)
           
-          chart.draw(data, options)
-          # draw the auxiliary table (used for the regression)
-          table = new google.visualization.Table document.getElementById('table')
-          data_t = data.clone()
-          #data_t.removeColumn(3)
-          #data_t.removeColumn(1)
-          number_format.format(data_t,0)
-          number_format.format(data_t,1)
-          col_t_num = data_t.addColumn 'number' , 'Regression'
-          table.draw(data_t,options_t)
-          #
-          # add listener to the table (reflecting the selections to the chart)
-          google.visualization.events.addListener table, 'select', () =>
-            # set the selection of the chart the same as in the table
-            chart.setSelection(table.getSelection())
-            count = table.getSelection().length
-            if count < 2 # it requires at least two points to calculate the regression
-              redrawChart(data,chart,data_t,table)
-              chart.setSelection(table.getSelection())
-              return
-            sum_x   = 0 # sum of time
-            sum_y   = 0 # sum of value
-            sum_xy  = 0 # sum of time x value
-            sum_x2  = 0 # sum of time x time
-            for sel in table.getSelection()
-              do (sel) ->
-                # use x and y as auxiliary variables
-                x  = data.getValue( sel.row , 0 )
-                y  = data.getValue( sel.row , REGRESSION_COLUMN )
-                sum_x  += x
-                sum_y  += y
-                sum_xy += x * y
-                sum_x2 += x * x
-            a_top = sum_y * sum_x2 - sum_x * sum_xy # top of A
-            a_bot = count * sum_x2 - sum_x * sum_x  # bottom of A
-            b_top = count * sum_xy - sum_x * sum_y  # top of B
-            b_bot = count * sum_x2 - sum_x * sum_x  # bottom of B
-            a = a_top / a_bot
-            b = b_top / b_bot
-            drawRegression data, chart, data_t, table, a, b
-            sel = table.getSelection().map (val,i) =>
-              val.column = REGRESSION_COLUMN
-              return val
-            chart.setSelection(sel)
           
     # only calls drawchart if an element with id ="chart" exists
     if $('#chart')[0]

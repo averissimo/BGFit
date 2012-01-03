@@ -3,6 +3,8 @@ class Result < ActiveRecord::Base
  
  has_many :lines, :dependent => :destroy
  
+ accepts_nested_attributes_for :lines
+ 
  public
    def convert_original_data
      self.original_data = original_data.gsub(/\r/,'')

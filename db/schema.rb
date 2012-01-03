@@ -11,16 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111226144228) do
+ActiveRecord::Schema.define(:version => 20120102173503) do
 
   create_table "lines", :force => true do |t|
     t.integer  "result_id"
-    t.decimal  "time",       :precision => 10, :scale => 0
-    t.decimal  "od600",      :precision => 10, :scale => 0
-    t.decimal  "ln_od600",   :precision => 10, :scale => 0
-    t.decimal  "ph",         :precision => 10, :scale => 0
+    t.decimal  "time",       :precision => 15, :scale => 5
+    t.decimal  "od600",      :precision => 15, :scale => 5
+    t.decimal  "ln_od600",   :precision => 15, :scale => 5
+    t.decimal  "ph",         :precision => 15, :scale => 5
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "regression"
   end
 
   add_index "lines", ["result_id"], :name => "index_lines_on_result_id"
