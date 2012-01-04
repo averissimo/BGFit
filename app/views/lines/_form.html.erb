@@ -1,10 +1,10 @@
-<%= form_for([@model,@experiment,@measurement,@measurement_line]) do |f| %>
-  <% if @measurement_line.errors.any? %>
+<%= form_for([@model,@experiment,@measurement,@line]) do |f| %>
+  <% if @line.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@measurement_line.errors.count, "error") %> prohibited this measurement_line from being saved:</h2>
+      <h2><%= pluralize(@line.errors.count, "error") %> prohibited this line from being saved:</h2>
 
       <ul>
-      <% @measurement_line.errors.full_messages.each do |msg| %>
+      <% @line.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>

@@ -1,4 +1,4 @@
 require 'test_helper'
 
-class MeasurementLinesHelperTest < ActionView::TestCase
+class LinesHelperTest < ActionView::TestCase
 end

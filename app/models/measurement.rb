@@ -1,9 +1,9 @@
 class Measurement < ActiveRecord::Base
   belongs_to :experiment
   
-  has_many :measurement_lines, :dependent => :destroy
+  has_many :lines, :dependent => :destroy
  
-  accepts_nested_attributes_for :measurement_lines
+  accepts_nested_attributes_for :lines
   
   public
     def model
@@ -14,7 +14,7 @@ class Measurement < ActiveRecord::Base
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
        next if y == 0
-       line = MeasurementLine.new
+       line = Line.new
        l.split(/\t/).each_with_index do |el , y2|
 
          el = el.gsub("," , ".")
@@ -33,7 +33,7 @@ class Measurement < ActiveRecord::Base
             line.note = el
           end
        end
-       self.measurement_lines << line
+       self.lines << line
      end
     end
     

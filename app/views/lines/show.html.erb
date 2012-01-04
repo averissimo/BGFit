@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>X:</b>
+  <%= @line.x %>
+</p>
+
+<p>
+  <b>Y:</b>
+  <%= @line.y %>
+</p>
+
+<p>
+  <b>Z:</b>
+  <%= @line.z %>
+</p>
+
+<p>
+  <b>Note:</b>
+  <%= @line.note %>
+</p>
+
+<p>
+  <b>Measurement:</b>
+  <%= @line.measurement %>
+</p>
+
+
+<%= link_to 'Edit', edit_model_experiment_measurement_line_path(@model,@experiment,@measurement,@line) %> |
+<%= link_to 'Back', model_experiment_lines_path(@model,@experiment,@measurement) %>

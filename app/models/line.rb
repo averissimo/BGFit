@@ -1,4 +1,4 @@
-class MeasurementLine < ActiveRecord::Base
+class Line < ActiveRecord::Base
   belongs_to :measurement
   
   def ph_formatted

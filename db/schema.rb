@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(:version => 20120103172139) do
 
   add_index "lines", ["result_id"], :name => "index_lines_on_result_id"
 
-  create_table "measurement_lines", :force => true do |t|
+  create_table "lines", :force => true do |t|
     t.float    "x"
     t.float    "y"
     t.float    "z"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(:version => 20120103172139) do
     t.boolean  "regression_flag"
   end
 
-  add_index "measurement_lines", ["measurement_id"], :name => "index_measurement_lines_on_measurement_id"
+  add_index "lines", ["measurement_id"], :name => "index_lines_on_measurement_id"
 
   create_table "measurements", :force => true do |t|
     t.text     "original_data"

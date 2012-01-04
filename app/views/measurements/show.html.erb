@@ -27,7 +27,7 @@
 		{
 			:key => :new, 
 			:name => 'New line', 
-			:url => new_model_experiment_measurement_measurement_line_path(@model,@experiment,@measurement),
+			:url => new_model_experiment_measurement_line_path(@model,@experiment,@measurement),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -63,7 +63,7 @@
 
 <h2>Measured data</h2>
 <%= 
-	collection_table(@measurement.measurement_lines, :id => 'measurement_lines' , :class => 'formatted') do |t|
+	collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted') do |t|
 		t.header :x
 		t.header :y
 		t.header :z
@@ -80,7 +80,7 @@
 			row.z			line.z
 			row.note		line.note
 			row.show_h		link_to 'show', [@model,@experiment,@measurement,line]
-			row.edit_h		link_to 'edit', edit_model_experiment_measurement_measurement_line_path(@model,@experiment,@measurement,line)
+			row.edit_h		link_to 'edit', edit_model_experiment_measurement_line_path(@model,@experiment,@measurement,line)
 			row.destroy_h	link_to 'destroy', [@model,@experiment,@measurement,line], confirm: 'Are you sure?', method: :delete
 		end
 	end
