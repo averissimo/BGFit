@@ -32,6 +32,17 @@ a.btn, {
 input.btn {
   @extend a.btn;
   margin-left: 3em;
+  &.text {
+    color: #000;
+    background: none;
+    border: 0px solid transparent;
+    text-shadow: none;
+    &:hover,
+    &:active,
+    &:focus {
+      text-decoration: underline;
+    }
+  }
 }
 
 #content .menu li.text a {
@@ -39,7 +50,9 @@ input.btn {
   background: none;
   border: 0px solid transparent;
   text-shadow: none;
-  &:hover {
+  &:hover,
+  &:active,
+  &:focus {
     text-decoration: underline;
   }
 }

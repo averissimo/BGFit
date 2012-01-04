@@ -6,6 +6,10 @@ class Measurement < ActiveRecord::Base
   accepts_nested_attributes_for :measurement_lines
   
   public
+    def model
+      self.experiment.model
+    end
+  
    def convert_original_data
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
@@ -39,5 +43,19 @@ class Measurement < ActiveRecord::Base
       else
         return original_data
       end
+    end
+    
+    def <=>(o)
+      model_cmp = self.model.title <=> o.model.title
+      return model_cmp unless model_cmp == 0
+      
+      exp_cmp = self.experiment.title <=> o.experiment.title
+      return exp_cmp unless exp_cmp == 0
+      
+      date_cmp = self.date <=> o.date
+      return date_cmp unless date_cmp == 0
+      
+      title_cmp = self.title <=> o.title
+      return title_cmp unless title_cmp == 0
     end
 end

@@ -3,7 +3,9 @@ class ModelsController < ApplicationController
   # GET /models.json
   def index
     @models = Model.all
-
+    @measurements = Measurement.all
+    @measurements.sort!
+    
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @models }
@@ -14,7 +16,14 @@ class ModelsController < ApplicationController
   # GET /models/1.json
   def show
     @model = Model.find(params[:id])
-
+    @measurements = []
+    @model.experiments.each do | exp |
+      if exp.measurements != nil
+        @measurements = @measurements | exp.measurements
+      end
+    end
+    @measurements.sort!
+    
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @model }

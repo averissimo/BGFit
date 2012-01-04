@@ -9,6 +9,14 @@
 			}
 		},
 		{
+			:key => :csv, 
+			:name => 'Download .csv', 
+			:url => model_experiment_measurement_path(@model,@experiment,@measurement, :format => :csv),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
 			:key => :edit, 
 			:name => 'Edit this measurement', 
 			:url => edit_model_experiment_measurement_path(@model,@experiment,@measurement),
