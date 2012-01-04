@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class MeasurementLineTest < ActiveSupport::TestCase
+class LineTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

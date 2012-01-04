@@ -12,7 +12,7 @@ if typeof google isnt 'undefined'
     #  from db
     countJson = 0
     jsonObj = []
-    for check in $('form.edit_measurement .measurement_line-regression input.regression')
+    for check in $('form.edit_measurement .line-regression input.regression')
       do (check) ->
         if check.checked
           temp = Object()
@@ -79,7 +79,7 @@ if typeof google isnt 'undefined'
     #
     calculateRegression = (data,chart,data_t,table) ->
       count = table.getSelection().length
-      for check in $('form.edit_measurement .measurement_line-regression input.regression')
+      for check in $('form.edit_measurement .line-regression input.regression')
         do (check) ->
           check.checked = ''
       if count < 2 # it requires at least two points to calculate the regression
@@ -99,7 +99,7 @@ if typeof google isnt 'undefined'
           sum_y  += y
           sum_xy += x * y
           sum_x2 += x * x
-          $('form.edit_measurement .measurement_line-regression input.regression')[sel.row].checked = 'checked'
+          $('form.edit_measurement .line-regression input.regression')[sel.row].checked = 'checked'
       a_top = sum_y * sum_x2 - sum_x * sum_xy # top of A
       a_bot = count * sum_x2 - sum_x * sum_x  # bottom of A
       b_top = count * sum_xy - sum_x * sum_y  # top of B

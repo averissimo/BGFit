@@ -7,7 +7,7 @@ BacteriaGrowth::Application.routes.draw do
           get :regression
           put :update_regression
         end
-        resources :measurement_lines
+        resources :lines
       end
     end
   end

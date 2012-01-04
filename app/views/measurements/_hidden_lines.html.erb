@@ -5,7 +5,7 @@
 	<div style="display:none;">
 	<%= 
 
-	a = collection_table(@measurement.measurement_lines, :id => 'measurement_lines' , :class => 'formatted') do |t|
+	a = collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted') do |t|
 		t.header :id
 		t.header :x
 		t.header :regression, 'Regression'
@@ -14,7 +14,7 @@
 		t.rows.each do |row, line, index|
 		  # Notice there's no need to explicitly define the title
 		  next if line.id == nil
-		  f.fields_for :measurement_lines, line do |builder|
+		  f.fields_for :lines, line do |builder|
 			  row.id			builder.text_field :id
 			  row.x				line.x
 			  row.regression	builder.check_box :regression_flag, :class => 'regression'

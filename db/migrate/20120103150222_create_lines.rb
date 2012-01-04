@@ -1,6 +1,6 @@
-class CreateMeasurementLines < ActiveRecord::Migration
+class CreateLines < ActiveRecord::Migration
   def change
-    create_table :measurement_lines do |t|
+    create_table :lines do |t|
       t.float :x
       t.float :y
       t.float :z
@@ -9,6 +9,6 @@ class CreateMeasurementLines < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :measurement_lines, :measurement_id
+    add_index :lines, :measurement_id
   end
 end
