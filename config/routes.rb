@@ -12,13 +12,6 @@ BacteriaGrowth::Application.routes.draw do
     end
   end
 
-  resources :results do
-    member do
-      get :convert
-    end
-    resources :lines
-  end
-
   root :to => "home#index"
 
   # The priority is based upon order of creation:
