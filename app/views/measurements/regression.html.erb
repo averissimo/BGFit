@@ -3,9 +3,35 @@
 
 	context_menu = [
 		{
+			:key => :csv, 
+			:name => 'Download .csv', 
+			:url => model_experiment_measurement_path(@model,@experiment,@measurement, :format => :csv),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
 			:key => :index, 
 			:name => 'Goto measurement', 
+			:url => model_experiment_measurement_path(@model,@experiment,@measurement),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto experiment', 
 			:url => model_experiment_path(@model,@experiment),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto model', 
+			:url => model_path(@model),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
