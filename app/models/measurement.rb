@@ -55,7 +55,6 @@ class Measurement < ActiveRecord::Base
       date_cmp = self.date <=> o.date
       return date_cmp unless date_cmp == 0
       
-      title_cmp = self.title <=> o.title
-      return title_cmp unless title_cmp == 0
+      return self.title <=> o.title
     end
 end
