@@ -74,7 +74,8 @@ class MeasurementsController < ApplicationController
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
-
+    @measurement.convert_original_data
+    
     respond_to do |format|
       if @measurement.update_attributes(params[:measurement])
         format.html { redirect_to [@model,@experiment,@measurement], notice: 'Measurement was successfully updated.' }

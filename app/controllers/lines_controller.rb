@@ -98,7 +98,7 @@ class LinesController < ApplicationController
     @line.destroy
 
     respond_to do |format|
-      format.html { redirect_to model_experiment_lines_path(@model,@experiment,@measurement) }
+      format.html { redirect_to model_experiment_measurement_lines_path(@model,@experiment,@measurement) }
       format.json { head :ok }
     end
   end
