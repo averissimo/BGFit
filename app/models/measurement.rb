@@ -19,7 +19,7 @@ class Measurement < ActiveRecord::Base
 
          el = el.gsub("," , ".")
          
-         next if el.match(/N.*A/)
+         next if el.match(/N.*A/) || el == nil || el == ""
          
          case y2
           when 0 # time

@@ -33,8 +33,13 @@ class MeasurementsController < ApplicationController
   def new
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:experiment_id])
+    date = @experiment.measurements.last.date if @experiment.measurements.length > 0
     @measurement = @experiment.measurements.build
-
+    if @experiment.measurements.length > 0
+      @measurement.date = date
+    end
+    
+    
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @measurement }
@@ -74,10 +79,11 @@ class MeasurementsController < ApplicationController
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
-    @measurement.convert_original_data
+    @measurement.assign_attributes(params[:measurement])
+    #@measurement.convert_original_data
     
     respond_to do |format|
-      if @measurement.update_attributes(params[:measurement])
+      if @measurement.save
         format.html { redirect_to [@model,@experiment,@measurement], notice: 'Measurement was successfully updated.' }
         format.json { head :ok }
       else
@@ -91,7 +97,7 @@ class MeasurementsController < ApplicationController
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
-
+    
     respond_to do |format|
       if @measurement.update_attributes(params[:measurement])
         format.html { render action: "regression" }
@@ -124,7 +130,7 @@ class MeasurementsController < ApplicationController
     @measurement.destroy
 
     respond_to do |format|
-      format.html { redirect_to measurements_url }
+      format.html { redirect_to [@model,@experiment] }
       format.json { head :ok }
     end
   end

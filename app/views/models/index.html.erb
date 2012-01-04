@@ -8,7 +8,8 @@
 				:container_class => 'menu'
 			}
 		}]
-	content_for(:context_menu) { render_navigation :items => context_menu }
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
 <% content_for(:title) { "Model's index" } %>
 
@@ -34,7 +35,9 @@
 	end
 %>
 
-
+<div class="menu">
+	<%= menu %>
+</div>
 <h2>All measurements</h2>
 
 <%= 
@@ -58,7 +61,5 @@
 		end
 	end
 %>
-
-<%= link_to 'New Model', new_model_path , :class => "btn"%>
 
 
