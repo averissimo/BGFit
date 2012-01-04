@@ -1,0 +1,87 @@
+<% 
+	context_menu = [
+		{
+			:key => :edit, 
+			:name => 'Edit this model', 
+			:url => edit_model_path(@model),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New experiment', 
+			:url => new_model_experiment_path(@model),
+			:options => {
+				:container_class => 'menu',
+				:class => "btn"
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto models\' index', 
+			:url => models_path,
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+		}}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<% content_for(:title) { "Model's detail" } %>
+<p id="notice"><%= notice %></p>
+
+<h2><%= @model.title %> (model)</h2>
+
+<h3>Description:</h3>
+<p>
+  <%= @model.description %>
+</p>
+
+<h3>Experiments</h3>
+
+<%= 
+	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted') do |t|
+		t.header :title
+		t.header :description
+		t.header :show_h,		"Show"
+		t.header :edit_h,		"Edit"
+		t.header :destroy_h,	"Destroy"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, experiment, index|
+			# Notice there's no need to explicitly define the title
+			row.title			experiment.title
+			row.description		experiment.description
+			row.show_h			link_to 'show', [@model,experiment]
+			row.edit_h			link_to 'edit', edit_model_experiment_path(@model,experiment)
+			row.destroy_h		link_to 'destroy', [@model,experiment], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+<h3>Measurements in experiments</h3>
+
+<%= 
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted') do |t|
+		t.header :experiment
+		t.header :title
+		t.header :date
+		t.header :regression_h,	"Regression"
+		t.header :show_h,		"Show"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, measure, index|
+			# Notice there's no need to explicitly define the title
+			row.experiment		measure.experiment.title
+			row.title			measure.title
+			row.date			measure.date
+			row.regression_h	link_to 'regression', regression_model_experiment_measurement_path(@model,measure.experiment,measure)
+			row.show_h			link_to 'show', [@model,measure.experiment,measure]
+		end
+	end
+%>
+
+<div class="menu">
+	<%= menu %>
+</div>

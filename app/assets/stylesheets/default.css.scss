@@ -45,6 +45,7 @@ div.actions {
 
 table.formatted {
   margin-left: $tab;
+  padding-bottom:2em;
   tr {
     th,
     td {
@@ -154,7 +155,7 @@ table.formatted {
 div.menu {
   ul.menu {
     padding-left: 0px;
-    display: block;
+    display: inline-block;
     list-style: none outside none;
     li {
       display: inline-block;

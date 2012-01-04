@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120102173503) do
+ActiveRecord::Schema.define(:version => 20120103172139) do
+
+  create_table "experiments", :force => true do |t|
+    t.text     "description"
+    t.integer  "model_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "title"
+  end
+
+  add_index "experiments", ["model_id"], :name => "index_experiments_on_model_id"
 
   create_table "lines", :force => true do |t|
     t.integer  "result_id"
@@ -25,6 +35,38 @@ ActiveRecord::Schema.define(:version => 20120102173503) do
   end
 
   add_index "lines", ["result_id"], :name => "index_lines_on_result_id"
+
+  create_table "measurement_lines", :force => true do |t|
+    t.float    "x"
+    t.float    "y"
+    t.float    "z"
+    t.string   "note"
+    t.integer  "measurement_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "ln_y"
+    t.boolean  "regression_flag"
+  end
+
+  add_index "measurement_lines", ["measurement_id"], :name => "index_measurement_lines_on_measurement_id"
+
+  create_table "measurements", :force => true do |t|
+    t.text     "original_data"
+    t.integer  "experiment_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.date     "date"
+    t.string   "title"
+  end
+
+  add_index "measurements", ["experiment_id"], :name => "index_measurements_on_experiment_id"
+
+  create_table "models", :force => true do |t|
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "title"
+  end
 
   create_table "results", :force => true do |t|
     t.string   "title"

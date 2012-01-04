@@ -1,0 +1,14 @@
+[NAME]
+<%= @model.title + " - " + @experiment.title + " - " + @measurement.title + " (" + @measurement.date.to_s + ")" %>
+
+[NOTES]
+<%= @model.description %>
+
+[Components]
+time,N
+
+[Componentnotes]
+
+[Values]
+<%= @measurement.measurement_lines.map { |l| l.x.to_s + "," + l.y.to_s }.join("\n").html_safe %>
+

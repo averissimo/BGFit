@@ -8,7 +8,9 @@
 		<% end %>
 	  
 	    <!-- Custom head -->
+	  <% if content_for?(:head) %>
 	  <%= yield(:head) %>
+	  <% end %>
 	  
 	  <%= stylesheet_link_tag    "application" %>
 	  <%= javascript_include_tag "application"  %>

@@ -1,0 +1,64 @@
+<% 
+	context_menu = [
+		{
+			:key => :new, 
+			:name => 'new model', 
+			:url => new_model_path,
+			:options => {
+				:container_class => 'menu'
+			}
+		}]
+	content_for(:context_menu) { render_navigation :items => context_menu }
+%>
+<% content_for(:title) { "Model's index" } %>
+
+<h1>Listing models</h1>
+
+<%= 
+	collection_table(@models, :id => 'models' , :class => 'formatted') do |t|
+		t.header :title
+		t.header :description
+		t.header :show_h,		"Show"
+		t.header :edit_h,		"Edit"
+		t.header :destroy_h,	"Destroy"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, model, index|
+			# Notice there's no need to explicitly define the title
+			row.title			model.title
+			row.description		model.description_trimmed
+			row.show_h			link_to 'show', model
+			row.edit_h			link_to 'edit', edit_model_path(model)
+			row.destroy_h		link_to 'destroy', model, confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+
+<h2>All measurements</h2>
+
+<%= 
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted') do |t|
+		t.header :model
+		t.header :experiment
+		t.header :title
+		t.header :date
+		t.header :regression_h,	"Regression"
+		t.header :show_h,		"Show"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, measure, index|
+			# Notice there's no need to explicitly define the title
+			row.model			measure.model.title
+			row.experiment		measure.experiment.title
+			row.title			measure.title
+			row.date			measure.date
+			row.regression_h	link_to 'regression', regression_model_experiment_measurement_path(measure.model,measure.experiment,measure)
+			row.show_h			link_to 'show', [measure.model,measure.experiment,measure]
+		end
+	end
+%>
+
+<%= link_to 'New Model', new_model_path , :class => "btn"%>
+
+

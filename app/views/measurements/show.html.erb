@@ -1,0 +1,91 @@
+<% 
+	context_menu = [
+		{
+			:key => :regression, 
+			:name => 'Linear regression', 
+			:url => regression_model_experiment_measurement_path(@model,@experiment,@measurement),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :csv, 
+			:name => 'Download .csv', 
+			:url => model_experiment_measurement_path(@model,@experiment,@measurement, :format => :csv),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :edit, 
+			:name => 'Edit this measurement', 
+			:url => edit_model_experiment_measurement_path(@model,@experiment,@measurement),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New line', 
+			:url => new_model_experiment_measurement_measurement_line_path(@model,@experiment,@measurement),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto experiment', 
+			:url => model_experiment_path(@model,@experiment),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto model', 
+			:url => model_path(@model),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<p id="notice"><%= notice %></p>
+
+<h1><%= @measurement.experiment.title %>: <%= @measurement.title %></h1>
+
+<p>
+	<b><%= @model.title %></b> model and part of <b><%= @experiment.title %></b> experiment
+</p>
+
+<h2>Measured data</h2>
+<%= 
+	collection_table(@measurement.measurement_lines, :id => 'measurement_lines' , :class => 'formatted') do |t|
+		t.header :x
+		t.header :y
+		t.header :z
+		t.header :note
+		t.header :show_h,		"Show"
+		t.header :edit_h,		"Edit"
+		t.header :destroy_h,	"Destroy"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, line, index|
+			# Notice there's no need to explicitly define the title
+			row.x			line.x
+			row.y			line.y
+			row.z			line.z
+			row.note		line.note
+			row.show_h		link_to 'show', [@model,@experiment,@measurement,line]
+			row.edit_h		link_to 'edit', edit_model_experiment_measurement_measurement_line_path(@model,@experiment,@measurement,line)
+			row.destroy_h	link_to 'destroy', [@model,@experiment,@measurement,line], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+<div class="menu">
+<%= menu %>
+</div>
