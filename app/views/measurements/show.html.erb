@@ -27,7 +27,7 @@
 		{
 			:key => :new, 
 			:name => 'New line', 
-			:url => new_model_experiment_line_path(@model,@experiment,@measurement),
+			:url => new_model_experiment_measurement_line_path(@model,@experiment,@measurement),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -80,7 +80,7 @@
 			row.z			line.z
 			row.note		line.note
 			row.show_h		link_to 'show', [@model,@experiment,@measurement,line]
-			row.edit_h		link_to 'edit', edit_model_experiment_line_path(@model,@experiment,@measurement,line)
+			row.edit_h		link_to 'edit', edit_model_experiment_measurement_line_path(@model,@experiment,@measurement,line)
 			row.destroy_h	link_to 'destroy', [@model,@experiment,@measurement,line], confirm: 'Are you sure?', method: :delete
 		end
 	end
