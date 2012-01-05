@@ -46,6 +46,11 @@ class Measurement < ActiveRecord::Base
     end
     
     def <=>(o)
+      date_1 = (self.date == nil ? Date.new : self.date)
+      date_2 = (o.date == nil ? Date.new : o.date)
+      date_cmp = date_1 <=> date_2
+      return date_cmp unless date_cmp == 0
+      
       model_cmp = self.model.title <=> o.model.title
       return model_cmp unless model_cmp == 0
       
