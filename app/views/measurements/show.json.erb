@@ -4,7 +4,7 @@
 		if line.x == nil
 			next 
 		end 
-		string = '{"c": [{"v": ' + "#{line.x}" + '},{"v": ' + "#{line.y}" + '},{"v": ' + "#{line.ln_y}" + '}'
+		string = '{"c": [{"v": ' + "#{line.formatted(line.x)}" + '},{"v": ' + "#{line.formatted(line.y)}" + '},{"v": ' + "#{line.formatted(line.ln_y)}" + '}'
 		if line.z == nil
 			string = string + ']}'
 		else
