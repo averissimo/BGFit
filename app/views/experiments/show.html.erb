@@ -47,10 +47,10 @@
 	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|
 		t.header :title
 		t.header :date
-		t.header :regression_h,	""
 		t.header :show_h,		""
 		t.header :edit_h,		""
 		t.header :destroy_h,	""
+		t.header :regression_h,	""
 		t.header :csv,			""
 
 		t.rows.alternate = :odd
@@ -58,10 +58,10 @@
 			# Notice there's no need to explicitly define the title
 			row.title			measurement.title
 			row.date			measurement.date
-			row.regression_h	link_to 'regression', [:regression,@model,@experiment,measurement]
 			row.show_h			link_to 'show', [@model,@experiment,measurement]
 			row.edit_h			link_to 'edit', [:edit,@model,@experiment,measurement]
 			row.destroy_h		link_to 'remove', [@model,@experiment,measurement], confirm: 'Are you sure?', method: :delete
+			row.regression_h	link_to 'regression', [:regression,@model,@experiment,measurement]
 			row.csv				link_to 'download .csv', model_experiment_measurement_path(@model,@experiment,measurement, :format => :csv)
 		end
 	end
