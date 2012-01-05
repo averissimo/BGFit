@@ -8,7 +8,7 @@ class MeasurementsController < ApplicationController
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurements = @experiment.measurements
 
-    respond_to do |format|
+    respond_with [@model,@experiment,@measurements] do | format|
       format.html { redirect_to [@model,@experiment] }
       format.json { render json: @measurements }
     end
@@ -22,10 +22,6 @@ class MeasurementsController < ApplicationController
     @measurement = @experiment.measurements.find(params[:id])
 
     respond_with(@model,@experiment,@measurement)
-    #respond_to do |format|
-    #  format.html # show.html.erb
-    #  format.json { render json: @measurement }
-    #end
   end
 
   # GET /measurements/new
@@ -39,11 +35,7 @@ class MeasurementsController < ApplicationController
       @measurement.date = date
     end
     
-    
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @measurement }
-    end
+    respond_with(@model,@experiment,@measurement)
   end
 
   # GET /measurements/1/edit
@@ -51,6 +43,8 @@ class MeasurementsController < ApplicationController
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
+    
+    respond_with(@model,@experiment,@measurement)
   end
 
   # POST /measurements
@@ -62,10 +56,9 @@ class MeasurementsController < ApplicationController
     @measurement.experiment = @experiment
     @measurement.convert_original_data
 
-    respond_to do |format|
+    respond_with(@model,@experiment,@measurement) do |format|
       if @measurement.save
-        format.html { redirect_to [@model,@experiment], notice: 'Measurement was successfully created.' }
-        format.json { render json: @measurement, status: :created, location: [@model,@experimento,@measurement] }
+        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Measurement")
       else
         format.html { render action: "new" }
         format.json { render json: @measurement.errors, status: :unprocessable_entity }
@@ -82,10 +75,9 @@ class MeasurementsController < ApplicationController
     @measurement.assign_attributes(params[:measurement])
     #@measurement.convert_original_data
     
-    respond_to do |format|
+    respond_with(@model,@experiment,@measurement) do |format|
       if @measurement.save
-        format.html { redirect_to [@model,@experiment,@measurement], notice: 'Measurement was successfully updated.' }
-        format.json { head :ok }
+        flash[:notice] = t('flash.actions.update.notice', :resource_name => "Measurement")
       else
         format.html { render action: "edit" }
         format.json { render json: @measurement.errors, status: :unprocessable_entity , location: [@model,@experimento,@measurement]  }
@@ -98,13 +90,11 @@ class MeasurementsController < ApplicationController
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
     
-    respond_to do |format|
+    respond_with(@model,@experiment,@measurement) do |format|
       if @measurement.update_attributes(params[:measurement])
         format.html { render action: "regression" }
-        #format.html { redirect_to regression_model_experiment_measurement(@model,@experiment,@measurement) , notice: 'Measurement was successfully updated.' }
-        format.json { head :ok }
       else
-        format.html { render action: "edit" }
+        format.html { render action: "regression" }
         format.json { render json: @measurement.errors, status: :unprocessable_entity , location: [@model,@experimento,@measurement]  }
       end
     end
@@ -115,10 +105,7 @@ class MeasurementsController < ApplicationController
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
     
-    respond_to do |format|
-      format.html
-      format.json
-    end
+    respond_with(@model,@experiment,@measurement)
   end
 
   # DELETE /measurements/1
@@ -129,9 +116,6 @@ class MeasurementsController < ApplicationController
     @measurement = @experiment.measurements.find(params[:id])
     @measurement.destroy
 
-    respond_to do |format|
-      format.html { redirect_to [@model,@experiment] }
-      format.json { head :ok }
-    end
+    respond_with(@model,@experiment,@measurement, :location => [@model,@experiment])
   end
 end

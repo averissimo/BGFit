@@ -1,4 +1,6 @@
 class LinesController < ApplicationController
+  respond_to :html, :json
+  
   # GET /lines
   # GET /lines.json
   def index
@@ -6,7 +8,7 @@ class LinesController < ApplicationController
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:measurement_id])
     @lines = @measurement.lines
-
+  
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @lines }

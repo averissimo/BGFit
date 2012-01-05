@@ -3,3 +3,12 @@
 
 en:
   hello: "Hello world"
+  
+  flash:
+    actions:
+      create:
+        notice: "%{resource_name} was sucessfully created."
+      update:
+        notice: "%{resource_name} was successfully updated."
+      destroy:
+        notice: "%{title} %{resource_name} was successfully deleted."
