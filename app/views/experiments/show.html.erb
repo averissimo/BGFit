@@ -47,11 +47,11 @@
 	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|
 		t.header :title
 		t.header :date
-		t.header :regression_h,	"Regression"
-		t.header :show_h,		"Show"
-		t.header :edit_h,		"Edit"
-		t.header :destroy_h,	"Destroy"
-		t.header :csv,			"Download .csv"
+		t.header :regression_h,	""
+		t.header :show_h,		""
+		t.header :edit_h,		""
+		t.header :destroy_h,	""
+		t.header :csv,			""
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measurement, index|

@@ -44,9 +44,9 @@
 	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted') do |t|
 		t.header :title
 		t.header :description
-		t.header :show_h,		"Show"
-		t.header :edit_h,		"Edit"
-		t.header :destroy_h,	"Destroy"
+		t.header :show_h,		""
+		t.header :edit_h,		""
+		t.header :destroy_h,	""
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, experiment, index|
@@ -71,9 +71,9 @@
 		t.header :experiment
 		t.header :title
 		t.header :date
-		t.header :regression_h,	"Regression"
-		t.header :show_h,		"Show"
-		t.header :csv,			"Download .csv"
+		t.header :regression_h,	""
+		t.header :show_h,		""
+		t.header :csv,			""
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
