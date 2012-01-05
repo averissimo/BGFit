@@ -12,11 +12,6 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :measurement %><br />
-    <%= @measurement.id %>
-    <br />
-  </div>
-  <div class="field">
     <%= f.label :x %><br />
     <%= f.text_field :x %>
   </div>
@@ -34,6 +29,8 @@
   </div>
   
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit nil , :class => "btn"%>
   </div>
 <% end %>
+
+<div class="clear"></div>

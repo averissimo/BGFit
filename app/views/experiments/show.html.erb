@@ -31,17 +31,17 @@
 
 <h1><%= @experiment.title %> (experiment)</h1>
 
-<h3>Using <%= @model.title %> model</h3>
+<h4>Using <%= @model.title %> model</h4>
 <p>
 	<%= simple_format @model.description %>
 </p>
 
-<h2>Experiment Description</h2>
+<h3>Experiment Description</h3>
 <p>
   <%= simple_format @experiment.description %>
 </p>
 
-<h2>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h2>
+<h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>
 
 <%= 
 	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|

@@ -38,7 +38,7 @@
 <div class="menu">
 	<%= menu %>
 </div>
-<h2>All <%= pluralize(@measurements.length, 'measurement')%></h2>
+<h3>All <%= pluralize(@measurements.length, 'measurement')%></h3>
 
 <%= 
 	collection_table(@measurements, :id => 'measurements' , :class => 'formatted') do |t|

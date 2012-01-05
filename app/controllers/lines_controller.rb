@@ -10,7 +10,7 @@ class LinesController < ApplicationController
     @lines = @measurement.lines
   
     respond_to do |format|
-      format.html # index.html.erb
+      format.html { redirect_to [@model,@experiment,@measurement]}# index.html.erb
       format.json { render json: @lines }
     end
   end
@@ -24,7 +24,7 @@ class LinesController < ApplicationController
     @line = @measurement.lines.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { redirect_to [@model,@experiment,@measurement] }# show.html.erb
       format.json { render json: @line }
     end
   end
@@ -62,7 +62,7 @@ class LinesController < ApplicationController
     
     respond_to do |format|
       if @line.save
-        format.html { redirect_to [@model,@experiment,@measurement,@line], notice: 'Measurement line was successfully created.' }
+        format.html { redirect_to [@model,@experiment,@measurement], notice: 'Measurement line was successfully created.' }
         format.json { render json: @line, status: :created, location: [@model,@experiment,@measurement,@line] }
       else
         format.html { render action: "new" }
@@ -100,7 +100,7 @@ class LinesController < ApplicationController
     @line.destroy
 
     respond_to do |format|
-      format.html { redirect_to model_experiment_measurement_lines_path(@model,@experiment,@measurement) }
+      format.html { redirect_to [@model,@experiment,@measurement] }
       format.json { head :ok }
     end
   end
