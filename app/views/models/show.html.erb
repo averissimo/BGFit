@@ -73,6 +73,7 @@
 		t.header :date
 		t.header :regression_h,	"Regression"
 		t.header :show_h,		"Show"
+		t.header :csv,			"Download .csv"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -80,8 +81,9 @@
 			row.experiment		measure.experiment.title
 			row.title			measure.title
 			row.date			measure.date
-			row.regression_h	link_to 'regression', regression_model_experiment_measurement_path(@model,measure.experiment,measure)
+			row.regression_h	link_to 'regression', [:regression,@model,measure.experiment,measure]
 			row.show_h			link_to 'show', [@model,measure.experiment,measure]
+			row.csv				link_to 'download .csv', model_experiment_measurement_path(measure.model,measure.experiment,measure, :format => :csv)
 		end
 	end
 %>

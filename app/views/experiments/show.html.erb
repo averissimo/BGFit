@@ -51,16 +51,18 @@
 		t.header :show_h,		"Show"
 		t.header :edit_h,		"Edit"
 		t.header :destroy_h,	"Destroy"
+		t.header :csv,			"Download .csv"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measurement, index|
 			# Notice there's no need to explicitly define the title
 			row.title			measurement.title
 			row.date			measurement.date
-			row.regression_h	link_to 'regression', regression_model_experiment_measurement_path(@model,@experiment,measurement)
+			row.regression_h	link_to 'regression', [:regression,@model,@experiment,measurement]
 			row.show_h			link_to 'show', [@model,@experiment,measurement]
-			row.edit_h			link_to 'edit', edit_model_experiment_measurement_path(@model,@experiment,measurement)
+			row.edit_h			link_to 'edit', [:edit,@model,@experiment,measurement]
 			row.destroy_h		link_to 'destroy', [@model,@experiment,measurement], confirm: 'Are you sure?', method: :delete
+			row.csv				link_to 'download .csv', model_experiment_measurement_path(@model,@experiment,measurement, :format => :csv)
 		end
 	end
 %>
