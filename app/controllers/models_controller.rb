@@ -2,7 +2,8 @@ class ModelsController < ApplicationController
   # GET /models
   # GET /models.json
   def index
-    @models = Model.all
+    @models = Model.find(:all, :order=> :title)
+    @experiments = Experiment.all
     @measurements = Measurement.all
     @measurements.sort!
     
