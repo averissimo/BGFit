@@ -59,6 +59,7 @@ class MeasurementsController < ApplicationController
     respond_with(@model,@experiment,@measurement) do |format|
       if @measurement.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Measurement")
+        format.html { redirect_to [@model,@experiment] }
       else
         format.html { render action: "new" }
         format.json { render json: @measurement.errors, status: :unprocessable_entity }

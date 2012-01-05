@@ -33,15 +33,15 @@
 
 <h3>Using <%= @model.title %> model</h3>
 <p>
-	<%= @model.description %>
+	<%= simple_format @model.description %>
 </p>
 
 <h2>Experiment Description</h2>
 <p>
-  <%= @experiment.description %>
+  <%= simple_format @experiment.description %>
 </p>
 
-<h2>Measurements</h2>
+<h2><%= pluralize(@experiment.measurements.length, 'Measurement')%></h2>
 
 <%= 
 	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|

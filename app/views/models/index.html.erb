@@ -13,7 +13,7 @@
 %>
 <% content_for(:title) { "Model's index" } %>
 
-<h1>Listing models</h1>
+<h1>Listing <%= pluralize(@models.length, 'model')%></h1>
 
 <%= 
 	collection_table(@models, :id => 'models' , :class => 'formatted') do |t|
@@ -27,7 +27,7 @@
     	t.rows.each do |row, model, index|
 			# Notice there's no need to explicitly define the title
 			row.title			model.title
-			row.description		model.description_trimmed
+			row.description		model.description_trimmed.gsub(/\n/, '<br/>')
 			row.show_h			link_to 'show', model
 			row.edit_h			link_to 'edit', edit_model_path(model)
 			row.destroy_h		link_to 'destroy', model, confirm: 'Are you sure?', method: :delete
@@ -38,7 +38,7 @@
 <div class="menu">
 	<%= menu %>
 </div>
-<h2>All measurements</h2>
+<h2>All <%= pluralize(@measurements.length, 'measurement')%></h2>
 
 <%= 
 	collection_table(@measurements, :id => 'measurements' , :class => 'formatted') do |t|
