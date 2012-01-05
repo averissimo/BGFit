@@ -79,7 +79,7 @@
 			row.z			line.z
 			row.note		line.note
 			row.edit_h		link_to 'edit', edit_model_experiment_measurement_line_path(@model,@experiment,@measurement,line)
-			row.destroy_h	link_to 'destroy', [@model,@experiment,@measurement,line], confirm: 'Are you sure?', method: :delete
+			row.destroy_h	link_to 'remove', [@model,@experiment,@measurement,line], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>

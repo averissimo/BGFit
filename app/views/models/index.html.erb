@@ -30,7 +30,7 @@
 			row.description		model.description_trimmed.gsub(/\n/, '<br/>')
 			row.show_h			link_to 'show', model
 			row.edit_h			link_to 'edit', edit_model_path(model)
-			row.destroy_h		link_to 'destroy', model, confirm: 'Are you sure?', method: :delete
+			row.destroy_h		link_to 'remove', model, confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>

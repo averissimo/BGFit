@@ -55,7 +55,7 @@
 			row.description		experiment.description
 			row.show_h			link_to 'show', [@model,experiment]
 			row.edit_h			link_to 'edit', edit_model_experiment_path(@model,experiment)
-			row.destroy_h		link_to 'destroy', [@model,experiment], confirm: 'Are you sure?', method: :delete
+			row.destroy_h		link_to 'remove', [@model,experiment], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>
