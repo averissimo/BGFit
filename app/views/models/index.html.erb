@@ -26,7 +26,7 @@
 		t.rows.alternate = :odd
     	t.rows.each do |row, model, index|
 			# Notice there's no need to explicitly define the title
-			row.title			model.title
+			row.title			word_wrap(model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.description		model.description_trimmed.gsub(/\n/, '<br/>')
 			row.show_h			link_to 'show', model
 			row.edit_h			link_to 'edit', edit_model_path(model)
@@ -52,7 +52,7 @@
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
 			# Notice there's no need to explicitly define the title
-			row.model			measure.model.title
+			row.model			word_wrap(measure.model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.experiment		measure.experiment.title
 			row.title			measure.title
 			row.date			measure.date

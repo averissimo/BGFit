@@ -41,7 +41,7 @@
   <%= simple_format @experiment.description %>
 </p>
 
-<h2><%= pluralize(@experiment.measurements.length, 'Measurement')%></h2>
+<h2>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h2>
 
 <%= 
 	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|

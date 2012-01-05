@@ -79,9 +79,9 @@ class LinesController < ApplicationController
     @measurement = @experiment.measurements.find(params[:measurement_id])
     @line = @measurement.lines.find(params[:id])
 
-    respond_to do |format|
+    respond_with [@model,@experiment,@measurement,@line] do |format|
       if @line.update_attributes(params[:line])
-        format.html { redirect_to [@model,@experiment,@measurement,@line], notice: 'Measurement line was successfully updated.' }
+        format.html { redirect_to [@model,@experiment,@measurement], notice: 'Measurement line was successfully updated.' }
         format.json { head :ok }
       else
         format.html { render action: "edit" }

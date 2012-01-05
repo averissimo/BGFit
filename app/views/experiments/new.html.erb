@@ -1,5 +1,22 @@
+<% 
+	context_menu = [
+		{
+			:key => :back, 
+			:name => "Back to model", 
+			:url => model_path(@model),
+			:options => {
+				:container_class => 'menu',
+				:class => 'text'
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:title) { "New experiment" }
+%>
 <h1>New experiment</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Back', model_experiments_path %>
+<div class="menu">
+	<%= menu %>
+</div>

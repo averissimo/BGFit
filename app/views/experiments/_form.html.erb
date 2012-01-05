@@ -1,3 +1,8 @@
+<h3>Using <%= @model.title %> model</h3>
+<p>
+	<%= simple_format @model.description %>
+</p>
+
 <%= form_for([@model,@experiment]) do |f| %>
   <% if @experiment.errors.any? %>
     <div id="error_explanation">
@@ -10,12 +15,6 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= @model.id %>
-    <br/>
-    <%= @model.description %>
-  </div>
   
   <div class="field">
     <%= f.label :title %><br />
@@ -27,6 +26,8 @@
     <%= f.text_area :description %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit nil , :class => "btn"%>
   </div>
 <% end %>
+
+<div class="clear"></div>

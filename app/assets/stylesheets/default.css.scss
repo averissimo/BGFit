@@ -39,8 +39,24 @@ a {
   }
 }
 
+form {
+  display:inline-block;
+}
+
 div.actions {
   margin-left: auto;
+  text-align: right;
+}
+
+div.field {
+  label {
+    font-weight: bold;
+  }
+  
+  input,
+  textarea {
+    @extend p
+  }
 }
 
 table.formatted {

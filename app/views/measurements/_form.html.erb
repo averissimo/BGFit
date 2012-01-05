@@ -25,7 +25,7 @@
   
   <div class="field">
     <%= f.label :date %><br />
-    <%= f.date_select :date %>
+    <%= f.date_select :date , :include_blank => true %>
   </div>
   
   <div class="field">
@@ -34,6 +34,8 @@
   </div>
 
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit nil , :class => "btn" %>
   </div>
 <% end %>
+
+<div class="clear"></div>

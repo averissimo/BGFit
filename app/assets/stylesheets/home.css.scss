@@ -32,6 +32,7 @@ a.btn, {
 input.btn {
   @extend a.btn;
   margin-left: 3em;
+  margin-right: 0px;
   &.text {
     color: #000;
     background: none;

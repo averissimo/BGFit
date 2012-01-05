@@ -26,7 +26,7 @@ class Measurement < ActiveRecord::Base
             line.x = Float(el)
           when 1 # OD600 
             line.y = Float(el)
-            line.ln_y = Math.log( line.y )
+            line.ln_y = Math.log( line.y ) unless line.y == 0
           when 2 # pH
             line.z = Float(el)
           when 3 # notes
