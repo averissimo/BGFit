@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  respond_to :html, :json
+  respond_to :html, :json, :csv
   
   # GET /experiments
   # GET /experiments.json
@@ -19,7 +19,9 @@ class ExperimentsController < ApplicationController
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:id])
 
-    respond_with @experiment
+    respond_with @experiment do |format|
+      format.exp { render :exp => @experiment }
+    end
   end
 
   # GET /experiments/new

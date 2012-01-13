@@ -45,6 +45,7 @@
 		t.header :title
 		t.header :description
 		t.header :show_h,		""
+		t.header :exp_h,		""
 		t.header :edit_h,		""
 		t.header :destroy_h,	""
 
@@ -54,7 +55,8 @@
 			row.title			experiment.title
 			row.description		experiment.description
 			row.show_h			link_to 'show', [@model,experiment]
-			row.edit_h			link_to 'edit', edit_model_experiment_path(@model,experiment)
+			row.edit_h			link_to 'edit', [:edit,@model,experiment]
+			row.exp_h			link_to 'download .exp' , model_experiment_path(@model,experiment,:format => :exp)
 			row.destroy_h		link_to 'remove', [@model,experiment], confirm: 'Are you sure?', method: :delete
 		end
 	end
