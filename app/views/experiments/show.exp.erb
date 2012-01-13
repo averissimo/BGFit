@@ -20,7 +20,7 @@ max = nil;
 	m.lines.each{ |l| 
 		tempYarray << l.y if l.y != nil 
 		};
-	tempY = tempYarray.sort.reverse.first;
+	tempY = tempYarray.max;
 	max = tempY if max == nil || max < tempY
 	min = temp if min == nil ||  min > temp
 }
