@@ -20,7 +20,13 @@ class ExperimentsController < ApplicationController
     @experiment = @model.experiments.find(params[:id])
 
     respond_with @experiment do |format|
-      format.exp { render :exp => @experiment }
+      format.exp { 
+        exp = render_to_string :exp => @experiment
+        send_data  exp, :filename => 
+          @model.title +
+          ' - ' + 
+          @experiment.title.to_s + '.exp'
+      }
     end
   end
 
