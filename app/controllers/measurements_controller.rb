@@ -21,7 +21,21 @@ class MeasurementsController < ApplicationController
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurement = @experiment.measurements.find(params[:id])
 
-    respond_with(@model,@experiment,@measurement)
+    respond_with(@model,@experiment,@measurement) do |format|
+      format.csv { 
+        csv = render_to_string :csv => @measurement
+        send_data  csv, :filename => 
+          @model.title +
+          ' - ' + 
+          @experiment.title.to_s +
+          ' - ' +
+          @measurement.date.to_s +
+          ' - ' +
+          @measurement.title +
+          '.csv'  
+      }
+    end
+    
   end
 
   # GET /measurements/new
