@@ -12,19 +12,16 @@
 <% 
 min = nil;
 max = nil;
-@experiment.measurements.each{ |m|
-	temp = nil;
-	tempYarray = [];
-	tempY = nil;
-	temp = m.lines.find_all{ |l| l.x == 0}.first.y
-	m.lines.each{ |l| 
-		tempYarray << l.y if l.y != nil 
-		};
-	tempY = tempYarray.max;
-	max = tempY if max == nil || max < tempY
-	min = temp if min == nil ||  min > temp
+
+min_max_array = @experiment.measurements.collect { |l| 
+	min_aux = l.lines.min_by { |a| a.x }.y
+	max_aux = l.lines.max_by { |a| a.y }.y
+	[min_aux, max_aux]
 }
-max += (max - min) * 0.1
+min = min_max_array.min_by{ |a| a[0] }[0]
+max = min_max_array.max_by{ |a| a[1] }[1]
+
+max = Math.log( Float(max) / Float(min))
 	%>
 
 N(0) = <%= min %>
@@ -32,8 +29,8 @@ N(0) = <%= min %>
 % Parameter values can be changed by both setting numerical values and 
 % mathematical expressions
 
-miu = 1
-lambda = 1
+miu = 0.69
+lambda = 2
 A = <%= max %>
 
 ********** EXPERIMENT PARAMETER CHANGES
