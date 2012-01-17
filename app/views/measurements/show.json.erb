@@ -1,4 +1,5 @@
-{"cols":[{"id":"time","label":"Time","type":"number"},{"id":"od600","label":"OD600","type":"number"},{"id":"ln_od600","label":"Ln( OD600 )","type":"number"},{"id":"ph","label":"pH","type":"number"}],
+{	"id": <%= @measurement.id%>,
+	"cols":[{"id":"time","label":"Time","type":"number"},{"id":"od600","label":"OD600","type":"number"},{"id":"ln_od600","label":"Ln( OD600 )","type":"number"},{"id":"ph","label":"pH","type":"number"}],
 "rows": [<%= 
 	@measurement.lines.map{ |line| 
 		if line.x == nil
