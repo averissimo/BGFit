@@ -6,6 +6,7 @@ class Measurement < ActiveRecord::Base
   accepts_nested_attributes_for :lines
   
   public
+  
     def model
       self.experiment.model
     end

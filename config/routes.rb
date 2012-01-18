@@ -2,6 +2,9 @@ BacteriaGrowth::Application.routes.draw do
 
   resources :models do
     resources :experiments do
+      member do
+        get :gompertz
+      end
       resources :measurements do
         member do
           get :regression

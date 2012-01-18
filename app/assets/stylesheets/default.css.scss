@@ -4,6 +4,7 @@
 $header: 29px;
 $header_line: 27px;
 $tab: 3em; // also in results.css
+$width: 1000px;
 
 body {
   margin: 0px;
@@ -14,8 +15,12 @@ body {
   margin-left:auto;
   margin-right:auto;
   margin-top: 80px;
-  width: 1000px;
+  width: $width;
   //border: 1px solid black;
+}
+
+div#experiment_chart {
+  width: $width;
 }
 
 img {
@@ -23,7 +28,7 @@ img {
   margin-left: 2em;
 }
 
-p {
+p,dl {
   margin-left: $tab;
 }
 

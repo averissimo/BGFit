@@ -29,6 +29,13 @@ class ExperimentsController < ApplicationController
       }
     end
   end
+  
+  def gompertz
+    @model = Model.find(params[:model_id])
+    @experiment = @model.experiments.find(params[:id])
+
+    respond_with @experiment
+  end
 
   # GET /experiments/new
   # GET /experiments/new.json

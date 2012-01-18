@@ -43,8 +43,39 @@
   <%= simple_format @experiment.description %>
 </p>
 
-<div id="experiment_chart">
-	<div id="chart" miu="1" lambda="2" A="1" end="6" x_0="1" ></div>
+<h3 id="header-click">Gompertz curve (click here to see/hide)</h3>
+<div id="div-click" style="display:none;">
+	<dl style="margin-top:0px;">
+		<dt>
+			<%= label_tag :miu %>
+		</dt>
+		<dd>
+			<%= @experiment.miu %>
+		</dd>
+		<dt>
+			<%= label_tag :lambda %>
+		</dt>
+		<dd>
+			<%= @experiment.lambda %>
+		</dd>
+		<dt>
+			<%= label_tag :a %>
+		</dt>
+		<dd>
+			<%= @experiment.a %>
+		</dd>
+		<dt>
+			<%= label_tag :n_zero %>
+		</dt>
+		<dd>
+			<%= @experiment.n_zero %>
+		</dd>
+		
+	</dl>
+	
+	<div id="experiment_chart">
+		<div id="chart" miu="<%= @experiment.miu %>" lambda="<%= @experiment.lambda %>" A="<%= @experiment.a %>" end="<%= @experiment.end %>" x_0="<%= @experiment.n_zero %>" ></div>
+	</div>
 </div>
 
 <h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>

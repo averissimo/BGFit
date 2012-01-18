@@ -6,6 +6,8 @@ if typeof google isnt 'undefined'
   google.load 'visualization', '1.0', {'packages':['corechart','table']}
   $(document).ready () => 
   
+    $('#header-click').live "click", (e) =>
+        a = $('#div-click').slideToggle 1000, "swing"  
   
     # offset for the window view
     OFFSET_RATIO = .1
@@ -15,12 +17,17 @@ if typeof google isnt 'undefined'
       lineWidth: 1,
       pointSize: 2,
       title: 'Bacterial Growth',
-      width: '100%',
+      width: 1000,
       height: 600,
       series: {
         0 : {
+          lineWidth:5,
           pointSize: 0
         }
+      },
+      animation: {
+        easing: "in",
+        duration: 1000
       }
     }
     if not $("#experiment_chart").length
@@ -42,14 +49,16 @@ if typeof google isnt 'undefined'
     lambda  = $('div#chart')[0].getAttribute('lambda')
     A       = $('div#chart')[0].getAttribute('A')
     end     = $('div#chart')[0].getAttribute('end')
-    x_0     = $('div#chart')[0].getAttribute('x_0')
+    x_zero  = $('div#chart')[0].getAttribute('x_0')
     
+    if miu == "" || lambda == "" || A == "" || end == "" || x_zero == ""
+      return
     params = $.param {
       miu,
       lambda,
       A,
       end,
-      x_0
+      x_0: x_zero
     }
     
     setup = {
@@ -90,6 +99,13 @@ if typeof google isnt 'undefined'
               viewWindow: {
                 max: range.max +  offset,
                 min: range.min - offset
+                }
+            }
+            options.hAxis = {
+              viewWindowMode: "explicit"
+              viewWindow: {
+                max: 7,
+                min: 0
                 }
             }
 
