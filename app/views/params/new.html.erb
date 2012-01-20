@@ -1,0 +1,22 @@
+<% 
+	context_menu = [
+		{
+			:key => :back, 
+			:name => "Back to dyna model", 
+			:url => dyna_model_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => 'text'
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:title) { "New parameter" }
+%>
+<h1>New parameter</h1>
+
+<%= render 'form' %>
+
+<div class="menu">
+	<%= menu %>
+</div>
