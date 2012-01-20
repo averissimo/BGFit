@@ -1,16 +1,25 @@
 BacteriaGrowth::Application.routes.draw do
 
+  resources :dyna_models do
+    resources :params
+  end
+ 
   resources :models do
     resources :experiments do
-      member do
-        get :gompertz
-      end
       resources :measurements do
         member do
           get :regression
           put :update_regression
         end
         resources :lines
+        #
+        resources :proxy_dyna_models do
+          resources :proxy_params
+        end
+      end
+      #
+      resources :proxy_dyna_models do
+        resources :proxy_params
       end
     end
   end
