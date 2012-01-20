@@ -11,7 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120116165537) do
+ActiveRecord::Schema.define(:version => 20120120162655) do
+
+  create_table "dyna_models", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.text     "definition"
+    t.string   "solver"
+    t.string   "estimation"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "experiments", :force => true do |t|
     t.text     "description"
@@ -58,5 +68,36 @@ ActiveRecord::Schema.define(:version => 20120116165537) do
     t.datetime "updated_at"
     t.string   "title"
   end
+
+  create_table "params", :force => true do |t|
+    t.string   "code"
+    t.string   "human_title"
+    t.integer  "dyna_model_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "params", ["dyna_model_id"], :name => "index_params_on_dyna_model_id"
+
+  create_table "proxy_dyna_models", :force => true do |t|
+    t.integer  "measurement_id"
+    t.integer  "experiment_id"
+    t.integer  "dyna_model_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "proxy_dyna_models", ["dyna_model_id"], :name => "index_proxy_dyna_models_on_dyna_model_id"
+  add_index "proxy_dyna_models", ["experiment_id"], :name => "index_proxy_dyna_models_on_experiment_id"
+  add_index "proxy_dyna_models", ["measurement_id"], :name => "index_proxy_dyna_models_on_measurement_id"
+
+  create_table "proxy_params", :force => true do |t|
+    t.float    "value"
+    t.integer  "proxy_dyna_model_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "proxy_params", ["proxy_dyna_model_id"], :name => "index_proxy_params_on_proxy_dyna_model_id"
 
 end
