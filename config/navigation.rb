@@ -51,7 +51,7 @@ SimpleNavigation::Configuration.run do |navigation|
     #
     primary.dom_class = 'menu'
     primary.item :home, 'Home', root_path
-    primary.item :models, 'Models', models_path , :highlights_on => /^\/models/
+    primary.item :models, 'Models', models_path , :highlights_on => /^\/(models|experiments|measurements)/
     primary.item :dyna_models, 'Dynamic Models', dyna_models_path , :highlights_on => /^\/dyna_models/
 
     # Add an item which has a sub navigation (same params, but with block)

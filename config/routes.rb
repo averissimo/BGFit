@@ -8,7 +8,7 @@ BacteriaGrowth::Application.routes.draw do
     resources :experiments
   end
     
-  resources :experiments, :only => :none do
+  resources :experiments, :except => [:new, :create] do
     resources :measurements do
       member do
         get :regression
@@ -18,7 +18,7 @@ BacteriaGrowth::Application.routes.draw do
     resources :proxy_dyna_models, :only => [:new, :create]
   end
   
-  resources :measurements, :only => :none do
+  resources :measurements, :except => [:new, :create] do
       resources :lines
       #
       resources :proxy_dyna_models
