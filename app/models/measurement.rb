@@ -2,6 +2,7 @@ class Measurement < ActiveRecord::Base
   belongs_to :experiment
   
   has_many :lines, :dependent => :destroy
+  has_many :proxy_dyna_models, :dependent => :destroy
  
   accepts_nested_attributes_for :lines
   

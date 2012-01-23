@@ -1,14 +1,16 @@
 class MeasurementsController < ApplicationController
   respond_to :html, :json, :csv
 
+  before_filter :determine_models , :only => [ :show, :edit, :destroy, :update, :update_regression, :regression ]
+
   # GET /measurements
   # GET /measurements.json
   def index
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:experiment_id])
-    @measurements = @experiment.measurements
-
-    respond_with [@model,@experiment,@measurements] do | format|
+    @measurements = Measurement.find(params[:id])
+    
+    respond_with [@experiment,@measurements] do | format|
       format.html { redirect_to [@model,@experiment] }
       format.json { render json: @measurements }
     end
@@ -17,11 +19,8 @@ class MeasurementsController < ApplicationController
   # GET /measurements/1
   # GET /measurements/1.json
   def show
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
-    @measurement = @experiment.measurements.find(params[:id])
-
-    respond_with(@model,@experiment,@measurement) do |format|
+   
+    respond_with(@experiment,@measurement) do |format|
       format.csv { 
         csv = render_to_string :csv => @measurement
         send_data  csv, :filename => 
@@ -41,36 +40,32 @@ class MeasurementsController < ApplicationController
   # GET /measurements/new
   # GET /measurements/new.json
   def new
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
+    @experiment = Experiment.find(params[:experiment_id])
+    @model = @experiment.model
     date = @experiment.measurements.last.date if @experiment.measurements.length > 0
     @measurement = @experiment.measurements.build
     if @experiment.measurements.length > 0
       @measurement.date = date
     end
     
-    respond_with(@model,@experiment,@measurement)
+    respond_with(@experiment,@measurement)
   end
 
   # GET /measurements/1/edit
   def edit
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
-    @measurement = @experiment.measurements.find(params[:id])
-    
-    respond_with(@model,@experiment,@measurement)
+    respond_with(@experiment,@measurement)
   end
 
   # POST /measurements
   # POST /measurements.json
   def create
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
+    @experiment = Experiment.find(params[:experiment_id])
+    @model = @experiment.model
     @measurement = Measurement.new(params[:measurement])
     @measurement.experiment = @experiment
     @measurement.convert_original_data
 
-    respond_with(@model,@experiment,@measurement) do |format|
+    respond_with(@experiment,@measurement) do |format|
       if @measurement.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Measurement")
         format.html { redirect_to [@model,@experiment] }
@@ -84,13 +79,10 @@ class MeasurementsController < ApplicationController
   # PUT /measurements/1
   # PUT /measurements/1.json
   def update
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
-    @measurement = @experiment.measurements.find(params[:id])
     @measurement.assign_attributes(params[:measurement])
     #@measurement.convert_original_data
     
-    respond_with(@model,@experiment,@measurement) do |format|
+    respond_with(@experiment,@measurement) do |format|
       if @measurement.save
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Measurement")
       else
@@ -101,11 +93,7 @@ class MeasurementsController < ApplicationController
   end
 
   def update_regression
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
-    @measurement = @experiment.measurements.find(params[:id])
-    
-    respond_with(@model,@experiment,@measurement) do |format|
+    respond_with(@experiment,@measurement) do |format|
       if @measurement.update_attributes(params[:measurement])
         format.html { render action: "regression" }
       else
@@ -116,21 +104,23 @@ class MeasurementsController < ApplicationController
   end
 
   def regression
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
-    @measurement = @experiment.measurements.find(params[:id])
-    
-    respond_with(@model,@experiment,@measurement)
+    respond_with(@experiment,@measurement)
   end
 
   # DELETE /measurements/1
   # DELETE /measurements/1.json
   def destroy
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:experiment_id])
-    @measurement = @experiment.measurements.find(params[:id])
     @measurement.destroy
 
-    respond_with(@model,@experiment,@measurement, :location => [@model,@experiment])
+    respond_with(@experiment,@measurement, :location => [@model,@experiment])
+  end
+  
+  private
+  
+  def determine_models
+    @measurement = Measurement.find(params[:id])
+    @experiment = @measurement.experiment
+    @model = @experiment.model
+
   end
 end

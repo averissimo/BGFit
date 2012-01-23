@@ -5,25 +5,30 @@ BacteriaGrowth::Application.routes.draw do
   end
  
   resources :models do
-    resources :experiments do
-      resources :measurements do
-        member do
-          get :regression
-          put :update_regression
-        end
-        resources :lines
-        #
-        resources :proxy_dyna_models do
-          resources :proxy_params
-        end
-      end
-      #
-      resources :proxy_dyna_models do
-        resources :proxy_params
+    resources :experiments
+  end
+    
+  resources :experiments, :only => :none do
+    resources :measurements do
+      member do
+        get :regression
+        put :update_regression
       end
     end
+    resources :proxy_dyna_models, :only => [:new, :create]
+  end
+  
+  resources :measurements, :only => :none do
+      resources :lines
+      #
+      resources :proxy_dyna_models
+    end
+  
+  resources :proxy_dyna_models, :except => [:new, :create] do
+    resources :proxy_params
   end
 
+    
   root :to => "home#index"
 
   # The priority is based upon order of creation:

@@ -5,7 +5,7 @@
 		{
 			:key => :edit, 
 			:name => 'Edit this experiment', 
-			:url => edit_model_experiment_path(@model,@experiment),
+			:url => url_for([:edit,@model,@experiment]),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -13,7 +13,7 @@
 		{
 			:key => :new, 
 			:name => 'New measurement', 
-			:url => new_model_experiment_measurement_path(@model,@experiment),
+			:url => url_for([:new,@experiment,:measurement]),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -21,7 +21,7 @@
 		{
 			:key => :index, 
 			:name => 'Goto model', 
-			:url => model_path(@model),
+			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -95,11 +95,11 @@
 			# Notice there's no need to explicitly define the title
 			row.title			measurement.title
 			row.date			measurement.date
-			row.show_h			link_to 'show', [@model,@experiment,measurement]
-			row.edit_h			link_to 'edit', [:edit,@model,@experiment,measurement]
-			row.destroy_h		link_to 'remove', [@model,@experiment,measurement], confirm: 'Are you sure?', method: :delete
-			row.regression_h	link_to 'regression', [:regression,@model,@experiment,measurement]
-			row.csv				link_to 'download .csv', model_experiment_measurement_path(@model,@experiment,measurement, :format => :csv)
+			row.show_h			link_to 'show', [@experiment,measurement]
+			row.edit_h			link_to 'edit', [:edit,@experiment,measurement]
+			row.destroy_h		link_to 'remove', [@experiment,measurement], confirm: 'Are you sure?', method: :delete
+			row.regression_h	link_to 'regression', [:regression,@experiment,measurement]
+			row.csv				link_to 'download .csv', experiment_measurement_path(@experiment,measurement, :format => :csv)
 		end
 	end
 %>

@@ -1,4 +1,4 @@
-<%= form_for([@model,@experiment,@measurement,@line]) do |f| %>
+<%= form_for([@measurement,@line]) do |f| %>
   <% if @line.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@line.errors.count, "error") %> prohibited this line from being saved:</h2>
