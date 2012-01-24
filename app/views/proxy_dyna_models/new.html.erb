@@ -3,7 +3,7 @@
 		{
 			:key => :back, 
 			:name => "Back to measurement", 
-			:url => model_experiment_measurement_path( @model, @experiment, @measurement ),
+			:url => url_for( [@experiment, @measurement] ),
 			:options => {
 				:container_class => 'menu',
 				:class => 'text'

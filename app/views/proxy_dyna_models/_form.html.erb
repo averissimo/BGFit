@@ -1,4 +1,4 @@
-<%= form_for([@model,@experiment,@measurement,@proxy_dyna_model]) do |f| %>
+<%= form_for([@measurement,@proxy_dyna_model]) do |f| %>
   <% if @proxy_dyna_model.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@proxy_dyna_model.errors.count, "error") %> prohibited this dyna model from being created:</h2>
