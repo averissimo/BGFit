@@ -11,6 +11,15 @@
 			}
 		},
 		{
+			:key => :model, 
+			:name => 'Goto dyna model', 
+			:url => url_for([@proxy_dyna_model.dyna_model]),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
 			:key => :index, 
 			:name => 'Goto measurement', 
 			:url => url_for([@experiment,@measurement]),
@@ -27,32 +36,9 @@
 
 <h1><%= @proxy_dyna_model.dyna_model.title %> (dyna model)</h1>
 
-<h3>Solver</h3>
-<p>
-<% if @proxy_dyna_model.dyna_model.solver.nil? || @proxy_dyna_model.dyna_model.solver.blank? %>
-	(not defined)
-<% else %>
-  <%= link_to @proxy_dyna_model.dyna_model.solver, @proxy_dyna_model.dyna_model.solver%>
-<% end %>
-</p>
-
-<h3>Estimation</h3>
-<p>
-<% if @proxy_dyna_model.dyna_model.estimation.nil? || @proxy_dyna_model.dyna_model.estimation.blank? %>
-	(not defined)
-<% else %>
-  <%= link_to @proxy_dyna_model.dyna_model.estimation %>
-<% end %>
-</p>
-
 <h3>Description:</h3>
 <p>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
-</p>
-
-<h3>Definition:</h3>
-<p>
-  <%= simple_format (show (@proxy_dyna_model.dyna_model.definition)) %>
 </p>
 
 <h3>Listing <%= pluralize(@proxy_dyna_model.dyna_model.params.length, 'parameter')%></h3>
@@ -73,15 +59,14 @@
 	end
 %>
 
-<h3 id="header-click">Curve</h3>
-<div id="proxy_dyna_model_chart" style="display:none">
-	<div id="chart" 
-		measurement_json ="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>" 
-		solver_json="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>" ></div>
-</div>
-
 
 <div class="menu">
 	<%= menu %>
 </div>
 
+<h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
+<div id="proxy_dyna_model_chart" style="display:none">
+	<div id="chart" 
+		measurement_json ="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>" 
+		solver_json="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>" ></div>
+</div>

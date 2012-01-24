@@ -3,7 +3,7 @@ class ProxyDynaModel < ActiveRecord::Base
   belongs_to :experiment
   belongs_to :dyna_model
   
-  has_many :proxy_params
+  has_many :proxy_params, :dependent => :destroy
   
   before_create :update_params
   before_update :update_params

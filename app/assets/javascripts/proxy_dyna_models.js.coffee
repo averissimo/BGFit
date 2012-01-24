@@ -92,7 +92,7 @@ if typeof google isnt 'undefined'
 
         chart = new google.visualization.ScatterChart document.getElementById('chart')
         google.visualization.events.addListener chart, 'ready', () =>
-          $('#proxy_dyna_model_chart').slideDown 1500, "swing"
+          $('#proxy_dyna_model_chart').slideDown(1500, "swing").effect("highlight")
 
         chart.draw(data, options)
 
