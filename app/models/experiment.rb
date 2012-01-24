@@ -10,9 +10,7 @@ class Experiment < ActiveRecord::Base
   
   def end
     self.measurements.collect{ |m| 
-      m.lines.max_by{ |l| 
-        l.x 
-      }.x 
+      m.end
     }.max
   end
   

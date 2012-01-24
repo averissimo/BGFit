@@ -7,7 +7,22 @@ class Measurement < ActiveRecord::Base
   accepts_nested_attributes_for :lines
   
   public
+    def end
+      self.lines.max_by{ |l| 
+        l.x 
+      }.x
+    end 
   
+    def x_0
+      self.lines.min_by { |l|
+        l.x
+      }.x
+    end
+    
+    def x_0_title
+      "x_0"
+    end
+    
     def model
       self.experiment.model
     end

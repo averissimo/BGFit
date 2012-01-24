@@ -11,7 +11,14 @@ class ProxyDynaModel < ActiveRecord::Base
   public
   
   def call_solver
+    url = self.dyna_model.solver
+    url += "?" + measurement.x_0_title + "=" + measurement.x_0 + "&"
+    url + self.proxy_params.collect { |p|
+      return nil if p.value.nil?      
+      p.param.code + "=" + p.value.to_s
+    }.join('&')
     
+
   end
   
   private
