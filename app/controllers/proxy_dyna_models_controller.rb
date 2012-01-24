@@ -70,7 +70,7 @@ class ProxyDynaModelsController < ApplicationController
 
   def destroy
     @proxy_dyna_model.destroy
-    respond_with(@proxy_dyna_model, :location => proxy_dyna_models_path)
+    respond_with(@proxy_dyna_model, :location => url_for([@experiment,@measurement]))
 
   end
 

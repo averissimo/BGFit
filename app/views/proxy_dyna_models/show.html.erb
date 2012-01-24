@@ -9,22 +9,14 @@
 			}
 		},
 		{
-			:key => :new, 
-			:name => 'New parameter', 
-			:url => new_proxy_dyna_model_proxy_param_path(@proxy_dyna_model),
-			:options => {
-				:container_class => 'menu',
-				:class => "btn"
-			}
-		},
-		{
 			:key => :index, 
 			:name => 'Goto measurement', 
 			:url => url_for([@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
-		}}]
+			}
+		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
@@ -64,19 +56,17 @@
 <h3>Listing <%= pluralize(@proxy_dyna_model.dyna_model.params.length, 'parameter')%></h3>
 
 <%= 
-	collection_table(@proxy_dyna_model.dyna_model.params, :id => 'params' , :class => 'formatted') do |t|
-		t.header :code
+	collection_table(@proxy_dyna_model.proxy_params, :id => 'params' , :class => 'formatted') do |t|
 		t.header :human_title
 		t.header :description
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :value
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, param, index|
 			# Notice there's no need to explicitly define the title
-			row.code			param.code
-			row.human_title		param.human_title
-			row.description		param.description_trimmed.gsub(/\n/, '<br/>')
+			row.human_title		param.param.human_title
+			row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
+			row.value			param.value
 		end
 	end
 %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120120180841) do
+ActiveRecord::Schema.define(:version => 20120124172057) do
 
   create_table "dyna_models", :force => true do |t|
     t.string   "title"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(:version => 20120120180841) do
     t.integer  "proxy_dyna_model_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "param_id"
   end
 
   add_index "proxy_params", ["proxy_dyna_model_id"], :name => "index_proxy_params_on_proxy_dyna_model_id"

@@ -9,14 +9,6 @@
 			}
 		},
 		{
-			:key => :csv, 
-			:name => 'Download .csv', 
-			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
 			:key => :edit, 
 			:name => 'Edit this measurement', 
 			:url => url_for([:edit,@experiment,@measurement]),
@@ -30,6 +22,23 @@
 			:url => new_measurement_line_path(@measurement),
 			:options => {
 				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New dyna model', 
+			:url => new_measurement_proxy_dyna_model_path(@measurement),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :csv, 
+			:name => '.csv', 
+			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
 			}
 		},
 		{
@@ -89,3 +98,22 @@
 <div class="menu">
 <%= menu %>
 </div>
+
+<h3>Dynamic models (<%= pluralize(@measurement.proxy_dyna_models.length, 'dynamic model')%>)</h3>
+<%= 
+	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted') do |t|
+		t.header :title
+		t.header :description
+		t.header :show_h,		""
+		t.header :destroy_h,	""
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, proxy_dyna_model, index|
+			# Notice there's no need to explicitly define the title
+			row.title		proxy_dyna_model.dyna_model.title
+			row.description	proxy_dyna_model.dyna_model.description
+			row.show_h		link_to 'show', [proxy_dyna_model]
+			row.destroy_h	link_to 'remove', [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
