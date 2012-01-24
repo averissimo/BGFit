@@ -27,7 +27,7 @@ class ProxyDynaModel < ActiveRecord::Base
     url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.x_0_title}=#{self.measurement.x_0.to_s}&#{self.measurement.end_title}=#{    self.measurement.end.to_s}"
 
     response = Net::HTTP.get_response(URI(url))
-    self.json = response.body
+    self.json = response.body.gsub(/(\n|\t)/,'')
     self.save
     self.json
   end
