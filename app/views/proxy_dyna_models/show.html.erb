@@ -1,4 +1,6 @@
 <% 
+	javascript 'https://www.google.com/jsapi'
+	
 	context_menu = [
 		{
 			:key => :edit, 
@@ -70,6 +72,14 @@
 		end
 	end
 %>
+
+<h3 id="header-click">Curve</h3>
+<div id="proxy_dyna_model_chart" style="display:none">
+	<div id="chart" 
+		measurement_json ="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>" 
+		solver_json="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>" ></div>
+</div>
+
 
 <div class="menu">
 	<%= menu %>

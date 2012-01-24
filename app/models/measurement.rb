@@ -11,7 +11,11 @@ class Measurement < ActiveRecord::Base
       self.lines.max_by{ |l| 
         l.x 
       }.x
-    end 
+    end
+    
+    def end_title
+      "end"
+    end
   
     def x_0
       self.lines.min_by { |l|

@@ -10,15 +10,26 @@ class ProxyDynaModel < ActiveRecord::Base
   
   public
   
+  def json_cache
+    if self.json.nil?
+      self.call_solver
+    else
+      self.json
+    end
+  end
+  
   def call_solver
-    url = self.dyna_model.solver
-    url += "?" + measurement.x_0_title + "=" + measurement.x_0 + "&"
-    url + self.proxy_params.collect { |p|
+    url_params = self.proxy_params.collect { |p|
       return nil if p.value.nil?      
-      p.param.code + "=" + p.value.to_s
+      "#{p.param.code}=#{p.value.to_s}"
     }.join('&')
     
+    url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.x_0_title}=#{self.measurement.x_0.to_s}&#{self.measurement.end_title}=#{    self.measurement.end.to_s}"
 
+    response = Net::HTTP.get_response(URI(url))
+    self.json = response.body
+    self.save
+    self.json
   end
   
   private
