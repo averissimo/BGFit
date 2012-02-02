@@ -16,4 +16,10 @@ class Line < ActiveRecord::Base
         z
       end 
   end
+  
+  def <=>(o)
+    return self.x <=> o.x unless self.x.nil? || o.x.nil?
+    return 0
+
+  end
 end

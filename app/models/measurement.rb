@@ -7,6 +7,44 @@ class Measurement < ActiveRecord::Base
   accepts_nested_attributes_for :lines
   
   public
+  
+    def lines_no_death_phase
+      p_l = nil
+      p_2_l = nil
+      finish = false
+      result = self.lines.sort.collect { |l|
+        next if finish
+        
+        if p_l && p_2_l
+          if l.y < p_l && p_l < p_2_l  
+            finish = true
+          end
+        end
+        p_2_l = p_l
+        p_l = l.y
+        l
+      }.compact
+      last = result.pop
+      if last.y < result.last.y
+        result
+      else
+        result << last.y
+      end
+      
+    end
+  
+    def x_array
+      self.lines_no_death_phase.sort.collect { |l|
+        l.x  
+      } 
+    end
+    
+    def y_array
+      self.lines_no_death_phase.sort.collect { |l|
+        l.y  
+      }
+    end
+  
     def end
       self.lines.max_by{ |l| 
         l.x 

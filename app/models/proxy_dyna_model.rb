@@ -10,6 +10,10 @@ class ProxyDynaModel < ActiveRecord::Base
   
   public
   
+  def call_estimation
+    url = "#{self.dyna_model.estimation}?time=#{self.measurement.x_array}&values=#{self.measurement.x_array}&model=#{JSON.parse(self.dyna_model.definition).gsub(/\\/,'')}"
+  end
+  
   def json_cache
     if self.json.nil?
       self.call_solver
@@ -24,7 +28,7 @@ class ProxyDynaModel < ActiveRecord::Base
       "#{p.param.code}=#{p.value.to_s}"
     }.join('&')
     
-    url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.x_0_title}=#{self.measurement.x_0.to_s}&#{self.measurement.end_title}=#{    self.measurement.end.to_s}"
+    url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.x_0_title}=#{self.measurement.x_0.to_s}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
 
     response = Net::HTTP.get_response(URI(url))
     self.json = response.body.gsub(/(\n|\t)/,'')
