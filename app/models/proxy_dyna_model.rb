@@ -35,6 +35,35 @@ class ProxyDynaModel < ActiveRecord::Base
     self.save
     self.json
   end
+ 
+  def original_data=(og)
+    print "\n\n\n\n\n\n\n\n\n\n\n"
+  end
+ 
+  def convert_param(original_data)
+    
+    self.proxy_params.each { |param|
+      temp = /#{param.code}: (?<value>[0-9]+[.]?[0-9]*)/.match(original_data)
+      if !temp.nil?
+        param.value = temp[:value]
+        param.save
+      end
+    }
+    
+  end
+  
+  def original_data
+    string = ""
+    self.proxy_params.collect { |param|
+      string += param.code.to_s + ": "
+      if param.code.nil?
+        string += "<value>\n"
+      else
+        string += param.value.to_s + "\n"
+      end
+    }
+    string
+  end
   
   private
   

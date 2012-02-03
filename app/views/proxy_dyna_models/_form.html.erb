@@ -16,6 +16,11 @@
 	<%= collection_select(:dyna_model, :dyna_model_id, DynaModel.all, :id, :title) %>
   </div>
     
+  <div class="field">
+    <%= f.label :original_data %><br />
+	<%= f.text_area :original_data %>
+  </div>  
+    
    <div class="actions">
     <%= f.submit nil ,:class => "btn" %>
   </div>

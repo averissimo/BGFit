@@ -72,12 +72,15 @@ class Measurement < ActiveRecord::Base
    def convert_original_data
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
-       next if y == 0
+       next if y == 1
+       if y == 0
+         self.title = l
+         next
+       end
        line = Line.new
        l.split(/\t/).each_with_index do |el , y2|
 
          el = el.gsub("," , ".")
-         
          next if el.match(/N.*A/) || el == nil || el == ""
          
          case y2
@@ -94,6 +97,13 @@ class Measurement < ActiveRecord::Base
        end
        self.lines << line
      end
+    #temp_date = title.gsub(/ \(.\)/,"")
+    begin
+      self.date = Date.strptime self.title, '%d-%m-%Y'
+    rescue
+      self.date = Date.strptime self.title, '%d/%m/%Y'
+    end
+    self.title = self.title.strip
     end
     
     def original_data_trimmed

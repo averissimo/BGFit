@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120124182337) do
+ActiveRecord::Schema.define(:version => 20120203160613) do
 
   create_table "dyna_models", :force => true do |t|
     t.string   "title"
@@ -29,10 +29,6 @@ ActiveRecord::Schema.define(:version => 20120124182337) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
-    t.float    "miu"
-    t.float    "lambda"
-    t.float    "a"
-    t.float    "n_zero"
   end
 
   add_index "experiments", ["model_id"], :name => "index_experiments_on_model_id"

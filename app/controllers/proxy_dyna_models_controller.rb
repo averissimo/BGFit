@@ -55,6 +55,7 @@ class ProxyDynaModelsController < ApplicationController
   def update
     respond_with @proxy_dyna_model do |format|
       if @proxy_dyna_model.update_attributes(params[:dyna_model])
+        @proxy_dyna_model.convert_param(params[:original_data])
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Proxy Dyna Model")
       else
         format.html { render action: "edit" }
