@@ -36,7 +36,13 @@
 
 <h1><%= @proxy_dyna_model.dyna_model.title %> (dyna model)</h1>
 
-<h3>Description:</h3>
+<h3><%= @proxy_dyna_model.measurement.model.title %> model's description for <%= @proxy_dyna_model.measurement.title %> measurement:</h3>
+<p>
+	<%= simple_format (show (@proxy_dyna_model.measurement.model.description)) %>
+</p>
+
+<h3>Dynamic model description:</h3>
+
 <p>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
 </p>

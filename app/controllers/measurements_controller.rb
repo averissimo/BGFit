@@ -33,6 +33,18 @@ class MeasurementsController < ApplicationController
           @measurement.title +
           '.csv'  
       }
+      format.exp { 
+        exp = render_to_string :exp => @measurement
+        send_data  exp, :filename => 
+          @model.title +
+          ' - ' + 
+          @experiment.title.to_s +
+          ' - ' +
+          @measurement.date.to_s +
+          ' - ' +
+          @measurement.title +
+          '.exp'
+      }
     end
     
   end

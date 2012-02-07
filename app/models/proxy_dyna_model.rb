@@ -28,34 +28,35 @@ class ProxyDynaModel < ActiveRecord::Base
       "#{p.param.code}=#{p.value.to_s}"
     }.join('&')
     
-    url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.x_0_title}=#{self.measurement.x_0.to_s}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
-
+    url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+    print url
     response = Net::HTTP.get_response(URI(url))
     self.json = response.body.gsub(/(\n|\t)/,'')
     self.save
     self.json
   end
  
-  def original_data=(og)
-    print "\n\n\n\n\n\n\n\n\n\n\n"
+  def original_data=(data)
+    #@data = data
   end
  
-  def convert_param(original_data)
-    
+  def convert_param(original_args)
+    flag = false
     self.proxy_params.each { |param|
-      temp = /#{param.code}: (?<value>[0-9]+[.]?[0-9]*)/.match(original_data)
-      if !temp.nil?
+      temp = /#{param.code} = (?<value>[0-9]+[.]?[0-9]*)/.match(original_args)
+      if temp
+        print "---> " + temp.to_s + "\n"
         param.value = temp[:value]
-        param.save
+        flag = true if param.save
       end
-    }
-    
+    }    
+    self.call_solver if flag
   end
   
   def original_data
     string = ""
     self.proxy_params.collect { |param|
-      string += param.code.to_s + ": "
+      string += param.code.to_s + " = "
       if param.code.nil?
         string += "<value>\n"
       else

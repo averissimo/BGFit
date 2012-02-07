@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120203160613) do
+ActiveRecord::Schema.define(:version => 20120206174731) do
 
   create_table "dyna_models", :force => true do |t|
     t.string   "title"
@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(:version => 20120203160613) do
     t.integer  "dyna_model_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "json"
+    t.text     "json",           :limit => 2147483647
   end
 
   add_index "proxy_dyna_models", ["dyna_model_id"], :name => "index_proxy_dyna_models_on_dyna_model_id"

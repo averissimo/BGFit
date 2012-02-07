@@ -1,0 +1,43 @@
+********** EXPERIMENT NAME
+<%= @measurement.title + " - " + @model.title + " - " + @experiment.title %>
+
+********** EXPERIMENT NOTES
+<%= @model.description + "\n\n" + @experiment.description %>
+
+********** EXPERIMENT INITIAL PARAMETER AND STATE SETTINGS
+% The expression in this limiter will be evaluated when merging the 
+% experiment with the model. Please note that the entries here will be 
+% evaluated sequentially. The initial conditions and the parameters
+% that are defined in the model can be accessed here.
+<% 
+min = nil;
+max = nil;
+
+min_max_array = @experiment.measurements.collect { |l| 
+	min_aux = l.lines.min_by { |a| a.x }.y
+	max_aux = l.lines.max_by { |a| a.y }.y
+	[min_aux, max_aux]
+}
+min = min_max_array.min_by{ |a| a[0] }[0]
+max = min_max_array.max_by{ |a| a[1] }[1]
+
+max = Math.log( Float(max) / Float(min))
+	%>
+
+N(0) = <%= min %>
+
+% Parameter values can be changed by both setting numerical values and 
+% mathematical expressions
+
+miu = 0.69
+lambda = 2
+A = <%= max %>
+
+********** EXPERIMENT PARAMETER CHANGES
+% In this section parameter changes can be defined that are evaluated during
+% the merged models evaluation
+
+
+********** EXPERIMENT STATE CHANGES
+% State changes in the experiment description can only be done at certain 
+% time points yet. This will probably also change in a coming revision.

@@ -105,6 +105,7 @@
 		t.header :title
 		t.header :description
 		t.header :show_h,		""
+		t.header :edit_h,		""
 		t.header :destroy_h,	""
 
 		t.rows.alternate = :odd
@@ -113,6 +114,7 @@
 			row.title		proxy_dyna_model.dyna_model.title
 			row.description	proxy_dyna_model.dyna_model.description
 			row.show_h		link_to 'show', [proxy_dyna_model]
+			row.edit_h		link_to 'edit', [:edit,proxy_dyna_model]
 			row.destroy_h	link_to 'remove', [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
 		end
 	end

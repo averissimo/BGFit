@@ -28,7 +28,7 @@ class Measurement < ActiveRecord::Base
       if last.y < result.last.y
         result
       else
-        result << last.y
+        result << last
       end
       
     end
@@ -48,7 +48,7 @@ class Measurement < ActiveRecord::Base
     def end
       self.lines.max_by{ |l| 
         l.x 
-      }.x
+      }.x * 2
     end
     
     def end_title

@@ -78,14 +78,14 @@ if typeof google isnt 'undefined'
             options.vAxis = { 
               viewWindowMode: "explicit"
               viewWindow: {
-                max: range.max +  offset,
+                max: 2#range.max +  offset,
                 min: range.min - offset
                 }
             }
             options.hAxis = {
               viewWindowMode: "explicit"
               viewWindow: {
-                max: 7,
+                max: 30,
                 min: 0
                 }
             }

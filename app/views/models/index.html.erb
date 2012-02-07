@@ -49,6 +49,8 @@
 		t.header :show_h,		""
 		t.header :regression_h,	""
 		t.header :csv,			""
+		t.header :exp,			""
+		t.header :dyna,			""
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -60,6 +62,8 @@
 			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
 			row.show_h			link_to 'show', [measure.experiment,measure]
 			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
+			row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
+			row.dyna			link_to 'first dyna' , [measure.proxy_dyna_models.first]
 		end
 	end
 %>
