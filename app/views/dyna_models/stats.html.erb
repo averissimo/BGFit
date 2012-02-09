@@ -67,12 +67,38 @@
 
 <h3>Experiments</h3>
 
-<h3>Measurements</h3>
+<% @experiments.each do |e| %>
+	<% next unless (proxy_dyna_models = e.measurements.collect_concat(&:proxy_dyna_models).find_all { |p| p.dyna_model == @dyna_model }) %>
+	
+	<h4><i><%= e.title %></i> experiment that belongs to <i><%= e.model.title %></i> model</h4>
+	
+	
+	<div class="proxy_dyna_model_chart" >
+		<h5 class="button">Chart (click here to show/hide)</h5>
+		<div class="chart" style="display:none;">
+			loading...
+			<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(e.measurements.first.proxy_dyna_models.first, :format => :json) %></div>
+			<div style="display:none;" class="data">
+				<% e.measurements.each do |m| %> 
+				<div class="measurement"><%= experiment_measurement_path(e,m,:format=>:json) %></div>
+				<% end %>
+			</div>
+		</div>
+	</div>
 
-<% @measurements.take(88).each do |m| %>
+	
+	
+		
+<% end %>
+
+
+<h3>Measurements</h3>
+<!--
+<% @measurements.take(5).each do |m| %>
+
+	<% next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model }) %>
 	
 	<h4><i><%= m.title %></i> measurement that belongs to <i><%= m.model.title %></i> model</h4>
-	<% proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model } %>
 	
 	<% proxy_dyna_models.each do |p_dm| %>
 	<div class="one_tab">
@@ -111,4 +137,4 @@
 	<% end %>
 	
 <% end %>
-
+-->

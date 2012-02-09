@@ -50,6 +50,7 @@ class DynaModelsController < ApplicationController
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
+    @experiments = Experiment.all.sort_by { |e| e.model.title }
     @measurements = @dyna_model.proxy_dyna_models.collect {|p| p.measurement }
     respond_with(@dyna_models)
   end
