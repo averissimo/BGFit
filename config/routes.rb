@@ -2,6 +2,9 @@ BacteriaGrowth::Application.routes.draw do
 
   resources :dyna_models do
     resources :params
+    member do
+      get :stats
+    end
   end
  
   resources :models do

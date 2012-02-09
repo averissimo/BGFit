@@ -47,6 +47,12 @@ class DynaModelsController < ApplicationController
     @dyna_model = DynaModel.find(params[:id])
     respond_with(@dyna_models)
   end
+  
+  def stats
+    @dyna_model = DynaModel.find(params[:id])
+    @measurements = @dyna_model.proxy_dyna_models.collect {|p| p.measurement }
+    respond_with(@dyna_models)
+  end
 
   def destroy
     @dyna_model = DynaModel.find(params[:id])
