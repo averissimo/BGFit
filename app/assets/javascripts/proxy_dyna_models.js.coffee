@@ -7,7 +7,7 @@ if typeof google isnt 'undefined'
   $(document).ready () => 
   
     # offset for the window view
-    OFFSET_RATIO = .1
+    OFFSET_RATIO = .5
 
     options = {
       curveType: 'function',
@@ -78,7 +78,7 @@ if typeof google isnt 'undefined'
             options.vAxis = { 
               viewWindowMode: "explicit"
               viewWindow: {
-                max: 2#range.max +  offset,
+                max: range.max +  offset,
                 min: range.min - offset
                 }
             }
