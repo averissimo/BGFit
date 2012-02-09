@@ -69,29 +69,33 @@
 
 <h3>Measurements</h3>
 
-<% @measurements.take(5).each do |m| %>
+<% @measurements.take(88).each do |m| %>
 	
 	<h4><i><%= m.title %></i> measurement that belongs to <i><%= m.model.title %></i> model</h4>
 	<% proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model } %>
 	
 	<% proxy_dyna_models.each do |p_dm| %>
 	<div class="one_tab">
-	<h5>Updated at <%=p_dm.updated_at %></h5>
-	<%= 
-	collection_table(p_dm.proxy_params, :id => 'params' , :class => 'formatted') do |t|
-		t.header :human_title
-		t.header :description
-		t.header :value
-
-		t.rows.alternate = :odd
-    	t.rows.each do |row, param, index|
-			# Notice there's no need to explicitly define the title
-			row.human_title		param.param.human_title
-			row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
-			row.value			param.value
+	<div>
+		<h5 class="button">Data Updated at <%=p_dm.updated_at %> (click here to show/hide)</h5>
+		<div style="display:none;">
+		<%= 
+		collection_table(p_dm.proxy_params, :id => 'params' , :class => 'formatted') do |t|
+			t.header :human_title
+			t.header :description
+			t.header :value
+	
+			t.rows.alternate = :odd
+	    	t.rows.each do |row, param, index|
+				# Notice there's no need to explicitly define the title
+				row.human_title		param.param.human_title
+				row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
+				row.value			param.value
+			end
 		end
-	end
-	%>
+		%>
+		</div>
+	</div>
 	<div class="proxy_dyna_model_chart" >
 		<h5 class="button">Chart (click here to show/hide)</h5>
 		<div class="chart" style="display:none;">

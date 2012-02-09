@@ -35,7 +35,7 @@ if typeof google isnt 'undefined'
       return
     
     setup_m = {
-      async: false,
+      #async: false,
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
@@ -50,15 +50,13 @@ if typeof google isnt 'undefined'
     }
     
     $('h5.button').live 'click' , (event) =>
-      $(event.srcElement).parent().children('.chart').stop()
-      $(event.srcElement).parent().children('.chart').slideToggle(1500, "swing")
+      $(event.srcElement).parent().children('div').slideToggle(1500, "swing")
       $(event.srcElement).parent().effect('highlight')
 
     
     $('div.proxy_dyna_model_chart div.chart').each (index,el) =>
-      model = $(el).children('.model_data').text()
-      #measurement = $(data).children('.measurement').text()
-      setup.url = model
+      setup.url = $(el).children('.model_data').text()
+      
       result = $.ajax(setup)
       result.fail () =>
         $(el)[0].innerHTML = 'failed to load chart.'
@@ -71,20 +69,56 @@ if typeof google isnt 'undefined'
         
         data.addRows jsonObj.result # adds gompertz data
           
-
-            
-          
-        chart = new google.visualization.ScatterChart el
-#          google.visualization.events.addListener chart, 'ready', () =>
-#            $(el).slideDown(1500, "swing").effect("highlight")
-        google.visualization.events.addListener chart, 'error', () =>
-          $(el)[0].innerHTML = 'failed to load chart.'
-          $(el).parent().slideDown(1500, "swing").effect("highlight")
-
-        chart.draw(data, options)
-
-
-
+        list = []
+        $(el).find('.data').each (i,measurement_data) =>
+          setup_m.url = $(measurement_data).children('.measurement').text() 
+          m_ajax = $.ajax setup_m
+          m_ajax.done (json) =>
+            list.push json
+            if list.length == $(el).find('.data').length
+        
+              list.forEach (i) => 
+                l = data.addColumn 'number' , i.id , i.id
+                rows = []
+                i.rows.forEach (j) =>
+                   
+                  row = (null for num in [1..l-1])
+                  row.unshift j.c[0].v
+                  row.push j.c[1].v
+                  rows.push row
+                
+                data.addRows rows
+                      
+              range = data.getColumnRange(1)
+              offset = Math.abs( range.max - range.min ) * OFFSET_RATIO
+              if offset > 0 # with one point chart returns an error if condition
+                            #  does not exists
+                options.vAxis = { 
+                  viewWindowMode: "explicit"
+                  viewWindow: {
+                    max: range.max +  offset,
+                    min: 0
+                    }
+                }
+                options.chartArea = {
+                  left: 100
+                }
+                options.hAxis = {
+                  viewWindowMode: "explicit"
+                  viewWindow: {
+                    max: 30,
+                    min: 0
+                    }
+                }
+              
+              chart = new google.visualization.ScatterChart el
+      #          google.visualization.events.addListener chart, 'ready', () =>
+      #            $(el).slideDown(1500, "swing").effect("highlight")
+              google.visualization.events.addListener chart, 'error', () =>
+                $(el)[0].innerHTML = 'failed to load chart.'
+                $(el).parent().slideDown(1500, "swing").effect("highlight")
+      
+              chart.draw(data, options)
 
 
 
