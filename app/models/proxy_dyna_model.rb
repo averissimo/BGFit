@@ -66,9 +66,7 @@ class ProxyDynaModel < ActiveRecord::Base
     string
   end
   
-  private
-  
-  def update_params
+  def update_params(no_commit = false)
     
     params = self.proxy_params
     
@@ -84,7 +82,9 @@ class ProxyDynaModel < ActiveRecord::Base
         new_param = self.proxy_params.build
         new_param.param = d_p
         new_param.value = nil
-        new_param.save
+        
+        new_param.save unless no_commit
+        
         new_param
       else
         list.first
