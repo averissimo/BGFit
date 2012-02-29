@@ -8,22 +8,26 @@ class ProxyParam < ActiveRecord::Base
   
   def initialize(*args)
     super
-    @unit = []
-    @@mean = nil
-    @std_dev = nil
+    custom_init
+  end
+  
+  def custom_init
+    @unit = [] if @unit.nil?
+    @mean = nil if @mean.nil?
+    @std_dev = nil if @std_dev.nil?
   end
   
   def mean_add(number)
     
     @mean = nil
     @std_dev = nil
-    print "\n" + self.param.code + "\n"
     @unit.push(number)
   end
   
   def mean
-    return 0 if @unit.size == 0
+    return self.value if @unit.size == 0
     @mean = @unit.sum / @unit.size if @mean.nil?
+    self.value = @mean
     @mean
   end
   

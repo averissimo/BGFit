@@ -24,11 +24,16 @@ class ProxyDynaModel < ActiveRecord::Base
   
   def call_solver
     url_params = self.proxy_params.collect { |p|
+      next if p.code == 'o'
       return nil if p.value.nil?      
       "#{p.param.code}=#{p.value.to_s}"
     }.join('&')
     
-    url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+    if self.measurement.nil?
+      url = "#{self.dyna_model.solver}?#{url_params}end=30"
+    else
+      url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+    end
     print url
     response = Net::HTTP.get_response(URI(url))
     self.json = response.body.gsub(/(\n|\t)/,'')
@@ -45,7 +50,7 @@ class ProxyDynaModel < ActiveRecord::Base
     self.proxy_params.each { |param|
       temp = /#{param.code} = (?<value>[0-9]+[.]?[0-9]*)/.match(original_args)
       if temp
-        print "---> " + temp.to_s + "\n"
+#        print "---> " + temp.to_s + "\n"
         param.value = temp[:value]
         flag = true if param.save
       end
@@ -87,6 +92,7 @@ class ProxyDynaModel < ActiveRecord::Base
         
         new_param
       else
+        list.first.custom_init
         list.first
       end
     }

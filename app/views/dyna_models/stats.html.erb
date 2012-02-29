@@ -76,8 +76,8 @@
 		
 		<div>
 			<h5 class="button">Average parameters (click here to show/hide)</h5>
-			
 			<div style="display:none;">
+			<% debugger %>
 			<%= 
 			collection_table(e.get_average_proxy_dyna_model(proxy_dyna_models).proxy_params, :id => 'params' , :class => 'formatted') do |t|
 				t.header :human_title
@@ -85,7 +85,7 @@
 				t.header :mean,			"Mean Value"
 				t.header :std_dev
 				t.header :count
-		
+				
 				t.rows.alternate = :odd
 		    	t.rows.each do |row, param, index|
 					# Notice there's no need to explicitly define the title
@@ -104,7 +104,7 @@
 			<h5 class="button">Chart (click here to show/hide)</h5>
 			<div class="chart" style="display:none;">
 				loading...
-				<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(e.measurements.first.proxy_dyna_models.first, :format => :json) %></div>
+				<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(e.proxy_dyna_models.first, :format => :json) %></div>
 				<div style="display:none;" class="data">
 					<% e.measurements.each do |m| %> 
 					<div class="measurement"><%= experiment_measurement_path(e,m,:format=>:json) %></div>
@@ -116,7 +116,7 @@
 	<div>		
 		<h5 class="button">Measurements (click here to show/hide)</h5>
 
-		<% @dyna_model.proxy_dyna_models.collect {|p| if (p.measurement.experiment == e) then p.measurement end }.compact.each do |m| %>
+		<% @dyna_model.proxy_dyna_models.collect {|p| if (p.measurement && p.measurement.experiment == e) then p.measurement end }.compact.each do |m| %>
 		<% next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model }) %>
 		
 		
