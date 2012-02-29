@@ -1,0 +1,170 @@
+<% 
+	javascript 'https://www.google.com/jsapi'
+
+	context_menu = [
+		{
+			:key => :edit, 
+			:name => 'Edit this dyna model', 
+			:url => edit_dyna_model_path(@dyna_model),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New parameter', 
+			:url => new_dyna_model_param_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "btn"
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto dyna models\' index', 
+			:url => dyna_models_path,
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+		}}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<% content_for(:title) { "Dyna Model's detail" } %>
+<p id="notice"><%= notice %></p>
+
+<h1><%= @dyna_model.title %> (dyna model)</h1>
+
+<h3>Description:</h3>
+<p>
+  <%= simple_format (show (@dyna_model.description)) %>
+</p>
+
+<h3>Listing <%= pluralize(@dyna_model.params.length, 'parameter')%></h3>
+
+<%= 
+	collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted') do |t|
+		t.header :code
+		t.header :human_title
+		t.header :description
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, param, index|
+			# Notice there's no need to explicitly define the title
+			row.code			param.code
+			row.human_title		param.human_title
+			row.description		param.description_trimmed.gsub(/\n/, '<br/>')
+		end
+	end
+%>
+
+<div class="menu">
+	<%= menu %>
+</div>
+
+
+<h3>Models</h3>
+
+<h3>Experiments</h3>
+
+	<% @experiments.each do |e| %>
+	<% next unless (proxy_dyna_models = e.measurements.collect_concat(&:proxy_dyna_models).find_all { |p| p.dyna_model == @dyna_model }) %>
+	
+	<h4><i><%= e.title %></i> experiment that belongs to <i><%= e.model.title %></i> model</h4>
+	
+	<div class="one_tab">
+		
+		<div>
+			<h5 class="button">Average parameters (click here to show/hide)</h5>
+			<div style="display:none;">
+			<% debugger %>
+			<%= 
+			collection_table(e.get_average_proxy_dyna_model(proxy_dyna_models).proxy_params, :id => 'params' , :class => 'formatted') do |t|
+				t.header :human_title
+				t.header :description
+				t.header :mean,			"Mean Value"
+				t.header :std_dev
+				t.header :count
+				
+				t.rows.alternate = :odd
+		    	t.rows.each do |row, param, index|
+					# Notice there's no need to explicitly define the title
+					row.human_title		param.param.human_title
+					row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
+					row.mean			param.mean
+					row.std_dev			param.std_dev
+					row.count			param.count
+				end
+			end
+			%>
+			</div>
+		</div>
+		
+		<div class="proxy_dyna_model_chart" >
+			<h5 class="button">Chart (click here to show/hide)</h5>
+			<div class="chart" style="display:none;">
+				loading...
+				<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(e.proxy_dyna_models.first, :format => :json) %></div>
+				<div style="display:none;" class="data">
+					<% e.measurements.each do |m| %> 
+					<div class="measurement"><%= experiment_measurement_path(e,m,:format=>:json) %></div>
+					<% end %>
+				</div>
+			</div>
+		</div>
+		
+	<div>		
+		<h5 class="button">Measurements (click here to show/hide)</h5>
+
+		<% @dyna_model.proxy_dyna_models.collect {|p| if (p.measurement && p.measurement.experiment == e) then p.measurement end }.compact.each do |m| %>
+		<% next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model }) %>
+		
+		
+		<% proxy_dyna_models.each do |p_dm| %>
+		<div class="one_tab" style="display:none;">
+			<h4><i><%= m.title %></i> measurement that belongs to <i><%= m.model.title %></i> model</h4>
+
+			<div>
+				<h5 class="button">Data Updated at <%=p_dm.updated_at %> (click here to show/hide)</h5>
+				<div style="display:none;">
+				<%= 
+				collection_table(p_dm.proxy_params, :id => 'params' , :class => 'formatted') do |t|
+					t.header :human_title
+					t.header :description
+					t.header :value
+			
+					t.rows.alternate = :odd
+			    	t.rows.each do |row, param, index|
+						# Notice there's no need to explicitly define the title
+						row.human_title		param.param.human_title
+						row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
+						row.value			param.value
+					end
+				end
+				%>
+				</div>
+			</div>
+			<div class="proxy_dyna_model_chart" >
+				<h5 class="button">Chart (click here to show/hide)</h5>
+				<div class="chart" style="display:none;">
+					loading...
+					<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(p_dm, :format => :json) %></div>
+					<div style="display:none;" class="data">
+						<div class="measurement"><%= experiment_measurement_path(m.experiment,m,:format=>:json) %></div> 
+					</div>
+				</div>
+			</div>
+		
+		</div>
+		<% end %>
+	
+	
+	<% end %>
+		</div>
+	</div>
+
+	
+	
+		
+<% end %>
+

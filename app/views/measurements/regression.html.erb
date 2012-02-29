@@ -5,7 +5,7 @@
 		{
 			:key => :csv, 
 			:name => 'Download .csv', 
-			:url => model_experiment_measurement_path(@model,@experiment,@measurement, :format => :csv),
+			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -13,7 +13,7 @@
 		{
 			:key => :index, 
 			:name => 'Goto measurement', 
-			:url => model_experiment_measurement_path(@model,@experiment,@measurement),
+			:url => url_for([@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -22,7 +22,7 @@
 		{
 			:key => :index, 
 			:name => 'Goto experiment', 
-			:url => model_experiment_path(@model,@experiment),
+			:url => url_for([@model,@experiment]),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -31,7 +31,7 @@
 		{
 			:key => :index, 
 			:name => 'Goto model', 
-			:url => model_path(@model),
+			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -56,7 +56,7 @@
 
 
 <div id ="measurement_charts">
-	<div id="table" link-to="<%= model_experiment_measurement_path(@model,@experiment,@measurement) %>"></div>
+	<div id="table" link-to="<%= url_for([@experiment,@measurement]) %>"></div>
 	
 	<div class="center">
 				<span id="mu"><b>&mu;<sub>max</sub></b> = <span id="mu-value">(select multiple lines in the table)</span>
@@ -64,7 +64,7 @@
 				<%= render "hidden_lines" %>
 	</div>
 	
-	<div id="chart" link-to="<%= model_experiment_measurement_path(@model,@experiment,@measurement) %>"></div>
+	<div id="chart" link-to="<%= url_for([@experiment,@measurement]) %>"></div>
 	
 	<div class="clear"></div>
 </div>

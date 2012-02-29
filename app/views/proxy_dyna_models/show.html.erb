@@ -1,0 +1,78 @@
+<% 
+	javascript 'https://www.google.com/jsapi'
+	
+	context_menu = [
+		{
+			:key => :edit, 
+			:name => 'Edit this proxy dyna model', 
+			:url => url_for([:edit,@proxy_dyna_model]),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :model, 
+			:name => 'Goto dyna model', 
+			:url => url_for([@proxy_dyna_model.dyna_model]),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto measurement', 
+			:url => url_for([@experiment,@measurement]),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<% content_for(:title) { "Dyna Model's detail" } %>
+<p id="notice"><%= notice %></p>
+
+<h1><%= @proxy_dyna_model.dyna_model.title %> (dyna model)</h1>
+
+<h3><%= @proxy_dyna_model.measurement.model.title %> model's description for <%= @proxy_dyna_model.measurement.title %> measurement:</h3>
+<p>
+	<%= simple_format (show (@proxy_dyna_model.measurement.model.description)) %>
+</p>
+
+<h3>Dynamic model description:</h3>
+
+<p>
+  <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
+</p>
+
+<h3>Listing <%= pluralize(@proxy_dyna_model.dyna_model.params.length, 'parameter')%></h3>
+
+<%= 
+	collection_table(@proxy_dyna_model.proxy_params, :id => 'params' , :class => 'formatted') do |t|
+		t.header :human_title
+		t.header :description
+		t.header :value
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, param, index|
+			# Notice there's no need to explicitly define the title
+			row.human_title		param.param.human_title
+			row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
+			row.value			param.value
+		end
+	end
+%>
+
+
+<div class="menu">
+	<%= menu %>
+</div>
+
+<h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
+<div id="proxy_dyna_model_chart" style="display:none">
+	<div id="chart" 
+		measurement_json ="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>" 
+		solver_json="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>" ></div>
+</div>

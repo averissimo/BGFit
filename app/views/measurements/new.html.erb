@@ -3,7 +3,7 @@
 		{
 			:key => :show, 
 			:name => "Goto experiment", 
-			:url => model_experiment_path(@model,@experiment),
+			:url => url_for([@model,@experiment]),
 			:options => {
 				:container_class => 'menu',
 				:class => 'text'
@@ -12,7 +12,7 @@
 		{
 			:key => :back, 
 			:name => "Goto model", 
-			:url => model_path(@model),
+			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',
 				:class => 'text'

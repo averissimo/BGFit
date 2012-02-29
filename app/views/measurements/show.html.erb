@@ -3,15 +3,7 @@
 		{
 			:key => :regression, 
 			:name => 'Linear regression', 
-			:url => regression_model_experiment_measurement_path(@model,@experiment,@measurement),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
-			:key => :csv, 
-			:name => 'Download .csv', 
-			:url => model_experiment_measurement_path(@model,@experiment,@measurement, :format => :csv),
+			:url => url_for([:regression,@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -19,7 +11,7 @@
 		{
 			:key => :edit, 
 			:name => 'Edit this measurement', 
-			:url => edit_model_experiment_measurement_path(@model,@experiment,@measurement),
+			:url => url_for([:edit,@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -27,15 +19,32 @@
 		{
 			:key => :new, 
 			:name => 'New line', 
-			:url => new_model_experiment_measurement_line_path(@model,@experiment,@measurement),
+			:url => new_measurement_line_path(@measurement),
 			:options => {
 				:container_class => 'menu'
 			}
 		},
 		{
+			:key => :new, 
+			:name => 'New dyna model', 
+			:url => new_measurement_proxy_dyna_model_path(@measurement),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :csv, 
+			:name => '.csv', 
+			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
 			:key => :index, 
 			:name => 'Goto experiment', 
-			:url => model_experiment_path(@model,@experiment),
+			:url => url_for([@model,@experiment]),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -44,7 +53,7 @@
 		{
 			:key => :index, 
 			:name => 'Goto model', 
-			:url => model_path(@model),
+			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -80,8 +89,8 @@
 			row.y			line.y
 			row.z			line.z
 			row.note		line.note
-			row.edit_h		link_to 'edit', edit_model_experiment_measurement_line_path(@model,@experiment,@measurement,line)
-			row.destroy_h	link_to 'remove', [@model,@experiment,@measurement,line], confirm: 'Are you sure?', method: :delete
+			row.edit_h		link_to 'edit', [:edit,@measurement,line]
+			row.destroy_h	link_to 'remove', [@measurement,line], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>
@@ -89,3 +98,24 @@
 <div class="menu">
 <%= menu %>
 </div>
+
+<h3>Dynamic models (<%= pluralize(@measurement.proxy_dyna_models.length, 'dynamic model')%>)</h3>
+<%= 
+	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted') do |t|
+		t.header :title
+		t.header :description
+		t.header :show_h,		""
+		t.header :edit_h,		""
+		t.header :destroy_h,	""
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, proxy_dyna_model, index|
+			# Notice there's no need to explicitly define the title
+			row.title		proxy_dyna_model.dyna_model.title
+			row.description	proxy_dyna_model.dyna_model.description
+			row.show_h		link_to 'show', [proxy_dyna_model]
+			row.edit_h		link_to 'edit', [:edit,proxy_dyna_model]
+			row.destroy_h	link_to 'remove', [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>

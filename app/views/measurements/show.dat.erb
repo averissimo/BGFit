@@ -1,0 +1,15 @@
+{	"id": <%= @measurement.id%>,
+	"cols":[{"id":"time","label":"Time","type":"number"},{"id":"od600","label":"OD600","type":"number"},{"id":"ln_od600","label":"Ln( OD600 )","type":"number"},{"id":"ph","label":"pH","type":"number"}],
+"rows": [<%= 
+	@measurement.lines.map{ |line| 
+		if line.x == nil
+			next 
+		end 
+		string = '{"c": [{"v": ' + "#{line.formatted(line.x)}" + '},{"v": ' + "#{line.formatted(line.y)}" + '},{"v": ' + "#{line.formatted(line.ln_y)}" + '}'
+		if line.z == nil
+			string = string + ']}'
+		else
+			string = string + ',{"v": ' + "#{line.z_formatted}" + '} ]}'
+		end
+		string
+	}.join(",").html_safe %>]}

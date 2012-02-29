@@ -29,7 +29,7 @@
 			row.title			word_wrap(model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.description		model.description_trimmed.gsub(/\n/, '<br/>')
 			row.show_h			link_to 'show', model
-			row.edit_h			link_to 'edit', edit_model_path(model)
+			row.edit_h			link_to 'edit', [:edit,model]
 			row.destroy_h		link_to 'remove', model, confirm: 'Are you sure?', method: :delete
 		end
 	end
@@ -49,6 +49,8 @@
 		t.header :show_h,		""
 		t.header :regression_h,	""
 		t.header :csv,			""
+		t.header :exp,			""
+		t.header :dyna,			""
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -57,9 +59,11 @@
 			row.experiment		measure.experiment.title
 			row.title			measure.title
 			row.date			measure.date
-			row.regression_h	link_to 'regression', [:regression,measure.model,measure.experiment,measure]
-			row.show_h			link_to 'show', [measure.model,measure.experiment,measure]
-			row.csv				link_to 'download .csv', model_experiment_measurement_path(measure.model,measure.experiment,measure, :format => :csv)
+			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
+			row.show_h			link_to 'show', [measure.experiment,measure]
+			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
+			row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
+			row.dyna			link_to 'first dyna' , [measure.proxy_dyna_models.first]
 		end
 	end
 %>

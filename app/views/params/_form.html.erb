@@ -1,0 +1,39 @@
+<h3>Parameter for <%= @dyna_model.title %> dyna model</h3>
+<p>
+	<%= simple_format @dyna_model.description %>
+</p>
+
+<%= form_for([@dyna_model,@param]) do |f| %>
+  <% if @param.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@param.errors.count, "error") %> prohibited this parameter from being saved:</h2>
+
+      <ul>
+      <% @param.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="field">
+    <%= f.label :code %><br />
+    <%= f.text_field :code %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :human_title %><br />
+    <%= f.text_field :human_title %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_area :description %>
+  </div>
+  <div class="actions">
+    <%= f.submit nil , :class => "btn"%>
+  </div>
+  
+<% end %>
+
+<div class="clear"></div>

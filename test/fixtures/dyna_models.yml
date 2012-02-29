@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  description: MyText
+  definition: MyText
+  solver: MyString
+  estimation: MyString
+
+two:
+  title: MyString
+  description: MyText
+  definition: MyText
+  solver: MyString
+  estimation: MyString

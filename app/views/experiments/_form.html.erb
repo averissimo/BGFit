@@ -3,7 +3,7 @@
 	<%= simple_format @model.description %>
 </p>
 
-<%= form_for([@model,@experiment]) do |f| %>
+<%= form_for(@form) do |f| %>
   <% if @experiment.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@experiment.errors.count, "error") %> prohibited this experiment from being saved:</h2>

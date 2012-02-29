@@ -59,7 +59,8 @@ div.field {
   }
   
   input,
-  textarea {
+  textarea,
+  select {
     @extend p
   }
 }
@@ -171,6 +172,10 @@ table.formatted {
       }
     }
   }
+}
+
+div.one_tab {
+  margin-left: $tab;
 }
 
 div.menu {

@@ -1,4 +1,5 @@
 {	"id": <%= @measurement.id%>,
+	"title": "<%= @measurement.title%>",
 	"cols":[{"id":"time","label":"Time","type":"number"},{"id":"od600","label":"OD600","type":"number"},{"id":"ln_od600","label":"Ln( OD600 )","type":"number"},{"id":"ph","label":"pH","type":"number"}],
 "rows": [<%= 
 	@measurement.lines.map{ |line| 

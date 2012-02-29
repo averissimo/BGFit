@@ -1,14 +1,20 @@
 class ExperimentsController < ApplicationController
   respond_to :html, :json, :csv
   
+  before_filter :determine_models , :only => [ :show, :gompertz, :edit, :update, :destroy]
+  
   # GET /experiments
   # GET /experiments.json
   def index
-    @model = Model.find(params[:model_id])
-    @experiments = @model.experiments
+    @experiments = if params[:model_id]
+      @model = Model.find(params[:model_id])
+      @experiments = @model.experiments
+    else
+      Experiment.all
+    end
     
     respond_with [@model,@experiments] do | format|
-      format.html { redirect_to @model }
+      format.html { redirect_to @model.nil? ? root_path : @model }
       format.json { render json: @experiments }
     end
   end
@@ -16,10 +22,8 @@ class ExperimentsController < ApplicationController
   # GET /experiments/1
   # GET /experiments/1.json
   def show
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:id])
 
-    respond_with @experiment do |format|
+    respond_with [@model,@experiments] do |format|
       format.exp { 
         exp = render_to_string :exp => @experiment
         send_data  exp, :filename => 
@@ -31,26 +35,23 @@ class ExperimentsController < ApplicationController
   end
   
   def gompertz
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:id])
-
-    respond_with @experiment
+    respond_with [@model,@experiment]
   end
 
   # GET /experiments/new
   # GET /experiments/new.json
-  def new
+  def new    
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.build
+    
+    @form = [@model,@experiment]
 
     respond_with [@model,@experiment]
   end
 
   # GET /experiments/1/edit
   def edit
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:id])
-
+    @form = [@model,@experiment]
     respond_with [@model,@experiment]
   end
 
@@ -58,9 +59,8 @@ class ExperimentsController < ApplicationController
   # POST /experiments.json
   def create
     @model = Model.find(params[:model_id])
-    @experiment = Experiment.new(params[:experiment])
-    @experiment.model = @model
-
+    @experiment = @model.experiments.build(params[:experiment])
+    
     respond_with [@model,@experiment] do | format |
       if @experiment.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Experiment")
@@ -74,8 +74,6 @@ class ExperimentsController < ApplicationController
   # PUT /experiments/1
   # PUT /experiments/1.json
   def update
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:id])
 
     respond_with [@model,@experiment] do |format|
       if @experiment.update_attributes(params[:experiment])
@@ -90,10 +88,16 @@ class ExperimentsController < ApplicationController
   # DELETE /experiments/1
   # DELETE /experiments/1.json
   def destroy
-    @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.find(params[:id])
     @experiment.destroy
 
     respond_with([@model,@experiment], :location => @model)
   end
+  
+  private
+  
+  def determine_models
+    @experiment = Experiment.find(params[:id])
+    @model = @experiment.model
+  end
+  
 end

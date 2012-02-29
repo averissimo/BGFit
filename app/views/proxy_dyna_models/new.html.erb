@@ -1,0 +1,22 @@
+<% 
+	context_menu = [
+		{
+			:key => :back, 
+			:name => "Back to measurement", 
+			:url => url_for( [@experiment, @measurement] ),
+			:options => {
+				:container_class => 'menu',
+				:class => 'text'
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:title) { "New proxy dyna model" }
+%>
+<h1>New proxy dyna model</h1>
+
+<%= render 'form' %>
+
+<div class="menu">
+	<%= menu %>
+</div>

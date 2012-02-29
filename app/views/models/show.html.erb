@@ -3,7 +3,7 @@
 		{
 			:key => :edit, 
 			:name => 'Edit this model', 
-			:url => edit_model_path(@model),
+			:url => url_for([:edit,@model]),
 			:options => {
 				:container_class => 'menu'
 			}
@@ -11,7 +11,7 @@
 		{
 			:key => :new, 
 			:name => 'New experiment', 
-			:url => new_model_experiment_path(@model),
+			:url => url_for([:new,@model,:experiment]),
 			:options => {
 				:container_class => 'menu',
 				:class => "btn"
@@ -83,9 +83,9 @@
 			row.experiment		measure.experiment.title
 			row.title			measure.title
 			row.date			measure.date
-			row.regression_h	link_to 'regression', [:regression,@model,measure.experiment,measure]
-			row.show_h			link_to 'show', [@model,measure.experiment,measure]
-			row.csv				link_to 'download .csv', model_experiment_measurement_path(measure.model,measure.experiment,measure, :format => :csv)
+			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
+			row.show_h			link_to 'show', [measure.experiment,measure]
+			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
 		end
 	end
 %>

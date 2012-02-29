@@ -1,0 +1,29 @@
+<%= form_for([@measurement,@proxy_dyna_model]) do |f| %>
+  <% if @proxy_dyna_model.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@proxy_dyna_model.errors.count, "error") %> prohibited this dyna model from being created:</h2>
+
+      <ul>
+      <% @proxy_dyna_model.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <div class="field">
+    <%= f.label :dyna_model %><br />
+	<%= collection_select(:dyna_model, :dyna_model_id, DynaModel.all, :id, :title) %>
+  </div>
+    
+  <div class="field">
+    <%= f.label :original_data %><br />
+	<%= f.text_area :original_data %>
+  </div>  
+    
+   <div class="actions">
+    <%= f.submit nil ,:class => "btn" %>
+  </div>
+<% end %>
+
+<div class="clear"></div>
