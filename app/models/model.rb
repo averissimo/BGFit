@@ -1,7 +1,8 @@
 class Model < ActiveRecord::Base
   has_many :experiments, :dependent => :destroy
-  versioned
   accepts_nested_attributes_for :experiments
+  
+  has_paper_trail
   
   public
     def description_trimmed

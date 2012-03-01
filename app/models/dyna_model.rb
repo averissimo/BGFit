@@ -1,10 +1,11 @@
 class DynaModel < ActiveRecord::Base
   has_many :params
   has_many :proxy_dyna_models
-  
   validates_uniqueness_of :title
 
   validate :validate_solver, :validate_estimation
+  
+  has_paper_trail
 
   public
   #

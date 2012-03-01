@@ -1,6 +1,7 @@
 class Line < ActiveRecord::Base
   belongs_to :measurement
-  versioned
+  
+  has_paper_trail
   
   def formatted(input)
     if input == nil

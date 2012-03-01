@@ -6,6 +6,8 @@ class Experiment < ActiveRecord::Base
   
   accepts_nested_attributes_for :measurements
   
+  has_paper_trail
+  
   public
   
   def get_average_proxy_dyna_model(proxy_dyna_models)

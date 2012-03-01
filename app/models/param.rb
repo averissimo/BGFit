@@ -1,6 +1,8 @@
 class Param < ActiveRecord::Base
   belongs_to :dyna_model
   
+  has_paper_trail
+  
   public
     def description_trimmed
         return "" if description.nil?
