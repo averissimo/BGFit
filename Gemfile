@@ -7,6 +7,8 @@ gem 'rails', '3.1.3'
 
 gem 'mysql2'
 
+gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
+
 gem 'blankslate'
 gem 'hirb'
 # Gems used only for assets and not required

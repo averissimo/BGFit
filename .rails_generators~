@@ -225,3 +225,10 @@ mailer:
 - --old-style-hash
 - --template-engine=
 - --test-framework=
+vestal_versions:migration:
+- --force
+- --pretend
+- --quiet
+- --skip
+- --skip-namespace
+- --old-style-hash

@@ -1,6 +1,6 @@
 class Model < ActiveRecord::Base
   has_many :experiments, :dependent => :destroy
-  
+  versioned
   accepts_nested_attributes_for :experiments
   
   public

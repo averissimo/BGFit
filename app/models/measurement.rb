@@ -1,5 +1,6 @@
 class Measurement < ActiveRecord::Base
   belongs_to :experiment
+  versioned
   
   has_many :lines, :dependent => :destroy
   has_many :proxy_dyna_models, :dependent => :destroy

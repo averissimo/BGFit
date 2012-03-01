@@ -2,7 +2,7 @@ class ProxyDynaModel < ActiveRecord::Base
   belongs_to :measurement
   belongs_to :experiment
   belongs_to :dyna_model
-  
+  versioned
   has_many :proxy_params, :dependent => :destroy
   
   before_create :update_params

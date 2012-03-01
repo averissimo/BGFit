@@ -1,5 +1,6 @@
 class Line < ActiveRecord::Base
   belongs_to :measurement
+  versioned
   
   def formatted(input)
     if input == nil
