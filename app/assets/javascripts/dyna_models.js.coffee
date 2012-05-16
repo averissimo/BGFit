@@ -55,7 +55,7 @@ if typeof google isnt 'undefined'
     }
     
     $('h5.button').live 'click' , (event) =>
-      $(event.srcElement).parent().children('div').slideToggle(1500, "swing")
+      $(event.srcElement).parent().children('div').slideToggle()#1500, "swing")
       $(event.srcElement).parent().effect('highlight')
       
       if $(event.srcElement).parent().children('.chart').attr('loaded') != 'true'
@@ -78,7 +78,7 @@ if typeof google isnt 'undefined'
                     #  does not exists
         options.hAxis = {
           viewWindow: {
-            max: range_h.max,
+            max: 15,#range_h.max,
             min: range_h.min
             }
         }

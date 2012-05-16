@@ -11,6 +11,45 @@ class ProxyDynaModel < ActiveRecord::Base
   
   public
   
+  def statistical_data
+    
+    return nil if measurement.nil?
+    lines = measurement.lines_no_death_phase
+    size = lines.size
+    line = lines.shift
+    rmse = 0
+    bias = 0 
+    accu = 0
+    old = line.y
+    
+    begin
+      JSON.parse(json)["result"].each do |pair|
+        break if line.nil?
+        #
+        if pair[0] >= line.x
+          pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
+          rmse +=  ( pair[1] - line.y ) ** 2
+          bias = Math.log( pair[1] / line.y ).abs
+          accu = Math.log( pair[1] / line.y )
+          line = lines.shift  
+        else
+          old = pair[1]
+          nil
+        end
+        
+      end
+    rescue
+      return [].push(measurement.id).push(-1)
+    end
+    this.bias = 10 ** (bias / size )
+    this.accuracy = 10 ** (accu / size )
+    this.rmse = Math.sqrt ( rmse / size )
+    this.save
+    [].push(measurement.model.id).push(measurement.model.title).push(measurement.id).push( this.bias ).push( this.accuracy ).push( this.rmse  )
+    
+  
+  end
+  
   def call_estimation
     url = "#{self.dyna_model.estimation}?time=#{self.measurement.x_array}&values=#{self.measurement.x_array}&model=#{JSON.parse(self.dyna_model.definition).gsub(/\\/,'')}"
   end
@@ -33,7 +72,7 @@ class ProxyDynaModel < ActiveRecord::Base
     if self.measurement.nil?
       url = "#{self.dyna_model.solver}?#{url_params}end=30"
     else
-      url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+      url = "#{self.dyna_model.solver}?#{url_params}#{self.measurement.end_title}=#{self.measurement.end.to_s}"
     end
     print url
     response = Net::HTTP.get_response(URI(url))

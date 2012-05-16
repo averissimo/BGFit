@@ -37,11 +37,12 @@ class ProxyParam < ActiveRecord::Base
     return @std_dev unless @std_dev.nil?
 
     return 0 if @unit.size == 0
-    dev = @unit.inject do |sum,n|
-      sum + (n - @mean) * (n - @mean) 
+    sum = 0
+    @unit.each do |n|
+      sum += (n - @mean)**2
     end
     
-    @std_dev = Math.sqrt(dev / @unit.size)    
+    @std_dev = Math.sqrt(sum / @unit.size)    
   end
   
   def count

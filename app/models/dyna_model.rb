@@ -29,5 +29,5 @@ class DynaModel < ActiveRecord::Base
     return if self.estimation.nil? || self.estimation.blank?
     errors.add("Estimation", "is an invalid URL.") if !estimation.nil? && (estimation =~ URI::regexp).nil?
   end
-    
+  
 end
