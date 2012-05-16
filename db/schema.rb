@@ -83,9 +83,9 @@ ActiveRecord::Schema.define(:version => 20120516111655) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "json",           :limit => 2147483647
-    t.decimal  "rmse",                                 :precision => 10, :scale => 0
-    t.decimal  "bias",                                 :precision => 10, :scale => 0
-    t.decimal  "accuraccy",                            :precision => 10, :scale => 0
+    t.float  "rmse"
+    t.float  "bias"
+    t.float  "accuracy"
   end
 
   add_index "proxy_dyna_models", ["dyna_model_id"], :name => "index_proxy_dyna_models_on_dyna_model_id"

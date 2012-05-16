@@ -42,7 +42,7 @@ class ProxyParam < ActiveRecord::Base
       sum += (n - @mean)**2
     end
     
-    @std_dev = Math.sqrt(sum / @unit.size)    
+    @std_dev = Math.sqrt(sum / (@unit.size - 1))    
   end
   
   def count

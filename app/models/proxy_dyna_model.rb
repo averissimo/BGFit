@@ -11,6 +11,29 @@ class ProxyDynaModel < ActiveRecord::Base
   
   public
   
+  def bias_stdev=(arg)
+    @bias_stdev = arg
+  end
+  def bias_stdev
+    @bias_stdev
+  end
+  
+  def accuracy_stdev=(arg)
+    @accuracy_stdev = arg
+  end
+  def accuracy_stdev
+    @accuracy_stdev
+  end
+  
+  def rmse_stdev=(arg)
+    @rmse_stdev = arg
+  end
+  def rmse_stdev
+    @rmse_stdev
+  end
+  
+  
+  
   def statistical_data
     
     return nil if measurement.nil?
@@ -41,11 +64,11 @@ class ProxyDynaModel < ActiveRecord::Base
     rescue
       return [].push(measurement.id).push(-1)
     end
-    this.bias = 10 ** (bias / size )
-    this.accuracy = 10 ** (accu / size )
-    this.rmse = Math.sqrt ( rmse / size )
-    this.save
-    [].push(measurement.model.id).push(measurement.model.title).push(measurement.id).push( this.bias ).push( this.accuracy ).push( this.rmse  )
+    self.bias = 10 ** (bias / size )
+    self.accuracy = 10 ** (accu / size )
+    self.rmse = Math.sqrt ( rmse / size )
+    self.save
+    [].push(measurement.model.id).push(measurement.model.title).push(measurement.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
     
   
   end
