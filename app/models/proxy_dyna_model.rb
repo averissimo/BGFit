@@ -80,6 +80,7 @@ class ProxyDynaModel < ActiveRecord::Base
   def json_cache
     if self.json.nil?
       self.call_solver
+      self.statistical_data     
     else
       self.json
     end

@@ -54,6 +54,15 @@ if typeof google isnt 'undefined'
       error: (jqXHR, textStatus, errorThrown) =>
     }
     
+    $('a.download').live 'hover' , (event) =>
+      $(event.srcElement).prop('href','#')
+    
+    $('a.download').live 'click' , (event) =>
+      base64 = $(event.srcElement).parent().find('div.proxy_dyna_model_chart div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
+
+      $(event.srcElement).prop('href','data:image/svg;base64,'+ btoa(base64))
+      return true
+          
     $('h5.button').live 'click' , (event) =>
       $(event.srcElement).parent().children('div').slideToggle()#1500, "swing")
       $(event.srcElement).parent().effect('highlight')
@@ -68,7 +77,7 @@ if typeof google isnt 'undefined'
                     #  does not exists
         options.vAxis = { 
           viewWindow: {
-            max: range_v.max +  offset,
+            max: 1.6,#range_v.max +  offset + .3,
             min: range_v.min -  offset
             }
         }
@@ -85,6 +94,7 @@ if typeof google isnt 'undefined'
       
       chart = new google.visualization.ScatterChart el
       google.visualization.events.addListener chart, 'ready', () =>
+        $(el.parentNode.parentNode).children('a.download').show()#1500, "swing")
         if $(el).attr('slide') == 'auto'
           $(el).slideDown(1500, "swing").effect("highlight")
         $(el).attr('loaded','true')

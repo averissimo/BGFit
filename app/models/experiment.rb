@@ -38,9 +38,7 @@ class Experiment < ActiveRecord::Base
         end
         blank_param.mean_add(param.value) unless param.nil? || param.value.nil?
       end
-      
-      test = p.statistical_data     
-      
+           
       bias.push( p.bias )
       accu.push( p.accuracy )
       rmse.push( p.rmse )
