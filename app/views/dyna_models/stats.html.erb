@@ -74,7 +74,7 @@
 	<div class="one_tab">
 		<div>
 		<div>
-			<h5 class="button">Average parameters (click here to show/hide)</h5>
+			<h5 class="button">Average parameters <span class="dim">(click here to show/hide)</span></h5>
 			<div style="display:none;">
 			<% p_dm_average = e.get_average_proxy_dyna_model(proxy_dyna_models) %>
 			<dl>
@@ -109,7 +109,7 @@
 		</div>
 		<a class="download" style='display:none' href='#'>Download chart as .svg</a>
 		<div class="proxy_dyna_model_chart" >
-			<h5 class="button">Chart (click here to show/hide)</h5>
+			<h5 class="button">Chart <span  class="dim">(click here to show/hide)</span></h5>
 			<div class="chart" style="display:none;">
 				loading...
 				<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(e.proxy_dyna_models.first, :format => :json) %></div>
@@ -122,7 +122,7 @@
 		</div>
 		</div>
 	<div>		
-		<h5 class="button">Measurements (click here to show/hide)</h5>
+		<h5 class="button">Measurements  <span class="dim">(click here to show/hide)</span></h5>
 
 		<% @dyna_model.proxy_dyna_models.collect {|p| if (p.measurement && p.measurement.experiment == e) then p.measurement end }.compact.each do |m| %>
 		<% next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model }) %>
@@ -133,7 +133,7 @@
 			<h4><i><%= m.title %></i> measurement that belongs to <i><%= m.model.title %></i> model</h4>
 
 			<div>
-				<h5 class="button">Data Updated at <%=p_dm.updated_at %> (click here to show/hide)</h5>
+				<h5 class="button">Data Updated at <%=p_dm.updated_at %> <span style="color:#bbbbbb">(click here to show/hide)<span></h5>
 				<div style="display:none;">
 				<dl>
 					<dt>RMSE:</dt>

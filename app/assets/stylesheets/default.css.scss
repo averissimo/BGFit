@@ -28,10 +28,19 @@ img {
   margin-left: 2em;
 }
 
+img.noborder{
+  border: none;
+  margin-left: 0em;
+}
+
 p,dl {
   margin-left: $tab;
 }
 
+
+.dim {
+  color: #777;
+}
 a {
   text-decoration: none;
   color: black;
@@ -43,6 +52,13 @@ a {
     color: black;
   }
 }
+
+h5.button {
+  padding-left:1em;
+  background-image: url("/assets/plus.png");
+  background-repeat:no-repeat;
+}
+
 
 form {
   display:inline-block;

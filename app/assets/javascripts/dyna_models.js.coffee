@@ -55,19 +55,19 @@ if typeof google isnt 'undefined'
     }
     
     $('a.download').live 'hover' , (event) =>
-      $(event.target).prop('href','#')
+      $(event.currentTarget).prop('href','#')
     
     $('a.download').live 'click' , (event) =>
-      base64 = $(event.target).parent().find('div.proxy_dyna_model_chart div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
+      base64 = $(event.currentTarget).parent().find('div.proxy_dyna_model_chart div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
 
-      $(event.target).prop('href','data:image/svg;base64,'+ btoa(base64))
+      $(event.currentTarget).prop('href','data:image/svg;base64,'+ btoa(base64))
       return true
           
     $('h5.button').live 'click' , (event) =>
-      $(event.target).parent().children('div').slideToggle()#1500, "swing")
-      $(event.target).parent().effect('highlight')
+      $(event.currentTarget).parent('div').children('div').slideToggle()#1500, "swing")
+      $(event.currentTarget).parent('div').effect('highlight')
       
-      if $(event.target).parent().children('.chart').attr('loaded') != 'true'
+      if $(event.currentTarget).parent().children('.chart').attr('loaded') != 'true'
         process_chart event.target
     
     process_google_chart = (el,data) ->
