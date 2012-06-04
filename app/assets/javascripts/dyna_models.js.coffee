@@ -55,20 +55,20 @@ if typeof google isnt 'undefined'
     }
     
     $('a.download').live 'hover' , (event) =>
-      $(event.srcElement).prop('href','#')
+      $(event.target).prop('href','#')
     
     $('a.download').live 'click' , (event) =>
-      base64 = $(event.srcElement).parent().find('div.proxy_dyna_model_chart div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
+      base64 = $(event.target).parent().find('div.proxy_dyna_model_chart div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
 
-      $(event.srcElement).prop('href','data:image/svg;base64,'+ btoa(base64))
+      $(event.target).prop('href','data:image/svg;base64,'+ btoa(base64))
       return true
           
     $('h5.button').live 'click' , (event) =>
-      $(event.srcElement).parent().children('div').slideToggle()#1500, "swing")
-      $(event.srcElement).parent().effect('highlight')
+      $(event.target).parent().children('div').slideToggle()#1500, "swing")
+      $(event.target).parent().effect('highlight')
       
-      if $(event.srcElement).parent().children('.chart').attr('loaded') != 'true'
-        process_chart event.srcElement
+      if $(event.target).parent().children('.chart').attr('loaded') != 'true'
+        process_chart event.target
     
     process_google_chart = (el,data) ->
       range_v = data.getColumnRange(1)
