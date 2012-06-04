@@ -64,10 +64,10 @@ if typeof google isnt 'undefined'
       return true
           
     $('h5.button').live 'click' , (event) =>
-      $(event.currentTarget).parent('div').children('div').slideToggle()#1500, "swing")
+      $(event.currentTarget).parent('div').children('div').slideToggle()
       $(event.currentTarget).parent('div').effect('highlight')
       
-      if $(event.currentTarget).parent().children('.chart').attr('loaded') != 'true'
+      if $(event.currentTarget).parent('div').children('.chart').attr('loaded') != 'true'
         process_chart event.target
     
     process_google_chart = (el,data) ->
