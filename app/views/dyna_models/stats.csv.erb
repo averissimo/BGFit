@@ -15,14 +15,19 @@ Average parameters
 Measurements
 
 ,title,od_max,lambda,u_max,n_zero<% 
- @dyna_model.proxy_dyna_models.collect {|p| if (p.measurement.experiment == e) then p.measurement end }.compact.each do |m|
- next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model })
+ #@dyna_model.proxy_dyna_models.collect {|p| if (p.measurement.experiment == e) then p.measurement end }.compact
+ e.measurements.each do |m|
+ 	next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model })
 
  proxy_dyna_models.each do |p_dm|  %>
 ,<%= m.title %>,<% p_dm.proxy_params.sort{ |a,b| a.code <=> b.code }.each do |param| %><% next if param.code == 'o'%><%= param.value %>,<% end %><%end%><%end%>
 
-==============================================================================================
+##############################################################################################
+##############################################################################################
+##############################################################################################
  End of Experiment <%= e.title %> experiment that belongs to <%= e.model.title %> model
-==============================================================================================
+##############################################################################################
+##############################################################################################
+##############################################################################################
 <% end %>
 

@@ -2,6 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+
 a.btn, {
   padding: 10px 15px 10px 15px;
   margin-right: 10px;
@@ -28,6 +29,15 @@ a.btn, {
     background: -webkit-gradient(linear,left top,left bottom,color-stop(0, #245192),color-stop(.75, #1e3b73),color-stop(1, #12295d));
   }
 }
+
+a.blank {
+  background: none;
+  color: #000000;
+  &:hover {
+    color: #ffffff;
+  }
+}
+
 
 input.btn {
   @extend a.btn;

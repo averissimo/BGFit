@@ -3,20 +3,19 @@
 
 	context_menu = [
 		{
-			:key => :edit, 
-			:name => 'Edit this dyna model', 
-			:url => edit_dyna_model_path(@dyna_model),
+			:key => :show, 
+			:name => 'Show dyna model\'s details', 
+			:url => dyna_model_path(@dynamodel),
 			:options => {
 				:container_class => 'menu'
 			}
 		},
 		{
-			:key => :new, 
-			:name => 'New parameter', 
-			:url => new_dyna_model_param_path(@dyna_model),
+			:key => :edit, 
+			:name => 'Download .csv data', 
+			:url => stats_dyna_model_path(@dynamodel, :format => :csv),
 			:options => {
-				:container_class => 'menu',
-				:class => "btn"
+				:container_class => 'menu'
 			}
 		},
 		{
