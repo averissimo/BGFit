@@ -55,7 +55,7 @@ a {
 
 h5.button {
   padding-left:1em;
-  background-image: url("/assets/plus.png");
+  background-image: image-url('plus.png');
   background-repeat:no-repeat;
 }
 
@@ -147,7 +147,6 @@ table.formatted {
 }
 
 #menu {
-  background-color: #5EB935;
   border-bottom: 0px solid #000000;
   height: $header;
   margin:0px;
