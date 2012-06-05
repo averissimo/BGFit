@@ -8,19 +8,23 @@
 Average parameters
 
 ,title,mean,std_dev,count
-<% e.get_average_proxy_dyna_model(proxy_dyna_models).proxy_params.each do |p| %>
+<% p_dm_average = e.get_average_proxy_dyna_model(proxy_dyna_models) %>
+<% p_dm_average.proxy_params.each do |p| %>
 ,<%= p.code %>,<%= p.mean %>,<%= p.std_dev %>,<%= p.count %>
 <% end %>
+,rmse,<%=p_dm_average.rmse%>,<%=p_dm_average.rmse_stdev%>,(all measurements)
+,bias,<%=p_dm_average.bias%>,<%=p_dm_average.bias_stdev%>,(all measurements)
+,accuracy,<%=p_dm_average.accuracy%>,<%=p_dm_average.accuracy_stdev%>,(all measurements)
 
 Measurements
 
-,title,od_max,lambda,u_max,n_zero<% 
+,title,od_max,lambda,u_max,n_zero,rmse,bias,accuracy<% 
  #@dyna_model.proxy_dyna_models.collect {|p| if (p.measurement.experiment == e) then p.measurement end }.compact
  e.measurements.each do |m|
  	next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model })
 
  proxy_dyna_models.each do |p_dm|  %>
-,<%= m.title %>,<% p_dm.proxy_params.sort{ |a,b| a.code <=> b.code }.each do |param| %><% next if param.code == 'o'%><%= param.value %>,<% end %><%end%><%end%>
+,<%= m.title %>,<% p_dm.proxy_params.sort{ |a,b| a.code <=> b.code }.each do |param| %><% next if param.code == 'o'%><%= param.value %>,<% end %><%=p_dm.rmse%>,<%=p_dm.bias%>,<%=p_dm.accuracy%><%end%><%end%>
 
 ##############################################################################################
 ##############################################################################################
