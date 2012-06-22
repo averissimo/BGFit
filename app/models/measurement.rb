@@ -38,13 +38,13 @@ class Measurement < ActiveRecord::Base
     def x_array
       self.lines_no_death_phase.sort.collect { |l|
         l.x  
-      } 
+      }.join(",")
     end
     
     def y_array
       self.lines_no_death_phase.sort.collect { |l|
         l.y  
-      }
+      }.join(",")
     end
   
     def end
@@ -64,7 +64,7 @@ class Measurement < ActiveRecord::Base
     end
     
     def x_0_title
-      "x_0"
+      "N"
     end
     
     def model

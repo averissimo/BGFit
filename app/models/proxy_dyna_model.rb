@@ -32,8 +32,6 @@ class ProxyDynaModel < ActiveRecord::Base
     @rmse_stdev
   end
   
-  
-  
   def statistical_data
     
     return nil if measurement.nil?
@@ -74,7 +72,24 @@ class ProxyDynaModel < ActiveRecord::Base
   end
   
   def call_estimation
-    url = "#{self.dyna_model.estimation}?time=#{self.measurement.x_array}&values=#{self.measurement.x_array}&model=#{JSON.parse(self.dyna_model.definition).gsub(/\\/,'')}"
+    if self.measurement.nil?
+      return
+    end
+    
+    url = "#{self.dyna_model.estimation}?time=[#{self.measurement.x_array}]&values=[#{self.measurement.y_array}]"
+    url += self.dyna_model.definition
+    
+    response = Net::HTTP.get_response(URI(url))
+    result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
+    
+    self.proxy_params.collect do |d_p|
+      d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
+      d_p.save
+      d_p
+    end
+    self.call_solver
+    self.json = nil
+    self.save
   end
   
   def json_cache
@@ -91,12 +106,12 @@ class ProxyDynaModel < ActiveRecord::Base
       next if p.code == 'o'
       return nil if p.value.nil?      
       "#{p.param.code}=#{p.value.to_s}"
-    }.join('&')
+    }.compact.join('&')
     
     if self.measurement.nil?
-      url = "#{self.dyna_model.solver}?#{url_params}end=30"
+      url = "#{self.dyna_model.solver}?#{url_params}&end=48"
     else
-      url = "#{self.dyna_model.solver}?#{url_params}#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+      url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
     end
     print url
     response = Net::HTTP.get_response(URI(url))
