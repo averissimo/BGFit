@@ -87,9 +87,8 @@ class ProxyDynaModel < ActiveRecord::Base
       d_p.save
       d_p
     end
-    self.call_solver
     self.json = nil
-    self.save
+    self.json_cache
   end
   
   def json_cache

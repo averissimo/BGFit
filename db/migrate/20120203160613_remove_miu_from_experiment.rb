@@ -7,9 +7,9 @@ class RemoveMiuFromExperiment < ActiveRecord::Migration
   end
 
   def down
-    add_column :experiments, :miu, :floaat
-    add_column :experiments, :lambda, :floaat
-    add_column :experiments, :a, :floaat
-    add_column :experiments, :n_zero, :floaat
+    add_column :experiments, :miu, :float
+    add_column :experiments, :lambda, :float
+    add_column :experiments, :a, :float
+    add_column :experiments, :n_zero, :float
   end
 end
