@@ -10,5 +10,5 @@ time,N
 [Componentnotes]
 
 [Values]
-<%= @measurement.lines_no_death_phase.map { |l| l.x.to_s + "," + l.y.to_s }.join("\n").html_safe %>
+<%= @measurement.lines.map { |l| l.x.to_s + "," + l.y.to_s }.join("\n").html_safe %>
 
