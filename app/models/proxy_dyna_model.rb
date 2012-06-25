@@ -77,9 +77,38 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     url = "#{self.dyna_model.estimation}?time=[#{self.measurement.x_array}]&values=[#{self.measurement.y_array}]"
-    url += self.dyna_model.definition
+    print url
+    url += "&estimation=" + CGI::escape("{\"states\"") + ":["
+    print url
+    url_states = self.proxy_params.collect { |p|
+      next if p.param.code == 'o' || p.param.code == "N"
+      if p.param.top.nil? || p.param.bottom.nil?
+        nil
+      else
+        CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "#{p.param.code}"  + CGI::escape("\"") + "," +
+        CGI::escape("\"bottom\"") + ":"  + "#{p.param.top}"    + "," +
+        CGI::escape("\"top\"")    + ":"  + "#{p.param.bottom}" + CGI::escape("}")
+      end 
+    }.compact.join(',') + "]"
+    url_ic = "," + CGI::escape("\"initial\"") + ":["
+    url_ic += self.proxy_params.collect { |p|
+      next if p.param.code == 'o' || ( p.param.code != "N" )
+      if p.param.top.nil? || p.param.bottom.nil?
+        nil
+      else
+        CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "#{p.param.code}"  + CGI::escape("\"") + "," +
+        CGI::escape("\"bottom\"") + ":"  + "#{p.param.top}"    + "," +
+        CGI::escape("\"top\"")    + ":"  + "#{p.param.bottom}" + CGI::escape("}")  
+      end 
+    }.compact.join(',') + ',' +
+      CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "t"  + CGI::escape("\"") + "," +
+      CGI::escape("\"bottom\"") + ":"  + "0"    + "," +
+      CGI::escape("\"top\"")    + ":"  + "100" + CGI::escape("}") + "]"
+
+    url += url_states + url_ic;
+    url += CGI::escape("}")
     
-    response = Net::HTTP.get_response(URI(url))
+    response = Net::HTTP.get_response(URI(url))      
     result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
     
     self.proxy_params.collect do |d_p|

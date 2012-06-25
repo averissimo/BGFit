@@ -50,7 +50,7 @@ class Measurement < ActiveRecord::Base
     def end
       self.lines.max_by{ |l| 
         l.x 
-      }.x * 2
+      }.x * 1.1
     end
     
     def end_title
