@@ -14,8 +14,8 @@ min = nil;
 max = nil;
 
 min_max_array = @experiment.measurements.collect { |l| 
-	min_aux = l.lines.min_by { |a| a.x }.y
-	max_aux = l.lines.max_by { |a| a.y }.y
+	min_aux = l.lines.map{|a| if a.x.nil? then next else a end}.compact.min_by { |a| a.x }.y
+	max_aux = l.lines.map{|a| if a.y.nil? then next else a end}.compact.max_by { |a| a.y }.y
 	[min_aux, max_aux]
 }
 min = min_max_array.min_by{ |a| a[0] }[0]
