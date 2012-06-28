@@ -50,7 +50,7 @@ class DynaModelsController < ApplicationController
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
-    @experiments = Experiment.all.sort_by { |e| e.model.title }
+    @experiments = Experiment.joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>@dyna_model.id}}).group('experiments.id').sort_by { |e| e.model.title }
     respond_with(@dyna_models)
   end
 
