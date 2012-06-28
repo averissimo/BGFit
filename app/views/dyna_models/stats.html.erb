@@ -65,9 +65,13 @@
 <h3>Models</h3>
 
 <h3>Experiments</h3>
-
 	<% @experiments.each do |e| %>
-	<% next unless (proxy_dyna_models = e.measurements.collect_concat(&:proxy_dyna_models).find_all { |p| p.dyna_model == @dyna_model }) %>
+	<% 
+	#next unless (proxy_dyna_models = e.measurements.collect_concat(&:proxy_dyna_models).find_all { |p| p.dyna_model == @dyna_model })
+	%>
+	<% 
+	next unless (proxy_dyna_models = ProxyDynaModel.joins(:measurement => :experiment).where('measurements.experiment_id' => e.id, :dyna_model_id => @dyna_model.id).group('proxy_dyna_models.id')) 
+	%>
 	
 	<h4><i><%= e.title %></i> experiment that belongs to <i><%= e.model.title %></i> model</h4>
 	

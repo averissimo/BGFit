@@ -77,6 +77,8 @@
 		t.header :code
 		t.header :human_title
 		t.header :description
+		t.header :top
+		t.header :bottom
 		t.header :edit_h,		""
 		t.header :destroy_h,	""
 
@@ -86,6 +88,8 @@
 			row.code			param.code
 			row.human_title		param.human_title
 			row.description		param.description_trimmed.gsub(/\n/, '<br/>')
+			row.top				param.top
+			row.bottom			param.bottom
 			row.edit_h			link_to 'edit', [:edit,@dyna_model,param]
 			row.destroy_h		link_to 'remove', [@dyna_model,param], confirm: 'Are you sure?', method: :delete
 		end

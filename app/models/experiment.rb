@@ -12,6 +12,8 @@ class Experiment < ActiveRecord::Base
   
   def get_average_proxy_dyna_model(proxy_dyna_models)
     
+    return nil if proxy_dyna_models.nil? || proxy_dyna_models.size == 0
+    
     blank = self.proxy_dyna_models.find do |p|
       p.dyna_model.id == proxy_dyna_models.first.dyna_model.id      
     end
