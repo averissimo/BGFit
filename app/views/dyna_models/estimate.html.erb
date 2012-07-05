@@ -50,10 +50,20 @@
 
 <% @models.each do |m| %>
 
-	<h3><%=m.title%> (id:<%=m.id%>)</h3>
-
+	<h3><%=m.title%> (id:<%=m.id%>)</h3>	
 	
-	<div class="experiment">(box)</div>
+	<div class="one_tab">
+	<% @dyna_model.get_experiments_by_model(m).each do |e| %>
+	
+		<h3 class><%=e.title%> (id:<%=e.id%>)</h3>
+			
+		<div class="one_tab">	
+		<% @dyna_model.get_measurements_by_experiment(e).each do |meas| %>	
+			<div class="experiment">(box) <%= meas.title %> | <%= meas.proxy_dyna_model %></div>
+		<%end%>
+		</div>
+	<%end%>
+	</div>
 
 <% end %>
 
