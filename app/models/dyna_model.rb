@@ -10,13 +10,37 @@ class DynaModel < ActiveRecord::Base
   public
   #
   def description_trimmed
-      return "" if description.nil?
-      if description.length > 97
-        return description[0..97] + "..." 
-      else
-        return description
-      end
+    return "" if description.nil?
+    if description.length > 97
+      return description[0..97] + "..." 
+    else
+      return description
     end
+  end
+  
+  def get_models
+    Model.joins(:experiments => {:measurements => :proxy_dyna_models}).where(:experiments=>{:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>self.id}}}).group('models.id').order(:id)
+  end
+  
+  def get_experiments
+    Experiment.joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>self.id}}).group('experiments.id').order(:model_id)
+  end
+  
+  def get_experiments_by_model(model)
+    Experiment.joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>self.id}} , :measurements => {:experiments => {:model_id => model.id}}).group('experiments.id').order(:model_id)
+  end
+  
+  def get_measurements
+    Measurement.joins(:proxy_dyna_models).where(:proxy_dyna_models=>{:dyna_model_id=>self.id}).group('measurements.id').order(:experiment_id)
+  end
+  
+  def get_measurements_by_experiment(experiment)
+    Measurement.joins(:proxy_dyna_models).where(:proxy_dyna_models=>{:dyna_model_id=>self.id}, :experiment_id=>experiment.id).group('measurements.id').order(:experiment_id)
+  end
+  
+  def get_measurements_by_model(model)
+    Measurement.joins(:proxy_dyna_models,:experiment).where(:proxy_dyna_models=>{:dyna_model_id=>self.id}, :experiments=>{:model_id=>model.id}).group('measurements.id').order(:experiment_id)
+  end
   
   private
   #
