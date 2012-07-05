@@ -45,7 +45,13 @@ class DynaModelsController < ApplicationController
   
   def show
     @dyna_model = DynaModel.find(params[:id])
-    respond_with(@dyna_models)
+    respond_with(@dyna_model)
+  end
+
+  def estimate
+    @dyna_model = DynaModel.find(params[:dyna_model_id])
+    @models = Model.joins(:experiments => {:measurements => :proxy_dyna_models}).where(:experiments=>{:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>@dyna_model.id}}}).group('models.id').sort_by { |e| e.model.title }
+    respond_with(@dyna_model)
   end
   
   def stats
