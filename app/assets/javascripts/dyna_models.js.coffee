@@ -19,7 +19,7 @@ if typeof google isnt 'undefined'
       pointSize: 2,
       title: 'Bacterial Growth',
       width: 1000,
-      height: 600,
+      height: 500,
       series: {
         0 : {
           lineWidth:5,
@@ -27,7 +27,10 @@ if typeof google isnt 'undefined'
         }
       },
       chartArea: {
-          left: 100
+          left: 50,
+          rigth:50,
+          top:10,
+          height: "100%"
       },
       animation: {
         easing: "in",
@@ -53,22 +56,60 @@ if typeof google isnt 'undefined'
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
     }
+
+
+    #
+    #
+    #
+    #
+    # Estimate specific javascript
+    #    
+    $('a.estimate_chart').live 'click' , (event) =>
+      target = $(event.currentTarget)
+      wrapper = target.parents('.experiments').find('.proxy_dyna_model_chart')
+      # set the measurement title to the chart
+      wrapper.find('.chart_name').html(target.parent().siblings(".measurement-title").html())
+      if !wrapper.children('.proxy_dyna_model_chart').is(':visible')
+        wrapper.children('.chart').css("height",options.height)
+        wrapper.slideDown()
+      wrapper.find('.model_data').html(target.parent().siblings(".measurement-model").html())
+      wrapper.find('.data .measurement').html(target.parent().siblings(".measurement-data").html())
+      process_chart(wrapper.children('.chart'))
+      false
+    #
+    #
+    #
+    #
+    # Stats specific javascript
+    #
+    $('a.hide').live 'click' , (event) =>
+      top = $(event.currentTarget).parents('.proxy_dyna_model_chart').slideUp()
+      false
     
     $('a.download').live 'hover' , (event) =>
       $(event.currentTarget).prop('href','#')
     
     $('a.download').live 'click' , (event) =>
-      base64 = $(event.currentTarget).parent().find('div.proxy_dyna_model_chart div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
+      target = $(event.currentTarget)
+      base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
 
-      $(event.currentTarget).prop('href','data:image/svg;base64,'+ btoa(base64))
-      return true
+      target.prop('href','data:image/svg;base64,'+ btoa(base64))
+      true
           
     $('h5.button').live 'click' , (event) =>
-      $(event.currentTarget).parent('div').children('div').slideToggle()
-      $(event.currentTarget).parent('div').effect('highlight')
-      
-      if $(event.currentTarget).parent('div').children('.chart').attr('loaded') != 'true'
-        process_chart event.target
+      target = $(event.currentTarget)
+      wrapper = $(target).parent().children('div.toggle')
+      if wrapper.is(":visible") 
+        wrapper.slideUp()
+      else
+        wrapper.slideDown()
+        if !wrapper.children('.chart').is('.chart')
+          wrapper.effect('highlight')
+
+      if wrapper.children('.chart').is('.chart') && !wrapper.children('.chart').attr('loaded')
+        wrapper.children('.chart').css("height",options.height)
+        process_chart(wrapper.children('.chart'))
+      false
     
     process_google_chart = (el,data) ->
       range_v = data.getColumnRange(1)
@@ -77,7 +118,7 @@ if typeof google isnt 'undefined'
                     #  does not exists
         options.vAxis = { 
           viewWindow: {
-            max: 1.6,#range_v.max +  offset + .3,
+            max: range_v.max +  offset,
             min: range_v.min -  offset
             }
         }
@@ -94,7 +135,7 @@ if typeof google isnt 'undefined'
       
       chart = new google.visualization.ScatterChart el
       google.visualization.events.addListener chart, 'ready', () =>
-        $(el.parentNode.parentNode).children('a.download').show()#1500, "swing")
+        $(el.parentNode).find('div.options').slideDown(1500, "swing")
         if $(el).attr('slide') == 'auto'
           $(el).slideDown(1500, "swing").effect("highlight")
         $(el).attr('loaded','true')
@@ -106,7 +147,8 @@ if typeof google isnt 'undefined'
     
     process_chart = (element) ->
       $(element).parent().children('div.chart').each (index,el) =>
-        setup.url = $(el).children('.model_data').text()
+        $(el).html("<br/><div class=\"one_tab\">loading...</div>")
+        setup.url = $(el).parent().children('.model_data').text()
         
         setup.success = (json) =>            
           #
@@ -118,13 +160,13 @@ if typeof google isnt 'undefined'
           data.addRows jsonObj.result # adds gompertz data
           #
           list = []
-          $(el).find('.data .measurement').each (i,measurement_data) =>
+          $(el).parent().find('.data .measurement').each (i,measurement_data) =>
             setup_m.url = $(measurement_data).text() 
             m_ajax = $.ajax setup_m
             m_ajax.done (json) =>
               list.push json
               #
-              if list.length != $(el).find('.data .measurement').length
+              if list.length != $(el).parent().find('.data .measurement').length
                 return # is not the final measuremnet
               # 
               list.forEach (i) => 

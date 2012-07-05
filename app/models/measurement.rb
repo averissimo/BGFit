@@ -14,6 +14,11 @@ class Measurement < ActiveRecord::Base
   
   public
   
+  
+    def get_proxy_dyna_model_with_dyna_model(dyna_model)
+      ProxyDynaModel.where(:measurement_id=>self.id,:dyna_model_id=>dyna_model.id).first
+    end
+  
     def lines_no_death_phase
       p_l = nil
       p_2_l = nil

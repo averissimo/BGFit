@@ -1,4 +1,6 @@
 <% 
+	javascript 'https://www.google.com/jsapi'
+
 	context_menu = [
 		{
 			:key => :show, 
@@ -53,14 +55,50 @@
 	<h3><%=m.title%> (id:<%=m.id%>)</h3>	
 	
 	<div class="one_tab">
-	<% @dyna_model.get_experiments_by_model(m).each do |e| %>
+	<% Experiment.model_is(m).dyna_model_is(@dyna_model).each do |e| %>
 	
 		<h3 class><%=e.title%> (id:<%=e.id%>)</h3>
 			
-		<div class="one_tab">	
-		<% @dyna_model.get_measurements_by_experiment(e).each do |meas| %>	
-			<div class="experiment">(box) <%= meas.title %> | <%= meas.proxy_dyna_model %></div>
-		<%end%>
+		<div class="experiments one_tab">	
+			
+		<%= collection_table(Measurement.dyna_model_is(@dyna_model).experiment_is(e) , :class => 'formatted') do |t| 
+			t.header :title
+			t.header :rmse
+			t.header :bias
+			t.header :accuracy
+			t.header :graph
+			t.header :model, :style => "display:none;"
+			t.header :data, :style => "display:none;"
+			
+			t.rows.alternate = :odd
+	    	t.rows.each do |row, meas, index|
+				p_d_m = meas.get_proxy_dyna_model_with_dyna_model(@dyna_model)
+				# Notice there's no need to explicitly define the title
+				row.title		meas.title
+				row.rmse		p_d_m.rmse
+				row.bias		p_d_m.bias
+				row.accuracy	p_d_m.accuracy
+				row.graph		link_to "show below", "#", :class=>"estimate_chart"
+				row.model		proxy_dyna_model_path(p_d_m, :format => :json)					, :style => "display:none;"
+				row.data		experiment_measurement_path(meas.experiment,meas,:format=>:json), :style => "display:none;"
+			end
+		end
+		%>
+		<div class="one_tab">click on one of the links above to see a chart</div>
+		<div style="display:none;" class="proxy_dyna_model_chart" >	
+			<h4 class="one_tab" >Chart for <span class="chart_name"></span></h4>
+			<div class="chart">
+				 <br/>
+				 <div class="one_tab">loading...</div>
+			</div>
+			<div class="options" style="display:none;text-align: right;"><a class="hide" href='#'>hide</a> | <a class="download" href='#'>Download chart as .svg</a></div>
+			<div style="display:none;" class="model_data"></div>
+			<div style="display:none;" class="data">
+				<div class="measurement"></div> 
+			</div>
+
+		</div>
+		
 		</div>
 	<%end%>
 	</div>

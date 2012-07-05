@@ -50,13 +50,13 @@ class DynaModelsController < ApplicationController
 
   def estimate
     @dyna_model = DynaModel.find(params[:dyna_model_id])
-    @models = @dyna_model.get_models
+    @models = Model.dyna_model_is(@dyna_model)
     respond_with(@dyna_model)
   end
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
-    @experiments = @dyna_model.get_experiments
+    @experiments = Experiment.dyna_model_is(@dyna_model)
     respond_with(@dyna_models)
   end
 
