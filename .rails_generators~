@@ -24,6 +24,21 @@ jquery:install:
 - --pretend
 - --quiet
 - --skip
+delayed_job:
+- --force
+- --pretend
+- --quiet
+- --skip
+delayed_job:active_record:
+- --force
+- --pretend
+- --quiet
+- --skip
+delayed_job:upgrade:
+- --force
+- --pretend
+- --quiet
+- --skip
 coffee:assets:
 - --force
 - --pretend

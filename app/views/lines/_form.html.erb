@@ -1,36 +1,17 @@
-<%= form_for([@measurement,@line]) do |f| %>
-  <% if @line.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@line.errors.count, "error") %> prohibited this line from being saved:</h2>
+<%= semantic_form_for([@measurement,@line]) do |f| %>
+  <%= f.semantic_errors :state %>
 
-      <ul>
-      <% @line.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
+  <%= f.inputs do %>
+  	<%= f.input :x %>
+  	<%= f.input :y %>
+  	<%= f.input :z %>
+  	<%= f.input :note %>
   <% end %>
 
-  <div class="field">
-    <%= f.label :x %><br />
-    <%= f.text_field :x %>
-  </div>
-  <div class="field">
-    <%= f.label :y %><br />
-    <%= f.text_field :y %>
-  </div>
-  <div class="field">
-    <%= f.label :z %><br />
-    <%= f.text_field :z %>
-  </div>
-  <div class="field">
-    <%= f.label :note %><br />
-    <%= f.text_field :note %>
-  </div>
-  
-  <div class="actions">
-    <%= f.submit nil , :class => "btn"%>
-  </div>
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link %>	
+  <% end%>
 <% end %>
 
 <div class="clear"></div>

@@ -61,7 +61,7 @@
 			
 		<div class="experiments one_tab">	
 			
-		<%= collection_table(Measurement.dyna_model_is(@dyna_model).experiment_is(e) , :class => 'formatted') do |t| 
+		<%= collection_table(Measurement.dyna_model_is(@dyna_model).experiment_is(e) , :class => 'display dataTable') do |t| 
 			t.header :title
 			t.header :rmse
 			t.header :bias

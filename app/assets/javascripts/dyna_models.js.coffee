@@ -6,6 +6,12 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
+jQuery ->
+  $('.dataTable').dataTable
+    bPaginate: false 
+    bFilter: false
+    bJQueryUI: true
+
 if typeof google isnt 'undefined'
   google.load 'visualization', '1.0', {'packages':['corechart','table']}
   $(document).ready () => 
