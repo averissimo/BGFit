@@ -1,23 +1,6 @@
 <% 
 	context_menu = [
 		{
-			:key => :edit, 
-			:name => 'Edit this dyna model', 
-			:url => edit_dyna_model_path(@dyna_model),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
-			:key => :new, 
-			:name => 'New parameter', 
-			:url => new_dyna_model_param_path(@dyna_model),
-			:options => {
-				:container_class => 'menu',
-				:class => "btn"
-			}
-		},
-		{
 			:key => :stats, 
 			:name => 'Statistical data', 
 			:url => stats_dyna_model_path(@dyna_model),
@@ -27,13 +10,41 @@
 			}
 		},
 		{
+			:key => :stats, 
+			:name => 'Estimate parameters', 
+			:url => dyna_model_estimate_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "btn"
+			}
+		},
+		{
+			:key => :edit, 
+			:name => 'Edit this dyna model', 
+			:url => edit_dyna_model_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New parameter', 
+			:url => new_dyna_model_param_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
 			:key => :index, 
 			:name => 'Goto dyna models\' index', 
 			:url => dyna_models_path,
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
-		}}]
+			}
+		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>

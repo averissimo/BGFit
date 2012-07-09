@@ -1,30 +1,6 @@
 <% 
 	context_menu = [
 		{
-			:key => :regression, 
-			:name => 'Linear regression', 
-			:url => url_for([:regression,@experiment,@measurement]),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
-			:key => :edit, 
-			:name => 'Edit this measurement', 
-			:url => url_for([:edit,@experiment,@measurement]),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
-			:key => :new, 
-			:name => 'New line', 
-			:url => new_measurement_line_path(@measurement),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
 			:key => :new, 
 			:name => 'New dyna model', 
 			:url => new_measurement_proxy_dyna_model_path(@measurement),
@@ -33,9 +9,35 @@
 			}
 		},
 		{
+			:key => :regression, 
+			:name => 'Linear regression', 
+			:url => url_for([:regression,@experiment,@measurement]),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
 			:key => :csv, 
 			:name => '.csv', 
 			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New line', 
+			:url => new_measurement_line_path(@measurement),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :edit, 
+			:name => 'Edit this measurement', 
+			:url => url_for([:edit,@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -61,6 +63,7 @@
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:title) { "Edit measurement" }
 %>
 <p id="notice"><%= notice %></p>
 

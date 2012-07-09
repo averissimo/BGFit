@@ -50,7 +50,7 @@
 </p>
 
 
-<%= form_tag( dyna_model_calculate_path(@dyna_model) , method: :put) do |f| %>
+<%= form_tag( calculate_dyna_model_path(@dyna_model) , method: :put) do |f| %>
 
 <h2>Parameters</h2>
 
@@ -127,7 +127,9 @@
 
 <% end %>
 
-<%= submit_tag "Calculate Parameters"%>
+<div class="action">
+	<%= button_tag "Calculate Parameters"%>
+</div>
 
 <% end %>
 

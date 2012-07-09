@@ -38,7 +38,7 @@ class DynaModelsController < ApplicationController
       p.call_estimation_with_custom_params( custom_params )
     end
     
-    redirect_to dyna_model_estimate_path @dyna_model 
+    respond_with @dyna_model 
   end
   
   def edit
@@ -66,7 +66,7 @@ class DynaModelsController < ApplicationController
   end
 
   def estimate
-    @dyna_model = DynaModel.find(params[:dyna_model_id])
+    @dyna_model = DynaModel.find(params[:id])
     @models = Model.dyna_model_is(@dyna_model)
     respond_with(@dyna_model)
   end
