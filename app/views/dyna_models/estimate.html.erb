@@ -54,12 +54,22 @@
 
 <h2>Parameters</h2>
 
-<% @dyna_model.params do |params| %>
-
-
-
-<% end %>
-
+	<div class="one_tab">
+		<%= collection_table(@dyna_model.params , :class => 'display dataTable') do |t| 
+			t.header :title
+			t.header :top
+			t.header :bottom
+		
+			t.rows.alternate = :odd
+			t.rows.each do |row, param, index|
+				next if param.output_only
+				row.title 	param.human_title.html_safe
+				row.top 	number_field_tag param.id.to_s+"_top", param.top
+				row.bottom 	number_field_tag param.id.to_s+"_bottom", param.bottom
+			end
+		end %>
+	</div>
+		
 <h2>Models</h2>
 
 <% @models.each do |m| %>

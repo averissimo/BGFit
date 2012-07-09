@@ -71,46 +71,50 @@ class ProxyDynaModel < ActiveRecord::Base
   
   end
   
-  
-  
   def call_estimation
-    if self.measurement.nil?
-      return
-    end
+    call_estimation_with_custom_params( self.dyna_model.params )
+  end
+  
+  def param_to_url( code, top , bottom )
+    CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "#{code}"  + CGI::escape("\"") + "," +
+    CGI::escape("\"bottom\"") + ":"  + "#{bottom}"    + "," +
+    CGI::escape("\"top\"")    + ":"  + "#{top}" + CGI::escape("}")
+  end
+  
+  def call_estimation_with_custom_params(params)
+    return unless !(self.measurement.nil?) || !(self.estimation.nil?) || !(self.estimation == "")
+    
+    # TODO make death phase optional
+    x_array = self.measurement.x_array
+    y_array = self.measurement.y_array
  
-    url = "#{self.dyna_model.estimation}?time=[#{self.measurement.x_array}]&values=[#{self.measurement.y_array}]"
-    print url
+    url = "#{self.dyna_model.estimation}?time=[#{x_array}]&values=[#{y_array}]"
     url += "&estimation=" + CGI::escape("{\"states\"") + ":["
-    print url
-    url_states = self.proxy_params.collect { |p|
-      next if p.param.output_only || p.param.initial_condition
-      if p.param.top.nil? || p.param.bottom.nil?
-        nil
+    # URL parameters (that map against states in SBTOOLBOX2)
+    url_states = params.collect { |p|
+      next if p.output_only || p.initial_condition
+      if p.top.nil? || p.bottom.nil?
+        return
       else
-        CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "#{p.param.code}"  + CGI::escape("\"") + "," +
-        CGI::escape("\"bottom\"") + ":"  + "#{p.param.top}"    + "," +
-        CGI::escape("\"top\"")    + ":"  + "#{p.param.bottom}" + CGI::escape("}")
+        param_to_url( p.code , p.top, p.bottom )
       end 
     }.compact.join(',') + "]"
+    # URL initial conditions (that map against initial conditions in SBTOOLBOX2)
     url_ic = "," + CGI::escape("\"initial\"") + ":["
-    url_ic += self.proxy_params.collect { |p|
-      next unless p.param.initial_condition
-      if p.param.top.nil? || p.param.bottom.nil?
-        nil
+    url_ic += params.collect { |p|
+      next unless p.initial_condition
+      if p.top.nil? || p.bottom.nil?
+        return
       else
-        CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "#{p.param.code}"  + CGI::escape("\"") + "," +
-        CGI::escape("\"bottom\"") + ":"  + "#{p.param.top}"    + "," +
-        CGI::escape("\"top\"")    + ":"  + "#{p.param.bottom}" + CGI::escape("}")  
+        param_to_url( p.code , p.top, p.bottom )
       end 
-    }.compact.join(',') + ',' +
-      CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "t"  + CGI::escape("\"") + "," +
-      CGI::escape("\"bottom\"") + ":"  + "0"    + "," +
-      CGI::escape("\"top\"")    + ":"  + "100" + CGI::escape("}") + "]"
+    }.compact.join(',') + ',' + param_to_url( "t" , "0" , "100" ) + "]" # adds time
 
     url += url_states + url_ic;
     url += CGI::escape("}")
 
-    response = Net::HTTP.get_response(URI(url))      
+    response = Net::HTTP.get_response(URI(url))
+    print url + "\n"
     result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
     
     self.proxy_params.collect do |d_p|
