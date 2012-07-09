@@ -119,14 +119,17 @@ if typeof google isnt 'undefined'
           list.push json
           #
           if list.length != $(el).parent().find('.data .measurement').length
-            return # is not the final measuremnet
+            return # is not the final measurement
           # 
           list.forEach (i) => 
             l = data.addColumn 'number' , i.title , i.id
             rows = []
             i.rows.forEach (j) =>
               #
-              row = (null for num in [1..l-1])
+              if l == 1
+                row = []
+              else
+                row = (null for num in [1..l-1])
               row.unshift j.c[0].v
               row.push j.c[1].v
               rows.push row
@@ -141,17 +144,31 @@ if typeof google isnt 'undefined'
     window = exports ? this
     window.process_chart = (element) ->
       $(element).parent().children('div.chart').each (index,el) =>
+        data = new google.visualization.DataTable();
+        data.addColumn 'number','Time','time'
+
         $(el).html("<br/><div class=\"one_tab\">loading...</div>")
         setup.url = $(el).parent().children('.model_data').text()
-        
+                
         setup.success = (json) =>            
           #
           jsonObj = json
-          data = new google.visualization.DataTable();
-          data.addColumn 'number','Time','time'
           data.addColumn 'number','Gompertz','gompertz'
           #
           data.addRows jsonObj.result # adds gompertz data
           process_measurement( el , data )
         #
         result = $.ajax(setup)
+        
+
+
+
+
+
+
+
+
+
+
+
+
