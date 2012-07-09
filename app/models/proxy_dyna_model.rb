@@ -71,11 +71,13 @@ class ProxyDynaModel < ActiveRecord::Base
   
   end
   
+  
+  
   def call_estimation
     if self.measurement.nil?
       return
     end
-    
+ 
     url = "#{self.dyna_model.estimation}?time=[#{self.measurement.x_array}]&values=[#{self.measurement.y_array}]"
     print url
     url += "&estimation=" + CGI::escape("{\"states\"") + ":["
@@ -107,7 +109,7 @@ class ProxyDynaModel < ActiveRecord::Base
 
     url += url_states + url_ic;
     url += CGI::escape("}")
-    
+
     response = Net::HTTP.get_response(URI(url))      
     result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
     

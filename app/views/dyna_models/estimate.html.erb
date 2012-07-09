@@ -50,6 +50,9 @@
 </p>
 
 
+<%= form_tag( dyna_model_calculate_path(@dyna_model) , method: :put) do |f| %>
+
+
 <% @models.each do |m| %>
 
 	<h3><%=m.title%> (id:<%=m.id%>)</h3>	
@@ -62,25 +65,27 @@
 		<div class="experiments one_tab">	
 			
 		<%= collection_table(Measurement.dyna_model_is(@dyna_model).experiment_is(e) , :class => 'display dataTable') do |t| 
+			t.header :select
 			t.header :title
 			t.header :rmse
 			t.header :bias
 			t.header :accuracy
 			t.header :graph
-			t.header :model, :style => "display:none;"
-			t.header :data, :style => "display:none;"
+			t.header :model_d, :style => "display:none;"
+			t.header :data_d, :style => "display:none;"
 			
 			t.rows.alternate = :odd
 	    	t.rows.each do |row, meas, index|
 				p_d_m = meas.get_proxy_dyna_model_with_dyna_model(@dyna_model)
 				# Notice there's no need to explicitly define the title
+				row.select		check_box_tag "proxy_dyna_model_ids[]", p_d_m.id
 				row.title		meas.title
-				row.rmse		p_d_m.rmse
-				row.bias		p_d_m.bias
-				row.accuracy	p_d_m.accuracy
+				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
+				row.bias		number_with_precision(p_d_m.bias, precision: 6)
+				row.accuracy	number_with_precision(p_d_m.accuracy, precision: 6)
 				row.graph		link_to "show below", "#", :class=>"estimate_chart"
-				row.model		proxy_dyna_model_path(p_d_m, :format => :json)					, :style => "display:none;"
-				row.data		experiment_measurement_path(meas.experiment,meas,:format=>:json), :style => "display:none;"
+				row.model_d		proxy_dyna_model_path(p_d_m, :format => :json)					, :style => "display:none;"
+				row.data_d		experiment_measurement_path(meas.experiment,meas,:format=>:json), :style => "display:none;"
 			end
 		end
 		%>
@@ -105,6 +110,9 @@
 
 <% end %>
 
+<%= submit_tag "Calculate Parameters"%>
+
+<% end %>
 
 <div class="menu">
 	<%= menu %>

@@ -23,6 +23,17 @@ class DynaModelsController < ApplicationController
     end
   end
   
+  def calculate
+    # TODO calculate the parameters for the selected tasks
+    @dyna_model = DynaModel.find(params[:dyna_model_id])
+    @proxy_dyna_models = ProxyDynaModel.where( :id => params["proxy_dyna_model_ids"])
+    
+    @proxy_dyna_models.each do |p|
+      p.call_estimation
+    end
+    
+    redirect_to dyna_model_estimate_path @dyna_model 
+  end
   
   def edit
     @dyna_model = DynaModel.find(params[:id])

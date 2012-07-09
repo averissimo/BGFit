@@ -23,8 +23,7 @@ if typeof google isnt 'undefined'
       curveType: 'function',
       lineWidth: 1,
       pointSize: 2,
-      title: 'Bacterial Growth',
-      width: 1000,
+      width: 900,
       height: 500,
       series: {
         0 : {
@@ -32,11 +31,16 @@ if typeof google isnt 'undefined'
           pointSize: 0
         }
       },
+      legend: {
+        position: "bottom"
+      }
       chartArea: {
-          left: 50,
-          rigth:50,
-          top:10,
-          height: "100%"
+          width:"80%",
+          height: "80%"
+          #left: 50,
+          #rigth:0,
+          #top:10,
+          #height: "100%"
       },
       animation: {
         easing: "in",
@@ -78,8 +82,8 @@ if typeof google isnt 'undefined'
       if !wrapper.children('.proxy_dyna_model_chart').is(':visible')
         wrapper.children('.chart').css("height",options.height)
         wrapper.slideDown()
-      wrapper.find('.model_data').html(target.parent().siblings(".measurement-model").html())
-      wrapper.find('.data .measurement').html(target.parent().siblings(".measurement-data").html())
+      wrapper.find('.model_data').html(target.parent().siblings(".measurement-model_d").html())
+      wrapper.find('.data .measurement').html(target.parent().siblings(".measurement-data_d").html())
       process_chart(wrapper.children('.chart'))
       false
     #
