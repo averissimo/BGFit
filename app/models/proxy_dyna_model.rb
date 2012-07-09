@@ -94,7 +94,7 @@ class ProxyDynaModel < ActiveRecord::Base
     url_states = params.collect { |p|
       next if p.output_only || p.initial_condition
       if p.top.nil? || p.bottom.nil?
-        return
+        raise Exception.new(p.human_title.html_safe + " does not have top/bottom values")
       else
         param_to_url( p.code , p.top, p.bottom )
       end 
@@ -108,7 +108,7 @@ class ProxyDynaModel < ActiveRecord::Base
       else
         param_to_url( p.code , p.top, p.bottom )
       end 
-    }.compact.join(',') + ',' + param_to_url( "t" , "0" , "100" ) + "]" # adds time
+    }.compact.join(',') + ',' + param_to_url( "t" , "100" , "0" ) + "]" # adds time
 
     url += url_states + url_ic;
     url += CGI::escape("}")
@@ -127,12 +127,10 @@ class ProxyDynaModel < ActiveRecord::Base
   end
   
   def json_cache
-    if self.json.nil?
+    return self.json unless self.json.nil?
       self.call_solver
-      self.statistical_data     
-    else
-      self.json
-    end
+      self.statistical_data
+    self.json
   end
   
   def call_solver

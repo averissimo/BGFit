@@ -87,9 +87,8 @@
 			t.header :select
 			t.header :title
 			t.header :rmse
-			t.header :bias
-			t.header :accuracy
 			t.header :graph
+			t.header :goto
 			t.header :model_d, :style => "display:none;"
 			t.header :data_d, :style => "display:none;"
 			
@@ -100,9 +99,8 @@
 				row.select		check_box_tag "proxy_dyna_model_ids[]", p_d_m.id
 				row.title		meas.title
 				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
-				row.bias		number_with_precision(p_d_m.bias, precision: 6)
-				row.accuracy	number_with_precision(p_d_m.accuracy, precision: 6)
 				row.graph		link_to "show below", "#", :class=>"estimate_chart"
+				row.goto		link_to "goto", [p_d_m]
 				row.model_d		proxy_dyna_model_path(p_d_m, :format => :json)					, :style => "display:none;"
 				row.data_d		experiment_measurement_path(meas.experiment,meas,:format=>:json), :style => "display:none;"
 			end

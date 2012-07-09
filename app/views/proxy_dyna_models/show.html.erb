@@ -70,6 +70,31 @@
 	<%= menu %>
 </div>
 
+<%= form_tag( proxy_dyna_model_calculate_path(@proxy_dyna_model) , method: :put) do |f| %>
+
+<h2>Parameters</h2>
+
+	<div class="one_tab">
+		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted') do |t| 
+			t.header :title
+			t.header :value
+			t.header :bottom
+			t.header :top
+		
+			t.rows.alternate = :odd
+			t.rows.each do |row, param, index|
+				row.title 	param.param.human_title.html_safe
+				row.value	param.value
+				row.bottom 	(if param.param.output_only then "(n/a)" else number_field_tag( param.param.id.to_s+"_bottom", param.param.bottom) end )
+				row.top 	(if param.param.output_only then "(n/a)" else number_field_tag( param.param.id.to_s+"_top", param.param.top ) end )
+			end
+		end %>
+	</div>
+	
+<%= submit_tag "Recalculate Parameters"%>
+
+<% end %>
+
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
 <div id="proxy_dyna_model_chart" style="display:none">
 	<div id="chart" 
