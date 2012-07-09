@@ -12,7 +12,7 @@ class ProxyDynaModelsController < ApplicationController
   end
 
   def calculate
-    @proxy_dyna_model = ProxyDynaModel.find(params[:proxy_dyna_model_id] )
+    @proxy_dyna_model = ProxyDynaModel.find(params[:id] )
     custom_params = @proxy_dyna_model.dyna_model.params.collect do |param|
       param.top =  params[param.id.to_s+"_top"]
       param.bottom = params[param.id.to_s+"_bottom"]
