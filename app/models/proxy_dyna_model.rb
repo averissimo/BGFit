@@ -83,7 +83,7 @@ class ProxyDynaModel < ActiveRecord::Base
     url += "&estimation=" + CGI::escape("{\"states\"") + ":["
     print url
     url_states = self.proxy_params.collect { |p|
-      next if p.param.code == 'o' || p.param.code == "N"
+      next if p.param.output_only || p.param.initial_condition
       if p.param.top.nil? || p.param.bottom.nil?
         nil
       else
@@ -94,7 +94,7 @@ class ProxyDynaModel < ActiveRecord::Base
     }.compact.join(',') + "]"
     url_ic = "," + CGI::escape("\"initial\"") + ":["
     url_ic += self.proxy_params.collect { |p|
-      next if p.param.code == 'o' || ( p.param.code != "N" )
+      next if p.param.output_only || !p.param.initial_condition
       if p.param.top.nil? || p.param.bottom.nil?
         nil
       else

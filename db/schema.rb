@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120706152137) do
+ActiveRecord::Schema.define(:version => 20120709125626) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -90,6 +90,8 @@ ActiveRecord::Schema.define(:version => 20120706152137) do
     t.text     "description"
     t.float    "top"
     t.float    "bottom"
+    t.boolean  "output_only"
+    t.boolean  "initial_condition"
   end
 
   add_index "params", ["dyna_model_id"], :name => "index_params_on_dyna_model_id"

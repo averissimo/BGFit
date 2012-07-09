@@ -79,6 +79,8 @@
 		t.header :description
 		t.header :top
 		t.header :bottom
+		t.header :output
+		t.header :ic,			"IC"
 		t.header :edit_h,		""
 		t.header :destroy_h,	""
 
@@ -87,6 +89,8 @@
 			# Notice there's no need to explicitly define the title
 			row.code			param.code
 			row.human_title		param.human_title
+			row.output			param.output_only
+			row.ic				param.initial_condition
 			row.description		param.description_trimmed.gsub(/\n/, '<br/>')
 			row.top				param.top
 			row.bottom			param.bottom

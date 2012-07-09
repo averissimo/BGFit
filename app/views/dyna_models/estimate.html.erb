@@ -52,6 +52,15 @@
 
 <%= form_tag( dyna_model_calculate_path(@dyna_model) , method: :put) do |f| %>
 
+<h2>Parameters</h2>
+
+<% @dyna_model.params do |params| %>
+
+
+
+<% end %>
+
+<h2>Models</h2>
 
 <% @models.each do |m| %>
 
