@@ -84,7 +84,7 @@
 <h3>Listing <%= pluralize(@dyna_model.params.length, 'parameter')%></h3>
 
 <%= 
-	collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted') do |t|
+	collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted dataTable dataTable') do |t|
 		t.header :code
 		t.header :human_title
 		t.header :description
@@ -92,8 +92,8 @@
 		t.header :top
 		t.header :output
 		t.header :ic,			"IC"
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, param, index|

@@ -79,13 +79,13 @@
 
 <h3>Measured data (<%= pluralize(@measurement.lines.length, 'line')%>)</h3>
 <%= 
-	collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted') do |t|
+	collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted dataTable') do |t|
 		t.header :x
 		t.header :y
 		t.header :z
 		t.header :note
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, line, index|
@@ -106,13 +106,13 @@
 
 <h3>Dynamic models (<%= pluralize(@measurement.proxy_dyna_models.length, 'dynamic model')%>)</h3>
 <%= 
-	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted') do |t|
+	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted dataTable') do |t|
 		t.header :title
 		t.header :description
 		t.header :rmse
-		t.header :show_h,		""
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, proxy_dyna_model, index|

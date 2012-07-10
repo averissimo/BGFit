@@ -53,7 +53,7 @@
 <%= form_tag( calculate_proxy_dyna_model_path(@proxy_dyna_model) , method: :put) do |f| %>
 
 	<div class="one_tab">
-		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted') do |t| 
+		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted dataTable') do |t| 
 			t.header :title
 			t.header :description
 			t.header :value
@@ -72,12 +72,12 @@
 	</div>
 	
 <div class="action text-center">
-	<table class="formatted">
+	<table class="formatted dataTable">
 		<thead>
 			<tr>
-				<th scope="col">RMSE</th>
-				<th scope="col">Bias</th>
-				<th scope="col">Accuracy</th>
+				<th class="no-sort" scope="col">RMSE</th>
+				<th class="no-sort" scope="col">Bias</th>
+				<th class="no-sort" scope="col">Accuracy</th>
 			</tr>
 		</thead>
 		<tbody>

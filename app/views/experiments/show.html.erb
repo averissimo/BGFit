@@ -46,14 +46,14 @@
 <h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>
 
 <%= 
-	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|
+	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
 		t.header :title
 		t.header :date
-		t.header :show_h,		""
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
-		t.header :regression_h,	""
-		t.header :csv,			""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
+		t.header :regression_h,	"", class: "no-sort"
+		t.header :csv,			"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measurement, index|

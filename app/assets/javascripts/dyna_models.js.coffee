@@ -8,6 +8,9 @@
 
 jQuery ->
   $('.dataTable').dataTable
+    "aoColumnDefs": [ 
+      { "bSortable": false, "aTargets": [ "no-sort" ] }
+    ],
     bPaginate: false 
     bFilter: false
     bJQueryUI: true

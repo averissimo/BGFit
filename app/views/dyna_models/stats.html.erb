@@ -42,7 +42,7 @@
 <h3>Listing <%= pluralize(@dyna_model.params.length, 'parameter')%></h3>
 
 <%= 
-	collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted') do |t|
+	collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted dataTable') do |t|
 		t.header :code
 		t.header :human_title
 		t.header :description
@@ -86,7 +86,7 @@
 				</dl>
 	
 				<%= 
-				collection_table(p_dm_average.proxy_params, :id => 'params' , :class => 'formatted') do |t|
+				collection_table(p_dm_average.proxy_params, :id => 'params' , :class => 'formatted dataTable') do |t|
 					t.header :human_title
 					t.header :description
 					t.header :mean,			"Mean Value"
@@ -143,7 +143,7 @@
 					<dd><%=p_dm.accuracy%></dd>
 				</dl>
 				<%= 
-				collection_table(p_dm.proxy_params, :id => 'params' , :class => 'formatted') do |t|
+				collection_table(p_dm.proxy_params, :id => 'params' , :class => 'formatted dataTable') do |t|
 					t.header :human_title
 					t.header :description
 					t.header :value

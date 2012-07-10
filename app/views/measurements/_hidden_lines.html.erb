@@ -5,7 +5,7 @@
 	<div style="display:none;">
 	<%= 
 
-	a = collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted') do |t|
+	a = collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted dataTable') do |t|
 		t.header :id
 		t.header :x
 		t.header :regression, 'Regression'
