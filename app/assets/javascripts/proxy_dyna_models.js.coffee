@@ -5,10 +5,8 @@
 if typeof google isnt 'undefined'
   google.load 'visualization', '1.0', {'packages':['corechart','table']}
   $(document).ready () => 
-  
-    $('h3').live 'click' , (event) =>  
-      wrapper = $('.proxy_dyna_model_chart')
-      if wrapper.is('.auto-load')    
-        wrapper.children('.chart').css("height",options.height)
-        process_chart(wrapper.children('.chart'))
+    wrapper = $('.proxy_dyna_model_chart')
+    if wrapper.is('.auto-load')    
+      wrapper.children('.chart').css("height",options.height)
+      process_chart(wrapper.children('.chart'))
 

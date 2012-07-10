@@ -1,4 +1,6 @@
 <% 
+	javascript 'https://www.google.com/jsapi'
+	
 	context_menu = [
 		{
 			:key => :new, 
@@ -124,3 +126,22 @@
 		end
 	end
 %>
+
+<h3>Models and measurement chart</h3>
+
+<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
+	<div class="chart">
+		 <br/>
+		 <div class="one_tab">loading...</div>
+	</div>
+	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
+	<div style="display:none;" class="model-data">
+		<% @measurement.proxy_dyna_models.each do |pdm| %>
+		<div data-source="<%= proxy_dyna_model_path(pdm, :format => :json) %>"><%=pdm.dyna_model.title%></div>
+		<% end %>
+	</div>
+	<div style="display:none;" class="measurement-data">
+		<div data-source="<%= experiment_measurement_path(@measurement.experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div> 
+	</div>
+
+</div>

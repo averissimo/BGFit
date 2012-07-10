@@ -13,12 +13,6 @@ if typeof google isnt 'undefined'
       pointSize: 2,
       width: 900,
       height: 500,
-      series: {
-        0 : {
-          lineWidth:5,
-          pointSize: 0
-        }
-      },
       legend: {
         position: "bottom"
       }
@@ -109,6 +103,23 @@ if typeof google isnt 'undefined'
         $(el).parent().slideDown(1500, "swing").effect("highlight")
       chart.draw(data, options)
     
+    data_add = (data, list) ->
+      list.forEach (i) => 
+        l = data.addColumn 'number' , i.title , i.id
+        rows = []
+        i.rows.forEach (j) =>
+          #
+          if l == 1
+            row = []
+          else
+            row = (null for num in [1..l-1])
+          row.unshift j.c[0].v
+          row.push j.c[1].v
+          rows.push row
+        #
+        data.addRows rows
+      data
+    
     process_measurement = (el , data) ->
       #
       list = []
@@ -121,23 +132,8 @@ if typeof google isnt 'undefined'
           if list.length != $(el).parent().find('.measurement-data div').length
             return # is not the final measurement
           # 
-          list.forEach (i) => 
-            l = data.addColumn 'number' , i.title , i.id
-            rows = []
-            i.rows.forEach (j) =>
-              #
-              if l == 1
-                row = []
-              else
-                row = (null for num in [1..l-1])
-              row.unshift j.c[0].v
-              row.push j.c[1].v
-              rows.push row
-            #
-            data.addRows rows
-            #
-            process_google_chart(el,data)
-          #
+          data_add(data,list)
+          process_google_chart(el,data)
         #
       #    
     
@@ -149,20 +145,55 @@ if typeof google isnt 'undefined'
       $(element).parent().children('div.chart').each (index,el) =>
 
         $(el).html("<br/><div class=\"one_tab\">loading...</div>")
+        if $(el).parent().find('.model-data div').length <= 0
+          process_measurement( el , data )
+        
+        list = []
+        column_number = []
         $(el).parent().find('.model-data div').each (index,el2) =>
           setup.url = $(el2).attr('data-source')
-                  
-          setup.success = (json) =>            
-            #
-            jsonObj = json
-            data.addColumn 'number', $(el2).html() , $(el2).html().toLowerCase()
-            #
-            data.addRows jsonObj.result # adds gompertz data
-          #
-          list = []
+          
           result = $.ajax(setup)
         
           result.done (json) =>
+            jsonObj = json
+            jsonObj["title"] = $(el2).html()
+            list.push jsonObj
+            #if list.length == 1
+            #  l = data.addColumn 'number', $(el2).html() , $(el2).html().toLowerCase()
+            #  if options.series == undefined
+            #    options.series = {}
+            #  temp = { lineWidth: 5, pointSize: 0}
+            #  options.series[String(l-1)] = temp
+
+              #
+            #  data.addRows jsonObj.result # adds gompertz data
+            
+            
+            
+            if list.length != $(el).parent().find('.model-data div').length
+              return
+            
+            list.forEach (i) => 
+              l = data.addColumn 'number' , i.title , i.title.toLowerCase 
+              if options.series == undefined
+                options.series = {}
+              temp = { lineWidth: 3, pointSize: 0}
+              options.series[String(l-1)] = temp
+
+              rows = []
+              i.result.forEach (j) =>
+                #
+                if l == 1
+                  row = []
+                else
+                  row = (null for num in [1..l-1])
+                row.unshift j[0]
+                row.push j[1]
+                rows.push row
+              #
+              data.addRows rows
+            #
             process_measurement( el , data )
         
 
