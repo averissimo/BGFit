@@ -41,13 +41,13 @@
 <h3>Listing <%= pluralize(@model.experiments.length, 'experiment')%></h3>
 
 <%= 
-	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted') do |t|
+	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
 		t.header :title
 		t.header :description
-		t.header :show_h,		""
-		t.header :exp_h,		""
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :exp_h,		"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, experiment, index|
@@ -69,13 +69,13 @@
 <h3>All <%= pluralize(@measurements.length, 'measurement')%> in <%= pluralize(@model.experiments.length, 'experiment')%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted') do |t|
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
 		t.header :experiment
 		t.header :title
 		t.header :date
-		t.header :show_h,		""
-		t.header :regression_h,	""
-		t.header :csv,			""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :regression_h,	"", class: "no-sort"
+		t.header :csv,			"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
