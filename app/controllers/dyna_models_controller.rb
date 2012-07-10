@@ -24,7 +24,7 @@ class DynaModelsController < ApplicationController
   end
   
   def calculate
-    @dyna_model = DynaModel.find(params[:dyna_model_id])
+    @dyna_model = DynaModel.find(params[:id])
     @proxy_dyna_models = ProxyDynaModel.where( :id => params["proxy_dyna_model_ids"])
     
     custom_params = @dyna_model.params.collect do |param|
