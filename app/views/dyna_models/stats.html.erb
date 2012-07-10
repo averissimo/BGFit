@@ -112,10 +112,10 @@
 				loading...
 			</div>
 			<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-			<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(e.proxy_dyna_models.first, :format => :json) %></div>
-			<div style="display:none;" class="data">
+			<div style="display:none;" class="model-data" data-source="<%= proxy_dyna_model_path(p_dm_average, :format => :json) %>"><%= p_dm_average %></div>
+			<div style="display:none;" class="measurement-data">
 				<% e.measurements.each do |m| %> 
-				<div class="measurement"><%= experiment_measurement_path(e,m,:format=>:json) %></div>
+				<div data-source="<%= experiment_measurement_path(e,m,:format=>:json) %>"></div>
 				<% end %>
 			</div>
 		</div>
@@ -165,9 +165,11 @@
 					loading...
 				</div>
 				<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-				<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(p_dm, :format => :json) %></div>
-				<div style="display:none;" class="data">
-					<div class="measurement"><%= experiment_measurement_path(m.experiment,m,:format=>:json) %></div> 
+				<div style="display:none;" class="model-data">
+					<div data-source="<%= proxy_dyna_model_path(p_dm, :format => :json) %>"><%= p_dm.title %></div>
+				</div>
+				<div style="display:none;" class="measurement-data">
+					<div data-source="<%= experiment_measurement_path(m.experiment,m,:format=>:json) %>"></div> 
 				</div>
 			</div>
 		

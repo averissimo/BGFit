@@ -112,13 +112,13 @@ if typeof google isnt 'undefined'
     process_measurement = (el , data) ->
       #
       list = []
-      $(el).parent().find('.data .measurement').each (i,measurement_data) =>
-        setup_m.url = $(measurement_data).text() 
+      $(el).parent().find('.measurement-data div').each (i,measurement_data) =>
+        setup_m.url = $(measurement_data).attr('data-source') 
         m_ajax = $.ajax setup_m
         m_ajax.done (json) =>
           list.push json
           #
-          if list.length != $(el).parent().find('.data .measurement').length
+          if list.length != $(el).parent().find('.measurement-data div').length
             return # is not the final measurement
           # 
           list.forEach (i) => 
@@ -139,26 +139,31 @@ if typeof google isnt 'undefined'
             process_google_chart(el,data)
           #
         #
-      #
+      #    
     
     window = exports ? this
     window.process_chart = (element) ->
+      data = new google.visualization.DataTable();
+      data.addColumn 'number','Time','time'
+
       $(element).parent().children('div.chart').each (index,el) =>
-        data = new google.visualization.DataTable();
-        data.addColumn 'number','Time','time'
 
         $(el).html("<br/><div class=\"one_tab\">loading...</div>")
-        setup.url = $(el).parent().children('.model_data').text()
-                
-        setup.success = (json) =>            
+        $(el).parent().find('.model-data div').each (index,el2) =>
+          setup.url = $(el2).attr('data-source')
+                  
+          setup.success = (json) =>            
+            #
+            jsonObj = json
+            data.addColumn 'number', $(el2).html() , $(el2).html().toLowerCase()
+            #
+            data.addRows jsonObj.result # adds gompertz data
           #
-          jsonObj = json
-          data.addColumn 'number','Gompertz','gompertz'
-          #
-          data.addRows jsonObj.result # adds gompertz data
-          process_measurement( el , data )
-        #
-        result = $.ajax(setup)
+          list = []
+          result = $.ajax(setup)
+        
+          result.done (json) =>
+            process_measurement( el , data )
         
 
 

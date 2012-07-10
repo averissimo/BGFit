@@ -33,8 +33,10 @@ if typeof google isnt 'undefined'
       if !wrapper.children('.proxy_dyna_model_chart').is(':visible')
         wrapper.children('.chart').css("height",options.height)
         wrapper.slideDown()
-      wrapper.find('.model_data').html(target.parent().siblings(".measurement-model_d").html())
-      wrapper.find('.data .measurement').html(target.parent().siblings(".measurement-data_d").html())
+      wrapper.find('.model-data div').attr('data-source'      , target.parent().siblings(".measurement-model_d").attr('data-source'))
+      wrapper.find('.model-data div').html( target.parent().siblings(".measurement-model_d").html() )
+      wrapper.find('.measurement-data div').attr('data-source', target.parent().siblings(".measurement-data_d").attr('data-source'))
+      wrapper.find('.measurement-data div').html( target.parent().siblings(".measurement-data_d").html() )
       process_chart(wrapper.children('.chart'))
       false
     #

@@ -101,8 +101,8 @@
 				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
 				row.graph		link_to "show below", "#", :class=>"estimate_chart"
 				row.goto		link_to "goto", [p_d_m]
-				row.model_d		proxy_dyna_model_path(p_d_m, :format => :json)					, :style => "display:none;"
-				row.data_d		experiment_measurement_path(meas.experiment,meas,:format=>:json), :style => "display:none;"
+				row.model_d		p_d_m.dyna_model.title					, :style => "display:none;" , 'data-source' => proxy_dyna_model_path(p_d_m, :format => :json)
+				row.data_d		meas.title , :style => "display:none;" , 'data-source' => experiment_measurement_path(meas.experiment,meas,:format=>:json)
 			end
 		end
 		%>
@@ -114,9 +114,11 @@
 				 <div class="one_tab">loading...</div>
 			</div>
 			<div class="options" style="display:none;text-align: right;"><a class="hide" href='#'>hide</a> | <a class="download" href='#'>Download chart as .svg</a></div>
-			<div style="display:none;" class="model_data"></div>
-			<div style="display:none;" class="data">
-				<div class="measurement"></div> 
+			<div style="display:none;" class="model-data">
+				<div></div>
+			</div>
+			<div style="display:none;" class="measurement-data">
+				<div></div> 
 			</div>
 
 		</div>
