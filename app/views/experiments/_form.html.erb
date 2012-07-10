@@ -3,31 +3,19 @@
 	<%= simple_format @model.description %>
 </p>
 
-<%= form_for(@form) do |f| %>
-  <% if @experiment.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@experiment.errors.count, "error") %> prohibited this experiment from being saved:</h2>
+<%= semantic_form_for(@form) do |f| %>
+  <%= f.semantic_errors :state %>
 
-      <ul>
-      <% @experiment.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
+  <%= f.inputs do %>
+  	<%= f.input :title %>
+  	<%= f.input :description, as: :text %>
   <% end %>
-  
-  <div class="field">
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </div>
-  
-  <div class="field">
-    <%= f.label :description %><br />
-    <%= f.text_area :description %>
-  </div>
-  <div class="actions">
-    <%= f.submit nil , :class => "btn"%>
-  </div>
+  	
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link %>	
+  <% end%>
+
 <% end %>
 
 <div class="clear"></div>

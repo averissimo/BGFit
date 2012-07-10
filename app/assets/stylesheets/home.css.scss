@@ -67,7 +67,11 @@ input.btn {
     text-decoration: underline;
   }
 }
-    
+
+.action button {
+  @extend a.btn;
+}
+
 #content .menu li {
   a {
     @extend a.btn

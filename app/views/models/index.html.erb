@@ -50,7 +50,6 @@
 		t.header :regression_h,	""
 		t.header :csv,			""
 		t.header :exp,			""
-		t.header :dyna,			""
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -63,11 +62,6 @@
 			row.show_h			link_to 'show', [measure.experiment,measure]
 			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
 			row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
-			if measure.proxy_dyna_models && measure.proxy_dyna_models.size > 0
-				row.dyna			link_to 'first dyna' , [measure.proxy_dyna_models.first]
-			else
-				row.dyna		"" 
-			end
 		end
 	end
 %>

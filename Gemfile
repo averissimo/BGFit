@@ -11,6 +11,9 @@ gem 'paper_trail'
 
 gem 'blankslate'
 gem 'hirb'
+gem 'fancy_irb'
+gem 'wirb'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -21,6 +24,14 @@ end
 
 gem 'jquery-rails'
 
+gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
+gem 'jquery-ui-rails'
+
+gem 'delayed_job_active_record'
+gem 'delayed_job_web'
+gem 'daemons'
+
+gem 'formtastic'
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

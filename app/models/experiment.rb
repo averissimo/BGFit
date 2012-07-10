@@ -6,6 +6,10 @@ class Experiment < ActiveRecord::Base
   
   accepts_nested_attributes_for :measurements
   
+  scope :model_is, lambda { |model| where(:model_id=>model.id).order(:model_id) }
+  scope :dyna_model_is, lambda { |dyna_model| joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}).group('experiments.id').order(:model_id) }
+
+  
   has_paper_trail
   
   public

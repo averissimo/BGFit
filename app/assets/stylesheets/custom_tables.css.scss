@@ -1,0 +1,25 @@
+$tab: 3em; // also in results.css / default.css
+
+
+table.formatted {
+  //margin-left: $tab;
+  padding-bottom:2em;
+  tr {
+    th,
+    td {
+      padding-top:3px;
+      padding-bottom:3px;
+      padding-left:3px;
+      padding-right: 10px;
+      border-bottom: solid 1px #808080;
+    }
+    &.ui-state-alternate {
+      background-color: #DCDCDC;
+    }  
+  }  
+}
+
+
+table {
+  margin: 0 auto;
+}

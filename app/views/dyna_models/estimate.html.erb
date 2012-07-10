@@ -1,0 +1,141 @@
+<% 
+	javascript 'https://www.google.com/jsapi'
+
+	context_menu = [
+		{
+			:key => :show, 
+			:name => 'Show dyna model\'s details', 
+			:url => dyna_model_path(@dyna_model),
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New parameter', 
+			:url => new_dyna_model_param_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "btn"
+			}
+		},
+		{
+			:key => :stats, 
+			:name => 'Statistical data', 
+			:url => stats_dyna_model_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "btn"
+			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto dyna models\' index', 
+			:url => dyna_models_path,
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+		}}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<% content_for(:title) { "Dyna Model's detail" } %>
+<p id="notice"><%= notice %></p>
+
+<h1><%= @dyna_model.title %> (dyna model)</h1>
+
+<h3>Description:</h3>
+<p>
+  <%= simple_format (show (@dyna_model.description)) %>
+</p>
+
+
+<%= form_tag( calculate_dyna_model_path(@dyna_model) , method: :put) do |f| %>
+
+<h2>Parameters</h2>
+
+	<div class="one_tab">
+		<%= collection_table(@dyna_model.params , :class => 'display dataTable') do |t| 
+			t.header :title
+			t.header :bottom
+			t.header :top
+		
+			t.rows.alternate = :odd
+			t.rows.each do |row, param, index|
+				next if param.output_only
+				row.title 	param.human_title.html_safe
+				row.top 	number_field_tag param.id.to_s+"_top", param.top
+				row.bottom 	number_field_tag param.id.to_s+"_bottom", param.bottom
+			end
+		end %>
+	</div>
+		
+<h2>Models</h2>
+
+<% @models.each do |m| %>
+
+	<h3><%=m.title%> (id:<%=m.id%>)</h3>	
+	
+	<div class="one_tab">
+	<% Experiment.model_is(m).dyna_model_is(@dyna_model).each do |e| %>
+	
+		<h3 class><%=e.title%> (id:<%=e.id%>)</h3>
+			
+		<div class="experiments one_tab">	
+			
+		<%= collection_table(Measurement.dyna_model_is(@dyna_model).experiment_is(e) , :class => 'display dataTable') do |t| 
+			t.header :select
+			t.header :title
+			t.header :rmse
+			t.header :graph
+			t.header :goto
+			t.header :model_d, :style => "display:none;"
+			t.header :data_d, :style => "display:none;"
+			
+			t.rows.alternate = :odd
+	    	t.rows.each do |row, meas, index|
+				p_d_m = meas.get_proxy_dyna_model_with_dyna_model(@dyna_model)
+				# Notice there's no need to explicitly define the title
+				row.select		check_box_tag "proxy_dyna_model_ids[]", p_d_m.id
+				row.title		meas.title
+				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
+				row.graph		link_to "show below", "#", :class=>"estimate_chart"
+				row.goto		link_to "goto", [p_d_m]
+				row.model_d		p_d_m.dyna_model.title					, :style => "display:none;" , 'data-source' => proxy_dyna_model_path(p_d_m, :format => :json)
+				row.data_d		meas.title , :style => "display:none;" , 'data-source' => experiment_measurement_path(meas.experiment,meas,:format=>:json)
+			end
+		end
+		%>
+		<div class="one_tab">click on one of the links above to see a chart</div>
+		<div style="display:none;" class="proxy_dyna_model_chart" >	
+			<h4 class="one_tab" >Chart for <span class="chart_name"></span></h4>
+			<div class="chart">
+				 <br/>
+				 <div class="one_tab">loading...</div>
+			</div>
+			<div class="options" style="display:none;text-align: right;"><a class="hide" href='#'>hide</a> | <a class="download" href='#'>Download chart as .svg</a></div>
+			<div style="display:none;" class="model-data">
+				<div></div>
+			</div>
+			<div style="display:none;" class="measurement-data">
+				<div></div> 
+			</div>
+
+		</div>
+		
+		</div>
+	<%end%>
+	</div>
+
+<% end %>
+
+<div class="action">
+	<%= button_tag "Calculate Parameters"%>
+</div>
+
+<% end %>
+
+<div class="menu">
+	<%= menu %>
+</div>
+

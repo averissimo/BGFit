@@ -1,42 +1,18 @@
-<%= form_for([@dyna_model]) do |f| %>
-  <% if @dyna_model.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@dyna_model.errors.count, "error") %> prohibited this dyna model from being created:</h2>
-
-      <ul>
-      <% @dyna_model.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
+<%= semantic_form_for([@dyna_model]) do |f| %>
+  <%= f.semantic_errors :state %>
+  
+  <%= f.inputs do %>
+  	<%= f.input :title %>
+  	<%= f.input :solver , as: :url %>
+  	<%= f.input :estimation, as: :url %>
+  	<%= f.input :description, as: :text %>
+  	<%= f.input :definition, as: :text %>
   <% end %>
-  
-  <div class="field">
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
-  </div>
-  
-  <div class="field">
-    <%= f.label :solver %><br />
-    <%= f.text_field :solver %>
-  </div>
-  <div class="field">
-    <%= f.label :estimation %><br />
-    <%= f.text_field :estimation %>
-  </div>
-  
-  <div class="field">
-    <%= f.label :description %><br />
-    <%= f.text_area :description %>
-  </div>
-  <div class="field">
-    <%= f.label :definition %><br />
-    <%= f.text_area :definition %>
-  </div>
-  
-   <div class="actions">
-    <%= f.submit nil ,:class => "btn" %>
-  </div>
+  	  
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link %>	
+  <% end%>
 <% end %>
 
 <div class="clear"></div>

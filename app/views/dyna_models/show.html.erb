@@ -1,23 +1,6 @@
 <% 
 	context_menu = [
 		{
-			:key => :edit, 
-			:name => 'Edit this dyna model', 
-			:url => edit_dyna_model_path(@dyna_model),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
-			:key => :new, 
-			:name => 'New parameter', 
-			:url => new_dyna_model_param_path(@dyna_model),
-			:options => {
-				:container_class => 'menu',
-				:class => "btn"
-			}
-		},
-		{
 			:key => :stats, 
 			:name => 'Statistical data', 
 			:url => stats_dyna_model_path(@dyna_model),
@@ -27,13 +10,41 @@
 			}
 		},
 		{
+			:key => :stats, 
+			:name => 'Estimate parameters', 
+			:url => estimate_dyna_model_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "btn"
+			}
+		},
+		{
+			:key => :edit, 
+			:name => 'Edit this dyna model', 
+			:url => edit_dyna_model_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :new, 
+			:name => 'New parameter', 
+			:url => new_dyna_model_param_path(@dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
 			:key => :index, 
 			:name => 'Goto dyna models\' index', 
 			:url => dyna_models_path,
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
-		}}]
+			}
+		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
@@ -77,8 +88,10 @@
 		t.header :code
 		t.header :human_title
 		t.header :description
-		t.header :top
 		t.header :bottom
+		t.header :top
+		t.header :output
+		t.header :ic,			"IC"
 		t.header :edit_h,		""
 		t.header :destroy_h,	""
 
@@ -87,6 +100,8 @@
 			# Notice there's no need to explicitly define the title
 			row.code			param.code
 			row.human_title		param.human_title
+			row.output			param.output_only
+			row.ic				param.initial_condition
 			row.description		param.description_trimmed.gsub(/\n/, '<br/>')
 			row.top				param.top
 			row.bottom			param.bottom

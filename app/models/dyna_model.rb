@@ -10,13 +10,37 @@ class DynaModel < ActiveRecord::Base
   public
   #
   def description_trimmed
-      return "" if description.nil?
-      if description.length > 97
-        return description[0..97] + "..." 
-      else
-        return description
-      end
+    return "" if description.nil?
+    if description.length > 97
+      return description[0..97] + "..." 
+    else
+      return description
     end
+  end
+  
+  def get_models
+    Model.dyna_model_is(self)
+  end
+  
+  def get_experiments
+    Experiment.dyna_model_is(self)
+  end
+  
+  def get_experiments_by_model(model)
+    Experiment.model_is(model).dyna_model_is(self)
+  end
+  
+  def get_measurements
+    Measurement.dyna_model_is(self)
+  end
+  
+  def get_measurements_by_experiment(experiment)
+    Measurement.experiment_is(experiment).dyna_model_is(self)
+  end
+  
+  def get_measurements_by_model(model)
+    Measurement.model_is(model).dyna_model_is(self)
+  end
   
   private
   #

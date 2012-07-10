@@ -65,13 +65,9 @@
 <h3>Models</h3>
 
 <h3>Experiments</h3>
-	<% @experiments.each do |e| %>
-	<% 
-	#next unless (proxy_dyna_models = e.measurements.collect_concat(&:proxy_dyna_models).find_all { |p| p.dyna_model == @dyna_model })
-	%>
-	<% 
-	next unless (proxy_dyna_models = ProxyDynaModel.joins(:measurement => :experiment).where('measurements.experiment_id' => e.id, :dyna_model_id => @dyna_model.id).group('proxy_dyna_models.id')) 
-	%>
+	<% @experiments.take(1).each do |e| %>
+	<% next unless (proxy_dyna_models = ProxyDynaModel.joins(:measurement => :experiment).where('measurements.experiment_id' => e.id, :dyna_model_id => @dyna_model.id).group('proxy_dyna_models.id')) %>
+	<% p_dm_average = e.get_average_proxy_dyna_model(proxy_dyna_models) %>
 	
 	<h4><i><%= e.title %></i> experiment that belongs to <i><%= e.model.title %></i> model</h4>
 	
@@ -79,49 +75,48 @@
 		<div>
 		<div>
 			<h5 class="button">Average parameters <span class="dim">(click here to show/hide)</span></h5>
-			<div style="display:none;">
-			<% p_dm_average = e.get_average_proxy_dyna_model(proxy_dyna_models) %>
-			<dl>
-				<dt>RMSE:</dt>
-				<dd><%=p_dm_average.rmse%> +/- <%= p_dm_average.rmse_stdev%></dd>
-				<dt>Bias Factor:</dt>
-				<dd><%=p_dm_average.bias%> +/- <%= p_dm_average.bias_stdev%></dd>
-				<dt>Accuraccy Factor:</dt>
-				<dd><%=p_dm_average.accuracy%> +/- <%= p_dm_average.accuracy_stdev%></dd>
-			</dl>
-
-			<%= 
-			collection_table(p_dm_average.proxy_params, :id => 'params' , :class => 'formatted') do |t|
-				t.header :human_title
-				t.header :description
-				t.header :mean,			"Mean Value"
-				t.header :std_dev
-				t.header :count
-				
-				t.rows.alternate = :odd
-		    	t.rows.each do |row, param, index|
-					# Notice there's no need to explicitly define the title
-					row.human_title		param.param.human_title
-					row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
-					row.mean			param.mean
-					row.std_dev			param.std_dev
-					row.count			param.count
+			<div class="toggle" style="display:none;">
+				<dl>
+					<dt>RMSE:</dt>
+					<dd><%=p_dm_average.rmse%> +/- <%= p_dm_average.rmse_stdev%></dd>
+					<dt>Bias Factor:</dt>
+					<dd><%=p_dm_average.bias%> +/- <%= p_dm_average.bias_stdev%></dd>
+					<dt>Accuraccy Factor:</dt>
+					<dd><%=p_dm_average.accuracy%> +/- <%= p_dm_average.accuracy_stdev%></dd>
+				</dl>
+	
+				<%= 
+				collection_table(p_dm_average.proxy_params, :id => 'params' , :class => 'formatted') do |t|
+					t.header :human_title
+					t.header :description
+					t.header :mean,			"Mean Value"
+					t.header :std_dev
+					t.header :count
+					
+					t.rows.alternate = :odd
+			    	t.rows.each do |row, param, index|
+						# Notice there's no need to explicitly define the title
+						row.human_title		param.param.human_title
+						row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
+						row.mean			param.mean
+						row.std_dev			param.std_dev
+						row.count			param.count
+					end
 				end
-			end
-			%>
+				%>
 			</div>
 		</div>
-		<a class="download" style='display:none' href='#'>Download chart as .svg</a>
-		<div class="proxy_dyna_model_chart" >
-			<h5 class="button">Chart <span  class="dim">(click here to show/hide)</span></h5>
-			<div class="chart" style="display:none;">
+		<h5 class="button">Chart <span  class="dim">(click here to show/hide)</span></h5>
+		<div style="display:none;" class="toggle proxy_dyna_model_chart" >
+			<div class="chart">
 				loading...
-				<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(e.proxy_dyna_models.first, :format => :json) %></div>
-				<div style="display:none;" class="data">
-					<% e.measurements.each do |m| %> 
-					<div class="measurement"><%= experiment_measurement_path(e,m,:format=>:json) %></div>
-					<% end %>
-				</div>
+			</div>
+			<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
+			<div style="display:none;" class="model-data" data-source="<%= proxy_dyna_model_path(p_dm_average, :format => :json) %>"><%= p_dm_average %></div>
+			<div style="display:none;" class="measurement-data">
+				<% e.measurements.each do |m| %> 
+				<div data-source="<%= experiment_measurement_path(e,m,:format=>:json) %>"></div>
+				<% end %>
 			</div>
 		</div>
 		</div>
@@ -133,12 +128,12 @@
 		
 		
 		<% proxy_dyna_models.each do |p_dm| %>
-		<div class="one_tab" style="display:none;">
+		<div class="toggle one_tab" style="display:none;">
 			<h4><i><%= m.title %></i> measurement that belongs to <i><%= m.model.title %></i> model</h4>
 
 			<div>
 				<h5 class="button">Data Updated at <%=p_dm.updated_at %> <span style="color:#bbbbbb">(click here to show/hide)<span></h5>
-				<div style="display:none;">
+				<div class="toggle" style="display:none;">
 				<dl>
 					<dt>RMSE:</dt>
 					<dd><%=p_dm.rmse%></dd>
@@ -164,15 +159,17 @@
 				%>
 				</div>
 			</div>
-			<a class="download" style='display:none' href='#'>Download chart as .svg</a>
-			<div class="proxy_dyna_model_chart" >
-				<h5 class="button">Chart (click here to show/hide)</h5>
-				<div class="chart" style="display:none;">
+			<h5 class="button">Chart (click here to show/hide)</h5>
+			<div style="display:none;" class="toggle proxy_dyna_model_chart" >
+				<div class="chart">
 					loading...
-					<div style="display:none;" class="model_data"><%= proxy_dyna_model_path(p_dm, :format => :json) %></div>
-					<div style="display:none;" class="data">
-						<div class="measurement"><%= experiment_measurement_path(m.experiment,m,:format=>:json) %></div> 
-					</div>
+				</div>
+				<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
+				<div style="display:none;" class="model-data">
+					<div data-source="<%= proxy_dyna_model_path(p_dm, :format => :json) %>"><%= p_dm.title %></div>
+				</div>
+				<div style="display:none;" class="measurement-data">
+					<div data-source="<%= experiment_measurement_path(m.experiment,m,:format=>:json) %>"></div> 
 				</div>
 			</div>
 		
