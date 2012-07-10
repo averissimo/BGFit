@@ -65,8 +65,8 @@
 				row.title 	param.param.human_title.html_safe
 				row.description	param.param.description
 				row.value	param.value
-				row.bottom 	(if param.param.output_only then "(n/a)" else number_field_tag( param.param.id.to_s+"_bottom", param.param.bottom) end )
-				row.top 	(if param.param.output_only then "(n/a)" else number_field_tag( param.param.id.to_s+"_top", param.param.top ) end )
+				row.bottom 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_bottom", param.param.bottom) end )
+				row.top 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_top", param.param.top ) end )
 			end
 		end %>
 	</div>

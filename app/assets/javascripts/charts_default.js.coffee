@@ -136,7 +136,6 @@ if typeof google isnt 'undefined'
           process_google_chart(el,data)
         #
       #    
-    
     window = exports ? this
     window.process_chart = (element) ->
       data = new google.visualization.DataTable();
@@ -159,17 +158,6 @@ if typeof google isnt 'undefined'
             jsonObj = json
             jsonObj["title"] = $(el2).html()
             list.push jsonObj
-            #if list.length == 1
-            #  l = data.addColumn 'number', $(el2).html() , $(el2).html().toLowerCase()
-            #  if options.series == undefined
-            #    options.series = {}
-            #  temp = { lineWidth: 5, pointSize: 0}
-            #  options.series[String(l-1)] = temp
-
-              #
-            #  data.addRows jsonObj.result # adds gompertz data
-            
-            
             
             if list.length != $(el).parent().find('.model-data div').length
               return
