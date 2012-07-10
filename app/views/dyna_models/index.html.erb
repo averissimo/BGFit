@@ -16,14 +16,15 @@
 <h1>Listing <%= pluralize(@dyna_models.length, 'dyna model')%></h1>
 
 <%= 
-	collection_table(@dyna_models, :id => 'dyna_models' , :class => 'formatted') do |t|
+	collection_table(@dyna_models, :id => 'dyna_models' , :class => 'formatted dataTable dataTable') do |t|
 		t.header :title
 		t.header :description
-		t.header :show_h,		""
-		t.header :stats_h,		""
-		t.header :d_stats_h,	""
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :stats_h,		"", class: "no-sort"
+		t.header :d_stats_h,	"", class: "no-sort"
+		t.header :estimate_h,	"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, dyna_model, index|
@@ -33,6 +34,7 @@
 			row.show_h			link_to 'show', dyna_model
 			row.stats_h			link_to 'stats', [:stats,dyna_model]
 			row.d_stats_h		link_to 'download .csv stats', stats_dyna_model_path(dyna_model, :format => :csv)
+			row.estimate_h		link_to 'estimate', [:estimate,dyna_model]
 			row.edit_h			link_to 'edit', [:edit,dyna_model]
 			row.destroy_h		link_to 'remove', dyna_model, confirm: 'Are you sure?', method: :delete
 		end

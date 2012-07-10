@@ -24,6 +24,37 @@ jquery:install:
 - --pretend
 - --quiet
 - --skip
+formtastic:install:
+- --force
+- --pretend
+- --quiet
+- --skip
+- --template-engine=
+formtastic:form:
+- --force
+- --pretend
+- --quiet
+- --skip
+- --copy
+- --controller=
+- --skip-namespace
+- --old-style-hash
+- --template-engine=
+delayed_job:
+- --force
+- --pretend
+- --quiet
+- --skip
+delayed_job:active_record:
+- --force
+- --pretend
+- --quiet
+- --skip
+delayed_job:upgrade:
+- --force
+- --pretend
+- --quiet
+- --skip
 coffee:assets:
 - --force
 - --pretend

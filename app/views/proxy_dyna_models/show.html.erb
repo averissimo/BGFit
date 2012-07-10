@@ -7,7 +7,8 @@
 			:name => 'Edit this proxy dyna model', 
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
-				:container_class => 'menu'
+				:container_class => 'menu',
+				:class => "text"
 			}
 		},
 		{
@@ -49,30 +50,70 @@
 
 <h3>Listing <%= pluralize(@proxy_dyna_model.dyna_model.params.length, 'parameter')%></h3>
 
-<%= 
-	collection_table(@proxy_dyna_model.proxy_params, :id => 'params' , :class => 'formatted') do |t|
-		t.header :human_title
-		t.header :description
-		t.header :value
+<%= form_tag( calculate_proxy_dyna_model_path(@proxy_dyna_model) , method: :put) do |f| %>
 
-		t.rows.alternate = :odd
-    	t.rows.each do |row, param, index|
-			# Notice there's no need to explicitly define the title
-			row.human_title		param.param.human_title
-			row.description		param.param.description_trimmed.gsub(/\n/, '<br/>')
-			row.value			param.value
-		end
-	end
-%>
+	<div class="one_tab">
+		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted dataTable') do |t| 
+			t.header :title
+			t.header :description
+			t.header :value
+			t.header :bottom
+			t.header :top
+		
+			t.rows.alternate = :odd
+			t.rows.each do |row, param, index|
+				row.title 	param.param.human_title.html_safe
+				row.description	param.param.description
+				row.value	param.value
+				row.bottom 	(if param.param.output_only then "(n/a)" else number_field_tag( param.param.id.to_s+"_bottom", param.param.bottom) end )
+				row.top 	(if param.param.output_only then "(n/a)" else number_field_tag( param.param.id.to_s+"_top", param.param.top ) end )
+			end
+		end %>
+	</div>
+	
+<div class="action text-center">
+	<table class="formatted dataTable">
+		<thead>
+			<tr>
+				<th class="no-sort" scope="col">RMSE</th>
+				<th class="no-sort" scope="col">Bias</th>
+				<th class="no-sort" scope="col">Accuracy</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><%= @proxy_dyna_model.rmse%></td>
+				<td><%= @proxy_dyna_model.bias%></td>
+				<td><%= @proxy_dyna_model.accuracy%></td>
+			</tr>
+		</tbody>
+	</table>
+	<%= button_tag "Recalculate Parameters"%>
+</div>
 
+<% end %>
+
+
+<h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
+
+<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
+	<div class="chart">
+		 <br/>
+		 <div class="one_tab">loading...</div>
+	</div>
+	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
+	<div style="display:none;" class="model-data">
+		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.dyna_model.title%></div>
+	</div>
+	<div style="display:none;" class="measurement-data">
+		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div> 
+	</div>
+
+</div>
 
 <div class="menu">
 	<%= menu %>
 </div>
 
-<h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
-<div id="proxy_dyna_model_chart" style="display:none">
-	<div id="chart" 
-		measurement_json ="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>" 
-		solver_json="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>" ></div>
-</div>
+
+

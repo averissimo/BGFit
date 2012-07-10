@@ -7,4 +7,6 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+//= require dataTables/jquery.dataTables
+//= require charts_default
 //= require_tree .

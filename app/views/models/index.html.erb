@@ -16,12 +16,12 @@
 <h1>Listing <%= pluralize(@models.length, 'model')%></h1>
 
 <%= 
-	collection_table(@models, :id => 'models' , :class => 'formatted') do |t|
+	collection_table(@models, :id => 'models' , :class => 'formatted dataTable') do |t|
 		t.header :title
 		t.header :description
-		t.header :show_h,		""
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, model, index|
@@ -41,16 +41,15 @@
 <h3>All <%= pluralize(@measurements.length, 'measurement')%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted') do |t|
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
 		t.header :model
 		t.header :experiment
 		t.header :title
 		t.header :date
-		t.header :show_h,		""
-		t.header :regression_h,	""
-		t.header :csv,			""
-		t.header :exp,			""
-		t.header :dyna,			""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :regression_h,	"", class: "no-sort"
+		t.header :csv,			"", class: "no-sort"
+		t.header :exp,			"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -63,11 +62,6 @@
 			row.show_h			link_to 'show', [measure.experiment,measure]
 			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
 			row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
-			if measure.proxy_dyna_models && measure.proxy_dyna_models.size > 0
-				row.dyna			link_to 'first dyna' , [measure.proxy_dyna_models.first]
-			else
-				row.dyna		"" 
-			end
 		end
 	end
 %>

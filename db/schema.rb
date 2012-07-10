@@ -11,7 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120622174029) do
+ActiveRecord::Schema.define(:version => 20120709125626) do
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "dyna_models", :force => true do |t|
     t.string   "title"
@@ -74,6 +90,8 @@ ActiveRecord::Schema.define(:version => 20120622174029) do
     t.text     "description"
     t.float    "top"
     t.float    "bottom"
+    t.boolean  "output_only"
+    t.boolean  "initial_condition"
   end
 
   add_index "params", ["dyna_model_id"], :name => "index_params_on_dyna_model_id"
@@ -87,6 +105,7 @@ ActiveRecord::Schema.define(:version => 20120622174029) do
     t.text     "json",           :limit => 2147483647
     t.float    "rmse"
     t.float    "bias"
+    t.float    "accuracy"
   end
 
   add_index "proxy_dyna_models", ["dyna_model_id"], :name => "index_proxy_dyna_models_on_dyna_model_id"

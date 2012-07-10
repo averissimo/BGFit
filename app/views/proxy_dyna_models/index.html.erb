@@ -16,12 +16,12 @@
 <h1>Listing <%= pluralize(@dyna_models.length, 'dyna model')%></h1>
 
 <%= 
-	collection_table(@dyna_models, :id => 'dyna_models' , :class => 'formatted') do |t|
+	collection_table(@dyna_models, :id => 'dyna_models' , :class => 'formatted dataTable') do |t|
 		t.header :title
 		t.header :description
-		t.header :show_h,		""
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, dyna_model, index|

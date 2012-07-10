@@ -4,6 +4,8 @@ BacteriaGrowth::Application.routes.draw do
     resources :params
     member do
       get :stats
+      get :estimate
+      put :calculate
     end
   end
  
@@ -28,6 +30,9 @@ BacteriaGrowth::Application.routes.draw do
     end
   
   resources :proxy_dyna_models, :except => [:new, :create] do
+    member do
+      put :calculate
+    end
     resources :proxy_params
   end
 

@@ -1,4 +1,6 @@
 <% 
+	javascript 'https://www.google.com/jsapi'
+
 	context_menu = [
 		{
 			:key => :edit, 
@@ -44,14 +46,14 @@
 <h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>
 
 <%= 
-	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted') do |t|
+	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
 		t.header :title
 		t.header :date
-		t.header :show_h,		""
-		t.header :edit_h,		""
-		t.header :destroy_h,	""
-		t.header :regression_h,	""
-		t.header :csv,			""
+		t.header :show_h,		"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
+		t.header :regression_h,	"", class: "no-sort"
+		t.header :csv,			"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measurement, index|
@@ -66,6 +68,23 @@
 		end
 	end
 %>
+
+
+<h3>Measurements chart</h3>
+
+<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
+	<div class="chart">
+		 <br/>
+		 <div class="one_tab">loading...</div>
+	</div>
+	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
+	<div style="display:none;" class="measurement-data">
+		<% @experiment.measurements.each do |m| %>
+		<div data-source="<%= experiment_measurement_path(@experiment,m,:format=>:json) %>">m.title</div>
+		<% end %> 
+	</div>
+
+</div>
 
 <div class="menu">
 	<%= menu %>

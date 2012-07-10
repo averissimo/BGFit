@@ -1,16 +1,7 @@
-<%= form_for([@experiment,@measurement]) do |f| %>
-  <% if @measurement.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@measurement.errors.count, "error") %> prohibited this measurement from being saved:</h2>
+<%= form_for([@experiment,@measurement], builder: LabeledFormBuilder) do |f| %>
 
-      <ul>
-      <% @measurement.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+	<%= f.error_messages %>
+	
   <div class="field">
     <%= f.label :experiment %><br />
     <%= @experiment.id %>
@@ -18,22 +9,12 @@
     <%= @experiment.description %>
   </div>
 
-  <div class="field">
-    <%= f.label :title %><br />
     <%= f.text_field :title %>
-  </div>
   
-  <div class="field">
-    <%= f.label :date %><br />
-    <%= f.date_select :date , :include_blank => true %>
-  </div>
+  <%= f.date_select :date , :include_blank => true %>
   
-  <div class="field">
-    <%= f.label :original_data %><br />
     <%= f.text_area :original_data %>
-  </div>
-
-  <div class="actions">
+    <div class="actions">
     <%= f.submit nil , :class => "btn" %>
   </div>
 <% end %>

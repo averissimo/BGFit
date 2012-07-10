@@ -6,9 +6,18 @@ class Measurement < ActiveRecord::Base
  
   accepts_nested_attributes_for :lines
   
+  scope :model_is, lambda { |model| joins(:experiment).where(:experiments => {:model_id=>model.id} ).order(:experiment_id) }
+  scope :dyna_model_is, lambda { |dyna_model| joins(:proxy_dyna_models).where(:proxy_dyna_models => {:dyna_model_id=>dyna_model.id} ).order(:experiment_id) }
+  scope :experiment_is, lambda { |experiment| where(:experiment_id=>experiment.id).order(:experiment_id) }
+  
   has_paper_trail
   
   public
+  
+  
+    def get_proxy_dyna_model_with_dyna_model(dyna_model)
+      ProxyDynaModel.where(:measurement_id=>self.id,:dyna_model_id=>dyna_model.id).first
+    end
   
     def lines_no_death_phase
       p_l = nil

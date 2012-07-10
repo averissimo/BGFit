@@ -1,7 +1,7 @@
 class ProxyDynaModelsController < ApplicationController
   respond_to :html, :json
   
-  before_filter :determine_models , :except =>  [:index, :new, :create]
+  before_filter :determine_models , :except =>  [:index, :new, :create, :calculate]
   
   def index
     @measurement = Measurement.find(params[:measurement_id])
@@ -10,6 +10,22 @@ class ProxyDynaModelsController < ApplicationController
     @proxy_dyna_models = @measurement.proxy_dyna_models
     redirect_to [@experiment,@measurement]
   end
+
+  def calculate
+    @proxy_dyna_model = ProxyDynaModel.find(params[:id] )
+    custom_params = @proxy_dyna_model.dyna_model.params.collect do |param|
+      param.top =  params[param.id.to_s+"_top"]
+      param.bottom = params[param.id.to_s+"_bottom"]
+      param
+    end
+    begin
+      # TODO handle exceptions gracefully
+      @proxy_dyna_model.call_estimation_with_custom_params( custom_params )
+    end
+    
+    respond_with @proxy_dyna_model 
+  end
+
 
   def new
     if params[:experiment_id]

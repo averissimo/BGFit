@@ -23,6 +23,23 @@ class DynaModelsController < ApplicationController
     end
   end
   
+  def calculate
+    @dyna_model = DynaModel.find(params[:dyna_model_id])
+    @proxy_dyna_models = ProxyDynaModel.where( :id => params["proxy_dyna_model_ids"])
+    
+    custom_params = @dyna_model.params.collect do |param|
+      param.top =  params[param.id.to_s+"_top"]
+      param.bottom = params[param.id.to_s+"_bottom"]
+      param
+    end
+
+    
+    @proxy_dyna_models.each do |p|
+      p.call_estimation_with_custom_params( custom_params )
+    end
+    
+    respond_with @dyna_model 
+  end
   
   def edit
     @dyna_model = DynaModel.find(params[:id])
@@ -45,12 +62,18 @@ class DynaModelsController < ApplicationController
   
   def show
     @dyna_model = DynaModel.find(params[:id])
-    respond_with(@dyna_models)
+    respond_with(@dyna_model)
+  end
+
+  def estimate
+    @dyna_model = DynaModel.find(params[:id])
+    @models = Model.dyna_model_is(@dyna_model)
+    respond_with(@dyna_model)
   end
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
-    @experiments = Experiment.joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>@dyna_model.id}}).group('experiments.id').sort_by { |e| e.model.title }
+    @experiments = Experiment.dyna_model_is(@dyna_model)
     respond_with(@dyna_models)
   end
 
