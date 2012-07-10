@@ -7,6 +7,8 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 jQuery ->
+  $.fn.dataTableExt.sErrMode = "throw"
+
   $('.dataTable').dataTable
     "aoColumnDefs": [ 
       { "bSortable": false, "aTargets": [ "no-sort" ] }
@@ -15,6 +17,7 @@ jQuery ->
     bFilter: false
     bJQueryUI: true
 
+  
 if typeof google isnt 'undefined'
   google.load 'visualization', '1.0', {'packages':['corechart','table']}
   $(document).ready () => 
