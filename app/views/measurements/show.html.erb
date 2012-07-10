@@ -107,6 +107,7 @@
 	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted') do |t|
 		t.header :title
 		t.header :description
+		t.header :rmse
 		t.header :show_h,		""
 		t.header :edit_h,		""
 		t.header :destroy_h,	""
@@ -116,6 +117,7 @@
 			# Notice there's no need to explicitly define the title
 			row.title		proxy_dyna_model.dyna_model.title
 			row.description	proxy_dyna_model.dyna_model.description
+			row.rmse		proxy_dyna_model.rmse
 			row.show_h		link_to 'show', [proxy_dyna_model]
 			row.edit_h		link_to 'edit', [:edit,proxy_dyna_model]
 			row.destroy_h	link_to 'remove', [proxy_dyna_model], confirm: 'Are you sure?', method: :delete

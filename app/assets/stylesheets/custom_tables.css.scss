@@ -2,7 +2,7 @@ $tab: 3em; // also in results.css / default.css
 
 
 table.formatted {
-  margin-left: $tab;
+  //margin-left: $tab;
   padding-bottom:2em;
   tr {
     th,
@@ -17,4 +17,9 @@ table.formatted {
       background-color: #DCDCDC;
     }  
   }  
+}
+
+
+table {
+  margin: 0 auto;
 }

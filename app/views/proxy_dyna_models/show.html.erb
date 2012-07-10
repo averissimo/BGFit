@@ -72,6 +72,22 @@
 	</div>
 	
 <div class="action text-center">
+	<table class="formatted">
+		<thead>
+			<tr>
+				<th scope="col">RMSE</th>
+				<th scope="col">Bias</th>
+				<th scope="col">Accuracy</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><%= @proxy_dyna_model.rmse%></td>
+				<td><%= @proxy_dyna_model.bias%></td>
+				<td><%= @proxy_dyna_model.accuracy%></td>
+			</tr>
+		</tbody>
+	</table>
 	<%= button_tag "Recalculate Parameters"%>
 </div>
 
