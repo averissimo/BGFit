@@ -65,10 +65,19 @@ class ProxyDynaModel < ActiveRecord::Base
     self.bias = 10 ** (bias / size )
     self.accuracy = 10 ** (accu / size )
     self.rmse = Math.sqrt ( rmse / size )
+    self.notes = ""
     self.save
     [].push(measurement.model.id).push(measurement.model.title).push(measurement.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
     
   
+  end
+  
+  def call_pre_estimation_background_job
+    self.rmse = nil
+    self.bias = nil
+    self.accuracy = nil
+    self.notes = "parameters are being calculated in background"
+    self.save
   end
   
   def call_estimation
@@ -83,6 +92,8 @@ class ProxyDynaModel < ActiveRecord::Base
   
   def call_estimation_with_custom_params(params)
     return unless !(self.measurement.nil?) || !(self.estimation.nil?) || !(self.estimation == "")
+    
+    self.call_pre_estimation_background_job
     
     # TODO make death phase optional
     x_array = self.measurement.x_array
