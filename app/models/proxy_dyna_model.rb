@@ -7,7 +7,7 @@ class ProxyDynaModel < ActiveRecord::Base
   before_create :update_params
   before_update :update_params
   
-  has_paper_trail :skip => [:json]
+  has_paper_trail :skip => [:json, :notes]
   
   public
   
