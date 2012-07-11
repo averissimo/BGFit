@@ -97,7 +97,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def call_estimation_with_custom_params(params)
       return unless !(self.measurement.nil?) || !(self.estimation.nil?) || !(self.estimation == "")
       
-      url = self.estimation_url( params )
+      url = estimation_url( params )
   
       begin
         response = Net::HTTP.get_response(URI(url))
@@ -125,7 +125,7 @@ class ProxyDynaModel < ActiveRecord::Base
     
     def call_solver
       
-      url = self.solver_url
+      url = solver_url
       
       begin    
         response = Net::HTTP.get_response(URI(url))
@@ -155,6 +155,7 @@ class ProxyDynaModel < ActiveRecord::Base
         end
       }    
       self.call_solver if flag
+      statistical_data if flag
     end
     
     def original_data
