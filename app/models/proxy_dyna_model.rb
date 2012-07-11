@@ -93,6 +93,7 @@ class ProxyDynaModel < ActiveRecord::Base
   def call_estimation_with_custom_params(params)
     return unless !(self.measurement.nil?) || !(self.estimation.nil?) || !(self.estimation == "")
     
+    
     self.call_pre_estimation_background_job
     
     # TODO make death phase optional
@@ -124,7 +125,13 @@ class ProxyDynaModel < ActiveRecord::Base
     url += url_states + url_ic;
     url += CGI::escape("}")
 
-    response = Net::HTTP.get_response(URI(url))
+    begin
+      response = Net::HTTP.get_response(URI(url))
+    rescue Timeout::Error
+      self.notes = "timeout while calculating parameters, try again"
+      self.save
+      return
+    end
     print url + "\n"
     result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
     
@@ -139,8 +146,8 @@ class ProxyDynaModel < ActiveRecord::Base
   
   def json_cache
     return self.json unless self.json.nil?
-      self.call_solver
-      self.statistical_data
+    return  if self.call_solver.nil?
+    self.statistical_data 
     self.json
   end
   
@@ -157,7 +164,14 @@ class ProxyDynaModel < ActiveRecord::Base
       url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
     end
     print url
-    response = Net::HTTP.get_response(URI(url))
+    
+    begin    
+      response = Net::HTTP.get_response(URI(url))
+    rescue Timeout::Error
+      self.notes = "timeout while simulating, try again"
+      self.save
+      return
+    end
     self.json = response.body.gsub(/(\n|\t)/,'')
     self.save
     self.json
