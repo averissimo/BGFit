@@ -11,7 +11,7 @@ if typeof google isnt 'undefined'
       curveType: 'function',
       lineWidth: 1,
       pointSize: 2,
-      width: 900,
+      width: "100%",
       height: 500,
       legend: {
         position: "bottom"
