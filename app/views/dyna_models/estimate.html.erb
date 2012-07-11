@@ -100,7 +100,7 @@
 				row.select		check_box_tag "proxy_dyna_model_ids[]", p_d_m.id
 				row.title		meas.title
 				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
-				row.notes		word_wrap(p_d_m.notes,:line_width => 20).gsub(/\n/, '<br/>')
+				row.notes		word_wrap(p_d_m.notes,:line_width => 40).gsub(/\n/, '<br/>')
 				row.graph		link_to "show below", "#", :class=>"estimate_chart"
 				row.goto		link_to "goto", [p_d_m]
 				row.model_d		p_d_m.dyna_model.title					, :style => "display:none;" , 'data-source' => proxy_dyna_model_path(p_d_m, :format => :json)
