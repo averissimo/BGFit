@@ -35,9 +35,8 @@ class DynaModelsController < ApplicationController
   
     @proxy_dyna_models.each do |p|
       p.call_pre_estimation_background_job
+      Delayed::Job.enqueue( CalculateJob.new( p.id , custom_params ), 0 , Time.now )  
     end
-    
-    Delayed::Job.enqueue ( CalculateJob.new( params["proxy_dyna_model_ids"] , custom_params ) )
     
     flash[:notice] = "Parameters are being calculated in background"
 
