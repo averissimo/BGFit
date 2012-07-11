@@ -7,7 +7,7 @@ class ProxyDynaModel < ActiveRecord::Base
   before_create :update_params
   before_update :update_params
   
-  has_paper_trail :skip => [:json, :notes]
+  has_paper_trail :skip => [:json]
   
   public
   
@@ -73,10 +73,14 @@ class ProxyDynaModel < ActiveRecord::Base
   end
   
   def call_pre_estimation_background_job
+    clean_stats "parameters are being calculated in background"
+  end
+  
+  def clean_stats(note)
     self.rmse = nil
     self.bias = nil
     self.accuracy = nil
-    self.notes = "parameters are being calculated in background"
+    self.notes = note
     self.save
   end
   
@@ -92,9 +96,6 @@ class ProxyDynaModel < ActiveRecord::Base
   
   def call_estimation_with_custom_params(params)
     return unless !(self.measurement.nil?) || !(self.estimation.nil?) || !(self.estimation == "")
-    
-    
-    self.call_pre_estimation_background_job
     
     # TODO make death phase optional
     x_array = self.measurement.x_array
@@ -128,8 +129,7 @@ class ProxyDynaModel < ActiveRecord::Base
     begin
       response = Net::HTTP.get_response(URI(url))
     rescue Timeout::Error
-      self.notes = "timeout while calculating parameters, try again"
-      self.save
+      clean_stats "timeout while calculating parameters, try again"
       return
     end
     print url + "\n"
@@ -169,6 +169,7 @@ class ProxyDynaModel < ActiveRecord::Base
       response = Net::HTTP.get_response(URI(url))
     rescue Timeout::Error
       self.notes = "timeout while simulating, try again"
+      self.json = nil
       self.save
       return
     end
