@@ -62,10 +62,12 @@ class ProxyDynaModel < ActiveRecord::Base
       begin
         JSON.parse(json)["result"].each do |pair|
           break if line.nil?
+          next if pair[1]<= 0
           #
           if pair[0] >= line.x
             pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
             rmse +=  ( pair[1] - line.y ) ** 2
+            print pair[1].to_s + " - " + line.y.to_s + "\n"
             bias = Math.log( pair[1] / line.y ).abs
             accu = Math.log( pair[1] / line.y )
             line = lines.shift  
@@ -74,7 +76,7 @@ class ProxyDynaModel < ActiveRecord::Base
             nil
           end
         end
-      rescue
+      rescue Exception => e  
         return [].push(measurement.id).push(-1)
       end
       self.bias = 10 ** (bias / size )
