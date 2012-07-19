@@ -21,13 +21,22 @@ contact developer at: averissimo(at)kdbio.inesc-id.pt
 h2. Requirements
 
 * "RVM":https://rvm.io/
-* "Ruby (1.9.3)":
-* "MySQL 5":
-* "Ruby on Rails (3.1.3)":
+* "Ruby":http://www.ruby-lang.org/ (1.9.3)
+* "MySQL 5":http://www.mysql.com/
+* "Ruby on Rails":http://rubyonrails.org/ (3.1.3)
 
 h2. Installation
 
-<pre>bundle install</pre>
+<pre>$ git submodule init
+
+$ git submodule update
+
+$ gem install bundler
+
+$ gem install rails -v 3.1.3
+
+$ bundle install</pre>
+
 
 h2. Acknowledgments
 
