@@ -1,6 +1,36 @@
 h1. == BGFit ==
 
+h2. Description
+
+The Bacterial Growth Fitting application (BGFit) is a web-based software application that serves both as:
+
+# an automated fitting tool for experimental using an extensible set of dynamic models and;
+# a data repository that holds and manages experimental data.
+
+It is extensible to new dynamic models using a distributed architecture allowing users to define their own models and fit their data. Furthermore, each extension contributes to a richer environment, where other scientists can easily test and compare different approaches by different models to better extract and understand the information described in the data.
+
+The application is described in the context of bacterial growth data fitting, but it is also applicable to other types of 2 dimensional data, e.g. data from cancer growth experiments or macroeconomic data.
+
+h2. General Information
+
 "INESC-ID":http://www.inesc-id.pt/
 "KDBIO Research Group":http://www.inesc-id.pt/intranet/laboratoriogrupo/kdbio/kdbio.php
 
 contact developer at: averissimo(at)kdbio.inesc-id.pt
+
+h2. Requirements
+
+* "RVM":https://rvm.io/
+* "Ruby (1.9.3)":
+* "MySQL 5":
+* "Ruby on Rails (3.1.3)":
+
+h2. Installation
+
+<pre>bundle install</pre>
+
+h2. Acknowledgments
+
+This work has been developed under the PneumoSYS project
+
+Supported by "FCT":http://www.fct.mctes.pt/projectos/pub/2006/Painel_Result/vglobal_projecto.asp?idProjecto=100964&idElemConcurso=2742 under PTDC/SAU-MII/100964/2008
