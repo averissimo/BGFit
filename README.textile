@@ -1,3 +1,6 @@
-== BGFit ==
+h1. == BGFit ==
 
-averissimo(at)kdbio.inesc-id.pt
+"INESC-ID":http://www.inesc-id.pt/
+"KDBIO Research Group":http://www.inesc-id.pt/intranet/laboratoriogrupo/kdbio/kdbio.php
+
+contact developer at: averissimo(at)kdbio.inesc-id.pt
