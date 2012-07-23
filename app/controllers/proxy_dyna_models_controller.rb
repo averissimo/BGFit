@@ -21,6 +21,7 @@ class ProxyDynaModelsController < ApplicationController
     begin
       # TODO handle exceptions gracefully
       @proxy_dyna_model.call_estimation_with_custom_params( custom_params )
+      flash[:notice] = t('flash.actions.calculate.notice', :resource_name => "Proxy Dyna Model")
     end
     
     respond_with @proxy_dyna_model 
