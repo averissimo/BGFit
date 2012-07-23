@@ -2,7 +2,7 @@
 	context_menu = [
 		{
 			:key => :back, 
-			:name => "Back to models' index", 
+			:name => "Back to scopes' index", 
 			:url => models_url,
 			:options => {
 				:container_class => 'menu',
@@ -11,7 +11,7 @@
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { "New model" }
+	content_for(:title) { "New scope" }
 %>
 <h1>New model</h1>
 

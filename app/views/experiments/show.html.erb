@@ -20,7 +20,7 @@
 		},
 		{
 			:key => :index, 
-			:name => 'Goto model', 
+			:name => 'Goto scope', 
 			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',
@@ -33,7 +33,7 @@
 
 <h1><%= @experiment.title %> (experiment)</h1>
 
-<h4>Using <%= @model.title %> model</h4>
+<h4>Using <%= @model.title %> scope</h4>
 <p>
 	<%= simple_format @model.description %>
 </p>

@@ -19,16 +19,18 @@
 				:container_class => 'menu',
 				:class => "text"
 			}
-		},
-		{
-			:key => :index, 
-			:name => 'Goto measurement', 
-			:url => url_for([@experiment,@measurement]),
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		}]
+		}
+#		,
+#		{
+#			:key => :index, 
+#			:name => 'Goto measurement', 
+#			:url => url_for([@experiment,@measurement]),
+#			:options => {
+#				:container_class => 'menu',
+#				:class => "text"
+#			}
+#		}
+		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
@@ -37,11 +39,13 @@
 
 <h1><%= @proxy_dyna_model.dyna_model.title %> (dyna model)</h1>
 
+<% if !@proxy_dyna_model.measurement.nil? %>
 <h3><%= @proxy_dyna_model.measurement.model.title %> model's description for <%= @proxy_dyna_model.measurement.title %> measurement:</h3>
 <p>
 	<%= simple_format (show (@proxy_dyna_model.measurement.model.description)) %>
 </p>
 
+<% end%>
 <h3>Dynamic model description:</h3>
 
 <p>
@@ -88,7 +92,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<%= button_tag "Recalculate Parameters"%>
+	<%= button_tag "Recalculate Parameters" , disable_with: "please wait..." %>
 </div>
 
 <% end %>
@@ -106,7 +110,13 @@
 		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.dyna_model.title%></div>
 	</div>
 	<div style="display:none;" class="measurement-data">
-		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div> 
+		<% if @proxy_dyna_model.measurement.nil? %>
+		<% @proxy_dyna_model.experiment.measurements.each do |m| %>
+		<div data-source="<%= experiment_measurement_path(@proxy_dyna_model.experiment,m,:format=>:json) %>"><%= m.title %></div>
+		<% end %>
+		<% else %>
+		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div>
+		<% end %> 
 	</div>
 
 </div>

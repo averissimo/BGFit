@@ -2,7 +2,7 @@
 	context_menu = [
 		{
 			:key => :new, 
-			:name => 'new model', 
+			:name => 'new scope', 
 			:url => new_model_path,
 			:options => {
 				:container_class => 'menu'
@@ -11,9 +11,9 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Model's index" } %>
+<% content_for(:title) { "Data Management" } %>
 
-<h1>Listing <%= pluralize(@models.length, 'model')%></h1>
+<h1>Listing <%= pluralize(@models.length, 'scope')%></h1>
 
 <%= 
 	collection_table(@models, :id => 'models' , :class => 'formatted dataTable') do |t|
@@ -49,7 +49,7 @@
 		t.header :show_h,		"", class: "no-sort"
 		t.header :regression_h,	"", class: "no-sort"
 		t.header :csv,			"", class: "no-sort"
-		t.header :exp,			"", class: "no-sort"
+		#t.header :exp,			"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -61,7 +61,7 @@
 			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
 			row.show_h			link_to 'show', [measure.experiment,measure]
 			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
-			row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
+		#	row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
 		end
 	end
 %>
