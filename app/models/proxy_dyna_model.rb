@@ -60,6 +60,7 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     def measurement_stats(dataset)
+      size = 0
       dataset[:lines] = measurement.lines_no_death_phase
       
       size += dataset[:lines].size

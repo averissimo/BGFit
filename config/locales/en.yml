@@ -8,6 +8,8 @@ en:
     actions:
       create:
         notice: "%{resource_name} was sucessfully created."
+      calculate:
+        notice: "%{resource_name}'s parameters were sucessfully calculated."
       update:
         notice: "%{resource_name} was successfully updated."
       destroy:
