@@ -2,7 +2,7 @@
 	context_menu = [
 		{
 			:key => :show, 
-			:name => "Show model", 
+			:name => "Show scope", 
 			:url => model_path(@model),
 			:options => {
 				:container_class => 'menu',
@@ -11,7 +11,7 @@
 		},
 		{
 			:key => :back, 
-			:name => "Back to models' index", 
+			:name => "Back to scopes' index", 
 			:url => models_url,
 			:options => {
 				:container_class => 'menu',
@@ -20,7 +20,7 @@
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { "Edit model" }
+	content_for(:title) { "Edit scope" }
 %><h1>Editing model</h1>
 
 <%= render 'form' %>

@@ -60,7 +60,7 @@ class Measurement < ActiveRecord::Base
       #self.lines.max_by{ |l| 
       #  l.x 
       #}.x * 1.1
-      100 # some simulators fail with the commented code
+      25 # some simulators fail with the commented code
     end
     
     def end_title

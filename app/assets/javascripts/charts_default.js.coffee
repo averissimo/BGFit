@@ -43,11 +43,13 @@ if typeof google isnt 'undefined'
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
+        alert(textStatus)
     }
     setup = {
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
+        alert(textStatus)
     }
     
     $('a.hide').live 'click' , (event) =>
@@ -161,7 +163,7 @@ if typeof google isnt 'undefined'
           setup.url = $(el2).attr('data-source')
           
           result = $.ajax(setup)
-        
+                      
           result.done (json) =>
             jsonObj = json
             jsonObj["title"] = $(el2).html()
