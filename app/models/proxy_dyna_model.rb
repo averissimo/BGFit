@@ -183,7 +183,7 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     def call_solver(time=nil)
       
-      url = solver_url   
+      url = solver_url(time)  
       begin    
         response = call_url(url)
      rescue Timeout::Error
@@ -194,14 +194,17 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       if temp_json["error"]
+	print 'time: ' + time.to_s unless time.nil?
         if time.nil?
           call_solver(1)
+	  print '\tcall_solver(1)'
           return self.json
         elsif (self.measurement.end - time < 0 )
           self.notes = "error while simulating data" + temp_json["error"].to_s
           self.json = nil
         else
           call_solver(time+1)
+	  print '\tcall_solver(' + (time + 1).to_s +  ')'
           return self.json
         end
       else
