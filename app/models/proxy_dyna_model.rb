@@ -197,14 +197,12 @@ class ProxyDynaModel < ActiveRecord::Base
 	print 'time: ' + time.to_s unless time.nil?
         if time.nil?
           call_solver(1)
-	  print '\tcall_solver(1)'
           return self.json
         elsif (self.measurement.end - time < 0 )
           self.notes = "error while simulating data" + temp_json["error"].to_s
           self.json = nil
         else
           call_solver(time+1)
-	  print '\tcall_solver(' + (time + 1).to_s +  ')'
           return self.json
         end
       else
