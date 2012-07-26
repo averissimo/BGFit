@@ -181,7 +181,7 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     #
     #
-    def call_solver
+    def call_solver(time=nil)
       
       url = solver_url
       
@@ -195,8 +195,16 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       if temp_json["error"]
-        self.notes = "error while simulating data" + temp_json["error"].to_s
-        self.json = nil 
+        if time.nil?
+          call_solver(1)
+          return self.json
+        elsif time = -1
+          self.notes = "error while simulating data" + temp_json["error"].to_s
+          self.json = nil
+        else
+          call_solver(time+1)
+          return self.json
+        end
       else
         self.json = temp_json["result"].to_s
       end
@@ -285,7 +293,7 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     # get solver url with parameters
-    def solver_url
+    def solver_url(time=nil)
       url_params = self.proxy_params.collect { |p|
         next if p.code == 'o'
         return nil if p.value.nil?      
@@ -295,7 +303,11 @@ class ProxyDynaModel < ActiveRecord::Base
       if self.measurement.nil?
         url = "#{self.dyna_model.solver}?#{url_params}&end=48"
       else
-        url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+        if time.nil?
+          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+        else
+          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{(self.measurement.end-time).to_s}"
+        end
       end
       url
     end
