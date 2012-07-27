@@ -90,6 +90,7 @@ class DynaModelsController < ApplicationController
 
   def destroy
     @dyna_model = DynaModel.find(params[:id])
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Dyna Model" , title: @dyna_model.title)
     @dyna_model.destroy
     respond_with(@dyna_model, :location => dyna_models_path)
 

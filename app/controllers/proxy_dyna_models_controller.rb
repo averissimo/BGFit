@@ -88,6 +88,7 @@ class ProxyDynaModelsController < ApplicationController
   end
 
   def destroy
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Proxy Dyna Model", title: @proxy_dyna_model.dyna_model.title)
     @proxy_dyna_model.destroy
     respond_with(@proxy_dyna_model, :location => url_for([@experiment,@measurement]))
 

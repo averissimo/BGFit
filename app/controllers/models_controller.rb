@@ -73,6 +73,7 @@ class ModelsController < ApplicationController
   # DELETE /models/1.json
   def destroy
     @model = Model.find(params[:id])
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Scope", title: @model.title)
     @model.destroy
     respond_with(@model, :location => models_path)
   end

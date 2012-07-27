@@ -1,5 +1,7 @@
 BacteriaGrowth::Application.routes.draw do
 
+  devise_for :users
+
   match "/delayed_job" => DelayedJobWeb, :anchor => false
 
   resources :dyna_models do

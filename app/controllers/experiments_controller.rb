@@ -88,8 +88,8 @@ class ExperimentsController < ApplicationController
   # DELETE /experiments/1
   # DELETE /experiments/1.json
   def destroy
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Experiment" , title: @experiment.title)
     @experiment.destroy
-
     respond_with([@model,@experiment], :location => @model)
   end
   
