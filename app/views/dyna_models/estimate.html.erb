@@ -11,15 +11,6 @@
 			}
 		},
 		{
-			:key => :new, 
-			:name => 'New parameter', 
-			:url => new_dyna_model_param_path(@dyna_model),
-			:options => {
-				:container_class => 'menu',
-				:class => "btn"
-			}
-		},
-		{
 			:key => :stats, 
 			:name => 'Statistical data', 
 			:url => stats_dyna_model_path(@dyna_model),
@@ -29,13 +20,25 @@
 			}
 		},
 		{
-			:key => :index, 
-			:name => 'Goto dyna models\' index', 
-			:url => dyna_models_path,
+			:key => :back, 
+			:name => 'Back', 
+			:url => url_for(:back),
 			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
 				:class => "text"
-		}}]
+			}
+		},
+		{
+			:key => :home, 
+			:name => 'Goto home', 
+			:url => root_url,
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>

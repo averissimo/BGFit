@@ -1,21 +1,23 @@
 <% 
 	context_menu = [
 		{
-			:key => :show, 
-			:name => "Show dyna model", 
-			:url => dyna_model_path(@dyna_model),
+			:key => :back, 
+			:name => 'Back', 
+			:url => url_for(:back),
 			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
-				:class => 'text'
+				:class => "text"
 			}
 		},
 		{
-			:key => :back, 
-			:name => "Back to dyna models' index", 
-			:url => dyna_models_url,
+			:key => :home, 
+			:name => 'Goto dyna model', 
+			:url => dyna_model_path(@dyna_model),
 			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
-				:class => 'text'
+				:class => "text"
 			}
 		}]
 	menu = nil

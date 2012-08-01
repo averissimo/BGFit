@@ -1,21 +1,23 @@
 <% 
 	context_menu = [
 		{
-			:key => :show, 
-			:name => "Show experiment", 
-			:url => url_for([@model,@experiment]),
+			:key => :back, 
+			:name => 'Back', 
+			:url => url_for(:back),
 			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
-				:class => 'text'
+				:class => "text"
 			}
 		},
 		{
-			:key => :back, 
-			:name => "Goto scope", 
-			:url => url_for(@model),
+			:key => :home, 
+			:name => 'Goto experiment', 
+			:url => url_for([@model,@experiment]),
 			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
-				:class => 'text'
+				:class => "text"
 			}
 		}]
 	menu = nil

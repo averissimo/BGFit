@@ -2,11 +2,22 @@
 	context_menu = [
 		{
 			:key => :back, 
-			:name => "Back to dyna models' index", 
-			:url => dyna_models_url,
+			:name => 'Back', 
+			:url => url_for(:back),
 			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
-				:class => 'text'
+				:class => "text"
+			}
+		},
+		{
+			:key => :home, 
+			:name => 'Goto dyna model', 
+			:url => dyna_model_path(@dyna_model),
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
 			}
 		}]
 	menu = nil
