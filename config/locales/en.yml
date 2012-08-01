@@ -13,4 +13,5 @@ en:
       update:
         notice: "%{resource_name} was successfully updated."
       destroy:
-        notice: "%{title} %{resource_name} was successfully deleted."
+        notice: "%{resource_name} '%{title}' was successfully deleted."
+        notice_complex: "%{resource_name} was successfully deleted."

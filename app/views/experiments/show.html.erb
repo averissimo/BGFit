@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :edit, 
-			:name => 'Edit this experiment', 
+			:name => 'Edit', 
 			:url => url_for([:edit,@model,@experiment]),
 			:options => {
 				:container_class => 'menu'
@@ -19,17 +19,18 @@
 			}
 		},
 		{
-			:key => :index, 
-			:name => 'Goto scope', 
-			:url => url_for(@model),
+			:key => :model, 
+			:name => 'Goto model', 
+			:url => model_path(@experiment.model),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
-		}}]
+			}
+		}
+		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<p id="notice"><%= notice %></p>
 
 <h1><%= @experiment.title %> (experiment)</h1>
 
