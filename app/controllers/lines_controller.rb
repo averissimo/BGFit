@@ -2,6 +2,7 @@ class LinesController < ApplicationController
   respond_to :html, :json
   
   before_filter :determine_models
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   # GET /lines
   # GET /lines.json

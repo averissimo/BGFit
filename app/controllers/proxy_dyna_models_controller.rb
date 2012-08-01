@@ -1,7 +1,8 @@
 class ProxyDynaModelsController < ApplicationController
   respond_to :html, :json
   
-  before_filter :determine_models , :except =>  [:index, :new, :create, :calculate]
+  before_filter :determine_models , :except => [:index, :new, :create, :calculate]
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   def index
     @measurement = Measurement.find(params[:measurement_id])

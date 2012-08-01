@@ -1,7 +1,7 @@
 class ParamsController < ApplicationController
   
   respond_to :html, :json
-  
+  before_filter :authenticate_user!, :except => [:index,:show]
   def index
     @dyna_model = DynaModel.find(params[:dyna_model_id])
     @params = @dyna_model.params
