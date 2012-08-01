@@ -7,6 +7,26 @@
 			:options => {
 				:container_class => 'menu'
 			}
+		},
+		{
+			:key => :back, 
+			:name => t('navigation.back'), 
+			:url => url_for(:back),
+			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => 'text'
+			}
+		},
+		{
+			:key => :home, 
+			:name => t('navigation.goto' , destination: t('aux.root').downcase), 
+			:url => root_url,
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
+			}
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
@@ -41,7 +61,7 @@
 <h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
 		t.header :model,		Model.model_name.human
 		t.header :experiment,	Experiment.model_name.human
 		t.header :title,		Measurement.human_attribute_name(:title)

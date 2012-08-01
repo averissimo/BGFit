@@ -69,7 +69,7 @@
 <h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human)%> <%= t('aux.in')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
 		t.header :experiment
 		t.header :title
 		t.header :date

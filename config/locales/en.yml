@@ -17,12 +17,24 @@ en:
     click_hide: click here to show/hide
     chart: Chart
     download_chart: Download chart as .svg
-    of: of
+    in: in
+    root: Home
     
   models:
     index:
       title: Data Management
       regression: Regression
+  
+  measurements:
+    show:
+      dyna: Associate dynamic model
+      linear: Manual regression
+      csv: ".csv"
+      new-line: New line
+  
+  proxy_dyna_models:
+    show:
+      empty: Parameters have not been calculated.
   
   dyna_models:
     stats:

@@ -48,7 +48,7 @@
 <h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>
 
 <%= 
-	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
+	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
 		t.header :title
 		t.header :date
 		t.header :show_h,		"", class: "no-sort"

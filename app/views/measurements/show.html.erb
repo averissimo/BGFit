@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :new, 
-			:name => 'New dyna model', 
+			:name => t('.dyna'), 
 			:url => new_measurement_proxy_dyna_model_path(@measurement),
 			:options => {
 				:container_class => 'menu'
@@ -12,7 +12,7 @@
 		},
 		{
 			:key => :regression, 
-			:name => 'Linear regression', 
+			:name => t('.linear'), 
 			:url => url_for([:regression,@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu'
@@ -20,7 +20,7 @@
 		},
 		{
 			:key => :csv, 
-			:name => '.csv', 
+			:name => t('.csv'), 
 			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
 			:options => {
 				:container_class => 'menu',
@@ -29,7 +29,7 @@
 		},
 		{
 			:key => :new, 
-			:name => 'New line', 
+			:name => t('.new-line'), 
 			:url => new_measurement_line_path(@measurement),
 			:options => {
 				:container_class => 'menu',
@@ -38,7 +38,7 @@
 		},
 		{
 			:key => :edit, 
-			:name => 'Edit this measurement', 
+			:name => t('action.edit'),
 			:url => url_for([:edit,@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu',
@@ -47,7 +47,7 @@
 		},
 		{
 			:key => :index, 
-			:name => 'Goto experiment', 
+			:name => t('navigation.goto' , destination: Experiment.model_name.human.downcase), 
 			:url => url_for([@model,@experiment]),
 			:options => {
 				:container_class => 'menu',
@@ -56,7 +56,7 @@
 		},
 		{
 			:key => :index, 
-			:name => 'Goto scope', 
+			:name => t('navigation.goto' , destination: Model.model_name.human.downcase), 
 			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',
@@ -65,7 +65,7 @@
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { "Edit measurement" }
+	content_for(:title) { t('title.detail' , model: Measurement.model_name.human) }
 %>
 
 <h1><%= @measurement.experiment.title %>: <%= @measurement.title %></h1>

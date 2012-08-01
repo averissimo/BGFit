@@ -84,6 +84,16 @@ class ProxyDynaModelsController < ApplicationController
   end
   
   def show
+    if @proxy_dyna_model.rmse.nil?
+      flash[:notice] = t('proxy_dyna_models.show.empty')
+    end
+    unless @proxy_dyna_model.notes.nil? || @proxy_dyna_model.notes.blank?
+      if flash[:notice].nil?
+        flash[:notice] = @proxy_dyna_model.notes
+      else
+        flash[:notice] << @proxy_dyna_model.notes
+      end
+    end
     respond_with(@proxy_dyna_model)
   end
 
