@@ -70,7 +70,7 @@ class ParamsController < ApplicationController
   def destroy
     @dyna_model = DynaModel.find(params[:dyna_model_id])
     @param = @dyna_model.params.find(params[:id])
-    flash[:notice] = t('flash.actions.destroy.notice', :resource_name => "Parameter")
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Parameter")
     @param.destroy
     respond_with(@param, :location => dyna_model_path(@dyna_model))
 

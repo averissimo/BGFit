@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :show, 
-			:name => 'Show dyna model\'s details', 
+			:name => t('navigation.show' , model: DynaModel.model_name.human.downcase), 
 			:url => dyna_model_path(@dyna_model),
 			:options => {
 				:container_class => 'menu'
@@ -12,7 +12,7 @@
 		},
 		{
 			:key => :stats, 
-			:name => 'Statistical data', 
+			:name => t('action.dyna_model.statistical_data'), 
 			:url => stats_dyna_model_path(@dyna_model),
 			:options => {
 				:container_class => 'menu',
@@ -21,7 +21,7 @@
 		},
 		{
 			:key => :back, 
-			:name => 'Back', 
+			:name => t('navigation.back'),
 			:url => url_for(:back),
 			:options => {
 				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
@@ -31,7 +31,7 @@
 		},
 		{
 			:key => :home, 
-			:name => 'Goto home', 
+			:name => t('navigation.goto' , destination: t('navigation.home').downcase),
 			:url => root_url,
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
@@ -42,12 +42,11 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Dyna Model's detail" } %>
-<p id="notice"><%= notice %></p>
+<% content_for(:title) { t('title' , model: DynaModel.model_name.human) } %>
 
-<h1><%= @dyna_model.title %> (dyna model)</h1>
+<h1><%= @dyna_model.title %></h1>
 
-<h3>Description:</h3>
+<h3><%= DynaModel.human_attribute_name(:description) %></h3>
 <p>
   <%= simple_format (show (@dyna_model.description)) %>
 </p>
@@ -55,7 +54,7 @@
 
 <%= form_tag( calculate_dyna_model_path(@dyna_model) , method: :put) do |f| %>
 
-<h2>Parameters</h2>
+<h3><%= DynaModel.human_attribute_name("params") %></h3>
 
 	<div class="one_tab">
 		<%= collection_table(@dyna_model.params , :class => 'formatted dataTable dataTable') do |t| 
@@ -73,11 +72,11 @@
 		end %>
 	</div>
 		
-<h2>Models</h2>
+<h3><%= Model.model_name.pluralize %></h3>
 
 <% @models.each do |m| %>
 
-	<h3><%=m.title%> (id:<%=m.id%>)</h3>	
+	<h3><%=m.title%></h3>	
 	
 	<div class="one_tab">
 	<% Experiment.model_is(m).dyna_model_is(@dyna_model).each do |e| %>
@@ -104,19 +103,19 @@
 				row.title		meas.title
 				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
 				row.notes		( if p_d_m.notes.nil? then "" else word_wrap(p_d_m.notes,:line_width => 40).gsub(/\n/, '<br/>') end)
-				row.graph		link_to "show below", "#", :class=>"estimate_chart"
-				row.goto		link_to "goto", [p_d_m]
+				row.graph		link_to t('.below'), "#", :class=>"estimate_chart"
+				row.goto		link_to t('.goto'), [p_d_m]
 				row.model_d		p_d_m.dyna_model.title					, :style => "display:none;" , 'data-source' => proxy_dyna_model_path(p_d_m, :format => :json)
 				row.data_d		meas.title , :style => "display:none;" , 'data-source' => experiment_measurement_path(meas.experiment,meas,:format=>:json)
 			end
 		end
 		%>
-		<div class="one_tab">click on one of the links above to see a chart</div>
+		<div class="one_tab"><%= t('.click_above')%></div>
 		<div style="display:none;" class="proxy_dyna_model_chart" >	
-			<h4 class="one_tab" >Chart for <span class="chart_name"></span></h4>
+			<h4 class="one_tab" ><%= t('.chart_for')%> <span class="chart_name"></span></h4>
 			<div class="chart">
 				 <br/>
-				 <div class="one_tab">loading...</div>
+				 <div class="one_tab"><%= t('aux.loading').downcase%></div>
 			</div>
 			<div class="options" style="display:none;text-align: right;"><a class="hide" href='#'>hide</a> | <a class="download" href='#'>Download chart as .svg</a></div>
 			<div style="display:none;" class="model-data">
@@ -135,7 +134,7 @@
 <% end %>
 
 <div class="action text-center">
-	<%= button_tag "Calculate Parameters" , disable_with: "calculating, please wait..."%>
+	<%= button_tag t('.calculate') , disable_with: t('.calculating') %>
 </div>
 
 <% end %>
