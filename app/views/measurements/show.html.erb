@@ -93,8 +93,8 @@
 			row.y			line.y
 			row.z			line.z
 			row.note		line.note
-			row.edit_h		link_to 'edit', [:edit,@measurement,line]
-			row.destroy_h	link_to 'remove', [@measurement,line], confirm: 'Are you sure?', method: :delete
+			row.edit_h		link_to t('action.edit').downcase, [:edit,@measurement,line]
+			row.destroy_h	link_to t('action.remove').downcase, [@measurement,line], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>
@@ -119,9 +119,9 @@
 			row.title		proxy_dyna_model.dyna_model.title
 			row.description	proxy_dyna_model.dyna_model.description
 			row.rmse		proxy_dyna_model.rmse
-			row.show_h		link_to 'show', [proxy_dyna_model]
-			row.edit_h		link_to 'edit', [:edit,proxy_dyna_model]
-			row.destroy_h	link_to 'remove', [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
+			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model]
+			row.edit_h		link_to t('action.edit').downcase, [:edit,proxy_dyna_model]
+			row.destroy_h	link_to t('action.remove').downcase, [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>

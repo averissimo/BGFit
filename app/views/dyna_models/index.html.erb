@@ -37,8 +37,8 @@
 
 <%= 
 	collection_table(@dyna_models, :id => 'dyna_models' , :class => 'formatted dataTable dataTable') do |t|
-		t.header :title
-		t.header :description
+		t.header :title,		DynaModel.human_attribute_name(:title)
+		t.header :description,	DynaModel.human_attribute_name(:description)
 		t.header :show_h,		"", class: "no-sort"
 		t.header :stats_h,		"", class: "no-sort"
 		t.header :d_stats_h,	"", class: "no-sort"

@@ -28,9 +28,9 @@
 			# Notice there's no need to explicitly define the title
 			row.title			word_wrap(dyna_model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.description		dyna_model.description_trimmed.gsub(/\n/, '<br/>')
-			row.show_h			link_to 'show', dyna_model
-			row.edit_h			link_to 'edit', [:edit,dyna_model]
-			row.destroy_h		link_to 'remove', dyna_model, confirm: 'Are you sure?', method: :delete
+			row.show_h			link_to t('action.show').downcase, dyna_model
+			row.edit_h			link_to t('action.edit').downcase, [:edit,dyna_model]
+			row.destroy_h		link_to t('action.remove').downcase, dyna_model, confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>

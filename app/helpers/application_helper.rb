@@ -5,7 +5,7 @@ module ApplicationHelper
   end
   
   def show(string)
-    if string.nil? || string.blank?
+    if string.nil? || string.blank? || string.strip.blank?
       "(" + t('aux.not_defined').downcase + ")"
     else
       string

@@ -104,13 +104,13 @@
 
 <%= 
 	collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted dataTable dataTable') do |t|
-		t.header :code
-		t.header :human_title
-		t.header :description
-		t.header :bottom
-		t.header :top
-		t.header :output
-		t.header :ic, Param.human_attribute_name(:ic)
+		t.header :code,			Param.human_attribute_name(:code)
+		t.header :human_title,	Param.human_attribute_name(:human_title)
+		t.header :description,	Param.human_attribute_name(:description)
+		t.header :bottom,		Param.human_attribute_name(:bottom)
+		t.header :top,			Param.human_attribute_name(:top)
+		t.header :output,		Param.human_attribute_name(:output)
+		t.header :ic, 			Param.human_attribute_name(:ic)
 		t.header :edit_h,		"", class: "no-sort"
 		t.header :destroy_h,	"", class: "no-sort"
 

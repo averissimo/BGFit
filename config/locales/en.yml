@@ -17,8 +17,12 @@ en:
     click_hide: click here to show/hide
     chart: Chart
     download_chart: Download chart as .svg
+    of: of
     
-  
+  models:
+    index:
+      title: Data Management
+      regression: Regression
   
   dyna_models:
     stats:
@@ -43,10 +47,10 @@ en:
     edit_this: Edit %{model}
     remove: Remove
     confirm: Are you sure?
-    download_data: Download .csv data
+    download_data: Download .csv
     dyna_model:
       new: New parameter
-      download_stats: Download .csv stats
+      download_stats: Download stats
       estimate: Estimate parameters
       estimate_short: Estimate
       stats: Stats
@@ -68,6 +72,7 @@ en:
       param:
         initial_condition: Initial Condition
         ic: I.Cond.
+        human_title: Human
       dyna_model:
         description: Description
         params: Parameters
@@ -83,7 +88,7 @@ en:
     new: New %{model}
     home: Home
     index_of: Index of %{model}
-    index: "%{model} index"
+    index: "%{model}\' index"
   
   flash:
     actions:
