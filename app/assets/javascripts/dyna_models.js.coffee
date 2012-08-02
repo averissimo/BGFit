@@ -9,12 +9,20 @@
 jQuery ->
   $.fn.dataTableExt.sErrMode = "throw"
 
+  $('.dataTable-complex').dataTable
+    "aoColumnDefs": [ 
+      { "bSortable": false, "aTargets": [ "no-sort" ] },
+    ],
+#    bPaginate: false 
+#    bFilter: false
+    bJQueryUI: true
+    
   $('.dataTable').dataTable
     "aoColumnDefs": [ 
-      { "bSortable": false, "aTargets": [ "no-sort" ] }
+      { "bSortable": false, "aTargets": [ "no-sort" ] },
     ],
-    bPaginate: false 
-    bFilter: false
+    bPaginate: false, 
+    bFilter: false,
     bJQueryUI: true
 
 jQuery ->

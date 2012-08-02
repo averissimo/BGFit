@@ -36,6 +36,12 @@
 			</div>
 		</div>
 
+		<div id="login_menu" class="menu">
+			<div class="menu-wrapper">
+				<%= login_menu %>
+			</div>
+		</div>
+
 		<div id="content">
 		  <% flash.each do |key, value| %>
 		    <%= content_tag(:div, value, :class => "flash #{key}") %>

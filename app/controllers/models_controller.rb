@@ -1,5 +1,6 @@
 class ModelsController < ApplicationController
   respond_to :html, :json
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   # GET /models
   # GET /models.json

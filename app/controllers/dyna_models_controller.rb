@@ -1,5 +1,6 @@
 class DynaModelsController < ApplicationController
   respond_to :html, :json, :csv
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   def index
     @dyna_models = DynaModel.all

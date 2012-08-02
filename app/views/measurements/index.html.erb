@@ -13,9 +13,9 @@
   <tr>
     <td><%= measurement.original_data %></td>
     <td><%= measurement.experiment %></td>
-    <td><%= link_to 'Show', [@model,@experiment,measurement] %></td>
-    <td><%= link_to 'Edit', edit_model_experiment_measurement_path(@model,@experiment,measurement) %></td>
-    <td><%= link_to 'Destroy', [@model,@experiment,measurement], confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= link_to t('action.show').downcase, [@model,@experiment,measurement] %></td>
+    <td><%= link_to t('action.edit').downcase, edit_model_experiment_measurement_path(@model,@experiment,measurement) %></td>
+    <td><%= link_to t('action.remove').downcase, [@model,@experiment,measurement], confirm: 'Are you sure?', method: :delete %></td>
   </tr>
 <% end %>
 </table>

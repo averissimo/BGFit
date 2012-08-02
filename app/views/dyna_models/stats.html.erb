@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :show, 
-			:name => 'Show dyna model\'s details', 
+			:name => t('navigation.show' , model: DynaModel.model_name.human.downcase), 
 			:url => dyna_model_path(@dynamodel),
 			:options => {
 				:container_class => 'menu'
@@ -12,7 +12,7 @@
 		},
 		{
 			:key => :edit, 
-			:name => 'Download .csv data', 
+			:name => t('action.download_data'), 
 			:url => stats_dyna_model_path(@dynamodel, :format => :csv),
 			:options => {
 				:container_class => 'menu'
@@ -20,7 +20,7 @@
 		},
 		{
 			:key => :back, 
-			:name => 'Back', 
+			:name => t('navigation.back'), 
 			:url => url_for(:back),
 			:options => {
 				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
@@ -30,8 +30,8 @@
 		},
 		{
 			:key => :home, 
-			:name => 'Goto home', 
-			:url => root_url,
+			:name => t('navigation.goto' , destination: t('navigation.index' , model: DynaModel.model_name.human).downcase), 
+			:url => dyna_models_url,
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
@@ -41,10 +41,10 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Dyna Model's detail" } %>
+<% content_for(:title) { t('title.dyna_model.stats' , model: DynaModel.model_name.human) } %>
 <p id="notice"><%= notice %></p>
 
-<h1><%= @dyna_model.title %> (dyna model)</h1>
+<h1><%= @dyna_model.title %></h1>
 
 <h3>Description:</h3>
 <p>
@@ -74,26 +74,26 @@
 </div>
 
 
-<h3>Models</h3>
+<!--<h3><%= Model.model_name.human.pluralize%></h3>-->
 
-<h3>Experiments</h3>
+<h3><%= Experiment.model_name.human.pluralize%></h3>
 	<% @experiments.each do |e| %>
 	<% next unless (proxy_dyna_models = ProxyDynaModel.joins(:measurement => :experiment).where('measurements.experiment_id' => e.id, :dyna_model_id => @dyna_model.id).group('proxy_dyna_models.id')) %>
 	<% p_dm_average = e.get_average_proxy_dyna_model(proxy_dyna_models) %>
 	
-	<h4><i><%= e.title %></i> experiment that belongs to <i><%= e.model.title %></i> model</h4>
+	<h4><i><%= e.title %></i> <%= Experiment.model_name.human.downcase %> <%= t('dyna_models.stats.belongs')%> <i><%= e.model.title %></i> <%= Model.model_name.human.downcase%></h4>
 	
 	<div class="one_tab">
 		<div>
 		<div>
-			<h5 class="button">Average parameters <span class="dim">(click here to show/hide)</span></h5>
+			<h5 class="button"><%= t('dyna_models.stats.average_params')%> <span class="dim">(<%= t('aux.click_hide')%>)</span></h5>
 			<div class="toggle" style="display:none;">
 				<dl>
-					<dt>RMSE:</dt>
+					<dt><%= t('dyna_models.stats.rmse')%>:</dt>
 					<dd><%=p_dm_average.rmse%> +/- <%= p_dm_average.rmse_stdev%></dd>
-					<dt>Bias Factor:</dt>
+					<dt><%= t('dyna_models.stats.bias')%>:</dt>
 					<dd><%=p_dm_average.bias%> +/- <%= p_dm_average.bias_stdev%></dd>
-					<dt>Accuraccy Factor:</dt>
+					<dt><%= t('dyna_models.stats.accu')%>:</dt>
 					<dd><%=p_dm_average.accuracy%> +/- <%= p_dm_average.accuracy_stdev%></dd>
 				</dl>
 	
@@ -101,7 +101,7 @@
 				collection_table(p_dm_average.proxy_params, :id => 'params' , :class => 'formatted dataTable') do |t|
 					t.header :human_title
 					t.header :description
-					t.header :mean,			"Mean Value"
+					t.header :mean,	t('dyna_models.stats.mean')
 					t.header :std_dev
 					t.header :count
 					
@@ -118,14 +118,14 @@
 				%>
 			</div>
 		</div>
-		<h5 class="button">Chart <span  class="dim">(click here to show/hide)</span></h5>
+<!--		<h5 class="button"><%= t('aux.chart')%> <span  class="dim">(<%= t('dyna_models.stats.click_hide')%>)</span></h5>
 		<div style="display:none;" class="toggle proxy_dyna_model_chart" >
 			<div class="chart">
-				loading...
+				<%= t('aux.loading').downcase%>
 			</div>
-			<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
+			<div class="options" style="display:none;text-align: right;"><a class="download" href='#'><%= t('aux.download_chart')%></a></div>
 			<div style="display:none;" class="model-data">
-				<div data-source="<%= proxy_dyna_model_path(p_dm_average, :format => :json) %>"><%= p_dm_average %></div>
+				<div data-source="<%= proxy_dyna_model_path(p_dm_average, :format => :json) %>"><%= p_dm_average.dyna_model.title %></div>
 			</div>
 			<div style="display:none;" class="measurement-data">
 				<% e.measurements.each do |m| %> 
@@ -133,9 +133,10 @@
 				<% end %>
 			</div>
 		</div>
-		</div>
+-->		</div>
+
 	<div>		
-		<h5 class="button">Measurements  <span class="dim">(click here to show/hide)</span></h5>
+		<h5 class="button"><%= Measurement.model_name.human.pluralize%>  <span class="dim">(<%= t('aux.click_hide')%>)</span></h5>
 
 		<% @dyna_model.proxy_dyna_models.collect {|p| if (p.measurement && p.measurement.experiment == e) then p.measurement end }.compact.each do |m| %>
 		<% next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model }) %>
@@ -143,17 +144,17 @@
 		
 		<% proxy_dyna_models.each do |p_dm| %>
 		<div class="toggle one_tab" style="display:none;">
-			<h4><i><%= m.title %></i> measurement that belongs to <i><%= m.model.title %></i> model</h4>
+			<h4><i><%= m.title %></i> <%= Measurement.model_name.human.downcase%> <%= t('dyna_models.stats.belongs')%> <i><%= m.model.title %></i> <%= Model.model_name.human.downcase%></h4>
 
 			<div>
-				<h5 class="button">Data Updated at <%=p_dm.updated_at %> <span style="color:#bbbbbb">(click here to show/hide)<span></h5>
+				<h5 class="button"><%= t('dyna_models.stats.updated')%> at <%=p_dm.updated_at %> <span style="color:#bbbbbb">(<%= t('dyna_models.stats.click_hide')%>)<span></h5>
 				<div class="toggle" style="display:none;">
 				<dl>
-					<dt>RMSE:</dt>
+					<dt><%= t('dyna_models.stats.rmse')%>:</dt>
 					<dd><%=p_dm.rmse%></dd>
-					<dt>Bias Factor:</dt>
+					<dt><%= t('dyna_models.stats.bias')%>:</dt>
 					<dd><%=p_dm.bias%></dd>
-					<dt>Accuraccy Factor:</dt>
+					<dt><%= t('dyna_models.stats.accu')%>:</dt>
 					<dd><%=p_dm.accuracy%></dd>
 				</dl>
 				<%= 
@@ -173,12 +174,12 @@
 				%>
 				</div>
 			</div>
-			<h5 class="button">Chart (click here to show/hide)</h5>
+			<h5 class="button"><%= t('aux.chart')%> (<%= t('dyna_models.stats.click_hide')%>)</h5>
 			<div style="display:none;" class="toggle proxy_dyna_model_chart" >
 				<div class="chart">
-					loading...
+					<%= t('aux.loading')%>
 				</div>
-				<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
+				<div class="options" style="display:none;text-align: right;"><a class="download" href='#'><%= t('aux.download_chart')%></a></div>
 				<div style="display:none;" class="model-data">
 					<div data-source="<%= proxy_dyna_model_path(p_dm, :format => :json) %>"><%= p_dm.dyna_model.title %></div>
 				</div>

@@ -2,7 +2,7 @@
 	context_menu = [
 		{
 			:key => :new, 
-			:name => 'new dyna model', 
+			:name => t('navigation.new', model: DynaModel.model_name.human.downcase), 
 			:url => new_dyna_model_path,
 			:options => {
 				:container_class => 'menu'
@@ -10,7 +10,7 @@
 		},
 		{
 			:key => :back, 
-			:name => 'Back', 
+			:name => t('navigation.back'), 
 			:url => url_for(:back),
 			:options => {
 				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
@@ -20,7 +20,7 @@
 		},
 		{
 			:key => :home, 
-			:name => 'Goto home', 
+			:name => t('navigation.goto', destination: t('navigation.home').downcase), 
 			:url => root_url,
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
@@ -31,14 +31,14 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Dyna Model's index" } %>
+<% content_for(:title) { t('title.index' , model: DynaModel.model_name.human) } %>
 
-<h1>Listing <%= pluralize(@dyna_models.length, 'dyna model')%></h1>
+<h1><%= t('aux.listing')%> <%= pluralize(@dyna_models.length, DynaModel.model_name.human.downcase)%></h1>
 
 <%= 
 	collection_table(@dyna_models, :id => 'dyna_models' , :class => 'formatted dataTable dataTable') do |t|
-		t.header :title
-		t.header :description
+		t.header :title,		DynaModel.human_attribute_name(:title)
+		t.header :description,	DynaModel.human_attribute_name(:description)
 		t.header :show_h,		"", class: "no-sort"
 		t.header :stats_h,		"", class: "no-sort"
 		t.header :d_stats_h,	"", class: "no-sort"
@@ -51,12 +51,12 @@
 			# Notice there's no need to explicitly define the title
 			row.title			word_wrap(dyna_model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.description		dyna_model.description_trimmed.gsub(/\n/, '<br/>')
-			row.show_h			link_to 'show', dyna_model
-			row.stats_h			link_to 'stats', [:stats,dyna_model]
-			row.d_stats_h		link_to 'download .csv stats', stats_dyna_model_path(dyna_model, :format => :csv)
-			row.estimate_h		link_to 'estimate', [:estimate,dyna_model]
-			row.edit_h			link_to 'edit', [:edit,dyna_model]
-			row.destroy_h		link_to 'remove', dyna_model, confirm: 'Are you sure?', method: :delete
+			row.show_h			link_to t('action.show').downcase, dyna_model
+			row.stats_h			link_to t('action.dyna_model.stats').downcase, [:stats,dyna_model]
+			row.d_stats_h		link_to t('action.dyna_model.download_stats').downcase, stats_dyna_model_path(dyna_model, :format => :csv)
+			row.estimate_h		link_to t('action.dyna_model.estimate_short').downcase, [:estimate,dyna_model]
+			row.edit_h			link_to t('action.edit').downcase, [:edit,dyna_model]
+			row.destroy_h		link_to t('action.remove').downcase, dyna_model, confirm: t('action.confirm'), method: :delete
 		end
 	end
 %>

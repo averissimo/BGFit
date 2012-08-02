@@ -2,6 +2,7 @@ class MeasurementsController < ApplicationController
   respond_to :html, :json, :csv
 
   before_filter :determine_models , :only => [ :show, :edit, :destroy, :update, :update_regression, :regression ]
+  before_filter :authenticate_user!, :except => [:index,:show]
 
   # GET /measurements
   # GET /measurements.json
