@@ -1,6 +1,6 @@
 class DynaModel < ActiveRecord::Base
   has_many :params
-  has_many :proxy_dyna_models, :dependant => :destroy
+  has_many :proxy_dyna_models, :dependent => :destroy
   validates_uniqueness_of :title
 
   validate :validate_solver, :validate_estimation
