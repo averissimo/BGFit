@@ -52,7 +52,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def experiment_stats(dataset)
       size = 0
       experiment.measurements.each do |m|
-        dataset[:lines] = m.lines_no_death_phase
+        dataset[:lines] = m.lines_no_death_phase(self.no_death_phase)
         size += dataset[:lines].size
         dataset = statistical_data_measurement( dataset )
       end
@@ -61,7 +61,7 @@ class ProxyDynaModel < ActiveRecord::Base
     
     def measurement_stats(dataset)
       size = 0
-      dataset[:lines] = measurement.lines_no_death_phase
+      dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
       
       size += dataset[:lines].size
       

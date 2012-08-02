@@ -19,17 +19,17 @@
 				:container_class => 'menu',
 				:class => "text"
 			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto measurement', 
+			:url => url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement]),
+			:options => {
+				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
+				:container_class => 'menu',
+				:class => "text"
+			}
 		}
-#		,
-#		{
-#			:key => :index, 
-#			:name => 'Goto measurement', 
-#			:url => url_for([@experiment,@measurement]),
-#			:options => {
-#				:container_class => 'menu',
-#				:class => "text"
-#			}
-#		}
 		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
@@ -45,9 +45,12 @@
 </p>
 
 <% end%>
-<h3>Dynamic model description:</h3>
+<h3>Dynamic model description</h3>
 
 <p>
+  <%- if @proxy_dyna_model.no_death_phase %>
+  Does not include death phase 
+  <%- end 	%>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
 </p>
 

@@ -19,7 +19,7 @@ class Measurement < ActiveRecord::Base
       ProxyDynaModel.where(:measurement_id=>self.id,:dyna_model_id=>dyna_model.id).first
     end
   
-    def lines_no_death_phase
+    def lines_no_death_phase(no_death_phase=true)
       p_l = nil
       p_2_l = nil
       finish = false
@@ -27,7 +27,7 @@ class Measurement < ActiveRecord::Base
         next if finish
         
         if p_l && p_2_l
-          if l.y < p_l && p_l < p_2_l  
+          if no_death_phase && l.y < p_l && p_l < p_2_l  
             finish = true
           end
         end

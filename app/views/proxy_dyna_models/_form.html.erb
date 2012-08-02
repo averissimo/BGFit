@@ -7,6 +7,7 @@
   	<% else %>
   		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio  %>
   	<% end %>
+  	<%= f.input :no_death_phase, as: :boolean %>
 	<% if params[:action] != 'new' %>
 	  <%= f.input :original_data, :as => :text , hint: "use this textbox to manually define the parameter's value"%>  
 	<% end %>
