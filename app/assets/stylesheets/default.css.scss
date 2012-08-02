@@ -91,26 +91,32 @@ body {
   border-bottom: 1px solid #5EB935;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
-  background-color: #5EB935;
+  //background-color: #5EB935;
   margin-left: 75%;
   line-height: $header_line + 6;
     li {
-      color: white;
+      color: gray;
       span {
         padding: 5px;
       }
       a {
         border-top: 2px solid transparent;
-        color: white;
+        color: gray;
         text-decoration: none;
         &:hover,
         &:active,
         &:focus {
+          color:white;
           background-color: #8FB77C;
         }
         &.selected {
+          &:hover,
+          &:active,
+          &:focus {
+            color:white;
+          }
           border-top: 2px solid #DD4B39;
-          color: white;
+          color: gray;
         }
       }
     }
@@ -192,6 +198,7 @@ div.menu {
 .success,
 .info {
   padding: 50px 20px;
+  margin-top: 1em;
 }
 
 .notice {
