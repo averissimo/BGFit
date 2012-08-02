@@ -72,7 +72,7 @@
 		end %>
 	</div>
 		
-<h3><%= Model.model_name.pluralize %></h3>
+<h3><%= Model.model_name.human.pluralize %></h3>
 
 <% @models.each do |m| %>
 
@@ -81,7 +81,7 @@
 	<div class="one_tab">
 	<% Experiment.model_is(m).dyna_model_is(@dyna_model).each do |e| %>
 	
-		<h3 class><%=e.title%> (id:<%=e.id%>)</h3>
+		<h3 class><%=e.title%></h3>
 			
 		<div class="experiments one_tab">	
 			
