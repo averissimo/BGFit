@@ -65,21 +65,24 @@ if typeof google isnt 'undefined'
 
 jQuery ->
   $.fn.dataTableExt.sErrMode = "throw"
-
-  $('.dataTable-complex').dataTable
-    "aoColumnDefs": [ 
-      { "bSortable": false, "aTargets": [ "no-sort" ] },
-    ],
-    bJQueryUI: true
-    
-  $('.dataTable').dataTable
-    "aoColumnDefs": [ 
-      { "bSortable": false, "aTargets": [ "no-sort" ] },
-    ],
-    bPaginate: false, 
-    bFilter: false,
-    bJQueryUI: true    
-
+  try
+    $('.dataTable-complex').dataTable
+      "aoColumnDefs": [ 
+        { "bSortable": false, "aTargets": [ "no-sort" ] },
+      ],
+      bJQueryUI: true
+  catch error
+    #
+  try    
+    $('.dataTable').dataTable
+      "aoColumnDefs": [ 
+        { "bSortable": false, "aTargets": [ "no-sort" ] },
+      ],
+      bPaginate: false, 
+      bFilter: false,
+      bJQueryUI: true    
+  catch error
+    #
 
 
 
