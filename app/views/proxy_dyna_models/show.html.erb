@@ -19,17 +19,17 @@
 				:container_class => 'menu',
 				:class => "text"
 			}
+		},
+		{
+			:key => :index, 
+			:name => 'Goto measurement', 
+			:url => url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement]),
+			:options => {
+				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
+				:container_class => 'menu',
+				:class => "text"
+			}
 		}
-#		,
-#		{
-#			:key => :index, 
-#			:name => 'Goto measurement', 
-#			:url => url_for([@experiment,@measurement]),
-#			:options => {
-#				:container_class => 'menu',
-#				:class => "text"
-#			}
-#		}
 		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
@@ -45,9 +45,12 @@
 </p>
 
 <% end%>
-<h3>Dynamic model description:</h3>
+<h3>Dynamic model description</h3>
 
 <p>
+  <%- if @proxy_dyna_model.no_death_phase %>
+  Does not include death phase 
+  <%- end 	%>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
 </p>
 
@@ -58,16 +61,16 @@
 	<div class="one_tab">
 		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted dataTable') do |t| 
 			t.header :title
+			t.header :value, "Estimated parameter"
 			t.header :description
-			t.header :value
-			t.header :bottom
-			t.header :top
+			t.header :bottom, "Bottom range for estimation"
+			t.header :top, "Top range for estimation"
 		
 			t.rows.alternate = :odd
 			t.rows.each do |row, param, index|
 				row.title 	param.param.human_title.html_safe
+				row.value	param.value, :class => "highlight"
 				row.description	param.param.description
-				row.value	param.value
 				row.bottom 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_bottom", param.param.bottom) end )
 				row.top 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_top", param.param.top ) end )
 			end

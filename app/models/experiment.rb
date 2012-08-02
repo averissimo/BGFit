@@ -85,7 +85,7 @@ class Experiment < ActiveRecord::Base
     end
     blank.json = nil
     blank.save
-    blank.json_cache
+    #blank.json_cache
     return blank
   end
   

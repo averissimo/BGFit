@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :new, 
-			:name => 'New dyna model', 
+			:name => t('.dyna'), 
 			:url => new_measurement_proxy_dyna_model_path(@measurement),
 			:options => {
 				:container_class => 'menu'
@@ -12,15 +12,24 @@
 		},
 		{
 			:key => :regression, 
-			:name => 'Linear regression', 
+			:name => t('.linear'), 
 			:url => url_for([:regression,@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu'
 			}
 		},
 		{
+			:key => :edit, 
+			:name => t('action.edit'),
+			:url => url_for([:edit,@experiment,@measurement]),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
 			:key => :csv, 
-			:name => '.csv', 
+			:name => t('.csv'), 
 			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
 			:options => {
 				:container_class => 'menu',
@@ -29,7 +38,7 @@
 		},
 		{
 			:key => :new, 
-			:name => 'New line', 
+			:name => t('.new-line'), 
 			:url => new_measurement_line_path(@measurement),
 			:options => {
 				:container_class => 'menu',
@@ -37,17 +46,8 @@
 			}
 		},
 		{
-			:key => :edit, 
-			:name => 'Edit this measurement', 
-			:url => url_for([:edit,@experiment,@measurement]),
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
 			:key => :index, 
-			:name => 'Goto experiment', 
+			:name => t('navigation.goto' , destination: Experiment.model_name.human.downcase), 
 			:url => url_for([@model,@experiment]),
 			:options => {
 				:container_class => 'menu',
@@ -56,7 +56,7 @@
 		},
 		{
 			:key => :index, 
-			:name => 'Goto scope', 
+			:name => t('navigation.goto' , destination: Model.model_name.human.downcase), 
 			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',
@@ -65,7 +65,7 @@
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { "Edit measurement" }
+	content_for(:title) { t('title.detail' , model: Measurement.model_name.human) }
 %>
 
 <h1><%= @measurement.experiment.title %>: <%= @measurement.title %></h1>
@@ -93,8 +93,8 @@
 			row.y			line.y
 			row.z			line.z
 			row.note		line.note
-			row.edit_h		link_to 'edit', [:edit,@measurement,line]
-			row.destroy_h	link_to 'remove', [@measurement,line], confirm: 'Are you sure?', method: :delete
+			row.edit_h		link_to t('action.edit').downcase, [:edit,@measurement,line]
+			row.destroy_h	link_to t('action.remove').downcase, [@measurement,line], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>
@@ -119,9 +119,9 @@
 			row.title		proxy_dyna_model.dyna_model.title
 			row.description	proxy_dyna_model.dyna_model.description
 			row.rmse		proxy_dyna_model.rmse
-			row.show_h		link_to 'show', [proxy_dyna_model]
-			row.edit_h		link_to 'edit', [:edit,proxy_dyna_model]
-			row.destroy_h	link_to 'remove', [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
+			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model]
+			row.edit_h		link_to t('action.edit').downcase, [:edit,proxy_dyna_model]
+			row.destroy_h	link_to t('action.remove').downcase, [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>

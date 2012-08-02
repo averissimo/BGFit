@@ -2,6 +2,7 @@ class ExperimentsController < ApplicationController
   respond_to :html, :json, :csv
   
   before_filter :determine_models , :only => [ :show, :gompertz, :edit, :update, :destroy]
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   # GET /experiments
   # GET /experiments.json

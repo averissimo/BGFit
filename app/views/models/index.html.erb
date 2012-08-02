@@ -2,23 +2,43 @@
 	context_menu = [
 		{
 			:key => :new, 
-			:name => 'new scope', 
+			:name => t('navigation.new' , model: Model.model_name.human.downcase), 
 			:url => new_model_path,
 			:options => {
 				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :back, 
+			:name => t('navigation.back'), 
+			:url => url_for(:back),
+			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => 'text'
+			}
+		},
+		{
+			:key => :home, 
+			:name => t('navigation.goto' , destination: t('aux.root').downcase), 
+			:url => root_url,
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
 			}
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Data Management" } %>
+<% content_for(:title) { t('.title') } %>
 
-<h1>Listing <%= pluralize(@models.length, 'scope')%></h1>
+<h1>Listing <%= pluralize(@models.length, Model.model_name.human.downcase)%></h1>
 
 <%= 
 	collection_table(@models, :id => 'models' , :class => 'formatted dataTable') do |t|
-		t.header :title
-		t.header :description
+		t.header :title,		Model.human_attribute_name(:title)
+		t.header :description,	Model.human_attribute_name(:description)
 		t.header :show_h,		"", class: "no-sort"
 		t.header :edit_h,		"", class: "no-sort"
 		t.header :destroy_h,	"", class: "no-sort"
@@ -28,9 +48,9 @@
 			# Notice there's no need to explicitly define the title
 			row.title			word_wrap(model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.description		model.description_trimmed.gsub(/\n/, '<br/>')
-			row.show_h			link_to 'show', model
-			row.edit_h			link_to 'edit', [:edit,model]
-			row.destroy_h		link_to 'remove', model, confirm: 'Are you sure?', method: :delete
+			row.show_h			link_to t('action.show').downcase, model
+			row.edit_h			link_to t('action.edit').downcase, [:edit,model]
+			row.destroy_h		link_to t('action.remove').downcase, model, confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>
@@ -38,14 +58,14 @@
 <div class="menu">
 	<%= menu %>
 </div>
-<h3>All <%= pluralize(@measurements.length, 'measurement')%></h3>
+<h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
-		t.header :model
-		t.header :experiment
-		t.header :title
-		t.header :date
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
+		t.header :model,		Model.model_name.human
+		t.header :experiment,	Experiment.model_name.human
+		t.header :title,		Measurement.human_attribute_name(:title)
+		t.header :date,			Measurement.human_attribute_name(:date)
 		t.header :show_h,		"", class: "no-sort"
 		t.header :regression_h,	"", class: "no-sort"
 		t.header :csv,			"", class: "no-sort"
@@ -58,9 +78,9 @@
 			row.experiment		measure.experiment.title
 			row.title			measure.title
 			row.date			measure.date
-			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
-			row.show_h			link_to 'show', [measure.experiment,measure]
-			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
+			row.regression_h	link_to t('.regression').downcase, [:regression,measure.experiment,measure]
+			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure]
+			row.csv				link_to t('action.download_data').downcase, experiment_measurement_path(measure.experiment,measure, :format => :csv)
 		#	row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
 		end
 	end
