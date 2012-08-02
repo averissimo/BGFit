@@ -51,7 +51,11 @@ SimpleNavigation::Configuration.run do |navigation|
     #
     primary.dom_class = 'menu'
     primary.item :home, 'Home', root_path
-    primary.item :models, 'Data management', models_path , :highlights_on => /^.*\/(models|experiments|measurements|proxy_dyna_models|)/
+    primary.item :sign_up, 'Sign up', new_user_registration_path,                                                     :unless => Proc.new {user_signed_in?} 
+    primary.item :login, 'Login' , new_user_session_path,                                                             :unless => Proc.new { user_signed_in? }
+    primary.item :edit , (if user_signed_in? then current_user.email else 'user' end) , edit_user_registration_path , :if => Proc.new { user_signed_in? }
+    primary.item :logout , 'Logout' , destroy_user_session_path , :method => :delete,                                 :if => Proc.new { user_signed_in? }
+    primary.item :models, 'Data management', models_path , :highlights_on => /^.*\/(models|experiments|measurements|proxy_dyna_models)/
     primary.item :dyna_models, 'Dynamic models', dyna_models_path , :highlights_on => /^.*\/dyna_models/
 
     # Add an item which has a sub navigation (same params, but with block)

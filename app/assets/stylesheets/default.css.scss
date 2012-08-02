@@ -151,11 +151,28 @@ div.menu {
 // General
 ////////////////////////////////
 
-.notice {
+.notice,
+.alert,
+.success,
+.info {
   padding: 50px 20px;
+}
+
+.notice {
   background-color: #FFF6BF;
   border: 1px #FFD324 solid;
 }
+
+.alert {
+  background-color: #FFCBBC;
+  border: 1px #FF4332 solid;
+}
+
+.success {
+  background-color: #D7FFCC;
+  border: 1px #62FF47 solid;
+}
+
 
 .center {
   margin: 0 auto;

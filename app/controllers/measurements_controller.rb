@@ -123,7 +123,7 @@ class MeasurementsController < ApplicationController
   # DELETE /measurements/1.json
   def destroy
     @measurement.destroy
-
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Measurement", title: @measurement.title)
     respond_with(@experiment,@measurement, :location => [@model,@experiment])
   end
   

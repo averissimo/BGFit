@@ -1,10 +1,21 @@
 <% 
 	context_menu = [
 		{
-			:key => :show, 
-			:name => 'Back to measurement', 
+			:key => :back, 
+			:name => 'Back', 
+			:url => url_for(:back),
+			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :home, 
+			:name => 'Back', 
 			:url => url_for([@experiment,@measurement]),
 			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
 				:class => "text"
 			}
