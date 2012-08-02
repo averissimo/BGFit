@@ -194,7 +194,7 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       if temp_json["error"]
-	print 'time: ' + time.to_s unless time.nil?
+	      print 'time: ' + time.to_s unless time.nil?
         if time.nil?
           call_solver(1)
           return self.json

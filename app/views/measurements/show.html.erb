@@ -19,6 +19,15 @@
 			}
 		},
 		{
+			:key => :edit, 
+			:name => t('action.edit'),
+			:url => url_for([:edit,@experiment,@measurement]),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
 			:key => :csv, 
 			:name => t('.csv'), 
 			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
@@ -31,15 +40,6 @@
 			:key => :new, 
 			:name => t('.new-line'), 
 			:url => new_measurement_line_path(@measurement),
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
-			:key => :edit, 
-			:name => t('action.edit'),
-			:url => url_for([:edit,@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"

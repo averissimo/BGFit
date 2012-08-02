@@ -74,10 +74,10 @@
 </div>
 
 
-<h3><%= Model.model_name.human.pluralize%></h3>
+<!--<h3><%= Model.model_name.human.pluralize%></h3>-->
 
 <h3><%= Experiment.model_name.human.pluralize%></h3>
-	<% @experiments.take(1).each do |e| %>
+	<% @experiments.each do |e| %>
 	<% next unless (proxy_dyna_models = ProxyDynaModel.joins(:measurement => :experiment).where('measurements.experiment_id' => e.id, :dyna_model_id => @dyna_model.id).group('proxy_dyna_models.id')) %>
 	<% p_dm_average = e.get_average_proxy_dyna_model(proxy_dyna_models) %>
 	
@@ -86,7 +86,7 @@
 	<div class="one_tab">
 		<div>
 		<div>
-			<h5 class="button"><%= t('dyna_models.stats.average_params')%> <span class="dim">(<%= t('dyna_models.stats.click_hide')%>)</span></h5>
+			<h5 class="button"><%= t('dyna_models.stats.average_params')%> <span class="dim">(<%= t('aux.click_hide')%>)</span></h5>
 			<div class="toggle" style="display:none;">
 				<dl>
 					<dt><%= t('dyna_models.stats.rmse')%>:</dt>
@@ -118,7 +118,7 @@
 				%>
 			</div>
 		</div>
-		<h5 class="button"><%= t('aux.chart')%> <span  class="dim">(<%= t('dyna_models.stats.click_hide')%>)</span></h5>
+<!--		<h5 class="button"><%= t('aux.chart')%> <span  class="dim">(<%= t('dyna_models.stats.click_hide')%>)</span></h5>
 		<div style="display:none;" class="toggle proxy_dyna_model_chart" >
 			<div class="chart">
 				<%= t('aux.loading').downcase%>
@@ -133,9 +133,10 @@
 				<% end %>
 			</div>
 		</div>
-		</div>
+-->		</div>
+
 	<div>		
-		<h5 class="button"><%= Measurement.model_name.human.pluralize%>  <span class="dim">(<%= t('dyna_models.stats.click_hide')%>)</span></h5>
+		<h5 class="button"><%= Measurement.model_name.human.pluralize%>  <span class="dim">(<%= t('aux.click_hide')%>)</span></h5>
 
 		<% @dyna_model.proxy_dyna_models.collect {|p| if (p.measurement && p.measurement.experiment == e) then p.measurement end }.compact.each do |m| %>
 		<% next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model }) %>

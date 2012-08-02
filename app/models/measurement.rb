@@ -23,7 +23,7 @@ class Measurement < ActiveRecord::Base
       p_l = nil
       p_2_l = nil
       finish = false
-      result = self.lines.sort.collect { |l|
+      result = self.lines.sort_by{|l| l.x}.collect { |l|
         next if finish
         
         if p_l && p_2_l
@@ -84,11 +84,12 @@ class Measurement < ActiveRecord::Base
    def convert_original_data
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
-       next if y == 1
-       if y == 0
-         self.title = l
-         next
-       end
+# removes header from data
+#       next if y == 1
+#       if y == 0
+#         self.title = l
+#         next
+#       end
        line = Line.new
        l.split(/\t/).each_with_index do |el , y2|
 
@@ -111,11 +112,11 @@ class Measurement < ActiveRecord::Base
      end
     #temp_date = title.gsub(/ \(.\)/,"")
     begin
-      self.date = Date.strptime self.title, '%d-%m-%Y'
+#      self.date = Date.strptime self.title, '%d-%m-%Y'
     rescue
-      self.date = Date.strptime self.title, '%d/%m/%Y'
+#      self.date = Date.strptime self.title, '%d/%m/%Y'
     end
-    self.title = self.title.strip
+ #   self.title = self.title.strip
     end
     
     def original_data_trimmed

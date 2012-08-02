@@ -1,22 +1,22 @@
-<%= form_for([@experiment,@measurement], builder: LabeledFormBuilder) do |f| %>
+<%= semantic_form_for([@experiment,@measurement]) do |f| %>
+  <%= f.semantic_errors :state %>
 
-	<%= f.error_messages %>
-	
-  <div class="field">
-    <%= f.label :experiment %><br />
-    <%= @experiment.id %>
-    <br />
-    <%= @experiment.description %>
-  </div>
+  <%= f.inputs do %>
+  	<%= f.input :experiment, :input_html => { :disabled => true  }%>
+  	<%= f.input :title %> 
+    <%= f.input :date , as: :date_select, :include_blank => true %>
+  	<%- if params[:action] == "new"%>
+  	<%= f.input :original_data, as: :text, hint: "data should be copied as tab delimeted columns: X&nbsp;&nbsp;&nbsp;Y&nbsp;&nbsp;&nbsp;Z&nbsp;&nbsp;&nbsp;note"%>
+  	<%- else %>
+  	<%= f.input :original_data, as: :text , :input_html => { :disabled => true  }%>
+  	<%- end %>
+  <% end %>
 
-    <%= f.text_field :title %>
-  
-  <%= f.date_select :date , :include_blank => true %>
-  
-    <%= f.text_area :original_data %>
-    <div class="actions">
-    <%= f.submit nil , :class => "btn" %>
-  </div>
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link , label: t('form.cancel')%>	
+  <% end%>
+
 <% end %>
 
 <div class="clear"></div>
