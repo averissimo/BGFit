@@ -99,7 +99,7 @@
 
 <% end %>
 
-
+<%- if !@proxy_dyna_model.rmse.nil? || !@proxy_dyna_model.rmse.blank? %>
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
 
 <div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
@@ -122,7 +122,7 @@
 	</div>
 
 </div>
-
+<%- end %>
 <div class="menu">
 	<%= menu %>
 </div>

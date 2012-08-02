@@ -349,7 +349,7 @@ class ProxyDynaModel < ActiveRecord::Base
       
       request = Net::HTTP::Get.new uri.request_uri
       res = Net::HTTP.start(uri.host, uri.port) {|http|
-        timeout = 540
+        timeout = 1540
         http.open_timeout = timeout
         http.read_timeout = timeout
         http.request request

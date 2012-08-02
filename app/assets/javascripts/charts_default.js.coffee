@@ -43,13 +43,13 @@ if typeof google isnt 'undefined'
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
-        alert(textStatus)
+        #alert(textStatus)
     }
     setup = {
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
-        alert(textStatus)
+        #alert(textStatus)
     }
     
     $('a.hide').live 'click' , (event) =>
