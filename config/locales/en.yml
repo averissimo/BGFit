@@ -77,7 +77,7 @@ en:
   
   activerecord:
     models:
-      model: Scope
+      model: Project
       dyna_model: "Dynamic Model"
       params: Parameters
     attributes:
