@@ -15,6 +15,7 @@
 /public/assets
 /dumps/
 /public/test
+/public
 
 *.rbc
 *.sassc
