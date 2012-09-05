@@ -56,11 +56,11 @@ class Measurement < ActiveRecord::Base
       }.join(",")
     end
   
-    def end
-      #self.lines.max_by{ |l| 
-      #  l.x 
-      #}.x * 1.1
-      25 # some simulators fail with the commented code
+    def end(no_death_phase=true)
+      self.lines_no_death_phase(no_death_phase).max_by{ |l| 
+        l.x 
+      }.x * 1.1
+      #25 # some simulators fail with the commented code
     end
     
     def end_title

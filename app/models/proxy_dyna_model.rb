@@ -301,12 +301,12 @@ class ProxyDynaModel < ActiveRecord::Base
       }.compact.join('&')
       
       if self.measurement.nil?
-        url = "#{self.dyna_model.solver}?#{url_params}&end=48"
+        url = "#{self.dyna_model.solver}?#{url_params}&end=#{self.measurement.end(self.no_death_phase).to_s}"
       else
         if time.nil?
-          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end(self.no_death_phase).to_s}"
         else
-          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{(self.measurement.end-time).to_s}"
+          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{(self.measurement.end(self.no_death_phase)-time).to_s}"
         end
       end
       url
@@ -379,7 +379,7 @@ class ProxyDynaModel < ActiveRecord::Base
         else
           param_to_url( p.code , p.top, p.bottom )
         end 
-      }.compact.join(',') + ',' + param_to_url( "t" , "100" , "0" ) + "]" # adds time
+      }.compact.join(',') + ',' + param_to_url( "t" , measurement.end(self.no_death_phase).to_s , "0" ) + "]" # adds time
   
       url += url_states + url_ic;
       url += CGI::escape("}")
