@@ -1,5 +1,6 @@
 class Param < ActiveRecord::Base
   belongs_to :dyna_model
+  has_many :proxy_param, :dependent => :destroy
   
   has_paper_trail
   

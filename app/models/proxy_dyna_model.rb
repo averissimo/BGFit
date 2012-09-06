@@ -59,6 +59,13 @@ class ProxyDynaModel < ActiveRecord::Base
       size
     end
     
+    def reset
+      self.transaction do
+        self.json = nil
+        self.perform_clean_stats
+      end
+    end
+    
     def measurement_stats(dataset)
       size = 0
       dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
@@ -118,7 +125,6 @@ class ProxyDynaModel < ActiveRecord::Base
           end
         end
       rescue Exception => e  
-        debugger
         clean_stats "error while calculating statistics"
         return [].push(measurement.id).push(-1)
       end
@@ -270,7 +276,8 @@ class ProxyDynaModel < ActiveRecord::Base
           
           new_param
         else
-          list.first.custom_init
+          # TODO: check if should be "list.first.custom_init"
+          list.each{ |p| p.custom_init }
           list.first
         end
       }
@@ -372,16 +379,19 @@ class ProxyDynaModel < ActiveRecord::Base
       }.compact.join(',') + "]"
       # URL initial conditions (that map against initial conditions in SBTOOLBOX2)
       url_ic = "," + CGI::escape("\"initial\"") + ":["
+      ic_flag = false;
       url_ic += params.collect { |p|
         next unless p.initial_condition
         if p.top.nil? || p.bottom.nil?
           raise Exception.new(p.human_title.html_safe + " does not have top/bottom values")
         else
           param_to_url( p.code , p.top, p.bottom )
+          ic_flag = true;
         end 
       }.compact.join(',') + ',' + param_to_url( "t" , measurement.end(self.no_death_phase).to_s , "0" ) + "]" # adds time
   
-      url += url_states + url_ic;
+      url += url_states
+      url += url_ic if ic_flag
       url += CGI::escape("}")
       url
     end
