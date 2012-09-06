@@ -77,7 +77,7 @@
 <% if @dyna_model.solver.nil? || @dyna_model.solver.blank? %>
 	<%= t('aux.not_defined')%>
 <% else %>
-  <%= link_to @dyna_model.solver, @dyna_model.solver%>
+  <%= simple_format (show ( @dyna_model.solver ) )%>
 <% end %>
 </p>
 
@@ -86,7 +86,7 @@
 <% if @dyna_model.estimation.nil? || @dyna_model.estimation.blank? %>
 	<%= t('aux.not_defined')%>
 <% else %>
-  <%= link_to @dyna_model.estimation %>
+  <%= simple_format (show ( @dyna_model.estimation) ) %>
 <% end %>
 </p>
 

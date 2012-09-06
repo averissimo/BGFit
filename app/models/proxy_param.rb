@@ -3,6 +3,8 @@ class ProxyParam < ActiveRecord::Base
   belongs_to :param
   has_paper_trail
 
+  before_destroy :reset_all_params
+  
   def code
     self.param.code
   end
@@ -47,6 +49,12 @@ class ProxyParam < ActiveRecord::Base
   
   def count
     @unit.size
+  end
+  
+  private
+  
+  def reset_all_params
+    self.proxy_dyna_model.reset
   end
   
 end

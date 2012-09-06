@@ -40,7 +40,7 @@
    <%= f.actions do %>
   	<%= f.action :submit, :as => :button, :label => "Login", :disable_with => 'Logging in...' %>
   	<li class="action link_action">
-  	<%= link_to "Sign in", new_session_path(resource_name) %>
+  	<%= link_to "Sign up", new_registration_path(resource_name) %>
   	</li>
   	<%= f.action :cancel, :as => :link , label: t('form.cancel') %>	
   	
