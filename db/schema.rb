@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120802132859) do
+ActiveRecord::Schema.define(:version => 20120907142007) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20120802132859) do
     t.float    "accuracy"
     t.text     "notes"
     t.boolean  "no_death_phase"
+    t.boolean  "log_flag"
   end
 
   add_index "proxy_dyna_models", ["dyna_model_id"], :name => "index_proxy_dyna_models_on_dyna_model_id"
@@ -120,6 +121,8 @@ ActiveRecord::Schema.define(:version => 20120802132859) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "param_id"
+    t.float    "top"
+    t.float    "bottom"
   end
 
   add_index "proxy_params", ["proxy_dyna_model_id"], :name => "index_proxy_params_on_proxy_dyna_model_id"

@@ -48,11 +48,22 @@
 <h3>Dynamic model description</h3>
 
 <p>
-  <%- if @proxy_dyna_model.no_death_phase %>
-  Does not include death phase 
-  <%- end 	%>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
 </p>
+
+<%- if @proxy_dyna_model.no_death_phase || @proxy_dyna_model.log_flag%>
+<h3>Options</h3>
+<p>
+<%- if @proxy_dyna_model.no_death_phase %>
+  Does not include death phase<br/>
+  ##############################<br/>
+  <%- end 	%>
+  <%- if @proxy_dyna_model.log_flag %>
+  Estimation is performed on log scale<br/>
+  ##############################<br/>
+  <%- end 	%>
+</p>
+<%- end %>
 
 <h3>Listing <%= pluralize(@proxy_dyna_model.dyna_model.params.length, 'parameter')%></h3>
 
@@ -71,8 +82,8 @@
 				row.title 	param.param.human_title.html_safe
 				row.value	param.value, :class => "highlight"
 				row.description	param.param.description
-				row.bottom 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_bottom", param.param.bottom) end )
-				row.top 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_top", param.param.top ) end )
+				row.bottom 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_bottom", param.bottom) end )
+				row.top 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_top", param.top ) end )
 			end
 		end %>
 	</div>
@@ -114,10 +125,10 @@
 	<div style="display:none;" class="measurement-data">
 		<% if @proxy_dyna_model.measurement.nil? %>
 		<% @proxy_dyna_model.experiment.measurements.each do |m| %>
-		<div data-source="<%= experiment_measurement_path(@proxy_dyna_model.experiment,m,:format=>:json) %>"><%= m.title %></div>
+		<div data-source="<%= experiment_measurement_path(@proxy_dyna_model.experiment,m,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= m.title %></div>
 		<% end %>
 		<% else %>
-		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div>
+		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= @measurement.title %></div>
 		<% end %> 
 	</div>
 

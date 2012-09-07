@@ -14,7 +14,6 @@ class Measurement < ActiveRecord::Base
   
   public
   
-  
     def get_proxy_dyna_model_with_dyna_model(dyna_model)
       ProxyDynaModel.where(:measurement_id=>self.id,:dyna_model_id=>dyna_model.id).first
     end
@@ -36,7 +35,7 @@ class Measurement < ActiveRecord::Base
         l
       }.compact
       last = result.pop
-      if last.y < result.last.y
+      if no_death_phase && last.y < result.last.y
         result
       else
         result << last
@@ -44,23 +43,31 @@ class Measurement < ActiveRecord::Base
       
     end
   
-    def x_array
-      self.lines_no_death_phase.sort.collect { |l|
-        l.x  
+    def x_array(log=false,no_death_phase=true)
+      self.lines_no_death_phase(no_death_phase).sort.collect { |l|
+        if log
+          Math.log( l.x )
+        else
+          l.x
+        end  
       }.join(",")
     end
     
-    def y_array
-      self.lines_no_death_phase.sort.collect { |l|
-        l.y  
+    def y_array(log=false,no_death_phase=true)
+      self.lines_no_death_phase(no_death_phase).sort.collect { |l|
+        if log
+          Math.log( l.y )
+        else
+          l.y
+        end  
       }.join(",")
     end
   
-    def end
-      #self.lines.max_by{ |l| 
-      #  l.x 
-      #}.x * 1.1
-      25 # some simulators fail with the commented code
+    def end(no_death_phase=true)
+      self.lines_no_death_phase(no_death_phase).max_by{ |l| 
+        l.x 
+      }.x * 1.1
+      #25 # some simulators fail with the commented code
     end
     
     def end_title

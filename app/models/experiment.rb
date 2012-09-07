@@ -59,8 +59,8 @@ class Experiment < ActiveRecord::Base
       blank.proxy_params.each do |blank_param|
       
         blank_param.value = 0 if blank_param.value.nil?
-        param = p.proxy_params.find do |param|
-          param.param.id == blank_param.param.id
+        param = p.proxy_params.find do |param_a|
+          param_a.param.id == blank_param.param.id
         end
         blank_param.mean_add(param.value) unless param.nil? || param.value.nil?
       end

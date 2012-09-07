@@ -34,7 +34,7 @@ en:
   
   proxy_dyna_models:
     show:
-      empty: Parameters have not been calculated.
+      empty: Parameters have not yet been calculated.
   
   dyna_models:
     stats:
@@ -77,7 +77,7 @@ en:
   
   activerecord:
     models:
-      model: Scope
+      model: Project
       dyna_model: "Dynamic Model"
       params: Parameters
     attributes:
@@ -88,6 +88,8 @@ en:
       dyna_model:
         description: Description
         params: Parameters
+        estimation: Parameter estimation URL
+        solver: Simulation URL
 
   
   form:
