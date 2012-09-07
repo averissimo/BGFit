@@ -20,7 +20,7 @@ class MeasurementsController < ApplicationController
   # GET /measurements/1
   # GET /measurements/1.json
   def show
-   
+    @log_flag = params[:log]  
     respond_with(@experiment,@measurement) do |format|
       format.csv { 
         csv = render_to_string :csv => @measurement

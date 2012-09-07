@@ -105,7 +105,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def statistical_data_measurement( hash )
       
       line = hash[:lines].shift
-      old = line.y
+      old = line.y_value(log_flag)
       
       
       begin
@@ -115,9 +115,9 @@ class ProxyDynaModel < ActiveRecord::Base
           #
           if pair[0] >= line.x
             pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
-            hash[:rmse] +=  ( pair[1] - line.y ) ** 2
-            hash[:bias] = Math.log( pair[1] / line.y ).abs
-            hash[:accu] = Math.log( pair[1] / line.y )
+            hash[:rmse] +=  ( pair[1] - line.y_value(log_flag) ) ** 2
+            hash[:bias] = Math.log( pair[1] / line.y_value(log_flag) ).abs
+            hash[:accu] = Math.log( pair[1] / line.y_value(log_flag) )
             line = hash[:lines].shift  
           else
             old = pair[1]
@@ -335,19 +335,18 @@ class ProxyDynaModel < ActiveRecord::Base
       
       # TODO make death phase optional
       if self.experiment.nil?
-        x_array = self.measurement.x_array
-        y_array = self.measurement.y_array
+        x_array = self.measurement.x_array(false,no_death_phase)
+        y_array = self.measurement.y_array(log_flag,no_death_phase)
       else
         x_array = experiment.measurements.collect { |m|
-          m.x_array.to_s
+          m.x_array(false,no_death_phase).to_s
         }.join('];[')
         
         y_array = experiment.measurements.collect { |m|
-          m.y_array.to_s
+          m.y_array(log_flag,no_death_phase).to_s
         }.join('];[')
      
       end
-      
       return "time=[#{x_array}]&values=[#{y_array}]"          
    
     end
