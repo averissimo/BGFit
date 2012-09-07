@@ -48,16 +48,65 @@ class ProxyDynaModel < ActiveRecord::Base
     #  - RMSE
     #  - Accuracy factor
     #  - Bias Factor
+    
+    def experiment_stats(dataset)
+      size = 0
+      experiment.measurements.each do |m|
+        dataset[:lines] = m.lines_no_death_phase(self.no_death_phase)
+        size += dataset[:lines].size
+        dataset = statistical_data_measurement( dataset )
+      end
+      size
+    end
+    
+    def reset
+      self.transaction do
+        self.json = nil
+        self.perform_clean_stats
+      end
+    end
+    
+    def measurement_stats(dataset)
+      size = 0
+      dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
+      
+      size += dataset[:lines].size
+      
+      dataset = statistical_data_measurement( dataset )
+      size
+    end
+    
     def statistical_data
-      return nil if measurement.nil?   # if proxy_dyna_model does not reference a measurement, then it showld not calculate
+      return nil if ( measurement.nil? && experiment.nil? ) || self.json_cache.nil?   # if proxy_dyna_model does not reference a measurement, then it showld not calculate
+      
       # TODO death phase optional to dyna_model parameter
-      lines = measurement.lines_no_death_phase
-      size = lines.size
-      line = lines.shift
-      rmse = 0
-      bias = 0 
-      accu = 0
-      old = line.y
+      size = 0
+      
+      dataset = {lines: nil , rmse: 0 , bias: 0 , accu: 0}
+      #
+      #
+      #
+      if measurement.nil?
+        reference = experiment
+        size = experiment_stats(dataset)
+      else
+        reference = measurement
+        size = measurement_stats(dataset)
+      end
+      
+      self.bias = 10 ** (dataset[:bias] / size )
+      self.accuracy = 10 ** (dataset[:accu] / size )
+      self.rmse = Math.sqrt( dataset[:rmse] / size )
+      self.notes = ""
+      self.save
+      [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
+    end
+    
+    def statistical_data_measurement( hash )
+      
+      line = hash[:lines].shift
+      old = line.y_value(log_flag)
+      
       
       begin
         JSON.parse(self.json).each do |pair|
@@ -66,26 +115,22 @@ class ProxyDynaModel < ActiveRecord::Base
           #
           if pair[0] >= line.x
             pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
-            rmse +=  ( pair[1] - line.y ) ** 2
-            bias = Math.log( pair[1] / line.y ).abs
-            accu = Math.log( pair[1] / line.y )
-            line = lines.shift  
+            hash[:rmse] +=  ( pair[1] - line.y_value(log_flag) ) ** 2
+            hash[:bias] = Math.log( (pair[1] / line.y_value(log_flag)).abs ).abs
+            hash[:accu] = Math.log( (pair[1] / line.y_value(log_flag)).abs )
+            line = hash[:lines].shift  
           else
             old = pair[1]
             nil
           end
         end
-      rescue Exception => e  
+      rescue Exception => e
         debugger
         clean_stats "error while calculating statistics"
         return [].push(measurement.id).push(-1)
       end
-      self.bias = 10 ** (bias / size )
-      self.accuracy = 10 ** (accu / size )
-      self.rmse = Math.sqrt ( rmse / size )
-      self.notes = ""
-      self.save
-      [].push(measurement.model.id).push(measurement.model.title).push(measurement.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
+      return hash
+      
     end
     #
     #
@@ -102,25 +147,35 @@ class ProxyDynaModel < ActiveRecord::Base
     def call_estimation
       call_estimation_with_custom_params( self.dyna_model.params )
     end
+    
     #
     #
     #
     #
     def call_estimation_with_custom_params(params)
-      return unless !(self.measurement.nil?) || !(self.estimation.nil?) || !(self.estimation == "")
+      return unless !(self.measurement.nil?) || !(self.experiment.nil?) || !(self.dyna_model.estimation.nil?) || !(self.dyna_model.estimation == "")
       
       url = estimation_url( params )
       print "\n" + url.to_s + "\n\n"
       begin
-        response = Net::HTTP.get_response(URI(url))
-      rescue Timeout::Error
+        response = call_url(url)    
+        
+        if response.body.blank?
+          clean_stats "empty response"
+          return
+        end
+      
+      rescue Timeout::Error => e
         clean_stats "timeout while calculating parameters, try again"
         return
       end
       result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
-      
+
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
+        temp_param = params.find { |par| par.id == d_p.param_id }
+        d_p.top = temp_param.top
+        d_p.bottom = temp_param.bottom
         d_p.save
         d_p
       end
@@ -141,13 +196,12 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     #
     #
-    def call_solver
+    def call_solver(time=nil)
       
-      url = solver_url
-      
+      url = solver_url(time)  
       begin    
-        response = Net::HTTP.get_response(URI(url))
-      rescue Timeout::Error
+        response = call_url(url)
+     rescue Timeout::Error
         self.notes = "timeout while simulating, try again"
         self.json = nil
         self.save
@@ -155,8 +209,17 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       if temp_json["error"]
-        self.notes = "error while simulating data" + temp_json["error"].to_s
-        self.json = nil 
+	      print 'time: ' + time.to_s unless time.nil?
+        if time.nil?
+          call_solver(1)
+          return self.json
+        elsif (self.measurement.end - time < 0 )
+          self.notes = "error while simulating data" + temp_json["error"].to_s
+          self.json = nil
+        else
+          call_solver(time+1)
+          return self.json
+        end
       else
         self.json = temp_json["result"].to_s
       end
@@ -222,7 +285,8 @@ class ProxyDynaModel < ActiveRecord::Base
           
           new_param
         else
-          list.first.custom_init
+          # TODO: check if should be "list.first.custom_init"
+          list.each{ |p| p.custom_init }
           list.first
         end
       }
@@ -240,11 +304,17 @@ class ProxyDynaModel < ActiveRecord::Base
       self.bias = nil
       self.accuracy = nil
       self.notes = note
+      self.proxy_params.each do |p| 
+        p.value = nil; 
+        p.top = nil; 
+        p.bottom = nil;
+        p.save;
+      end
       self.save
     end
     
     # get solver url with parameters
-    def solver_url
+    def solver_url(time=nil)
       url_params = self.proxy_params.collect { |p|
         next if p.code == 'o'
         return nil if p.value.nil?      
@@ -252,9 +322,13 @@ class ProxyDynaModel < ActiveRecord::Base
       }.compact.join('&')
       
       if self.measurement.nil?
-        url = "#{self.dyna_model.solver}?#{url_params}&end=48"
+        url = "#{self.dyna_model.solver}?#{url_params}&end=#{self.measurement.end(self.no_death_phase).to_s}"
       else
-        url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end.to_s}"
+        if time.nil?
+          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end(self.no_death_phase).to_s}"
+        else
+          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{(self.measurement.end(self.no_death_phase)-time).to_s}"
+        end
       end
       url
     end
@@ -270,21 +344,36 @@ class ProxyDynaModel < ActiveRecord::Base
       
       # TODO make death phase optional
       if self.experiment.nil?
-        x_array = self.measurement.x_array
-        y_array = self.measurement.y_array
+        x_array = self.measurement.x_array(false,no_death_phase)
+        y_array = self.measurement.y_array(log_flag,no_death_phase)
       else
         x_array = experiment.measurements.collect { |m|
-          m.x_array.to_s
+          m.x_array(false,no_death_phase).to_s
         }.join('];[')
         
         y_array = experiment.measurements.collect { |m|
-          m.y_array.to_s
+          m.y_array(log_flag,no_death_phase).to_s
         }.join('];[')
      
       end
-      
       return "time=[#{x_array}]&values=[#{y_array}]"          
    
+    end
+    
+    #
+    #
+    #
+    #
+    def call_url(url)
+      uri = URI(url)
+      
+      request = Net::HTTP::Get.new uri.request_uri
+      res = Net::HTTP.start(uri.host, uri.port) {|http|
+        timeout = 1540
+        http.open_timeout = timeout
+        http.read_timeout = timeout
+        http.request request
+      }
     end
     
     # get solver url with parameters
@@ -303,16 +392,19 @@ class ProxyDynaModel < ActiveRecord::Base
       }.compact.join(',') + "]"
       # URL initial conditions (that map against initial conditions in SBTOOLBOX2)
       url_ic = "," + CGI::escape("\"initial\"") + ":["
+      ic_flag = false;
       url_ic += params.collect { |p|
         next unless p.initial_condition
         if p.top.nil? || p.bottom.nil?
           raise Exception.new(p.human_title.html_safe + " does not have top/bottom values")
         else
           param_to_url( p.code , p.top, p.bottom )
+          ic_flag = true;
         end 
-      }.compact.join(',') + ',' + param_to_url( "t" , "100" , "0" ) + "]" # adds time
+      }.compact.join(',') + ',' + param_to_url( "t" , measurement.end(self.no_death_phase).to_s , "0" ) + "]" # adds time
   
-      url += url_states + url_ic;
+      url += url_states
+      url += url_ic if ic_flag
       url += CGI::escape("}")
       url
     end

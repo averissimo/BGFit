@@ -1,16 +1,8 @@
 <% 
 	context_menu = [
 		{
-			:key => :edit, 
-			:name => 'Edit this model', 
-			:url => url_for([:edit,@model]),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
 			:key => :new, 
-			:name => 'New experiment', 
+			:name => t('navigation.new' , model: Experiment.model_name.human), 
 			:url => url_for([:new,@model,:experiment]),
 			:options => {
 				:container_class => 'menu',
@@ -18,8 +10,17 @@
 			}
 		},
 		{
+			:key => :edit, 
+			:name => t('action.edit'), 
+			:url => url_for([:edit,@model]),
+			:options => {
+				:container_class => 'menu',
+				class: "text"
+			}
+		},
+		{
 			:key => :index, 
-			:name => 'Goto models\' index', 
+			:name => t('navigation.index' , model: Model.model_name.human.pluralize), 
 			:url => models_path,
 			:options => {
 				:container_class => 'menu',
@@ -28,24 +29,23 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Model's detail" } %>
-<p id="notice"><%= notice %></p>
+<% content_for(:title) { t('title.detail' , model: Model.model_name.human) } %>
 
-<h1><%= @model.title %> (model)</h1>
+<h1><%= @model.title %></h1>
 
-<h3>Description:</h3>
+<h3><%= Model.human_attribute_name(:description)%></h3>
 <p>
   <%= simple_format @model.description %>
 </p>
 
-<h3>Listing <%= pluralize(@model.experiments.length, 'experiment')%></h3>
+<h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
 	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
-		t.header :title
-		t.header :description
+		t.header :title,		Model.human_attribute_name(:title)
+		t.header :description,	Model.human_attribute_name(:description)
 		t.header :show_h,		"", class: "no-sort"
-		t.header :exp_h,		"", class: "no-sort"
+		#t.header :exp_h,		"", class: "no-sort"
 		t.header :edit_h,		"", class: "no-sort"
 		t.header :destroy_h,	"", class: "no-sort"
 
@@ -54,10 +54,10 @@
 			# Notice there's no need to explicitly define the title
 			row.title			experiment.title
 			row.description		experiment.description
-			row.show_h			link_to 'show', [@model,experiment]
-			row.edit_h			link_to 'edit', [:edit,@model,experiment]
-			row.exp_h			link_to 'download .exp' , model_experiment_path(@model,experiment,:format => :exp)
-			row.destroy_h		link_to 'remove', [@model,experiment], confirm: 'Are you sure?', method: :delete
+			row.show_h			link_to t('action.show').downcase, [@model,experiment]
+			row.edit_h			link_to t('action.edit').downcase, [:edit,@model,experiment]
+			#row.exp_h			link_to 'download .exp' , model_experiment_path(@model,experiment,:format => :exp)
+			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete
 		end
 	end
 %>
@@ -66,10 +66,10 @@
 	<%= menu %>
 </div>
 
-<h3>All <%= pluralize(@measurements.length, 'measurement')%> in <%= pluralize(@model.experiments.length, 'experiment')%></h3>
+<h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human)%> <%= t('aux.in')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
 		t.header :experiment
 		t.header :title
 		t.header :date
@@ -84,7 +84,7 @@
 			row.title			measure.title
 			row.date			measure.date
 			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
-			row.show_h			link_to 'show', [measure.experiment,measure]
+			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure]
 			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
 		end
 	end

@@ -14,20 +14,19 @@ class Measurement < ActiveRecord::Base
   
   public
   
-  
     def get_proxy_dyna_model_with_dyna_model(dyna_model)
       ProxyDynaModel.where(:measurement_id=>self.id,:dyna_model_id=>dyna_model.id).first
     end
   
-    def lines_no_death_phase
+    def lines_no_death_phase(no_death_phase=true)
       p_l = nil
       p_2_l = nil
       finish = false
-      result = self.lines.sort.collect { |l|
+      result = self.lines.sort_by{|l| l.x}.collect { |l|
         next if finish
         
         if p_l && p_2_l
-          if l.y < p_l && p_l < p_2_l  
+          if no_death_phase && l.y < p_l && p_l < p_2_l  
             finish = true
           end
         end
@@ -36,7 +35,7 @@ class Measurement < ActiveRecord::Base
         l
       }.compact
       last = result.pop
-      if last.y < result.last.y
+      if no_death_phase && last.y < result.last.y
         result
       else
         result << last
@@ -44,23 +43,31 @@ class Measurement < ActiveRecord::Base
       
     end
   
-    def x_array
-      self.lines_no_death_phase.sort.collect { |l|
-        l.x  
+    def x_array(log=false,no_death_phase=true)
+      self.lines_no_death_phase(no_death_phase).sort.collect { |l|
+        if log
+          Math.log( l.x )
+        else
+          l.x
+        end  
       }.join(",")
     end
     
-    def y_array
-      self.lines_no_death_phase.sort.collect { |l|
-        l.y  
+    def y_array(log=false,no_death_phase=true)
+      self.lines_no_death_phase(no_death_phase).sort.collect { |l|
+        if log
+          Math.log( l.y )
+        else
+          l.y
+        end  
       }.join(",")
     end
   
-    def end
-      #self.lines.max_by{ |l| 
-      #  l.x 
-      #}.x * 1.1
-      25 # some simulators fail with the commented code
+    def end(no_death_phase=true)
+      self.lines_no_death_phase(no_death_phase).max_by{ |l| 
+        l.x 
+      }.x * 1.1
+      #25 # some simulators fail with the commented code
     end
     
     def end_title
@@ -84,11 +91,12 @@ class Measurement < ActiveRecord::Base
    def convert_original_data
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
-       next if y == 1
-       if y == 0
-         self.title = l
-         next
-       end
+# removes header from data
+#       next if y == 1
+#       if y == 0
+#         self.title = l
+#         next
+#       end
        line = Line.new
        l.split(/\t/).each_with_index do |el , y2|
 
@@ -111,11 +119,11 @@ class Measurement < ActiveRecord::Base
      end
     #temp_date = title.gsub(/ \(.\)/,"")
     begin
-      self.date = Date.strptime self.title, '%d-%m-%Y'
+#      self.date = Date.strptime self.title, '%d-%m-%Y'
     rescue
-      self.date = Date.strptime self.title, '%d/%m/%Y'
+#      self.date = Date.strptime self.title, '%d/%m/%Y'
     end
-    self.title = self.title.strip
+ #   self.title = self.title.strip
     end
     
     def original_data_trimmed

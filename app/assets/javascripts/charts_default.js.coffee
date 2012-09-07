@@ -43,13 +43,13 @@ if typeof google isnt 'undefined'
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
-        alert(textStatus)
+        #alert(textStatus)
     }
     setup = {
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
-        alert(textStatus)
+        #alert(textStatus)
     }
     
     $('a.hide').live 'click' , (event) =>
@@ -71,12 +71,10 @@ if typeof google isnt 'undefined'
       v_min = Math.min.apply(null, [data.getColumnRange(1).min , data.getColumnRange(2).min])
       offset = Math.abs( v_max - v_min ) * OFFSET_RATIO
       v_max = v_max + offset
-      v_min = v_min - offset
-      v_min = 0 if v_min - offset < 0 
-
-      if offset <= 0 # with one point chart returns an error if condition
-                    #  does not exists
-        offset = 2
+      if v_min - offset < 0 && v_min >= 0
+        v_min = 0 
+      else
+        v_min = v_min - offset
       options.vAxis = { 
         viewWindow: {
           max: v_max
@@ -84,15 +82,19 @@ if typeof google isnt 'undefined'
           }
       }
       # commented out because charts should have a fixed horizontal size
-      #range_h = data.getColumnRange(0)
-      #offset = Math.abs( range_h.max - range_h.min ) * OFFSET_RATIO
-      #if offset <= 0 # with one point chart returns an error if condition
-                    #  does not exists
-      #  offset = 2
+      h_max = Math.max.apply(null, [data.getColumnRange(0).max] )
+      h_min = Math.min.apply(null, [data.getColumnRange(0).min] )
+      offset = Math.abs( h_max - h_min ) * OFFSET_RATIO
+  
+      if h_min - offset < 0 && h_min >= 0
+        h_min = 0
+      else
+        h_min = h_min - offset
+      h_max = h_max + offset
       options.hAxis = {
         viewWindow: {
-          max: 15,#range_h.max,
-          min: 0  #range_h.min
+          max: h_max,#range_h.max,
+          min: h_min #range_h.min
           }
       }
       

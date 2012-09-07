@@ -3,14 +3,6 @@
 
 	context_menu = [
 		{
-			:key => :edit, 
-			:name => 'Edit this experiment', 
-			:url => url_for([:edit,@model,@experiment]),
-			:options => {
-				:container_class => 'menu'
-			}
-		},
-		{
 			:key => :new, 
 			:name => 'New measurement', 
 			:url => url_for([:new,@experiment,:measurement]),
@@ -19,34 +11,44 @@
 			}
 		},
 		{
-			:key => :index, 
+			:key => :edit, 
+			:name => 'Edit', 
+			:url => url_for([:edit,@model,@experiment]),
+			:options => {
+				:container_class => 'menu',
+				class: "text"
+			}
+		},
+		{
+			:key => :model, 
 			:name => 'Goto model', 
-			:url => url_for(@model),
+			:url => model_path(@experiment.model),
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
-		}}]
+			}
+		}
+		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<p id="notice"><%= notice %></p>
 
 <h1><%= @experiment.title %> (experiment)</h1>
 
-<h4>Using <%= @model.title %> model</h4>
+<h4>Using <%= @model.title %> scope</h4>
 <p>
-	<%= simple_format @model.description %>
+	<%= show (simple_format @model.description )%>
 </p>
 
 <h3>Experiment Description</h3>
 <p>
-  <%= simple_format @experiment.description %>
+  <%= simple_format( show @experiment.description) %>
 </p>
 
 <h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>
 
 <%= 
-	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
+	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
 		t.header :title
 		t.header :date
 		t.header :show_h,		"", class: "no-sort"
@@ -60,9 +62,9 @@
 			# Notice there's no need to explicitly define the title
 			row.title			measurement.title
 			row.date			measurement.date
-			row.show_h			link_to 'show', [@experiment,measurement]
-			row.edit_h			link_to 'edit', [:edit,@experiment,measurement]
-			row.destroy_h		link_to 'remove', [@experiment,measurement], confirm: 'Are you sure?', method: :delete
+			row.show_h			link_to t('action.show').downcase, [@experiment,measurement]
+			row.edit_h			link_to t('action.edit').downcase, [:edit,@experiment,measurement]
+			row.destroy_h		link_to t('action.remove').downcase, [@experiment,measurement], confirm: 'Are you sure?', method: :delete
 			row.regression_h	link_to 'regression', [:regression,@experiment,measurement]
 			row.csv				link_to 'download .csv', experiment_measurement_path(@experiment,measurement, :format => :csv)
 		end

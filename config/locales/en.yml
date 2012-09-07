@@ -2,13 +2,116 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  title:
+    detail: "%{model} detail"
+    edit: Edit %{model}
+    index: "%{model} index" 
+    new: New %{model}
+    dyna_model:
+      stats: "%{model} Statistical Information"
+  
+  aux:
+    loading: Loading...  
+    listing: Listing
+    not_defined: Not defined
+    click_hide: click here to show/hide
+    chart: Chart
+    download_chart: Download chart as .svg
+    in: in
+    root: Home
+    
+  models:
+    index:
+      title: Data Management
+      regression: Regression
+  
+  measurements:
+    show:
+      dyna: Associate dynamic model
+      linear: Manual regression
+      csv: ".csv"
+      new-line: New line
+  
+  proxy_dyna_models:
+    show:
+      empty: Parameters have not yet been calculated.
+  
+  dyna_models:
+    stats:
+      belongs: that belongs to
+      average_params: Average parameters
+      bias: Bias Factor
+      accu: Accuracy Factor
+      rmse: RMSE
+      mean: Mean Value
+      updated: Data Updated at
+    estimate:
+      below: show below
+      goto: goto
+      calculate: Estimate parameters
+      calculating: Estimating parameters, please wait...
+      click_above: click on one of the links above to see a chart
+      chart_for: Chart for
+  
+  action:
+    show: Show
+    edit: Edit
+    edit_this: Edit %{model}
+    remove: Remove
+    confirm: Are you sure?
+    download_data: Download .csv
+    dyna_model:
+      new: New parameter
+      download_stats: Download stats
+      estimate: Estimate parameters
+      estimate_short: Estimate
+      stats: Stats
+      
+      statistical_data: Statistical data
+  
+  helpers:
+    label:
+      param:
+        ic: yada
+        
+  
+  activerecord:
+    models:
+      model: Project
+      dyna_model: "Dynamic Model"
+      params: Parameters
+    attributes:
+      param:
+        initial_condition: Initial Condition
+        ic: I.Cond.
+        human_title: Human
+      dyna_model:
+        description: Description
+        params: Parameters
+        estimation: Parameter estimation URL
+        solver: Simulation URL
+
+  
+  form:
+    cancel: "Cancel"
+  
+  navigation:
+    back: Back
+    goto: Goto %{destination}
+    show: Show %{model} details
+    new: New %{model}
+    home: Home
+    index_of: Index of %{model}
+    index: "%{model}\' index"
   
   flash:
     actions:
       create:
         notice: "%{resource_name} was sucessfully created."
+      calculate:
+        notice: "%{resource_name}'s parameters were sucessfully calculated."
       update:
         notice: "%{resource_name} was successfully updated."
       destroy:
-        notice: "%{title} %{resource_name} was successfully deleted."
+        notice_complex: "%{resource_name} '%{title}' was successfully deleted."
+        notice: "%{resource_name} was successfully deleted."

@@ -1,0 +1,22 @@
+<% semantic_form_for(:title) { "Edit Profile" } %>
+<h2>Edit <%= resource_name.to_s.humanize %></h2>
+
+<%= semantic_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
+  <%= devise_error_messages! %>
+
+  <%= f.inputs do %>
+	<%= f.input :email, as: :email %>
+  	<%= f.input :password, as: :password %>
+  	<%= f.input :password_confirmation, as: :password %>
+  	<%= f.input :current_password, as: :password, :hint => "(we need your current password to confirm your changes)" %>
+  <% end %>
+
+
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button, :label => "Update" %>
+  	<%= f.action :cancel, :as => :link , label: t('form.cancel') %>
+  <% end%>
+<% end %>
+<div class="menu">
+	<%= menu %>
+</div>

@@ -1,5 +1,6 @@
 class DynaModelsController < ApplicationController
   respond_to :html, :json, :csv
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   def index
     @dyna_models = DynaModel.all
@@ -35,7 +36,7 @@ class DynaModelsController < ApplicationController
   
     @proxy_dyna_models.each do |p|
       p.call_pre_estimation_background_job
-      Delayed::Job.enqueue( CalculateJob.new( p.id , custom_params ), 0 , Time.now )  
+      Delayed::Job.enqueue CalculateJob.new( p.id , custom_params ), { priority: 0 , run_at: Time.now  }  
     end
     
     flash[:notice] = "Parameters are being calculated in background"
@@ -90,6 +91,7 @@ class DynaModelsController < ApplicationController
 
   def destroy
     @dyna_model = DynaModel.find(params[:id])
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Dyna Model" , title: @dyna_model.title)
     @dyna_model.destroy
     respond_with(@dyna_model, :location => dyna_models_path)
 

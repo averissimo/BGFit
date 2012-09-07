@@ -23,30 +23,47 @@
 		{
 			:key => :index, 
 			:name => 'Goto measurement', 
-			:url => url_for([@experiment,@measurement]),
+			:url => url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement]),
 			:options => {
+				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
 				:container_class => 'menu',
 				:class => "text"
 			}
-		}]
+		}
+		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
 <% content_for(:title) { "Dyna Model's detail" } %>
-<p id="notice"><%= notice %></p>
 
 <h1><%= @proxy_dyna_model.dyna_model.title %> (dyna model)</h1>
 
+<% if !@proxy_dyna_model.measurement.nil? %>
 <h3><%= @proxy_dyna_model.measurement.model.title %> model's description for <%= @proxy_dyna_model.measurement.title %> measurement:</h3>
 <p>
 	<%= simple_format (show (@proxy_dyna_model.measurement.model.description)) %>
 </p>
 
-<h3>Dynamic model description:</h3>
+<% end%>
+<h3>Dynamic model description</h3>
 
 <p>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
 </p>
+
+<%- if @proxy_dyna_model.no_death_phase || @proxy_dyna_model.log_flag%>
+<h3>Options</h3>
+<p>
+<%- if @proxy_dyna_model.no_death_phase %>
+  Does not include death phase<br/>
+  ##############################<br/>
+  <%- end 	%>
+  <%- if @proxy_dyna_model.log_flag %>
+  Estimation is performed on log scale<br/>
+  ##############################<br/>
+  <%- end 	%>
+</p>
+<%- end %>
 
 <h3>Listing <%= pluralize(@proxy_dyna_model.dyna_model.params.length, 'parameter')%></h3>
 
@@ -55,18 +72,18 @@
 	<div class="one_tab">
 		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted dataTable') do |t| 
 			t.header :title
+			t.header :value, "Estimated parameter"
 			t.header :description
-			t.header :value
-			t.header :bottom
-			t.header :top
+			t.header :bottom, "Bottom range for estimation"
+			t.header :top, "Top range for estimation"
 		
 			t.rows.alternate = :odd
 			t.rows.each do |row, param, index|
 				row.title 	param.param.human_title.html_safe
+				row.value	param.value, :class => "highlight"
 				row.description	param.param.description
-				row.value	param.value
-				row.bottom 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_bottom", param.param.bottom) end )
-				row.top 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_top", param.param.top ) end )
+				row.bottom 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_bottom", param.bottom) end )
+				row.top 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_top", param.top ) end )
 			end
 		end %>
 	</div>
@@ -88,12 +105,12 @@
 			</tr>
 		</tbody>
 	</table>
-	<%= button_tag "Recalculate Parameters"%>
+	<%= button_tag "Recalculate Parameters" , disable_with: "calculating, please wait..." %>
 </div>
 
 <% end %>
 
-
+<%- if !@proxy_dyna_model.rmse.nil? || !@proxy_dyna_model.rmse.blank? %>
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
 
 <div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
@@ -106,11 +123,17 @@
 		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.dyna_model.title%></div>
 	</div>
 	<div style="display:none;" class="measurement-data">
-		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div> 
+		<% if @proxy_dyna_model.measurement.nil? %>
+		<% @proxy_dyna_model.experiment.measurements.each do |m| %>
+		<div data-source="<%= experiment_measurement_path(@proxy_dyna_model.experiment,m,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= m.title %></div>
+		<% end %>
+		<% else %>
+		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= @measurement.title %></div>
+		<% end %> 
 	</div>
 
 </div>
-
+<%- end %>
 <div class="menu">
 	<%= menu %>
 </div>

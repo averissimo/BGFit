@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120710184155) do
+ActiveRecord::Schema.define(:version => 20120907142007) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(:version => 20120710184155) do
     t.float    "bias"
     t.float    "accuracy"
     t.text     "notes"
+    t.boolean  "no_death_phase"
+    t.boolean  "log_flag"
   end
 
   add_index "proxy_dyna_models", ["dyna_model_id"], :name => "index_proxy_dyna_models_on_dyna_model_id"
@@ -119,9 +121,29 @@ ActiveRecord::Schema.define(:version => 20120710184155) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "param_id"
+    t.float    "top"
+    t.float    "bottom"
   end
 
   add_index "proxy_params", ["proxy_dyna_model_id"], :name => "index_proxy_params_on_proxy_dyna_model_id"
+
+  create_table "users", :force => true do |t|
+    t.string   "email",                  :default => "", :null => false
+    t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "versions", :force => true do |t|
     t.string   "item_type",  :null => false

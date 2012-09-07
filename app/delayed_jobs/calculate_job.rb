@@ -5,6 +5,7 @@ class CalculateJob < Struct.new(:calculate_ids, :custom_params )
     proxy_dyna_models.without_versioning do
       proxy_dyna_models.call_estimation_with_custom_params( custom_params )
     end
+    proxy_dyna_models.json_cache
     #proxy_dyna_models.each do |pdm|
     #  pdm.call_estimation_with_custom_params( custom_params )
     #end

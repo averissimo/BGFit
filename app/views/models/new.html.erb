@@ -2,21 +2,28 @@
 	context_menu = [
 		{
 			:key => :back, 
-			:name => "Back to models' index", 
-			:url => models_url,
+			:name => t('navigation.back'), 
+			:url => url_for(:back),
 			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
 				:class => 'text'
+			}
+		},
+		{
+			:key => :home, 
+			:name => t('navigation.index_of' , model: Model.model_name.human.downcase), 
+			:url => dyna_models_path,
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
 			}
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { "New model" }
+	content_for(:title) { t('navigation.new' , model: Model.model_name.human) }
 %>
-<h1>New model</h1>
+<h1><%= t('navigation.new' , model: Model.model_name.human)%></h1>
 
 <%= render 'form' %>
-
-<div class="menu">
-	<%= menu %>
-</div>

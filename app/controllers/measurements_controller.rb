@@ -2,6 +2,7 @@ class MeasurementsController < ApplicationController
   respond_to :html, :json, :csv
 
   before_filter :determine_models , :only => [ :show, :edit, :destroy, :update, :update_regression, :regression ]
+  before_filter :authenticate_user!, :except => [:index,:show]
 
   # GET /measurements
   # GET /measurements.json
@@ -19,7 +20,7 @@ class MeasurementsController < ApplicationController
   # GET /measurements/1
   # GET /measurements/1.json
   def show
-   
+    @log_flag = params[:log]  
     respond_with(@experiment,@measurement) do |format|
       format.csv { 
         csv = render_to_string :csv => @measurement
@@ -123,7 +124,7 @@ class MeasurementsController < ApplicationController
   # DELETE /measurements/1.json
   def destroy
     @measurement.destroy
-
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Measurement", title: @measurement.title)
     respond_with(@experiment,@measurement, :location => [@model,@experiment])
   end
   

@@ -1,7 +1,8 @@
 class ProxyDynaModelsController < ApplicationController
   respond_to :html, :json
   
-  before_filter :determine_models , :except =>  [:index, :new, :create, :calculate]
+  before_filter :determine_models , :except => [:index, :new, :create, :calculate]
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   def index
     @measurement = Measurement.find(params[:measurement_id])
@@ -21,6 +22,7 @@ class ProxyDynaModelsController < ApplicationController
     begin
       # TODO handle exceptions gracefully
       @proxy_dyna_model.call_estimation_with_custom_params( custom_params )
+      flash[:notice] = t('flash.actions.calculate.notice', :resource_name => "Proxy Dyna Model")
     end
     
     respond_with @proxy_dyna_model 
@@ -38,6 +40,7 @@ class ProxyDynaModelsController < ApplicationController
     end
     @model = @experiment.model
     
+    @proxy_dyna_model.no_death_phase = true
     respond_with @proxy_dyna_model
   end
 
@@ -83,10 +86,21 @@ class ProxyDynaModelsController < ApplicationController
   end
   
   def show
+    if @proxy_dyna_model.rmse.nil?
+      flash[:notice] = t('proxy_dyna_models.show.empty')
+    end
+    unless @proxy_dyna_model.notes.nil? || @proxy_dyna_model.notes.blank?
+      if flash[:notice].nil?
+        flash[:notice] = @proxy_dyna_model.notes
+      else
+        flash[:notice] << @proxy_dyna_model.notes
+      end
+    end
     respond_with(@proxy_dyna_model)
   end
 
   def destroy
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Proxy Dyna Model", title: @proxy_dyna_model.dyna_model.title)
     @proxy_dyna_model.destroy
     respond_with(@proxy_dyna_model, :location => url_for([@experiment,@measurement]))
 

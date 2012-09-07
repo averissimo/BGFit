@@ -2,6 +2,7 @@ class LinesController < ApplicationController
   respond_to :html, :json
   
   before_filter :determine_models
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   # GET /lines
   # GET /lines.json
@@ -70,8 +71,8 @@ class LinesController < ApplicationController
   # DELETE /lines/1
   # DELETE /lines/1.json
   def destroy
+    flash[:notice] = t('flash.actions.destroy.notice', :resource_name => "Line")
     @line.destroy
-
     respond_to do |format|
       format.html { redirect_to [@experiment,@measurement] }
       format.json { head :ok }

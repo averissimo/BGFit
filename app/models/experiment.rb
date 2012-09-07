@@ -14,6 +14,26 @@ class Experiment < ActiveRecord::Base
   
   public
   
+  def compare(dyna_model_id)
+    average_pdm(dyna_model_id)
+    
+    p = proxy_dyna_models.where( :dyna_model_id => 6).first
+    average_rmse = p.rmse
+    
+    p.call_estimation
+    regression_rmse = p.rmse
+    [average_rmse , regression_rmse]
+  end
+  
+  def average_pdm(dyna_model_id)
+    
+    proxy_dyna_models = ProxyDynaModel.joins(:measurement => :experiment).where('measurements.experiment_id' => id, :dyna_model_id => dyna_model_id).group('proxy_dyna_models.id')
+    p_dm_average = get_average_proxy_dyna_model(proxy_dyna_models)
+    
+    p = proxy_dyna_models.where( :dyna_model_id => 6).first
+    
+  end
+  
   def get_average_proxy_dyna_model(proxy_dyna_models)
     
     return nil if proxy_dyna_models.nil? || proxy_dyna_models.size == 0
@@ -39,8 +59,8 @@ class Experiment < ActiveRecord::Base
       blank.proxy_params.each do |blank_param|
       
         blank_param.value = 0 if blank_param.value.nil?
-        param = p.proxy_params.find do |param|
-          param.param.id == blank_param.param.id
+        param = p.proxy_params.find do |param_a|
+          param_a.param.id == blank_param.param.id
         end
         blank_param.mean_add(param.value) unless param.nil? || param.value.nil?
       end
@@ -63,7 +83,9 @@ class Experiment < ActiveRecord::Base
       p.std_dev
       p.save
     end
+    blank.json = nil
     blank.save
+    #blank.json_cache
     return blank
   end
   

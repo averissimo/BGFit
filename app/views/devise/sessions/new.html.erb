@@ -1,0 +1,51 @@
+<% 
+	context_menu = [
+		{
+			:key => :back, 
+			:name => 'Back', 
+			:url => url_for(:back),
+			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
+			}
+		},
+		{
+			:key => :home, 
+			:name => 'Goto home', 
+			:url => root_path,
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:title) { "Login" }
+%>
+<h2>Login</h2>
+
+<%= semantic_form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+  <%= devise_error_messages! %>
+
+    <%= f.inputs do %>
+  	<%= f.input :email, as: :email %>
+  	<%= f.input :password, as: :password %>
+  	<% if devise_mapping.rememberable? -%>
+  	<%= f.input :remember_me, as: :boolean %>
+  	<% end -%>
+  	<% end %>
+  
+   <%= f.actions do %>
+  	<%= f.action :submit, :as => :button, :label => "Login", :disable_with => 'Logging in...' %>
+  	<li class="action link_action">
+  	<%= link_to "Sign up", new_registration_path(resource_name) %>
+  	</li>
+  	<%= f.action :cancel, :as => :link , label: t('form.cancel') %>	
+  	
+   <% end %>
+  
+<% end %>
+
+<div class="clear"></div>

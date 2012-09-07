@@ -1,0 +1,36 @@
+<% 
+	context_menu = [
+		{
+			:key => :back, 
+			:name => 'Back', 
+			:url => url_for(:back),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<h2>Sign up</h2>
+
+<%= semantic_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+  <%= devise_error_messages! %>
+
+  <%= f.inputs do %>
+	<%= f.input :email, as: :email %>
+  	<%= f.input :password, as: :password %>
+  	<%= f.input :password_confirmation, as: :password %>
+  <% end %>
+
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<li class="action link_action">
+  	<%= link_to "Login", new_session_path(resource_name) %>
+  	</li>
+  	<%= f.action :cancel, :as => :link , label: t('form.cancel') %>	
+  <% end%>
+  
+<% end %>
+
+<div class="clear"></div>

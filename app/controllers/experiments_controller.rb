@@ -2,6 +2,7 @@ class ExperimentsController < ApplicationController
   respond_to :html, :json, :csv
   
   before_filter :determine_models , :only => [ :show, :gompertz, :edit, :update, :destroy]
+  before_filter :authenticate_user!, :except => [:index,:show]
   
   # GET /experiments
   # GET /experiments.json
@@ -88,8 +89,8 @@ class ExperimentsController < ApplicationController
   # DELETE /experiments/1
   # DELETE /experiments/1.json
   def destroy
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Experiment" , title: @experiment.title)
     @experiment.destroy
-
     respond_with([@model,@experiment], :location => @model)
   end
   

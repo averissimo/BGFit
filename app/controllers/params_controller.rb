@@ -1,7 +1,7 @@
 class ParamsController < ApplicationController
   
   respond_to :html, :json
-  
+  before_filter :authenticate_user!, :except => [:index,:show]
   def index
     @dyna_model = DynaModel.find(params[:dyna_model_id])
     @params = @dyna_model.params
@@ -23,12 +23,15 @@ class ParamsController < ApplicationController
     @param = Param.new(params[:param])
     @param.dyna_model = @dyna_model
 
-    respond_with [@dyna_model,@param] do | format |
-      if @param.save
-        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Parameter")
-      else
-        format.html { render action: "new" }
-        format.json { render json: @param.errors, status: :unprocessable_entity }
+    @dyna_model.transaction do
+      respond_with [@dyna_model,@param] do | format |
+        if @param.save
+          @dyna_model.proxy_dyna_models.each { |p_d| p_d.update_params }
+          flash[:notice] = t('flash.actions.create.notice', :resource_name => "Parameter")
+        else
+          format.html { render action: "new" }
+          format.json { render json: @param.errors, status: :unprocessable_entity }
+        end
       end
     end
 
@@ -70,6 +73,7 @@ class ParamsController < ApplicationController
   def destroy
     @dyna_model = DynaModel.find(params[:dyna_model_id])
     @param = @dyna_model.params.find(params[:id])
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Parameter", title: @param.human_title)
     @param.destroy
     respond_with(@param, :location => dyna_model_path(@dyna_model))
 
