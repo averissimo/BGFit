@@ -1,5 +1,7 @@
 BacteriaGrowth::Application.routes.draw do
 
+  match "/delayed_job" => DelayedJobWeb, :anchor => false
+
   resources :dyna_models do
     resources :params
     member do

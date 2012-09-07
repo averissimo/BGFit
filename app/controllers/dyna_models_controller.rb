@@ -24,7 +24,7 @@ class DynaModelsController < ApplicationController
   end
   
   def calculate
-    @dyna_model = DynaModel.find(params[:dyna_model_id])
+    @dyna_model = DynaModel.find(params[:id])
     @proxy_dyna_models = ProxyDynaModel.where( :id => params["proxy_dyna_model_ids"])
     
     custom_params = @dyna_model.params.collect do |param|
@@ -32,13 +32,24 @@ class DynaModelsController < ApplicationController
       param.bottom = params[param.id.to_s+"_bottom"]
       param
     end
-
-    
+  
     @proxy_dyna_models.each do |p|
-      p.call_estimation_with_custom_params( custom_params )
+      p.call_pre_estimation_background_job
+      Delayed::Job.enqueue( CalculateJob.new( p.id , custom_params ), 0 , Time.now )  
     end
     
-    respond_with @dyna_model 
+    flash[:notice] = "Parameters are being calculated in background"
+
+    #@proxy_dyna_models.each do |p|
+    #  p.call_estimation_with_custom_params( custom_params )
+    #  if flash[:notice].nil?
+    #    flash[:notice] = p.measurement.title.to_s + " has been calculated with RMSE = " + p.rmse.to_s + "\n"
+    #  else
+    #    flash[:notice] << p.measurement.title.to_s + " has been calculated with RMSE = " + p.rmse.to_s + "\n"
+    #  end
+    #end
+    
+    respond_with [:estimate , @dyna_model] 
   end
   
   def edit

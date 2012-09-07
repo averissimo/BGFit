@@ -48,7 +48,8 @@ class ProxyDynaModelsController < ApplicationController
     elsif params[:measurement_id]
       @measurement = Measurement.find(params[:measurement_id])
       @experiment = @measurement.experiment
-      @proxy_dyna_model = @measurement.proxy_dyna_models.build(params[:dyna_model])
+      @proxy_dyna_model = @measurement.proxy_dyna_models.build(params[:proxy_dyna_model])
+      @proxy_dyna_model.dyna_model
     end
     @model = @experiment.model
   

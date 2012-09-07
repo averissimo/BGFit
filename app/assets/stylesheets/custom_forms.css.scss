@@ -2,6 +2,9 @@ form.formtastic {
   width: 500px;
 }
 
+form {
+  width: 100%;
+}
 
 input,
 textarea    { padding: 4px 2px; border: 1px solid #aaa; background: #fff; }

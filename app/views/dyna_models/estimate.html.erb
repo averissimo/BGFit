@@ -64,8 +64,8 @@
 			t.rows.each do |row, param, index|
 				next if param.output_only
 				row.title 	param.human_title.html_safe
-				row.top 	number_field_tag param.id.to_s+"_top", param.top
-				row.bottom 	number_field_tag param.id.to_s+"_bottom", param.bottom
+				row.top 	text_field_tag param.id.to_s+"_top", param.top
+				row.bottom 	text_field_tag param.id.to_s+"_bottom", param.bottom
 			end
 		end %>
 	</div>
@@ -84,11 +84,12 @@
 		<div class="experiments one_tab">	
 			
 		<%= collection_table(Measurement.dyna_model_is(@dyna_model).experiment_is(e) , :class => 'formatted dataTable dataTable') do |t| 
-			t.header :select, class: "no-sort"
+			t.header :select, check_box_tag("check-all[]", 0 , false, class: "check-all"), class: "no-sort"
 			t.header :title
 			t.header :rmse
-			t.header :graph, class: "no-sort"
-			t.header :goto, class: "no-sort"
+			t.header :notes, "", class: "no-sort"
+			t.header :graph, "", class: "no-sort"
+			t.header :goto,  "", class: "no-sort"
 			t.header :model_d, :style => "display:none;", class: "no-sort"
 			t.header :data_d, :style => "display:none;", class: "no-sort"
 			
@@ -96,9 +97,10 @@
 	    	t.rows.each do |row, meas, index|
 				p_d_m = meas.get_proxy_dyna_model_with_dyna_model(@dyna_model)
 				# Notice there's no need to explicitly define the title
-				row.select		check_box_tag "proxy_dyna_model_ids[]", p_d_m.id
+				row.select		check_box_tag("proxy_dyna_model_ids[]", p_d_m.id )
 				row.title		meas.title
 				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
+				row.notes		( if p_d_m.notes.nil? then "" else word_wrap(p_d_m.notes,:line_width => 40).gsub(/\n/, '<br/>') end)
 				row.graph		link_to "show below", "#", :class=>"estimate_chart"
 				row.goto		link_to "goto", [p_d_m]
 				row.model_d		p_d_m.dyna_model.title					, :style => "display:none;" , 'data-source' => proxy_dyna_model_path(p_d_m, :format => :json)
@@ -129,7 +131,7 @@
 
 <% end %>
 
-<div class="action">
+<div class="action text-center">
 	<%= button_tag "Calculate Parameters"%>
 </div>
 

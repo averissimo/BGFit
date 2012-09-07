@@ -10,7 +10,7 @@ if typeof google isnt 'undefined'
     window.options = {
       curveType: 'function',
       lineWidth: 1,
-      pointSize: 2,
+      pointSize: 5,
       width: 900,
       height: 500,
       legend: {
@@ -43,11 +43,13 @@ if typeof google isnt 'undefined'
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
+        alert(textStatus)
     }
     setup = {
       timeout: 10000,
       dataType: 'json',
       error: (jqXHR, textStatus, errorThrown) =>
+        alert(textStatus)
     }
     
     $('a.hide').live 'click' , (event) =>
@@ -65,26 +67,34 @@ if typeof google isnt 'undefined'
       true
     
     process_google_chart = (el,data) ->
-      range_v = data.getColumnRange(1)
-      offset = Math.abs( range_v.max - range_v.min ) * OFFSET_RATIO
-      if offset > 0 # with one point chart returns an error if condition
+      v_max = Math.max.apply(null, [data.getColumnRange(1).max , data.getColumnRange(2).max])
+      v_min = Math.min.apply(null, [data.getColumnRange(1).min , data.getColumnRange(2).min])
+      offset = Math.abs( v_max - v_min ) * OFFSET_RATIO
+      v_max = v_max + offset
+      v_min = v_min - offset
+      v_min = 0 if v_min - offset < 0 
+
+      if offset <= 0 # with one point chart returns an error if condition
                     #  does not exists
-        options.vAxis = { 
-          viewWindow: {
-            max: range_v.max +  offset,
-            min: range_v.min -  offset
-            }
-        }
-      range_h = data.getColumnRange(0)
-      offset = Math.abs( range_h.max - range_h.min ) * OFFSET_RATIO
-      if offset > 0 # with one point chart returns an error if condition
+        offset = 2
+      options.vAxis = { 
+        viewWindow: {
+          max: v_max
+          min: v_min
+          }
+      }
+      # commented out because charts should have a fixed horizontal size
+      #range_h = data.getColumnRange(0)
+      #offset = Math.abs( range_h.max - range_h.min ) * OFFSET_RATIO
+      #if offset <= 0 # with one point chart returns an error if condition
                     #  does not exists
-        options.hAxis = {
-          viewWindow: {
-            max: 15,#range_h.max,
-            min: range_h.min
-            }
-        }
+      #  offset = 2
+      options.hAxis = {
+        viewWindow: {
+          max: 15,#range_h.max,
+          min: 0  #range_h.min
+          }
+      }
       
       chart = new google.visualization.ScatterChart el
       # Ready event
@@ -97,7 +107,7 @@ if typeof google isnt 'undefined'
         # mark chart as loaded
         $(el).attr('loaded','true')
       # Error Event
-      google.visualization.events.addListener chart, 'error', () =>
+      google.visualization.events.addListener chart, 'error', (error) =>
         alert("error loading chart!")
         $(el)[0].innerHTML = 'failed to load chart.'
         $(el).parent().slideDown(1500, "swing").effect("highlight")
@@ -136,7 +146,6 @@ if typeof google isnt 'undefined'
           process_google_chart(el,data)
         #
       #    
-    
     window = exports ? this
     window.process_chart = (element) ->
       data = new google.visualization.DataTable();
@@ -154,28 +163,17 @@ if typeof google isnt 'undefined'
           setup.url = $(el2).attr('data-source')
           
           result = $.ajax(setup)
-        
+                      
           result.done (json) =>
             jsonObj = json
             jsonObj["title"] = $(el2).html()
             list.push jsonObj
-            #if list.length == 1
-            #  l = data.addColumn 'number', $(el2).html() , $(el2).html().toLowerCase()
-            #  if options.series == undefined
-            #    options.series = {}
-            #  temp = { lineWidth: 5, pointSize: 0}
-            #  options.series[String(l-1)] = temp
-
-              #
-            #  data.addRows jsonObj.result # adds gompertz data
-            
-            
             
             if list.length != $(el).parent().find('.model-data div').length
               return
             
             list.forEach (i) => 
-              l = data.addColumn 'number' , i.title , i.title.toLowerCase 
+              l = data.addColumn 'number' , i.title , i.title.toLowerCase()
               if options.series == undefined
                 options.series = {}
               temp = { lineWidth: 3, pointSize: 0}
