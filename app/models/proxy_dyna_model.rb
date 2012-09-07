@@ -96,7 +96,7 @@ class ProxyDynaModel < ActiveRecord::Base
       
       self.bias = 10 ** (dataset[:bias] / size )
       self.accuracy = 10 ** (dataset[:accu] / size )
-      self.rmse = Math.sqrt ( dataset[:rmse] / size )
+      self.rmse = Math.sqrt( dataset[:rmse] / size )
       self.notes = ""
       self.save
       [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
@@ -159,6 +159,11 @@ class ProxyDynaModel < ActiveRecord::Base
       begin
         response = call_url(url)    
         
+        if response.body.blank?
+          clean_stats "empty response"
+          return
+        end
+      
       rescue Timeout::Error => e
         clean_stats "timeout while calculating parameters, try again"
         return
