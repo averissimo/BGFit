@@ -116,15 +116,16 @@ class ProxyDynaModel < ActiveRecord::Base
           if pair[0] >= line.x
             pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
             hash[:rmse] +=  ( pair[1] - line.y_value(log_flag) ) ** 2
-            hash[:bias] = Math.log( pair[1] / line.y_value(log_flag) ).abs
-            hash[:accu] = Math.log( pair[1] / line.y_value(log_flag) )
+            hash[:bias] = Math.log( (pair[1] / line.y_value(log_flag)).abs ).abs
+            hash[:accu] = Math.log( (pair[1] / line.y_value(log_flag)).abs )
             line = hash[:lines].shift  
           else
             old = pair[1]
             nil
           end
         end
-      rescue Exception => e  
+      rescue Exception => e
+        debugger
         clean_stats "error while calculating statistics"
         return [].push(measurement.id).push(-1)
       end
@@ -169,9 +170,12 @@ class ProxyDynaModel < ActiveRecord::Base
         return
       end
       result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
-      
+
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
+        temp_param = params.find { |par| par.id == d_p.param_id }
+        d_p.top = temp_param.top
+        d_p.bottom = temp_param.bottom
         d_p.save
         d_p
       end
@@ -300,7 +304,12 @@ class ProxyDynaModel < ActiveRecord::Base
       self.bias = nil
       self.accuracy = nil
       self.notes = note
-      self.proxy_params.each { |p| p.value = nil; p.save; }
+      self.proxy_params.each do |p| 
+        p.value = nil; 
+        p.top = nil; 
+        p.bottom = nil;
+        p.save;
+      end
       self.save
     end
     
