@@ -43,9 +43,9 @@
 		</div>
 
 		<div id="content">
-		  <% flash.each do |key, value| %>
-		    <%= content_tag(:div, value, :class => "flash #{key}") %>
-		  <% end %>
+		  <%- flash.each do |key, value| %>
+		    <%= content_tag(:div, value.join("<br/>").html_safe, :class => "flash #{key}") %>
+		  <%- end %>
 
 
 			<%= yield %>

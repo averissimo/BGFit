@@ -169,8 +169,23 @@ class ProxyDynaModel < ActiveRecord::Base
         clean_stats "timeout while calculating parameters, try again"
         return
       end
-      result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
-
+      begin
+        result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
+      rescue JSON::ParserError
+        self.transaction do
+          self.json = nil
+          clean_stats('Error: Error when calling estimator.')
+          return
+        end 
+      end
+      if result["error"]
+        self.transaction do
+          self.json = nil
+          clean_stats(result["error"])
+          return
+        end
+      end
+      debugger
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
         temp_param = params.find { |par| par.id == d_p.param_id }
