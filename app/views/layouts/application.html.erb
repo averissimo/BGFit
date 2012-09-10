@@ -44,10 +44,12 @@
 
 		<div id="content">
 		  <%- flash.each do |key, value| %>
+		  	<%- debugger %>
 		  	<%- if value.is_a?(String)%>
 		    	<%= content_tag(:div, value.html_safe, :class => "flash #{key}") %>
+		    <%- else %>
+		    	<%= content_tag(:div, value.join("<br/>").html_safe, :class => "flash #{key}") %>
 		    <%- end %>
-		    <%= content_tag(:div, value.join("<br/>").html_safe, :class => "flash #{key}") %>
 		  <%- end %>
 
 
