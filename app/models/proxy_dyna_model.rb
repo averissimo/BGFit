@@ -125,7 +125,6 @@ class ProxyDynaModel < ActiveRecord::Base
           end
         end
       rescue Exception => e
-        debugger
         clean_stats "error while calculating statistics"
         return [].push(measurement.id).push(-1)
       end
@@ -185,7 +184,6 @@ class ProxyDynaModel < ActiveRecord::Base
           return
         end
       end
-      debugger
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
         temp_param = params.find { |par| par.id == d_p.param_id }
