@@ -2,6 +2,7 @@
   <%= f.semantic_errors :state %>
   
   <%= f.inputs do %>
+  	<%= f.input :title, hint: "used to differentiate models in case of using different set of ranges or manual tunning" %>
   	<% if params[:action] != 'new' %>
   		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio , :input_html => { :disabled => true  } , hint: "Model can only be choose when creating, if you wish to change you need to remove it first."%>
   	<% else %>

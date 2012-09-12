@@ -4,6 +4,8 @@ class ProxyDynaModel < ActiveRecord::Base
   belongs_to :dyna_model
   has_many :proxy_params, :dependent => :destroy
   
+  validate :validate_title
+  
   before_create :update_params
   before_update :update_params
   
@@ -311,6 +313,15 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
   private
+  
+    #
+    #
+    #
+    def validate_title
+      t = ProxyDynaModel.arel_table
+      errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model.id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)) ).size > 0
+    end
+  
     # clean statistical information
     def clean_stats(note)
       self.rmse = nil

@@ -5,6 +5,8 @@ class DynaModel < ActiveRecord::Base
 
   validate :validate_solver, :validate_estimation
   
+  validates :title, :solver_url, :presence => true
+  
   has_paper_trail
 
   public
@@ -46,12 +48,12 @@ class DynaModel < ActiveRecord::Base
   #
   def validate_solver
     return if self.solver.nil? || self.solver.blank?
-    errors.add("Solver", "is an invalid URL.") if (self.solver =~ URI::regexp).nil?
+    errors.add(:solver, "is an invalid URL.") if (self.solver =~ URI::regexp).nil?
   end
   
   def validate_estimation
     return if self.estimation.nil? || self.estimation.blank?
-    errors.add("Estimation", "is an invalid URL.") if !estimation.nil? && (estimation =~ URI::regexp).nil?
+    errors.add(:estimation, "is an invalid URL.") if !estimation.nil? && (estimation =~ URI::regexp).nil?
   end
   
 end
