@@ -37,7 +37,7 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     def get_estimation_url
-      estimation_url(self.dyna_model.params)
+      estimation_url(temp_params)
     end
     
     def get_solver_url
@@ -144,7 +144,7 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # perform parameter estimation
     def call_estimation
-      call_estimation_with_custom_params( self.dyna_model.params )
+      call_estimation_with_custom_params( temp_params )
     end
     
     #
@@ -420,6 +420,18 @@ class ProxyDynaModel < ActiveRecord::Base
       url += url_ic if ic_flag
       url += CGI::escape("}")
       url
+    end
+  
+  #
+  #
+  #
+  def temp_params
+      # TODO: refactor to use proxy dyna model proxy params directly
+      params = self.proxy_params.collect do |p|
+        p.param.bottom = p.bottom
+        p.param.top = p.top
+        p.param
+      end
     end
   
 end
