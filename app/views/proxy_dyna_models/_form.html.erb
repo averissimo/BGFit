@@ -8,8 +8,8 @@
   	<% else %>
   		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio  %>
   	<% end %>
-  	<%= f.input :no_death_phase, as: :boolean %>
-  	<%= f.input :log_flag, as: :boolean %>
+  	<%= f.input :no_death_phase, as: :boolean, hint: "removes any sequential values in the end that show a declining pattern" %>
+  	<%= f.input :log_flag, as: :boolean, hint: "changes the y-axi scale to log(y)" %>
 	<% if params[:action] != 'new' %>
 	  <%= f.input :original_data, :as => :text , hint: "use this textbox to manually define the parameter's value"%>  
 	<% end %>
