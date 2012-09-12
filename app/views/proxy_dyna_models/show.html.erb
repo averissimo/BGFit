@@ -36,7 +36,7 @@
 %>
 <% content_for(:title) { "Dyna Model's detail" } %>
 
-<h1><%= @proxy_dyna_model.dyna_model.title %> (dyna model)</h1>
+<h1><%= @proxy_dyna_model.title %> (model: <%= @proxy_dyna_model.dyna_model.title %>)</h1>
 
 <% if !@proxy_dyna_model.measurement.nil? %>
 <h3><%= @proxy_dyna_model.measurement.model.title %> model's description for <%= @proxy_dyna_model.measurement.title %> measurement:</h3>
@@ -45,7 +45,7 @@
 </p>
 
 <% end%>
-<h3>Dynamic model description</h3>
+<h3>Description</h3>
 
 <p>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
@@ -120,7 +120,7 @@
 	</div>
 	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
 	<div style="display:none;" class="model-data">
-		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.dyna_model.title%></div>
+		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.title%> (<%=@proxy_dyna_model.dyna_model.title%>)</div>
 	</div>
 	<div style="display:none;" class="measurement-data">
 		<% if @proxy_dyna_model.measurement.nil? %>

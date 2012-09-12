@@ -4,6 +4,8 @@ class ProxyDynaModel < ActiveRecord::Base
   belongs_to :dyna_model
   has_many :proxy_params, :dependent => :destroy
   
+  validate :validate_title
+  
   before_create :update_params
   before_update :update_params
   
@@ -37,7 +39,7 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     def get_estimation_url
-      estimation_url(self.dyna_model.params)
+      estimation_url(temp_params)
     end
     
     def get_solver_url
@@ -144,7 +146,7 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # perform parameter estimation
     def call_estimation
-      call_estimation_with_custom_params( self.dyna_model.params )
+      call_estimation_with_custom_params( temp_params )
     end
     
     #
@@ -311,6 +313,15 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
   private
+  
+    #
+    #
+    #
+    def validate_title
+      t = ProxyDynaModel.arel_table
+      errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model.id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)) ).size > 0
+    end
+  
     # clean statistical information
     def clean_stats(note)
       self.rmse = nil
@@ -420,6 +431,18 @@ class ProxyDynaModel < ActiveRecord::Base
       url += url_ic if ic_flag
       url += CGI::escape("}")
       url
+    end
+  
+  #
+  #
+  #
+  def temp_params
+      # TODO: refactor to use proxy dyna model proxy params directly
+      params = self.proxy_params.collect do |p|
+        p.param.bottom = p.bottom
+        p.param.top = p.top
+        p.param
+      end
     end
   
 end
