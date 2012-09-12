@@ -319,7 +319,8 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     def validate_title
       t = ProxyDynaModel.arel_table
-      errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model.id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)) ).size > 0
+      result = ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model_id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)).and(t[:measurement_id].eq(self.measurement_id)) ).size
+      errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if result > 0
     end
   
     # clean statistical information
