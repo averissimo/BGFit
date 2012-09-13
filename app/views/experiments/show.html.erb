@@ -82,7 +82,7 @@
 	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
 	<div style="display:none;" class="measurement-data">
 		<% @experiment.measurements.each do |m| %>
-		<div data-source="<%= experiment_measurement_path(@experiment,m,:format=>:json) %>">m.title</div>
+		<div data-source="<%= experiment_measurement_path(@experiment,m,:format=>:json) %>"><%= m.title%></div>
 		<% end %> 
 	</div>
 

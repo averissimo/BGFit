@@ -67,8 +67,15 @@ if typeof google isnt 'undefined'
       true
     
     process_google_chart = (el,data) ->
-      v_max = Math.max.apply(null, [data.getColumnRange(1).max , data.getColumnRange(2).max])
-      v_min = Math.min.apply(null, [data.getColumnRange(1).min , data.getColumnRange(2).min])
+      
+      v_max_arr = for num in [1..(data.getNumberOfColumns()-1)]
+        do ->
+          data.getColumnRange(num).max
+      v_min_arr = for num in [1..(data.getNumberOfColumns()-1)]
+        do ->
+          data.getColumnRange(num).min
+      v_max = Math.max.apply(null, v_max_arr)
+      v_min = Math.min.apply(null, v_min_arr)
       offset = Math.abs( v_max - v_min ) * OFFSET_RATIO
       v_max = v_max + offset
       if v_min - offset < 0 && v_min >= 0
