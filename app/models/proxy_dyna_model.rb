@@ -242,6 +242,7 @@ class ProxyDynaModel < ActiveRecord::Base
           return self.json
         end
       else
+        self.notes = "Simulated curve has \"-Inf\" or \"Inf\" values" if temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }.nil?
         self.json = temp_json["result"].to_s
       end
       self.save
