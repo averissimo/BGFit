@@ -13,6 +13,14 @@ class ProxyDynaModel < ActiveRecord::Base
   
   public
   
+    def title
+      if read_attribute(:title).nil?
+        self.dyna_model.title
+      else
+        self.dyna_model.title + ': ' + read_attribute(:title)
+      end
+    end
+  
     # bias standard deviation attribution
     def bias_stdev=(arg)
       @bias_stdev = arg
@@ -242,7 +250,7 @@ class ProxyDynaModel < ActiveRecord::Base
           return self.json
         end
       else
-        self.notes = "Simulated curve has \"-Inf\" or \"Inf\" values" if temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }.nil?
+        self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" if temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }.nil?
         self.json = temp_json["result"].to_s
       end
       self.save
