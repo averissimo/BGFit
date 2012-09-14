@@ -212,12 +212,18 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     #
     def call_solver(time=nil)
+          
+      url = solver_url(time)
       
-      url = solver_url(time)  
+      print url.to_s + "\n\n"  
       begin    
         response = call_url(url)
      rescue Timeout::Error
         self.notes = "timeout while simulating, try again"
+        self.json = nil
+        self.save
+        return
+      rescue URI::InvalidURIError
         self.json = nil
         self.save
         return
