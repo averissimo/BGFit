@@ -14,8 +14,10 @@ class ProxyDynaModel < ActiveRecord::Base
   public
   
     def title
-      if read_attribute(:title).nil?
+      if read_attribute(:title).nil? && !self.dyna_model.nil?
         self.dyna_model.title
+      elsif self.dyna_model.nil?
+        read_attribute(:title)
       else
         self.dyna_model.title + ': ' + read_attribute(:title)
       end
