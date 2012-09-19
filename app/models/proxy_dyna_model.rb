@@ -46,12 +46,13 @@ class ProxyDynaModel < ActiveRecord::Base
     # Overides title method to output a complex naming convention
     #
     def title
-      if read_attribute(:title).nil? && !self.dyna_model.nil?
+      title_pdm = read_attribute(:title)
+      if title_pdm.nil? && !self.dyna_model.nil?
         self.dyna_model.title
       elsif self.dyna_model.nil?
-        read_attribute(:title)
+        title_pdm
       else
-        self.dyna_model.title + ': ' + read_attribute(:title)
+        self.dyna_model.title + ': ' + title_pdm
       end
     end
     
@@ -78,7 +79,7 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     
     # Getter method for generating default estimation url
-    def get_estimation_url() estimation_url(temp_params) end
+    def get_estimation_url() estimation_url(estimation_hash(temp_params)) end
     # Getter method for generating default solver url
     def get_solver_url() solver_url end
     # Cleans statistical data
@@ -88,7 +89,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def call_pre_estimation_background_job() clean_stats "parameters are being calculated in background" end
     # Calls estimation using default parameters
     #  (see #call_estimation_with_custom_params)
-    def call_estimation() call_estimation_with_custom_params( temp_params ) end
+    def call_estimation(is_post_method = false) call_estimation_with_custom_params( temp_params , is_post_method) end
       
     #
     # Statistical methods
@@ -142,15 +143,23 @@ class ProxyDynaModel < ActiveRecord::Base
     # Calls estimation using custom parameters
     #
     # @param params parameters' range that will be used in parameter estimation
-    def call_estimation_with_custom_params(params)
+    def call_estimation_with_custom_params(params,is_post_method=false)
       # if certain conditions are met this should not be done
-      # TODO add verbose error
-      return unless !(self.measurement.nil?) || !(self.experiment.nil?) || !(self.dyna_model.estimation.nil?) || !(self.dyna_model.estimation == "")
+      if (self.measurement.nil? && self.experiment.nil?) || 
+        (self.dyna_model.estimation.nil?) || (self.dyna_model.estimation.blank?)
+        errors.add(:base,'Error: Measurement is null.') if self.measurement.nil?
+        errors.add(:base,'Error: Experiment is null.') if self.experiment.nil?
+        errors.add(:base,'Error: Estimation url is blank.') if self.dyna_model.estimation.nil? || self.dyna_model.estimation.blank? 
+        return
+      end
       
-      url = estimation_url( params )
-      print "\n" + url.to_s + "\n\n"
+      request_hash = estimation_hash( params )
       begin
-        response = call_http_get(url)    
+        if is_post_method
+          response = call_http_post(request_hash)
+        else
+          response = call_http_get(request_hash)
+        end    
         
         if response.body.blank?
           clean_stats "empty response"
@@ -158,14 +167,20 @@ class ProxyDynaModel < ActiveRecord::Base
         end
       
       rescue Timeout::Error => e
+        # TODO: locale it!
         clean_stats "timeout while calculating parameters, try again"
         return
       end
+      handle_http_response(response,params)
+    end
+      
+    def handle_http_response(response,params)
       begin
         result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       rescue JSON::ParserError
         self.transaction do
           self.json = nil
+          # TODO: locale it!
           clean_stats('Error: Error when calling estimator.')
           return
         end 
@@ -204,11 +219,10 @@ class ProxyDynaModel < ActiveRecord::Base
     # @param time [int] safety measure allowing to adjust timescale in solver in case of errors
     def call_solver(time=nil)
           
-      url = solver_url(time)
-      
-      print url.to_s + "\n\n"  
+      request_hash = solver_url(time)
+
       begin    
-        response = (url)
+          response = call_http_get(request_hash)
      rescue Timeout::Error
         self.notes = "timeout while simulating, try again"
         self.json = nil
@@ -221,17 +235,7 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       if temp_json["error"]
-	      print 'time: ' + time.to_s unless time.nil?
-        if time.nil?
-          call_solver(1)
-          return self.json
-        elsif (self.measurement.end - time < 0 )
-          self.notes = "error while simulating data" + temp_json["error"].to_s
-          self.json = nil
-        else
-          call_solver(time+1)
-          return self.json
-        end
+          self.clean_stats( "Error while simulating data: " + temp_json["error"].to_s )
       else
         self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" if temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }.nil?
         self.json = temp_json["result"].to_s
@@ -344,22 +348,19 @@ class ProxyDynaModel < ActiveRecord::Base
     
     # get solver url with parameters
     def solver_url(time=nil)
-      url_params = self.proxy_params.collect { |p|
+      hash = {}
+      hash[:url] = self.dyna_model.solver
+      self.proxy_params.each { |p|
         next if p.code == 'o'
         return nil if p.value.nil?      
-        "#{p.param.code}=#{p.value.to_s}"
-      }.compact.join('&')
-      
-      if self.measurement.nil?
-        url = "#{self.dyna_model.solver}?#{url_params}&end=#{self.measurement.end(self.no_death_phase).to_s}"
+        hash[p.param.code]=p.value.to_s
+      }
+      if self.measurement.nil? || time.nil?
+        hash[self.measurement.end_title] = self.measurement.end(self.no_death_phase).to_s
       else
-        if time.nil?
-          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{self.measurement.end(self.no_death_phase).to_s}"
-        else
-          url = "#{self.dyna_model.solver}?#{url_params}&#{self.measurement.end_title}=#{(self.measurement.end(self.no_death_phase)-time).to_s}"
-        end
+        hash[self.measurement.end_title] = (self.measurement.end(self.no_death_phase)-time).to_s
       end
-      url
+      hash
     end
     
     # Convert single parameter to url ready
@@ -392,7 +393,7 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     # URL parameters (that map against states in SBTOOLBOX2)
-    def build_estimation(params)
+    def build_estimation_ranges(params)
       url_states = CGI::escape("{\"states\"") + ":[" + params.collect { |p|
         next if p.output_only || p.initial_condition
         if p.top.nil? || p.bottom.nil?
@@ -421,39 +422,66 @@ class ProxyDynaModel < ActiveRecord::Base
       url_ic
     end
     
+    # Calls URL using get method for the given url 
     #
-    #
-    #
-    #
-    def call_http_get(url)
-      uri = URI(url)
+    # @param url indicates the web address
+    def call_http_get(request_hash)
+      uri = URI(estimation_url(request_hash))
+      
+      logger.info "URL (GET): #{uri.to_s}"
       
       request = Net::HTTP::Get.new uri.request_uri
+      res = call_http_generic( uri , request )
+    end
+    
+    def call_http_post(request_hash)
+      uri = URI(request_hash[:url])
+      
+      logger.info "URL (POST): #{uri.to_s} / form: #{request_hash.inspect}" 
+      
+      request = Net::HTTP::Get.new uri.request_uri
+      request.set_form_data(hash)
+      res = call_http_generic( uri , request )
+    end
+    
+    def call_http_generic(uri, request)
       res = Net::HTTP.start(uri.host, uri.port) {|http|
         timeout = 1540
         http.open_timeout = timeout
         http.read_timeout = timeout
         http.request request
       }
+
     end
     
-    def estimation_params( params )
+    # get 
+    def estimation_hash( params )
       
+      tv = time_and_values
+      states = build_estimation_ranges(params)
       
-      
+      hash = {}
+      hash[:url] = self.dyna_model.estimation
+      hash[:time] = tv[:time]
+      hash[:values] = tv[:values]
+      hash[:estimation] = build_estimation_ranges(params)
+      hash
     end
     
     # get solver url with parameters
-    def estimation_url( params )
-    
-      tv = time_and_values
-    
-      url = "#{self.dyna_model.estimation}?time=#{tv[:time]}&values=#{tv[:values]}"
+    def estimation_url( request_hash )
+      unless request_hash.has_key?(:url)
+        errors.add(:base,'Error: url was not given.')
+        logger.error("Error: url was not given: #{request_hash.inspect}")
+        return
+      end
+      url = "#{request_hash.delete(:url)}"
+      url += '?' if request_hash.size > 1
+      url += request_hash.collect { |key, value|
+        "#{key.to_s}=#{value.to_s}"
+      }.join('&')
       
-      url_states = build_estimation(params)
-  
-      url += '&estimation=' + url_states
-      url
+      #"#{request_hash[:url]}?time=#{request_hash[:time]}&values=#{request_hash[:values]}&estimation=#{request_hash[:states]}"
     end
     #
     #
