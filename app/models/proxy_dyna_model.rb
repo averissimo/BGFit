@@ -398,8 +398,38 @@ class ProxyDynaModel < ActiveRecord::Base
         }.join('];[')
      
       end
-      return "time=[#{x_array}]&values=[#{y_array}]"          
-   
+      #return "time=[#{x_array}]&values=[#{y_array}]"          
+      return { time: "[#{x_array}]" , values: "[#{y_array}]" }
+    end
+    
+    # URL parameters (that map against states in SBTOOLBOX2)
+    def build_estimation(params)
+      url_states = CGI::escape("{\"states\"") + ":[" + params.collect { |p|
+        next if p.output_only || p.initial_condition
+        if p.top.nil? || p.bottom.nil?
+          raise Exception.new(p.human_title.html_safe + " does not have top/bottom values")
+        else
+          param_to_url( p.code , p.top, p.bottom )
+        end 
+      }.compact.join(',') + "]"
+      url_states += url_ic unless (url_ic = build_ic(params)).nil?
+      url_states += CGI::escape("}")
+    end
+    
+    # URL initial conditions (that map against initial conditions in SBTOOLBOX2)
+    def build_ic(params)
+      ic_flag = false;
+      url_ic = "," + CGI::escape("\"initial\"") + ":["
+      url_ic += params.collect { |p|
+        next unless p.initial_condition
+        raise Exception.new(p.human_title.html_safe + " does not have top/bottom values") if p.top.nil? || p.bottom.nil?
+        param_to_url( p.code , p.top, p.bottom )
+        ic_flag = true;
+      }.compact.join(',') + ',' + 
+        param_to_url( "t" , measurement.end(self.no_death_phase).to_s , "0" ) + "]" # adds time
+      
+      return nil unless ic_flag
+      url_ic
     end
     
     #
@@ -418,36 +448,22 @@ class ProxyDynaModel < ActiveRecord::Base
       }
     end
     
+    def estimation_params( params )
+      
+      
+      
+    end
+    
     # get solver url with parameters
     def estimation_url( params )
     
-      url = "#{self.dyna_model.estimation}?#{time_and_values}"
-      url += "&estimation=" + CGI::escape("{\"states\"") + ":["
-      # URL parameters (that map against states in SBTOOLBOX2)
-      url_states = params.collect { |p|
-        next if p.output_only || p.initial_condition
-        if p.top.nil? || p.bottom.nil?
-          raise Exception.new(p.human_title.html_safe + " does not have top/bottom values")
-        else
-          param_to_url( p.code , p.top, p.bottom )
-        end 
-      }.compact.join(',') + "]"
-      # URL initial conditions (that map against initial conditions in SBTOOLBOX2)
-      url_ic = "," + CGI::escape("\"initial\"") + ":["
-      ic_flag = false;
-      url_ic += params.collect { |p|
-        next unless p.initial_condition
-        if p.top.nil? || p.bottom.nil?
-          raise Exception.new(p.human_title.html_safe + " does not have top/bottom values")
-        else
-          param_to_url( p.code , p.top, p.bottom )
-          ic_flag = true;
-        end 
-      }.compact.join(',') + ',' + param_to_url( "t" , measurement.end(self.no_death_phase).to_s , "0" ) + "]" # adds time
+      tv = time_and_values
+    
+      url = "#{self.dyna_model.estimation}?time=#{tv[:time]}&values=#{tv[:values]}"
+      
+      url_states = build_estimation(params)
   
-      url += url_states
-      url += url_ic if ic_flag
-      url += CGI::escape("}")
+      url += '&estimation=' + url_states
       url
     end
   
