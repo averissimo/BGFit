@@ -42,7 +42,9 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # Overrided methods
     #
-    # overides title method to output a complex naming convention
+    
+    # Overides title method to output a complex naming convention
+    #
     def title
       if read_attribute(:title).nil? && !self.dyna_model.nil?
         self.dyna_model.title
@@ -52,11 +54,12 @@ class ProxyDynaModel < ActiveRecord::Base
         self.dyna_model.title + ': ' + read_attribute(:title)
       end
     end
-    #
-    # does nothing 
+    
+    # Does not allow to save data in this field 
     def original_data=(data) nil end
-    #
-    # generates data from current params
+    
+    # original_data field generates its content from current params
+    #  (ignoring value that is stored in DB)
     def original_data
       string = ""
       self.proxy_params.collect { |param|
@@ -72,17 +75,26 @@ class ProxyDynaModel < ActiveRecord::Base
     
     #
     # public methods for private
+    #
+    
+    # Getter method for generating default estimation url
     def get_estimation_url() estimation_url(temp_params) end
+    # Getter method for generating default solver url
     def get_solver_url() solver_url end
+    # Cleans statistical data
     def perform_clean_stats() clean_stats(nil) end
+    # Prepares ProxyDynaModel to perform background calculation of parameters
+    # TODO: move string to language file
     def call_pre_estimation_background_job() clean_stats "parameters are being calculated in background" end
+    # Calls estimation using default parameters
+    #  (see #call_estimation_with_custom_params)
     def call_estimation() call_estimation_with_custom_params( temp_params ) end
       
     #
     # Statistical methods
     # >>>>>>>>>>>>>>>>>>>
     #
-    #
+    
     # bias standard deviation attribution
     def bias_stdev=(arg) @bias_stdev = arg end
     # bias standard deviation
@@ -127,11 +139,12 @@ class ProxyDynaModel < ActiveRecord::Base
       [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
     end
     
+    # Calls estimation using custom parameters
     #
-    #
-    #
-    #
+    # @param params parameters' range that will be used in parameter estimation
     def call_estimation_with_custom_params(params)
+      # if certain conditions are met this should not be done
+      # TODO add verbose error
       return unless !(self.measurement.nil?) || !(self.experiment.nil?) || !(self.dyna_model.estimation.nil?) || !(self.dyna_model.estimation == "")
       
       url = estimation_url( params )
@@ -175,20 +188,20 @@ class ProxyDynaModel < ActiveRecord::Base
       self.json = nil
       self.json_cache # call solver and calculate statistical data
     end
+    
+    # If json has not yet been calculated, then it calls solver method
     #
-    #
-    #
-    #
+    # @return json results
     def json_cache
       return self.json unless self.json.nil?
       return nil if self.call_solver.nil?
       self.statistical_data 
       self.json
     end
+    
+    # Calls the solver for the calculated parameters
     #
-    #
-    #
-    #
+    # @param time [int] safety measure allowing to adjust timescale in solver in case of errors
     def call_solver(time=nil)
           
       url = solver_url(time)
@@ -226,14 +239,13 @@ class ProxyDynaModel < ActiveRecord::Base
       self.save
       self.json
     end
+    
     #
-
     def convert_param(original_args)
       flag = false
       self.proxy_params.each { |param|
         temp = /#{param.code} = (?<value>[0-9]+[.]?[0-9]*)/.match(original_args)
         if temp
-  #        print "---> " + temp.to_s + "\n"
           param.value = temp[:value]
           flag = true if param.save
         end
@@ -241,8 +253,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.call_solver if flag
       statistical_data if flag
     end
-    #
-    #
+
     #
     def update_params(no_commit = false)
       
@@ -272,6 +283,7 @@ class ProxyDynaModel < ActiveRecord::Base
       }
      
     end
+
   #
   #                                           iiii                                                  tttt                              
   #                                          i::::i                                              ttt:::t                              
@@ -296,18 +308,23 @@ class ProxyDynaModel < ActiveRecord::Base
   #  p:::::::p                                                                                                                        
   #  ppppppppp        
   #  
+ 
   private
   
-    #
-    #
-    #
+    # Validation if title is unique to the combination:
+    #  - Measurement
+    #  - DynaModel
+    #  - ProxyDynaModel.title
+    # @return [int] validation
     def validate_title
       t = ProxyDynaModel.arel_table
       result = ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model_id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)).and(t[:measurement_id].eq(self.measurement_id)) ).size
       errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if result > 0
     end
   
-    # clean statistical information
+    # Clean statistical information from the object in one transaction
+    #
+    # @param note [String] a note that will be saved with an error/warning/info
     def clean_stats(note)
       self.transaction do
         self.json = nil
@@ -345,13 +362,15 @@ class ProxyDynaModel < ActiveRecord::Base
       url
     end
     
-    # convert single parameter to url ready
+    # Convert single parameter to url ready
     def param_to_url( code, top , bottom )
       CGI::escape("{\"name\"")   + ":" + CGI::escape("\"") + "#{code}"  + CGI::escape("\"") + "," +
       CGI::escape("\"bottom\"") + ":"  + "#{bottom}"    + "," +
       CGI::escape("\"top\"")    + ":"  + "#{top}" + CGI::escape("}")
     end
     
+    # Builds hash with time and respective values array
+    #  (i.e. x and y columns)
     def time_and_values
       
       # TODO make death phase optional
@@ -465,9 +484,11 @@ class ProxyDynaModel < ActiveRecord::Base
     #   s:::::::::::ss          tt:::::::::::tt a::::::::::aa:::a       tt:::::::::::tt s:::::::::::ss  
     #    sssssssssss              ttttttttttt    aaaaaaaaaa  aaaa         ttttttttttt    sssssssssss    
     #
+    
     # Helper methods for statistical calculations
     # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     #
+    
     # helper method to calculate statistical for experiment
     def experiment_stats(dataset)
       size = 0
@@ -478,8 +499,9 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       size
     end
-    #
+    
     # helper method to calculate statistical for measurement
+    #
     def measurement_stats(dataset)
       size = 0
       dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
@@ -487,10 +509,12 @@ class ProxyDynaModel < ActiveRecord::Base
       dataset = statistical_data_measurement( dataset )
       size
     end
-    #
+    
     # helper method that calculates statistical data for a measurement
     #  in case it is a complex structure (i.e. experiment), then it will
     #  use introduce the values for the hash
+    #
+    # @see #statistical_data
     def statistical_data_measurement( hash )
       line = hash[:lines].shift
       old = line.y_value(log_flag)
