@@ -5,7 +5,7 @@ class DynaModel < ActiveRecord::Base
 
   validate :validate_solver, :validate_estimation
   
-  validates :title, :solver_url, :presence => true
+  validates :title, :solver, :presence => true
   
   has_paper_trail
 
