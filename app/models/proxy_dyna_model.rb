@@ -11,8 +11,38 @@ class ProxyDynaModel < ActiveRecord::Base
   
   has_paper_trail :skip => [:json]
   
+  
+  
+  #                                       bbbbbbbb                                                
+  #                                       b::::::b            lllllll   iiii                      
+  #                                       b::::::b            l:::::l  i::::i                     
+  #                                       b::::::b            l:::::l   iiii                      
+  #                                        b:::::b            l:::::l                             
+  #  ppppp   ppppppppp   uuuuuu    uuuuuu  b:::::bbbbbbbbb     l::::l iiiiiii     cccccccccccccccc
+  #  p::::ppp:::::::::p  u::::u    u::::u  b::::::::::::::bb   l::::l i:::::i   cc:::::::::::::::c
+  #  p:::::::::::::::::p u::::u    u::::u  b::::::::::::::::b  l::::l  i::::i  c:::::::::::::::::c
+  #  pp::::::ppppp::::::pu::::u    u::::u  b:::::bbbbb:::::::b l::::l  i::::i c:::::::cccccc:::::c
+  #   p:::::p     p:::::pu::::u    u::::u  b:::::b    b::::::b l::::l  i::::i c::::::c     ccccccc
+  #   p:::::p     p:::::pu::::u    u::::u  b:::::b     b:::::b l::::l  i::::i c:::::c             
+  #   p:::::p     p:::::pu::::u    u::::u  b:::::b     b:::::b l::::l  i::::i c:::::c             
+  #   p:::::p    p::::::pu:::::uuuu:::::u  b:::::b     b:::::b l::::l  i::::i c::::::c     ccccccc
+  #   p:::::ppppp:::::::pu:::::::::::::::uub:::::bbbbbb::::::bl::::::li::::::ic:::::::cccccc:::::c
+  #   p::::::::::::::::p  u:::::::::::::::ub::::::::::::::::b l::::::li::::::i c:::::::::::::::::c
+  #   p::::::::::::::pp    uu::::::::uu:::ub:::::::::::::::b  l::::::li::::::i  cc:::::::::::::::c
+  #   p::::::pppppppp        uuuuuuuu  uuuubbbbbbbbbbbbbbbb   lllllllliiiiiiii    cccccccccccccccc
+  #   p:::::p                                                                                     
+  #   p:::::p                                                                                     
+  #  p:::::::p                                                                                    
+  #  p:::::::p                                                                                    
+  #  p:::::::p                                                                                    
+  #  ppppppppp    
+  
   public
   
+    #
+    # Overrided methods
+    #
+    # overides title method to output a complex naming convention
     def title
       if read_attribute(:title).nil? && !self.dyna_model.nil?
         self.dyna_model.title
@@ -22,72 +52,55 @@ class ProxyDynaModel < ActiveRecord::Base
         self.dyna_model.title + ': ' + read_attribute(:title)
       end
     end
-  
+    #
+    # does nothing 
+    def original_data=(data) nil end
+    #
+    # generates data from current params
+    def original_data
+      string = ""
+      self.proxy_params.collect { |param|
+        string += param.code.to_s + " = "
+        if param.code.nil?
+          string += "<value>\n"
+        else
+          string += param.value.to_s + "\n"
+        end
+      }
+      string
+    end
+    
+    #
+    # public methods for private
+    def get_estimation_url() estimation_url(temp_params) end
+    def get_solver_url() solver_url end
+    def perform_clean_stats() clean_stats(nil) end
+    def call_pre_estimation_background_job() clean_stats "parameters are being calculated in background" end
+    def call_estimation() call_estimation_with_custom_params( temp_params ) end
+      
+    #
+    # Statistical methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+    #
     # bias standard deviation attribution
-    def bias_stdev=(arg)
-      @bias_stdev = arg
-    end
+    def bias_stdev=(arg) @bias_stdev = arg end
     # bias standard deviation
-    def bias_stdev
-      @bias_stdev
-    end
+    def bias_stdev() @bias_stdev end
     # accuracy standard deviation attribution    
-    def accuracy_stdev=(arg)
-      @accuracy_stdev = arg
-    end
+    def accuracy_stdev=(arg) @accuracy_stdev = arg end
     # accuracy standard deviation
-    def accuracy_stdev
-      @accuracy_stdev
-    end
+    def accuracy_stdev() @accuracy_stdev end
     # RMSE standard deviation attribution
-    def rmse_stdev=(arg)
-      @rmse_stdev = arg
-    end
+    def rmse_stdev=(arg) @rmse_stdev = arg end
     # RMSE standard deviation attribution
-    def rmse_stdev
-      @rmse_stdev
-    end
+    def rmse_stdev () @rmse_stdev end
     
-    def get_estimation_url
-      estimation_url(temp_params)
-    end
-    
-    def get_solver_url
-      solver_url
-    end
-    
+    #
     # calculates statiscal data:
     #  - RMSE
     #  - Accuracy factor
     #  - Bias Factor
-    
-    def experiment_stats(dataset)
-      size = 0
-      experiment.measurements.each do |m|
-        dataset[:lines] = m.lines_no_death_phase(self.no_death_phase)
-        size += dataset[:lines].size
-        dataset = statistical_data_measurement( dataset )
-      end
-      size
-    end
-    
-    def reset
-      self.transaction do
-        self.json = nil
-        self.perform_clean_stats
-      end
-    end
-    
-    def measurement_stats(dataset)
-      size = 0
-      dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
-      
-      size += dataset[:lines].size
-      
-      dataset = statistical_data_measurement( dataset )
-      size
-    end
-    
     def statistical_data
       return nil if ( measurement.nil? && experiment.nil? ) || self.json_cache.nil?   # if proxy_dyna_model does not reference a measurement, then it showld not calculate
       
@@ -114,51 +127,6 @@ class ProxyDynaModel < ActiveRecord::Base
       [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
     end
     
-    def statistical_data_measurement( hash )
-      
-      line = hash[:lines].shift
-      old = line.y_value(log_flag)
-      
-      
-      begin
-        JSON.parse(self.json).each do |pair|
-          break if line.nil?
-          next if pair[1]<= 0
-          #
-          if pair[0] >= line.x
-            pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
-            hash[:rmse] +=  ( pair[1] - line.y_value(log_flag) ) ** 2
-            hash[:bias] = Math.log( (pair[1] / line.y_value(log_flag)).abs ).abs
-            hash[:accu] = Math.log( (pair[1] / line.y_value(log_flag)).abs )
-            line = hash[:lines].shift  
-          else
-            old = pair[1]
-            nil
-          end
-        end
-      rescue Exception => e
-        clean_stats "error while calculating statistics"
-        return [].push(measurement.id).push(-1)
-      end
-      return hash
-      
-    end
-    #
-    #
-    #
-    #
-    def call_pre_estimation_background_job
-      clean_stats "parameters are being calculated in background"
-    end
-    #
-    #
-    #
-    #
-    # perform parameter estimation
-    def call_estimation
-      call_estimation_with_custom_params( temp_params )
-    end
-    
     #
     #
     #
@@ -169,7 +137,7 @@ class ProxyDynaModel < ActiveRecord::Base
       url = estimation_url( params )
       print "\n" + url.to_s + "\n\n"
       begin
-        response = call_url(url)    
+        response = call_http_get(url)    
         
         if response.body.blank?
           clean_stats "empty response"
@@ -227,7 +195,7 @@ class ProxyDynaModel < ActiveRecord::Base
       
       print url.to_s + "\n\n"  
       begin    
-        response = call_url(url)
+        response = (url)
      rescue Timeout::Error
         self.notes = "timeout while simulating, try again"
         self.json = nil
@@ -259,16 +227,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.json
     end
     #
-    #
-    #
-    #  
-    def original_data=(data)
-      #@data = data
-    end
-    #
-    #
-    #
-    #
+
     def convert_param(original_args)
       flag = false
       self.proxy_params.each { |param|
@@ -282,20 +241,9 @@ class ProxyDynaModel < ActiveRecord::Base
       self.call_solver if flag
       statistical_data if flag
     end
-    
-    def original_data
-      string = ""
-      self.proxy_params.collect { |param|
-        string += param.code.to_s + " = "
-        if param.code.nil?
-          string += "<value>\n"
-        else
-          string += param.value.to_s + "\n"
-        end
-      }
-      string
-    end
-    
+    #
+    #
+    #
     def update_params(no_commit = false)
       
       params = self.proxy_params
@@ -324,11 +272,30 @@ class ProxyDynaModel < ActiveRecord::Base
       }
      
     end
-    
-    def perform_clean_stats
-        clean_stats(nil)
-    end
-    
+  #
+  #                                           iiii                                                  tttt                              
+  #                                          i::::i                                              ttt:::t                              
+  #                                           iiii                                               t:::::t                              
+  #                                                                                              t:::::t                              
+  #  ppppp   ppppppppp   rrrrr   rrrrrrrrr  iiiiiiivvvvvvv           vvvvvvvaaaaaaaaaaaaa  ttttttt:::::ttttttt        eeeeeeeeeeee    
+  #  p::::ppp:::::::::p  r::::rrr:::::::::r i:::::i v:::::v         v:::::v a::::::::::::a t:::::::::::::::::t      ee::::::::::::ee  
+  #  p:::::::::::::::::p r:::::::::::::::::r i::::i  v:::::v       v:::::v  aaaaaaaaa:::::at:::::::::::::::::t     e::::::eeeee:::::ee
+  #  pp::::::ppppp::::::prr::::::rrrrr::::::ri::::i   v:::::v     v:::::v            a::::atttttt:::::::tttttt    e::::::e     e:::::e
+  #   p:::::p     p:::::p r:::::r     r:::::ri::::i    v:::::v   v:::::v      aaaaaaa:::::a      t:::::t          e:::::::eeeee::::::e
+  #   p:::::p     p:::::p r:::::r     rrrrrrri::::i     v:::::v v:::::v     aa::::::::::::a      t:::::t          e:::::::::::::::::e 
+  #   p:::::p     p:::::p r:::::r            i::::i      v:::::v:::::v     a::::aaaa::::::a      t:::::t          e::::::eeeeeeeeeee  
+  #   p:::::p    p::::::p r:::::r            i::::i       v:::::::::v     a::::a    a:::::a      t:::::t    tttttte:::::::e           
+  #   p:::::ppppp:::::::p r:::::r           i::::::i       v:::::::v      a::::a    a:::::a      t::::::tttt:::::te::::::::e          
+  #   p::::::::::::::::p  r:::::r           i::::::i        v:::::v       a:::::aaaa::::::a      tt::::::::::::::t e::::::::eeeeeeee  
+  #   p::::::::::::::pp   r:::::r           i::::::i         v:::v         a::::::::::aa:::a       tt:::::::::::tt  ee:::::::::::::e  
+  #   p::::::pppppppp     rrrrrrr           iiiiiiii          vvv           aaaaaaaaaa  aaaa         ttttttttttt      eeeeeeeeeeeeee  
+  #   p:::::p                                                                                                                         
+  #   p:::::p                                                                                                                         
+  #  p:::::::p                                                                                                                        
+  #  p:::::::p                                                                                                                        
+  #  p:::::::p                                                                                                                        
+  #  ppppppppp        
+  #  
   private
   
     #
@@ -342,17 +309,20 @@ class ProxyDynaModel < ActiveRecord::Base
   
     # clean statistical information
     def clean_stats(note)
-      self.rmse = nil
-      self.bias = nil
-      self.accuracy = nil
-      self.notes = note
-      self.proxy_params.each do |p| 
-        p.value = nil; 
-        p.top = nil; 
-        p.bottom = nil;
-        p.save;
+      self.transaction do
+        self.json = nil
+        self.rmse = nil
+        self.bias = nil
+        self.accuracy = nil
+        self.notes = note
+        self.proxy_params.each do |p| 
+          p.value = nil; 
+          p.top = nil; 
+          p.bottom = nil;
+          p.save;
+        end
+        self.save
       end
-      self.save
     end
     
     # get solver url with parameters
@@ -436,7 +406,7 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     #
     #
-    def call_url(url)
+    def call_http_get(url)
       uri = URI(url)
       
       request = Net::HTTP::Get.new uri.request_uri
@@ -466,11 +436,10 @@ class ProxyDynaModel < ActiveRecord::Base
       url += '&estimation=' + url_states
       url
     end
-  
-  #
-  #
-  #
-  def temp_params
+    #
+    #
+    #
+    def temp_params
       # TODO: refactor to use proxy dyna model proxy params directly
       params = self.proxy_params.collect do |p|
         p.param.bottom = p.bottom
@@ -478,5 +447,77 @@ class ProxyDynaModel < ActiveRecord::Base
         p.param
       end
     end
+    #
+    #                            tttt                                    tttt                           
+    #                         ttt:::t                                 ttt:::t                           
+    #                         t:::::t                                 t:::::t                           
+    #                         t:::::t                                 t:::::t                           
+    #      ssssssssss   ttttttt:::::ttttttt      aaaaaaaaaaaaa  ttttttt:::::ttttttt        ssssssssss   
+    #    ss::::::::::s  t:::::::::::::::::t      a::::::::::::a t:::::::::::::::::t      ss::::::::::s  
+    #  ss:::::::::::::s t:::::::::::::::::t      aaaaaaaaa:::::at:::::::::::::::::t    ss:::::::::::::s 
+    #  s::::::ssss:::::stttttt:::::::tttttt               a::::atttttt:::::::tttttt    s::::::ssss:::::s
+    #   s:::::s  ssssss       t:::::t              aaaaaaa:::::a      t:::::t           s:::::s  ssssss 
+    #     s::::::s            t:::::t            aa::::::::::::a      t:::::t             s::::::s      
+    #        s::::::s         t:::::t           a::::aaaa::::::a      t:::::t                s::::::s   
+    #  ssssss   s:::::s       t:::::t    tttttta::::a    a:::::a      t:::::t    ttttttssssss   s:::::s 
+    #  s:::::ssss::::::s      t::::::tttt:::::ta::::a    a:::::a      t::::::tttt:::::ts:::::ssss::::::s
+    #  s::::::::::::::s       tt::::::::::::::ta:::::aaaa::::::a      tt::::::::::::::ts::::::::::::::s 
+    #   s:::::::::::ss          tt:::::::::::tt a::::::::::aa:::a       tt:::::::::::tt s:::::::::::ss  
+    #    sssssssssss              ttttttttttt    aaaaaaaaaa  aaaa         ttttttttttt    sssssssssss    
+    #
+    # Helper methods for statistical calculations
+    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    #
+    # helper method to calculate statistical for experiment
+    def experiment_stats(dataset)
+      size = 0
+      experiment.measurements.each do |m|
+        dataset[:lines] = m.lines_no_death_phase(self.no_death_phase)
+        size += dataset[:lines].size
+        dataset = statistical_data_measurement( dataset )
+      end
+      size
+    end
+    #
+    # helper method to calculate statistical for measurement
+    def measurement_stats(dataset)
+      size = 0
+      dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
+      size += dataset[:lines].size
+      dataset = statistical_data_measurement( dataset )
+      size
+    end
+    #
+    # helper method that calculates statistical data for a measurement
+    #  in case it is a complex structure (i.e. experiment), then it will
+    #  use introduce the values for the hash
+    def statistical_data_measurement( hash )
+      line = hash[:lines].shift
+      old = line.y_value(log_flag)
+      begin
+        JSON.parse(self.json).each do |pair|
+          break if line.nil?
+          next if pair[1]<= 0
+          #
+          if pair[0] >= line.x
+            pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
+            hash[:rmse] +=  ( pair[1] - line.y_value(log_flag) ) ** 2
+            hash[:bias] = Math.log( (pair[1] / line.y_value(log_flag)).abs ).abs
+            hash[:accu] = Math.log( (pair[1] / line.y_value(log_flag)).abs )
+            line = hash[:lines].shift  
+          else
+            old = pair[1]
+            nil
+          end
+        end
+      rescue Exception => e
+        clean_stats "error while calculating statistics"
+        return [].push(measurement.id).push(-1)
+      end
+      return hash
+    end
+  
+  
+  
   
 end
