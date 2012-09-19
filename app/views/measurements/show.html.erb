@@ -118,7 +118,7 @@
 			# Notice there's no need to explicitly define the title
 			row.title		proxy_dyna_model.title
 			row.rmse		proxy_dyna_model.rmse
-			row.notes		word_wrap(proxy_dyna_model.notes,:line_width => 40).gsub(/\n/, '<br/>')
+			row.notes		{ if proxy_dyna_model.notes.nil? then "" else word_wrap(proxy_dyna_model.notes,:line_width => 40).gsub(/\n/, '<br/>') end }
 			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model]
 			row.edit_h		link_to t('action.edit').downcase, [:edit,proxy_dyna_model]
 			row.destroy_h	link_to t('action.remove').downcase, [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
