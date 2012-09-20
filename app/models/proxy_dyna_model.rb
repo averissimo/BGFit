@@ -237,7 +237,7 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       if temp_json["error"]
-          self.clean_stats( "Error while simulating data: " + temp_json["error"].to_s )
+          clean_stats( "Error while simulating data: " + temp_json["error"].to_s )
       else
         self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" if temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }.nil?
         self.json = temp_json["result"].to_s
@@ -413,8 +413,12 @@ class ProxyDynaModel < ActiveRecord::Base
     
     # Converts an array of strings to a URI-ready query
     #  with '"' removed, as well as whitespace
-    def arrayOfStrings2query( array )
-      CGI.escape array.to_s.tr('\" ','')
+    def arrayOfStrings2query( array , doEscape = false)
+      if doEscape
+        CGI.escape array.to_s.tr('\" ','')
+      else
+        array.to_s.tr('\" ','')
+      end
     end
     
     # URL initial conditions (that map against initial conditions in SBTOOLBOX2)
@@ -452,10 +456,9 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     def call_http_post(request_hash)
-      uri = URI(request_hash[:url])
+      uri = URI(request_hash.delete(:url))
       
       logger.info "URL (POST): #{uri.to_s} / form: #{request_hash.inspect}" 
-      
       request = Net::HTTP::Post.new uri.request_uri
       request.set_form_data(request_hash)
       res = call_http_generic( uri , request )
@@ -480,18 +483,18 @@ class ProxyDynaModel < ActiveRecord::Base
       
       hash = {}
       hash[:url] = self.dyna_model.estimation
-      hash[:time] = tv[:time]
-      hash[:values] = tv[:values]
-      
-      hash[:param_names] = states[:names]
-      hash[:param_top] = states[:top]
-      hash[:param_bottom] = states[:bottom]
+      hash[:param_names] = arrayOfStrings2query states[:names]
+      hash[:param_top] = arrayOfStrings2query states[:top]
+      hash[:param_bottom] = arrayOfStrings2query states[:bottom]
       
       unless ic.nil?
-        hash[:ic_names] = ic[:names]
-        hash[:ic_top] = ic[:top]
-        hash[:ic_bottom] = ic[:bottom]
+        hash[:ic_names] = arrayOfStrings2query arrayOfStrings2query ic[:names]
+        hash[:ic_top] = arrayOfStrings2query ic[:top]
+        hash[:ic_bottom] = arrayOfStrings2query ic[:bottom]
       end
+      
+      hash[:time] = arrayOfStrings2query tv[:time]
+      hash[:values] = arrayOfStrings2query tv[:values]
       
       hash
     end
