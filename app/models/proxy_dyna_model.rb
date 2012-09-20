@@ -396,32 +396,47 @@ class ProxyDynaModel < ActiveRecord::Base
     
     # URL parameters (that map against states in SBTOOLBOX2)
     def build_estimation_ranges(params)
-      url_states = CGI::escape("{\"states\"") + ":[" + params.collect { |p|
+      uri_params = { names: [] , top: [] , bottom: [] }
+      
+      params.each { |p|
         next if p.output_only || p.initial_condition
         if p.top.nil? || p.bottom.nil?
           raise Exception.new(p.human_title.html_safe + " does not have top/bottom values")
         else
-          param_to_url( p.code , p.top, p.bottom )
+          uri_params[:names] << p.code
+          uri_params[:top] << p.top
+          uri_params[:bottom] << p.bottom
         end 
-      }.compact.join(',') + "]"
-      url_states += url_ic unless (url_ic = build_ic(params)).nil?
-      url_states += CGI::escape("}")
+      }
+      uri_params
+    end
+    
+    # Converts an array of strings to a URI-ready query
+    #  with '"' removed, as well as whitespace
+    def arrayOfStrings2query( array )
+      CGI.escape array.to_s.tr('\" ','')
     end
     
     # URL initial conditions (that map against initial conditions in SBTOOLBOX2)
     def build_ic(params)
       ic_flag = false;
-      url_ic = "," + CGI::escape("\"initial\"") + ":["
-      url_ic += params.collect { |p|
+      uri_params = { names: [] , top: [] , bottom: [] }
+    
+      params.each { |p|
         next unless p.initial_condition
         raise Exception.new(p.human_title.html_safe + " does not have top/bottom values") if p.top.nil? || p.bottom.nil?
-        param_to_url( p.code , p.top, p.bottom )
-        ic_flag = true;
-      }.compact.join(',') + ',' + 
-        param_to_url( "t" , measurement.end(self.no_death_phase).to_s , "0" ) + "]" # adds time
-      
+        uri_params[:names] << p.code
+        uri_params[:top] << p.top
+        uri_params[:bottom] << p.bottom
+        ic_flag = true
+      }
       return nil unless ic_flag
-      url_ic
+      if ic_flag
+        uri_params[:names] << 't'
+        uri_params[:top] << measurement.end(self.no_death_phase)
+        uri_params[:bottom] << 0
+      end
+      uri_params
     end
     
     # Calls URL using get method for the given url 
@@ -461,12 +476,23 @@ class ProxyDynaModel < ActiveRecord::Base
       
       tv = time_and_values
       states = build_estimation_ranges(params)
+      ic = build_ic(params)
       
       hash = {}
       hash[:url] = self.dyna_model.estimation
       hash[:time] = tv[:time]
       hash[:values] = tv[:values]
-      hash[:estimation] = build_estimation_ranges(params)
+      
+      hash[:param_names] = states[:names]
+      hash[:param_top] = states[:top]
+      hash[:param_bottom] = states[:bottom]
+      
+      unless ic.nil?
+        hash[:ic_names] = ic[:names]
+        hash[:ic_top] = ic[:top]
+        hash[:ic_bottom] = ic[:bottom]
+      end
+      
       hash
     end
     
@@ -480,7 +506,7 @@ class ProxyDynaModel < ActiveRecord::Base
       url = "#{request_hash.delete(:url)}"
       url += '?' if request_hash.size > 1
       url += request_hash.collect { |key, value|
-        "#{key.to_s}=#{value.to_s}"
+        "#{key.to_s}=#{arrayOfStrings2query value.to_s}"
       }.join('&')
       
       #"#{request_hash[:url]}?time=#{request_hash[:time]}&values=#{request_hash[:values]}&estimation=#{request_hash[:states]}"
