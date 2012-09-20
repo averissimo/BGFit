@@ -16,6 +16,8 @@
 /dumps/
 /public/test
 /public
+/doc
+/.yardoc
 
 *.rbc
 *.sassc
