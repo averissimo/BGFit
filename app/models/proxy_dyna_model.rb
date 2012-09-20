@@ -89,7 +89,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def call_pre_estimation_background_job() clean_stats "parameters are being calculated in background" end
     # Calls estimation using default parameters
     #  (see #call_estimation_with_custom_params)
-    def call_estimation(is_post_method = false) call_estimation_with_custom_params( temp_params , is_post_method) end
+    def call_estimation(is_post_method = true) call_estimation_with_custom_params( temp_params , is_post_method) end
       
     #
     # Statistical methods
@@ -143,7 +143,7 @@ class ProxyDynaModel < ActiveRecord::Base
     # Calls estimation using custom parameters
     #
     # @param params parameters' range that will be used in parameter estimation
-    def call_estimation_with_custom_params(params,is_post_method=false)
+    def call_estimation_with_custom_params(params,is_post_method=true)
       # if certain conditions are met this should not be done
       if (self.measurement.nil? && self.experiment.nil?) || 
         (self.dyna_model.estimation.nil?) || (self.dyna_model.estimation.blank?)
@@ -220,6 +220,8 @@ class ProxyDynaModel < ActiveRecord::Base
     def call_solver(time=nil)
           
       request_hash = solver_url(time)
+      # TODO better handle this
+      return if request_hash.nil?
 
       begin    
           response = call_http_get(request_hash)
@@ -439,8 +441,8 @@ class ProxyDynaModel < ActiveRecord::Base
       
       logger.info "URL (POST): #{uri.to_s} / form: #{request_hash.inspect}" 
       
-      request = Net::HTTP::Get.new uri.request_uri
-      request.set_form_data(hash)
+      request = Net::HTTP::Post.new uri.request_uri
+      request.set_form_data(request_hash)
       res = call_http_generic( uri , request )
     end
     
