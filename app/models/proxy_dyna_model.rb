@@ -11,8 +11,6 @@ class ProxyDynaModel < ActiveRecord::Base
   
   has_paper_trail :skip => [:json]
   
-  
-  
   #                                       bbbbbbbb                                                
   #                                       b::::::b            lllllll   iiii                      
   #                                       b::::::b            l:::::l  i::::i                     
@@ -120,7 +118,7 @@ class ProxyDynaModel < ActiveRecord::Base
       # TODO death phase optional to dyna_model parameter
       size = 0
       
-      dataset = {lines: nil , rmse: 0 , bias: 0 , accu: 0}
+      dataset = {lines: nil , rmse: 0 , bias: 0 , accu: 0, r_square_tot: 0 , r_square_err: 0}
       #
       #
       #
@@ -135,9 +133,10 @@ class ProxyDynaModel < ActiveRecord::Base
       self.bias = 10 ** (dataset[:bias] / size )
       self.accuracy = 10 ** (dataset[:accu] / size )
       self.rmse = Math.sqrt( dataset[:rmse] / size )
+      self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]
       self.notes = ""
       self.save
-      [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  )
+      [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
     end
     
     # Calls estimation using custom parameters
@@ -602,7 +601,15 @@ class ProxyDynaModel < ActiveRecord::Base
             # if timepoint is equal then it uses y value 
             value = simulated_value[1]
           end
+          if @y_mean.nil?
+            @y_mean = 0
+            lines = self.measurement.lines_no_death_phase(log_flag) 
+            lines.each{ |el| @y_mean += el.y_value(log_flag) }
+            @y_mean = @y_mean.to_f / lines.size 
+          end
           hash[:rmse] +=  ( value - line.y_value(log_flag) ) ** 2
+          hash[:r_square_err] = hash[:rmse] 
+          hash[:r_square_tot] += ( line.y_value(log_flag) - @y_mean ) ** 2
           hash[:bias] = Math.log( (value / line.y_value(log_flag)).abs ).abs
           hash[:accu] = Math.log( (value / line.y_value(log_flag)).abs )          
         end

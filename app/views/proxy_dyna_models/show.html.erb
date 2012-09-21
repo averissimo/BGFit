@@ -93,6 +93,7 @@
 		<thead>
 			<tr>
 				<th class="no-sort" scope="col">RMSE</th>
+				<th class="no-sort" scope="col">R<sup>2</sup></th>
 				<th class="no-sort" scope="col">Bias</th>
 				<th class="no-sort" scope="col">Accuracy</th>
 			</tr>
@@ -100,6 +101,7 @@
 		<tbody>
 			<tr>
 				<td><%= @proxy_dyna_model.rmse%></td>
+				<td><%= @proxy_dyna_model.r_square%></td>
 				<td><%= @proxy_dyna_model.bias%></td>
 				<td><%= @proxy_dyna_model.accuracy%></td>
 			</tr>
