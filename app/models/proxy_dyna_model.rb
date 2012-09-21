@@ -238,10 +238,12 @@ class ProxyDynaModel < ActiveRecord::Base
       temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
       if temp_json["error"]
           clean_stats( "Error while simulating data: " + temp_json["error"].to_s )
-      else
+      elsif temp["result"]
         self.notes = nil
         self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" unless (temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }).nil?
         self.json = temp_json["result"].to_s.gsub(/ /,'')
+      else
+        clean_stats( "Error while simulating data" )
       end
       self.save
       self.json
@@ -363,7 +365,7 @@ class ProxyDynaModel < ActiveRecord::Base
       else
         hash[self.measurement.end_title] = (self.measurement.end(self.no_death_phase)-time).to_s
       end
-      hash[:minor_step] = self.measurement.minor_step_cache(log_flag)
+      hash[:minor_step] = self.measurement.minor_step_cache(log_flag).to_s unless self.measurement.minor_step_cache(log_flag).nil? || self.measurement.minor_step_cache(log_flag) == 0 
       hash
     end
     
