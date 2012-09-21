@@ -365,7 +365,7 @@ class ProxyDynaModel < ActiveRecord::Base
       else
         hash[self.measurement.end_title] = (self.measurement.end(self.no_death_phase)-time).to_s
       end
-      hash[:minor_step] = self.measurement.minor_step_cache(log_flag).to_s unless self.measurement.minor_step_cache(log_flag).nil? || self.measurement.minor_step_cache(log_flag) == 0 
+      hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0 
       hash
     end
     

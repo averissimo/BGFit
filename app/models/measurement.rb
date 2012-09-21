@@ -14,10 +14,9 @@ class Measurement < ActiveRecord::Base
 
   public
 
-    def minor_step_cache(get_log=false)
+    def minor_step_cache
       determine_minor_step if minor_step.nil?
       result = read_attribute(:minor_step)
-      return Math.log(result) if get_log
       result
     end
     
@@ -32,7 +31,7 @@ class Measurement < ActiveRecord::Base
         prev_l = l    
       end
       self.minor_step = minor_step
-      self.save
+      self.save unless get_log
     end
   
     def get_proxy_dyna_model_with_dyna_model(dyna_model)
