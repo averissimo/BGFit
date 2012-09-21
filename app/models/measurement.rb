@@ -27,10 +27,11 @@ class Measurement < ActiveRecord::Base
       lines_temp = lines_no_death_phase(false).each do |l|
         unless prev_l.nil?
           minor_step_temp = (l.x - prev_l.x).abs
-          self.minor_step = minor_step_temp if minor_step.nil? || minor_step > minor_step_temp
+          minor_step = minor_step_temp if minor_step.nil? || minor_step > minor_step_temp
         end
         prev_l = l    
       end
+      self.minor_step = minor_step
       self.save
     end
   
