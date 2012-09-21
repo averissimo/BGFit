@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120912173544) do
+ActiveRecord::Schema.define(:version => 20120921012904) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(:version => 20120912173544) do
     t.datetime "updated_at"
     t.date     "date"
     t.string   "title"
+    t.float    "minor_step"
   end
 
   add_index "measurements", ["experiment_id"], :name => "index_measurements_on_experiment_id"
