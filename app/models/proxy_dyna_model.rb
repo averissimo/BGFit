@@ -176,7 +176,7 @@ class ProxyDynaModel < ActiveRecord::Base
       
     def handle_http_response(response,params)
       begin
-        result = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
+        result = JSON.parse( response.body.gsub(/(\n|\t| )/,'') )
       rescue JSON::ParserError
         self.transaction do
           self.json = nil
@@ -239,8 +239,9 @@ class ProxyDynaModel < ActiveRecord::Base
       if temp_json["error"]
           clean_stats( "Error while simulating data: " + temp_json["error"].to_s )
       else
-        self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" if temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }.nil?
-        self.json = temp_json["result"].to_s
+        self.notes = nil
+        self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" unless (temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }).nil?
+        self.json = temp_json["result"].to_s.gsub(/ /,'')
       end
       self.save
       self.json
@@ -362,6 +363,7 @@ class ProxyDynaModel < ActiveRecord::Base
       else
         hash[self.measurement.end_title] = (self.measurement.end(self.no_death_phase)-time).to_s
       end
+      hash[:minor_step] = self.measurement.minor_step_cache(log_flag)
       hash
     end
     

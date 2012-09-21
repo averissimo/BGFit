@@ -14,7 +14,8 @@ class Measurement < ActiveRecord::Base
 
   public
 
-    def minor_step(get_log=false)
+    def minor_step_cache(get_log=false)
+      determine_minor_step if minor_step.nil?
       result = read_attribute(:minor_step)
       return Math.log(result) if get_log
       result
@@ -30,7 +31,6 @@ class Measurement < ActiveRecord::Base
         end
         prev_l = l    
       end
-      debugger
       self.save
     end
   
