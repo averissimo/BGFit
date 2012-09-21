@@ -10,9 +10,29 @@ class Measurement < ActiveRecord::Base
   scope :dyna_model_is, lambda { |dyna_model| joins(:proxy_dyna_models).where(:proxy_dyna_models => {:dyna_model_id=>dyna_model.id} ).order(:experiment_id) }
   scope :experiment_is, lambda { |experiment| where(:experiment_id=>experiment.id).order(:experiment_id) }
   
-  has_paper_trail
-  
+  has_paper_trail :skip => [:original_data]
+
   public
+
+    def minor_step(get_log=false)
+      result = read_attribute(:minor_step)
+      return Math.log(result) if get_log
+      result
+    end
+    
+    def determine_minor_step
+      prev_l = nil
+      minor_step = nil
+      lines_temp = lines_no_death_phase(false).each do |l|
+        unless prev_l.nil?
+          minor_step_temp = (l.x - prev_l.x).abs
+          self.minor_step = minor_step_temp if minor_step.nil? || minor_step > minor_step_temp
+        end
+        prev_l = l    
+      end
+      debugger
+      self.save
+    end
   
     def get_proxy_dyna_model_with_dyna_model(dyna_model)
       ProxyDynaModel.where(:measurement_id=>self.id,:dyna_model_id=>dyna_model.id).first
