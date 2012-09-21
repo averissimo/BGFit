@@ -10,6 +10,11 @@ class GroupsController < ApplicationController
    
     respond_with @groups
   end
+  
+  def show
+    @group = Group.find(params[:id])
+    respond_with @group
+  end
 
 
   
