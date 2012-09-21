@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120921040553) do
+ActiveRecord::Schema.define(:version => 20120921143822) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -49,6 +49,12 @@ ActiveRecord::Schema.define(:version => 20120921040553) do
 
   add_index "experiments", ["model_id"], :name => "index_experiments_on_model_id"
 
+  create_table "groups", :force => true do |t|
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "lines", :force => true do |t|
     t.float    "x"
     t.float    "y"
@@ -75,11 +81,18 @@ ActiveRecord::Schema.define(:version => 20120921040553) do
 
   add_index "measurements", ["experiment_id"], :name => "index_measurements_on_experiment_id"
 
+  create_table "memberships", :id => false, :force => true do |t|
+    t.integer "user_id"
+    t.integer "group_id"
+  end
+
   create_table "models", :force => true do |t|
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
+    t.boolean  "is_published"
+    t.integer  "owner_id"
   end
 
   create_table "params", :force => true do |t|

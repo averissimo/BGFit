@@ -51,3 +51,4 @@ end
 
 
 gem 'devise'
+gem 'cantango', github: 'kristianmandrup/cantango'

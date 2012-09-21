@@ -20,6 +20,9 @@ en:
     in: in
     root: Home
     
+  groups:
+    index:
+      title: Team management
   models:
     index:
       title: Data Management
@@ -77,10 +80,13 @@ en:
   
   activerecord:
     models:
+      group: Team
       model: Project
       dyna_model: "Dynamic Model"
       params: Parameters
     attributes:
+      model:
+        is_published: Published?
       param:
         initial_condition: Initial Condition
         ic: I.Cond.

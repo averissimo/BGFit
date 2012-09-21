@@ -45,6 +45,7 @@ class ModelsController < ApplicationController
   # POST /models.json
   def create
     @model = Model.new(params[:model])
+    @model.owner = current_user
     respond_with @model do | format |
       if @model.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Model")
