@@ -575,26 +575,39 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # @see #statistical_data
     def statistical_data_measurement( hash )
-      line = hash[:lines].shift
-      old = line.y_value(log_flag)
+      json_parsed = JSON.parse(self.json) # array of [x,y]
       begin
-        JSON.parse(self.json).each do |pair|
-          break if line.nil?
-          next if pair[1]<= 0
-          #
-          if pair[0] >= line.x
-            pair[1] = ( old + pair[1] ) / 2 if pair[0] > line.x
-            hash[:rmse] +=  ( pair[1] - line.y_value(log_flag) ) ** 2
-            hash[:bias] = Math.log( (pair[1] / line.y_value(log_flag)).abs ).abs
-            hash[:accu] = Math.log( (pair[1] / line.y_value(log_flag)).abs )
-            line = hash[:lines].shift  
-          else
-            old = pair[1]
-            nil
+        simulated_value = json_parsed.shift
+        prev_sim_value = nil
+        # cycle that covers all lines in hash
+        hash[:lines].each do |line|
+          # cycle that finds next simulated value
+          while simulated_value[0] < line.x
+            prev_sim_value = simulated_value
+            simulated_value = json_parsed.shift # pops first element of json_parsed
           end
+          # checks if current simulated value timepoint is greater or equal than timepoint
+          value = nil
+          if simulated_value[0] > line.x
+            #  if it is greater then averages weighted simulated value with previous
+            difference = (simulated_value[0] - prev_sim_value[0]).abs
+            prev_weight = (line.x - prev_sim_value[0]).abs / difference
+            next_weight = (line.x - simulated_value[0]).abs / difference
+            value = prev_weight * prev_sim_value[1] + next_weight * simulated_value[1]
+          else
+            # if timepoint is equal then it uses y value 
+            value = simulated_value[1]
+          end
+          hash[:rmse] +=  ( value - line.y_value(log_flag) ) ** 2
+          hash[:bias] = Math.log( (value / line.y_value(log_flag)).abs ).abs
+          hash[:accu] = Math.log( (value / line.y_value(log_flag)).abs )          
         end
+
       rescue Exception => e
-        clean_stats "error while calculating statistics"
+        raise e
+        print "error: " + e.message
+        
+        #clean_stats "error while calculating statistics"
         return [].push(measurement.id).push(-1)
       end
       return hash
