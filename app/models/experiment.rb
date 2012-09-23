@@ -8,7 +8,7 @@ class Experiment < ActiveRecord::Base
   
   scope :model_is, lambda { |model| where(:model_id=>model.id).order(:model_id) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}).group('experiments.id').order(:model_id) }
-  scope :viewable, lambda { |user| joins(:model).where( Model.arel_table[:owner_id].eq(user.id).or(Model.arel_table[:is_published].eq true ) ) }
+  scope :viewable, lambda { |user| joins(:model).where( Model.arel_table[:is_published].eq true ) }
   
   has_paper_trail
   

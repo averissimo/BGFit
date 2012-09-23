@@ -7,11 +7,11 @@ class ModelsController < ApplicationController
   # GET /models
   # GET /models.json
   def index
-    @models = Model.viewable(current_user).order(:title)
+    @models = Model.viewable(current_user).order(Model.arel_table[:title])
     @experiments = Experiment.viewable(current_user)
     @measurements = Measurement.viewable(current_user)
     @measurements.sort!
-
+    
     respond_with @models
   end
 

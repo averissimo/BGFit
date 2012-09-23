@@ -14,7 +14,7 @@ class MembershipsController < ApplicationController
     @membership = @group.memberships.build(params[:membership])
     
     respond_with(@group,@membership) do |format|
-      if @group.save
+      if @membership.save
         format.html { redirect_to [@group], notice: 'User was sucessfuly added.' }
         format.json { render json: @membership, status: :created, location: [@group,@membership] }
       else

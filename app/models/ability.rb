@@ -4,7 +4,7 @@ class Ability
   def initialize(user)
     if user
       can :access, :models, Model do |model|
-        model.is_published || model.owner_id == user.id
+        model.groups.any? { |arg| user.groups.include?(arg) } ||  model.is_published || model.owner_id == user.id
       end
     end
       #can :show, Model do |model|

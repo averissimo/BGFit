@@ -1,9 +1,10 @@
 class User < ActiveRecord::Base
   has_many :memberships, :dependent => :destroy
   has_many :groups, :through => :memberships
+  has_many :owned_models, :class_name => 'Model'
   
   #todo: use pluck in 3.2
-  scope :remove_group_members, lambda { |group| User.where( User.arel_table[:id].not_in( Membership.where(Membership.arel_table[:group_id].eq(group.id)).collect { |a| a.user_id } )) }
+  scope :remove_group_users, lambda { |group| where( User.arel_table[:id].not_in( Membership.where(Membership.arel_table[:group_id].eq(group.id)).collect { |a| a.user_id } )) }
   
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,

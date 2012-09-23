@@ -1,13 +1,25 @@
 class Model < ActiveRecord::Base
   has_many :experiments, :dependent => :destroy
+  has_many :models, through: :accessibles
+  
+  has_many :accessibles, :dependent => :destroy
+  has_many :groups, through: :accessibles
+
+  
   accepts_nested_attributes_for :experiments
   
   has_many :permissions
   
-  has_one :owner, :class_name => "User"
+  belongs_to :owner, :class_name => 'User'
    
   scope :dyna_model_is, lambda { |dyna_model| joins(:experiments => {:measurements => :proxy_dyna_models}).where(:experiments=>{:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}}).group('models.id').order(:id) }
-  scope :viewable, lambda { |user| where( self.arel_table[:owner_id].eq(user.id).or(self.arel_table[:is_published].eq true ) ) }
+  scope :viewable, lambda { |user| 
+    if user.nil? then
+      where( self.arel_table[:is_published].eq(true))
+    else
+      includes(:groups => :memberships).where( self.arel_table[:owner_id].eq(user.id).or(self.arel_table[:is_published].eq(true)).or( Membership.arel_table[:user_id])  ).group( self.arel_table[:id] )
+    end
+  }
   
   has_paper_trail
   

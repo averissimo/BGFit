@@ -1,8 +1,9 @@
-<%= semantic_form_for([@group,@membership]) do |f| %>
+<%= semantic_form_for([@model,@accessible]) do |f| %>
   <%= f.semantic_errors :state %>
 
   <%= f.inputs do %>
-  	<%= f.input :user, collection: User.remove_group_users(Group.find(@group.id)), member_label: :email %>
+  	<%= f.input :group, collection: Group.remove_model_groups(Model.find(@model.id)), member_label: :title %>
+  	<%= f.input :permission_level %>
   <% end %>
 
   <%= f.actions do %>

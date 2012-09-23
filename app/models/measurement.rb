@@ -9,7 +9,7 @@ class Measurement < ActiveRecord::Base
   scope :model_is, lambda { |model| joins(:experiment).where(:experiments => {:model_id=>model.id} ).order(:experiment_id) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:proxy_dyna_models).where(:proxy_dyna_models => {:dyna_model_id=>dyna_model.id} ).order(:experiment_id) }
   scope :experiment_is, lambda { |experiment| where(:experiment_id=>experiment.id).order(:experiment_id) }
-  scope :viewable, lambda { |user| joins(experiment: :model).where( Model.arel_table[:owner_id].eq(user.id).or(Model.arel_table[:is_published].eq true ) ) }
+  scope :viewable, lambda { |user| joins(experiment: :model).where( Model.arel_table[:is_published].eq true ) }
  
   has_paper_trail :skip => [:original_data]
 
