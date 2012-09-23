@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(:version => 20120921143822) do
 
   add_index "measurements", ["experiment_id"], :name => "index_measurements_on_experiment_id"
 
-  create_table "memberships", :id => false, :force => true do |t|
+  create_table "memberships", :force => true do |t|
     t.integer "user_id"
     t.integer "group_id"
   end

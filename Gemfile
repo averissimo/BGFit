@@ -51,4 +51,4 @@ end
 
 
 gem 'devise'
-gem 'cantango', github: 'kristianmandrup/cantango'
+gem 'cancan', github: 'ryanb/cancan', branch: '2.0'

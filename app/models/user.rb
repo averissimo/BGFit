@@ -1,6 +1,4 @@
 class User < ActiveRecord::Base
-  tango_user
-  
   has_many :memberships, :dependent => :destroy
   has_many :groups, :through => :memberships
   
@@ -15,5 +13,5 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
-    
+  
 end
