@@ -4,6 +4,10 @@ BacteriaGrowth::Application.routes.draw do
 
   match "/delayed_job" => DelayedJobWeb, :anchor => false
 
+  resources :groups, path: :teams do
+    resources :memberships, :only => [:new, :create, :destroy]
+  end
+
   resources :dyna_models do
     resources :params
     member do
@@ -13,8 +17,9 @@ BacteriaGrowth::Application.routes.draw do
     end
   end
  
-  resources :models do
+  resources :models, path: :projects do
     resources :experiments
+    resources :accessibles, :only => [:new, :create, :destroy]
   end
     
   resources :experiments, :except => [:new, :create] do

@@ -48,9 +48,9 @@
 			# Notice there's no need to explicitly define the title
 			row.title			word_wrap(model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.description		model.description_trimmed.gsub(/\n/, '<br/>')
-			row.show_h			link_to t('action.show').downcase, model
-			row.edit_h			link_to t('action.edit').downcase, [:edit,model]
-			row.destroy_h		link_to t('action.remove').downcase, model, confirm: 'Are you sure?', method: :delete
+			row.show_h			link_to t('action.show').downcase, model if can? :read, model
+			row.edit_h			link_to t('action.edit').downcase, [:edit,model] if can? :update, model
+			row.destroy_h		link_to t('action.remove').downcase, model, confirm: 'Are you sure?', method: :delete if can? :destroy, model
 		end
 	end
 %>

@@ -15,6 +15,7 @@ en:
     sign_up: Sign up
     login: Login
     edit: Edit profile
+    my_team: My team
     logout: Logout
     failure:
       already_authenticated: 'You are already logged in.'

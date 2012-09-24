@@ -51,3 +51,4 @@ end
 
 
 gem 'devise'
+gem 'cancan', github: 'ryanb/cancan', branch: '2.0'

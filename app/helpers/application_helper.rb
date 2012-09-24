@@ -51,6 +51,15 @@ module ApplicationHelper
         }
       },
       {
+        :key => :teams, 
+        :name => t('devise.my_team').pluralize,
+        :url => groups_path,
+        :options => {
+          :if => Proc.new { user_signed_in? },
+          :container_class => 'menu'
+        }
+      },
+      {
         :key => :logout, 
         :name => t('devise.logout'), 
         :url => destroy_user_session_path,

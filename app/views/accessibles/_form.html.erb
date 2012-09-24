@@ -1,0 +1,15 @@
+<%= semantic_form_for([@model,@accessible]) do |f| %>
+  <%= f.semantic_errors :state %>
+
+  <%= f.inputs do %>
+  	<%= f.input :group, collection: Group.remove_model_groups(Model.find(@model.id)), member_label: :title %>
+  	<%= f.input :permission_level %>
+  <% end %>
+
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link %>	
+  <% end%>
+<% end %>
+
+<div class="clear"></div>
