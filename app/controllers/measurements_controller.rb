@@ -4,6 +4,9 @@ class MeasurementsController < ApplicationController
   before_filter :determine_models , :only => [ :show, :edit, :destroy, :update, :update_regression, :regression ]
   before_filter :authenticate_user!, :except => [:index,:show]
 
+  load_and_authorize_resource
+
+  
   # GET /measurements
   # GET /measurements.json
   def index
