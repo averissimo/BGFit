@@ -17,7 +17,7 @@ class Model < ActiveRecord::Base
     if user.nil? then
       where( self.arel_table[:is_published].eq(true))
     else
-      includes(:groups => :memberships).where( self.arel_table[:owner_id].eq(user.id).or(self.arel_table[:is_published].eq(true)).or( Membership.arel_table[:user_id])  ).group( self.arel_table[:id] )
+      includes(:groups => :memberships).where( Model.arel_table[:owner_id].eq(user.id).or(Model.arel_table[:is_published].eq(true)).or( Membership.arel_table[:user_id])  ).group( Model.arel_table[:id] )
     end
   }
   
