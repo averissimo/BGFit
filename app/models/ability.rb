@@ -13,14 +13,17 @@ class Ability
       can :access, :experiments, Experiment do |exp|
         !Experiment.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
       end
+      can :new, :experiments # has to be next to :access authorization
       
       can :access, :measurements, Measurement do |m|
         !Measurement.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
       end
+      can :new, :measurements # has to be next to :access authorization
       
       can :access, :lines, Line do |l|
         !Line.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
       end
+      can :new, :lines # has to be next to :access authorization
       
       can :access, :groups, Group do |g|
         
