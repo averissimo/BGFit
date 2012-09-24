@@ -14,7 +14,8 @@
 ActiveRecord::Schema.define(:version => 20120923010459) do
 
   create_table "accessibles", :force => true do |t|
-    t.integer  "model_id"
+    t.integer  "accessible_id"
+    t.string   "accessible_type"
     t.integer  "group_id"
     t.integer  "permission_level"
     t.datetime "created_at"
