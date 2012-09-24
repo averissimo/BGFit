@@ -5,7 +5,6 @@ class Model < ActiveRecord::Base
   has_many :accessibles, :dependent => :destroy, as: :accessible
   has_many :groups, through: :accessibles, as: :accessible
 
-  
   accepts_nested_attributes_for :experiments
   
   has_many :permissions
@@ -17,7 +16,9 @@ class Model < ActiveRecord::Base
     if user.nil? then
       where( self.arel_table[:is_published].eq(true))
     else
-      includes(:groups => :memberships).where( Model.arel_table[:owner_id].eq(user.id).or(Model.arel_table[:is_published].eq(true)).or( Membership.arel_table[:user_id])  ).group( Model.arel_table[:id] )
+      includes( Group.arel_table.name => Membership.arel_table.name ).where( 
+          Model.arel_table[:owner_id].eq(user.id).or( Model.arel_table[:is_published].eq(true) ).or( Membership.arel_table[:user_id].eq(user.id) ) 
+          ).group( Model.arel_table[:id] )
     end
   }
   

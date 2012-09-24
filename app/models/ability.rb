@@ -4,7 +4,19 @@ class Ability
   def initialize(user)
     if user
       can :access, :models, Model do |model|
-        model.groups.any? { |arg| user.groups.include?(arg) } ||  model.is_published || model.owner_id == user.id
+        !Model.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+      end
+      
+      can :access, :experiments, Experiment do |exp|
+        !Experiment.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+      end
+      
+      can :access, :measurements, Measurement do |m|
+        !Measurement.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+      end
+      
+      can :access, :lines, Line do |l|
+        !Line.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
       end
     end
       #can :show, Model do |model|
