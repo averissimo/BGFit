@@ -79,7 +79,7 @@ class ProxyDynaModel < ActiveRecord::Base
     # Getter method for generating default estimation url
     def get_estimation_url() estimation_url(estimation_hash(temp_params)) end
     # Getter method for generating default solver url
-    def get_solver_url() solver_url end
+    def get_solver_url() estimation_url(solver_url) end
     # Cleans statistical data
     def perform_clean_stats() clean_stats(nil) end
     # Prepares ProxyDynaModel to perform background calculation of parameters
@@ -359,12 +359,14 @@ class ProxyDynaModel < ActiveRecord::Base
         return nil if p.value.nil?      
         hash[p.param.code]=p.value.to_s
       }
+      hash[:start] =  self.measurement.lines.order(:x).first.x
       if self.measurement.nil? || time.nil?
         hash[self.measurement.end_title] = self.measurement.end(self.no_death_phase).to_s
       else
         hash[self.measurement.end_title] = (self.measurement.end(self.no_death_phase)-time).to_s
       end
-      hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0 
+      hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0
+      
       hash
     end
     

@@ -32,7 +32,7 @@ class Measurement < ActiveRecord::Base
         prev_l = l    
       end
       self.minor_step = minor_step
-      self.save unless get_log
+      self.save
     end
   
     def get_proxy_dyna_model_with_dyna_model(dyna_model)
