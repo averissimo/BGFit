@@ -3,9 +3,12 @@ class Ability
 
   def initialize(user)
     if user
+      
+      
       can :access, :models, Model do |model|
         !Model.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
       end
+      can :new, :models # has to be next to :access authorization
       
       can :access, :experiments, Experiment do |exp|
         !Experiment.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
@@ -17,6 +20,10 @@ class Ability
       
       can :access, :lines, Line do |l|
         !Line.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+      end
+      
+      can :access, :groups, Group do |g|
+        
       end
     end
       #can :show, Model do |model|
