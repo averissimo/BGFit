@@ -2,32 +2,51 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    if user
-      
-      
+    
+      # Model
       can :access, :models, Model do |model|
-        !Model.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+        unless user.nil?
+          !Model.where(Model.arel_table[:id].eq( model.id )).viewable( user ).blank?
+        else
+          model.is_published?
+        end
       end
-      can :new, :models # has to be next to :access authorization
       
+      # Experiment
       can :access, :experiments, Experiment do |exp|
-        !Experiment.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+        unless user.nil?
+          !Model.where(Model.arel_table[:id].eq( exp.model.id )).viewable( user ).blank?
+        else
+          exp.model.is_published?
+        end
       end
-      can :new, :experiments # has to be next to :access authorization
       
+      # Measurement
       can :access, :measurements, Measurement do |m|
-        !Measurement.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+        unless user.nil?
+          !Model.where(Model.arel_table[:id].eq( m.experiment.model.id )).viewable( user ).blank?
+        else
+          m.experiment.model.is_published?
+        end
       end
-      can :new, :measurements # has to be next to :access authorization
       
+      # 
       can :access, :lines, Line do |l|
-        !Line.viewable( user ).where(Model.arel_table[:id].eq( model.id )).blank?
+        unless user.nil?
+          !Model.where(Model.arel_table[:id].eq( model.id )).viewable( user ).blank?
+        else
+          l.measurement.experiment.model.is_published?
+        end
       end
-      can :new, :lines # has to be next to :access authorization
       
       can :access, :groups, Group do |g|
         
       end
+
+      can :new, :lines # has to be next to :access authorization
+      can :new, :models # has to be next to :access authorization
+      can :new, :experiments # has to be next to :access authorization
+      can :new, :measurements # has to be next to :access authorization
     end
       #can :show, Model do |model|
       #  true
@@ -52,5 +71,4 @@ class Ability
     # these will grant permission on each item in the array.
     #
     # See the wiki for details: https://github.com/ryanb/cancan/wiki/Defining-Abilities
-  end
 end
