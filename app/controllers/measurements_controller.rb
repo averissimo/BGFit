@@ -4,7 +4,7 @@ class MeasurementsController < ApplicationController
   before_filter :determine_models , :only => [ :show, :edit, :destroy, :update, :update_regression, :regression ]
   before_filter :authenticate_user!, :except => [:index,:show]
 
-  load_and_authorize_resource
+  load_and_authorize_resource :except => [:new,:create]
 
   
   # GET /measurements
@@ -60,6 +60,8 @@ class MeasurementsController < ApplicationController
     @model = @experiment.model
     date = @experiment.measurements.last.date if @experiment.measurements.length > 0
     @measurement = @experiment.measurements.build
+    
+    authorize! :update, @experiment
     if @experiment.measurements.length > 0
       @measurement.date = date
     end
@@ -80,6 +82,8 @@ class MeasurementsController < ApplicationController
     @measurement = Measurement.new(params[:measurement])
     @measurement.experiment = @experiment
     @measurement.convert_original_data
+
+    authorize! :create, @measurement
 
     respond_with(@experiment,@measurement) do |format|
       if @measurement.save

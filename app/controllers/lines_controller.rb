@@ -4,6 +4,8 @@ class LinesController < ApplicationController
   before_filter :determine_models
   before_filter :authenticate_user!, :except => [:index,:show]
   
+  load_and_authorize_resource :except => [:new,:create]
+
   # GET /lines
   # GET /lines.json
   def index
@@ -26,7 +28,9 @@ class LinesController < ApplicationController
   # GET /lines/new.json
   def new
     @line = @measurement.lines.build
-
+    
+    authorize! :update, @measurement
+    
     respond_with [@measurement,@line] do |format|
       format.html # new.html.erb
       format.json { render json: @line }
@@ -42,7 +46,9 @@ class LinesController < ApplicationController
   # POST /lines.json
   def create
     @line = @measurement.lines.build(params[:line])
-    
+
+    authorize! :create, @line
+
     respond_with(@measurement,@lines) do |format|
       if @line.save
         format.html { redirect_to [@experiment,@measurement], notice: 'Measurement line was successfully created.' }
