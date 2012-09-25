@@ -7,6 +7,7 @@
 			:name => 'New measurement', 
 			:url => url_for([:new,@experiment,:measurement]),
 			:options => {
+				:if => Proc.new { can?(:update, @experiment) },
 				:container_class => 'menu'
 			}
 		},
@@ -15,6 +16,7 @@
 			:name => 'Edit', 
 			:url => url_for([:edit,@model,@experiment]),
 			:options => {
+				:if => Proc.new { can?(:update, @experiment) },
 				:container_class => 'menu',
 				class: "text"
 			}
@@ -25,7 +27,7 @@
 			:url => model_path(@experiment.model),
 			:options => {
 				:container_class => 'menu',
-				:class => "text"
+				:class => ("text" if can?(:update, @experiment))
 			}
 		}
 		]
@@ -52,25 +54,29 @@
 		t.header :title
 		t.header :date
 		t.header :show_h,		"", class: "no-sort"
+		t.header :csv,			"", class: "no-sort"
 		t.header :edit_h,		"", class: "no-sort"
 		t.header :destroy_h,	"", class: "no-sort"
 		t.header :regression_h,	"", class: "no-sort"
-		t.header :csv,			"", class: "no-sort"
+
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measurement, index|
 			# Notice there's no need to explicitly define the title
 			row.title			measurement.title
 			row.date			measurement.date
-			row.show_h			link_to t('action.show').downcase, [@experiment,measurement]
-			row.edit_h			link_to t('action.edit').downcase, [:edit,@experiment,measurement]
-			row.destroy_h		link_to t('action.remove').downcase, [@experiment,measurement], confirm: 'Are you sure?', method: :delete
-			row.regression_h	link_to 'regression', [:regression,@experiment,measurement]
+			row.show_h			link_to t('action.show').downcase, [@experiment,measurement] if can? :read, measurement
+			row.edit_h			link_to t('action.edit').downcase, [:edit,@experiment,measurement] if can? :update, measurement
+			row.destroy_h		link_to t('action.remove').downcase, [@experiment,measurement], confirm: 'Are you sure?', method: :delete if can? :update, measurement
+			row.regression_h	link_to 'regression', [:regression,@experiment,measurement] if can? :update, measurement
 			row.csv				link_to 'download .csv', experiment_measurement_path(@experiment,measurement, :format => :csv)
 		end
 	end
 %>
 
+<div class="menu">
+	<%= menu %>
+</div>
 
 <h3>Measurements chart</h3>
 
@@ -86,8 +92,4 @@
 		<% end %> 
 	</div>
 
-</div>
-
-<div class="menu">
-	<%= menu %>
 </div>

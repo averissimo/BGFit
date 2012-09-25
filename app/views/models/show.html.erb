@@ -5,6 +5,7 @@
 			:name => t('navigation.new' , model: Experiment.model_name.human), 
 			:url => url_for([:new,@model,:experiment]),
 			:options => {
+				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
 				:class => "btn"
 			}
@@ -14,6 +15,7 @@
 			:name => t('action.edit'), 
 			:url => url_for([:edit,@model]),
 			:options => {
+				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
 				class: "text"
 			}
@@ -23,6 +25,7 @@
 			:name => 'Associate team', 
 			:url => new_model_accessible_path(@model),
 			:options => {
+				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
 				class: "text"
 			}
@@ -33,7 +36,7 @@
 			:url => models_path,
 			:options => {
 				:container_class => 'menu',
-				:class => "text"
+				:class => ("text" if can?(:update, @model))
 		}}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
@@ -88,20 +91,20 @@
 	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
 		t.header :title,		Model.human_attribute_name(:title)
 		t.header :description,	Model.human_attribute_name(:description)
-		t.header :show_h,		"", class: "no-sort"
+		t.header :show_h,		"", class: "no-sort" if can? :read, @model
 		#t.header :exp_h,		"", class: "no-sort"
-		t.header :edit_h,		"", class: "no-sort"
-		t.header :destroy_h,	"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort" if can? :update, @model
+		t.header :destroy_h,	"", class: "no-sort" if can? :update, @model
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, experiment, index|
 			# Notice there's no need to explicitly define the title
 			row.title			experiment.title
 			row.description		experiment.description
-			row.show_h			link_to t('action.show').downcase, [@model,experiment]
-			row.edit_h			link_to t('action.edit').downcase, [:edit,@model,experiment]
+			row.show_h			link_to t('action.show').downcase, [@model,experiment] if can? :read, experiment
+			row.edit_h			link_to t('action.edit').downcase, [:edit,@model,experiment] if can? :update, experiment
 			#row.exp_h			link_to 'download .exp' , model_experiment_path(@model,experiment,:format => :exp)
-			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete
+			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete if can? :update, experiment
 		end
 	end
 %>
@@ -117,9 +120,9 @@
 		t.header :experiment
 		t.header :title
 		t.header :date
-		t.header :show_h,		"", class: "no-sort"
-		t.header :regression_h,	"", class: "no-sort"
-		t.header :csv,			"", class: "no-sort"
+		t.header :show_h,		"", class: "no-sort" if can? :read, @model
+		t.header :csv,			"", class: "no-sort" if can? :read, @model
+		t.header :regression_h,	"", class: "no-sort" if can? :update, @model
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -127,9 +130,9 @@
 			row.experiment		measure.experiment.title
 			row.title			measure.title
 			row.date			measure.date
-			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
-			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure]
-			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
+			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure] if can? :update, measure
+			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
+			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
 		end
 	end
 %>
