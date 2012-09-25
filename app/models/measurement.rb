@@ -173,4 +173,12 @@ class Measurement < ActiveRecord::Base
       
       return self.title <=> o.title
     end
+    
+    def can_view(user)
+      experiment.model.can_view(user)
+    end
+    
+    def can_edit(user)
+      experiment.model.can_edit(user)
+    end
 end

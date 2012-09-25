@@ -3,7 +3,7 @@
 
   <%= f.inputs do %>
   	<%= f.input :group, collection: Group.remove_model_groups(@permitable.class.find(@permitable.id)), member_label: :title %>
-  	<!--<%= f.input :permission_level, collection: @accessible.permissions, as: :select %>-->
+  	<%= f.input :permission_level, collection: @accessible.permissions, as: :select %>
   <% end %>
 
   <%= f.actions do %>

@@ -4,60 +4,43 @@ class Ability
   def initialize(user)
 
     # Model
-    can [:edit,:new,:update,:create], Model do |model|
-      !user.nil? && !Model.where(Model.arel_table[:id].eq( model.id )).viewable( user ).blank?
+    can :read, :models, Model do |model|
+      model.can_view(user)
     end
     can :access, :models, Model do |model|
-      unless user.nil?
-        !Model.where(Model.arel_table[:id].eq( model.id )).viewable( user ).blank?
-      else
-        model.is_published?
-      end
+      model.can_edit(user)
     end
     
     # Experiment
     can [:edit,:new,:update,:create], :experiments, Experiment do |exp|
-      !user.nil? && !Model.where(Model.arel_table[:id].eq( exp.model_id )).viewable( user ).blank?
+      exp.can_edit(user)
     end
     can :read, :experiments, Experiment do |exp|
-      unless user.nil?
-        !Model.where(Model.arel_table[:id].eq( exp.model_id )).viewable( user ).blank?
-      else
-        exp.model.is_published?
-      end
+      exp.can_view(user)
     end
     
     # Measurement
     can [:edit,:new,:update,:create], :measurements, Measurement do |m|
-      !user.nil? && !Model.where(Model.arel_table[:id].eq( m.experiment.model_id )).viewable( user ).blank?
+      m.can_edit(user)
     end
     can :read, :measurements, Measurement do |m|
-      unless user.nil?
-        !Model.where(Model.arel_table[:id].eq( m.experiment.model_id )).viewable( user ).blank?
-      else
-        m.experiment.model.is_published?
-      end
+      m.can_view(user)
     end
     
     # Line 
     can [:edit,:new,:update,:create], :lines, Line do |l|
-      !user.nil? && !Model.where(Model.arel_table[:id].eq( l.measurement.experiment.model_id )).viewable( user ).blank?
+      l.can_edit(user)
     end
     can :read, :lines, Line do |l|
-      unless user.nil?
-        !Model.where(Model.arel_table[:id].eq( l.measurement.experiment.model_id )).viewable( user ).blank?
-      else
-        l.measurement.experiment.model.is_published?
-      end
+      l.can_view(user)
     end
     
     # Proxy Dyna Model
     can :access, :proxy_dyna_models, ProxyDynaModel do |pdm|
-      unless user.nil?
-        !Model.where(Model.arel_table[:id].eq( pdm.measurement.experiment.model_id )).viewable( user ).blank?
-      else
-        pdm.measurement.experiment.model.is_published?
-      end
+      pdm.can_edit(user)
+    end
+    can :read, :proxy_dyna_models, ProxyDynaModel do |pdm|
+      pdm.can_view(user)
     end
     
     # Dyna Model

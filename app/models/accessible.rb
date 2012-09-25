@@ -6,10 +6,10 @@ class Accessible < ActiveRecord::Base
 
   validates :group, :presence => true
   validates :permitable, :presence => true
-  #validates :permission_level, :presence => true
+  validates :permission_level, :presence => true
 
   def permissions
-    result = { read: 0, write: 1}
+    return GlobalConstants::PERMISSIONS
   end
 
   def permission_human

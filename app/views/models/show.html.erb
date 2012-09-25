@@ -66,14 +66,14 @@
   <%= 
 	collection_table(@model.accessibles, :id => 'teams' , :class => 'formatted dataTable') do |t|
 		t.header :title,		Group.human_attribute_name(:title)
-		#t.header :permission_level,	Group.human_attribute_name(:permission_level)
+		t.header :permission_level,	Group.human_attribute_name(:permission_level)
 		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, accesible, index|
 			# Notice there's no need to explicitly define the title
 			row.title			accesible.group.title
-			#row.permission_level		accesible.permission_human
+			row.permission_level		accesible.permission_human
 			row.destroy_h		link_to t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete
 		end
 	end

@@ -32,5 +32,18 @@ class Model < ActiveRecord::Base
         return description
       end
     end
-      
+    
+    def can_view(user)
+      is_published? || (!user.nil? && ( can?(user,GlobalConstants::PERMISSIONS[:read]) || can_edit(user) ) )
+    end
+    
+    def can_edit(user)
+      !user.nil? && ( owner.id.equal?(user.id) || can?(user,GlobalConstants::PERMISSIONS[:write]) )
+    end
+    
+    def can?(user,arg)
+      accessible = self.accessibles.find { |a| a.group.users.include?(User.find(7)) }
+       !accessible.nil? && !accessible.blank? && accessible.permission_level == arg
+    end
+
 end
