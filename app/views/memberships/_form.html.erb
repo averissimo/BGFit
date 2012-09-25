@@ -1,0 +1,14 @@
+<%= semantic_form_for([@group,@membership]) do |f| %>
+  <%= f.semantic_errors :state %>
+
+  <%= f.inputs do %>
+  	<%= f.input :user, collection: User.remove_group_users(Group.find(@group.id)), member_label: :email %>
+  <% end %>
+
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link %>	
+  <% end%>
+<% end %>
+
+<div class="clear"></div>

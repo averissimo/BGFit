@@ -1,6 +1,8 @@
 class Line < ActiveRecord::Base
   belongs_to :measurement
   
+  scope :viewable, lambda { |user| joins(:measurement => :experiment).where( Experiment.arel_table[:model_id].in( Model.viewable(user).map { |m| m.id } )) }
+  
   has_paper_trail
   
   before_create :clear_flag

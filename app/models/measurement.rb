@@ -9,7 +9,8 @@ class Measurement < ActiveRecord::Base
   scope :model_is, lambda { |model| joins(:experiment).where(:experiments => {:model_id=>model.id} ).order(:experiment_id) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:proxy_dyna_models).where(:proxy_dyna_models => {:dyna_model_id=>dyna_model.id} ).order(:experiment_id) }
   scope :experiment_is, lambda { |experiment| where(:experiment_id=>experiment.id).order(:experiment_id) }
-  
+  scope :viewable, lambda { |user| joins(:experiment).where( Experiment.arel_table[:model_id].in( Model.viewable(user).map { |m| m.id } )) }
+ 
   has_paper_trail :skip => [:original_data]
 
   public
@@ -31,7 +32,7 @@ class Measurement < ActiveRecord::Base
         prev_l = l    
       end
       self.minor_step = minor_step
-      self.save unless get_log
+      self.save
     end
   
     def get_proxy_dyna_model_with_dyna_model(dyna_model)

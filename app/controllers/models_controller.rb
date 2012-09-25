@@ -2,12 +2,14 @@ class ModelsController < ApplicationController
   respond_to :html, :json
   before_filter :authenticate_user!, :except => [:index,:show]
   
+  load_and_authorize_resource
+  
   # GET /models
   # GET /models.json
   def index
-    @models = Model.find(:all, :order=> :title)
-    @experiments = Experiment.all
-    @measurements = Measurement.all
+    @models = Model.viewable(current_user).order(Model.arel_table[:title])
+    @experiments = Experiment.viewable(current_user)
+    @measurements = Measurement.viewable(current_user)
     @measurements.sort!
     
     respond_with @models
@@ -45,6 +47,7 @@ class ModelsController < ApplicationController
   # POST /models.json
   def create
     @model = Model.new(params[:model])
+    @model.owner = current_user
     respond_with @model do | format |
       if @model.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Model")

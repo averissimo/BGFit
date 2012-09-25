@@ -1,0 +1,54 @@
+<% 
+	context_menu = [
+		{
+			:key => :new, 
+			:name => t('navigation.new' , model: Group.model_name.human), 
+			:url => url_for([:new,@group,:membership]),
+			:options => {
+				:container_class => 'menu',
+				:class => "btn"
+			}
+		},
+		{
+			:key => :edit, 
+			:name => t('action.edit'), 
+			:url => url_for([:edit,@group]),
+			:options => {
+				:container_class => 'menu',
+				class: "text"
+			}
+		},
+		{
+			:key => :index, 
+			:name => t('navigation.index' , model: Group.model_name.human.pluralize), 
+			:url => groups_path,
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+		}}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<% content_for(:title) { t('title.detail' , model: Group.model_name.human) } %>
+
+<h1><%= @group.title %></h1>
+
+<h3><%= t('aux.listing')%> <%= pluralize(@group.users.length, User.model_name.human.downcase)%></h3>
+
+<%= 
+	collection_table(@group.memberships, :id => 'experiments' , :class => 'formatted dataTable') do |t|
+		t.header :email,		User.human_attribute_name(:email)
+		t.header :destroy_h,	"", class: "no-sort"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, membership, index|
+			# Notice there's no need to explicitly define the title
+			row.email			membership.user.email
+			row.destroy_h		link_to t('action.remove').downcase, [@group,membership], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+<div class="menu">
+	<%= menu %>
+</div>

@@ -35,7 +35,42 @@
 
 <h3><%= Model.human_attribute_name(:description)%></h3>
 <p>
+<%- if @model.description.nil? || @model.description.blank? %>
+(no description provided)
+<%- else %>
   <%= simple_format @model.description %>
+<%- end %>
+</p>
+<h3>
+	Domain
+</h3>
+<p><%= Model.human_attribute_name(:owner) %>:  <%= @model.owner.email.gsub(/@/,' (at) ') %></p>
+<p>
+<%- if @model.is_published %>
+  <%= Model.model_name.human %> is public
+<%- else %>
+  <%= Model.model_name.human %> is not yet public
+<%- end %>
+<%- # TODO: add can edit? 
+%>
+<h4>Groups with access</h4>
+  <%= 
+	collection_table(@model.accessibles, :id => 'groups' , :class => 'formatted dataTable') do |t|
+		t.header :title,		Group.human_attribute_name(:title)
+		t.header :permission_level,	Group.human_attribute_name(:permission_level)
+		t.header :destroy_h,	"", class: "no-sort"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, accesible, index|
+			# Notice there's no need to explicitly define the title
+			row.title			accesible.group.title
+			row.permission_level		accesible.permission_level
+			row.destroy_h		link_to t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+
 </p>
 
 <h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>

@@ -1,0 +1,58 @@
+<% 
+	context_menu = [
+		{
+			:key => :new, 
+			:name => t('navigation.new' , model: Group.model_name.human.downcase), 
+			:url => new_group_path,
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :back, 
+			:name => t('navigation.back'), 
+			:url => url_for(:back),
+			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => 'text'
+			}
+		},
+		{
+			:key => :home, 
+			:name => t('navigation.goto' , destination: t('aux.root').downcase), 
+			:url => root_url,
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<% content_for(:title) { t('.title') } %>
+
+<h1>Listing <%= pluralize(@groups.length, Group.model_name.human.downcase)%></h1>
+
+<%= 
+	collection_table(@groups, :id => 'groups' , :class => 'formatted dataTable') do |t|
+		t.header :title,		Model.human_attribute_name(:title)
+		t.header :show_h,		"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort"
+		t.header :destroy_h,	"", class: "no-sort"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, group, index|
+			# Notice there's no need to explicitly define the title
+			row.title			word_wrap(group.title,:line_width => 40).gsub(/\n/, '<br/>')
+			row.show_h			link_to t('action.show').downcase, group
+			row.edit_h			link_to t('action.edit').downcase, [:edit,group]
+			row.destroy_h		link_to t('action.remove').downcase, group, confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+<div class="menu">
+	<%= menu %>
+</div>
