@@ -282,7 +282,7 @@ div.field {
   input,
   textarea,
   select {
-    @extend p
+    @extend p;
   }
 }
 

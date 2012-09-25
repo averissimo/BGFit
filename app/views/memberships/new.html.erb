@@ -1,33 +1,4 @@
-<% 
-	context_menu = [
-		{
-			:key => :back, 
-			:name => 'Back', 
-			:url => url_for(:back),
-			:options => {
-				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
-			:key => :home, 
-			:name => 'Back', 
-			:url => url_for([@group]),
-			:options => {
-				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
-				:container_class => 'menu',
-				:class => "text"
-			}
-		}]
-	menu = nil
-	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-%>
 <% content_for(:title) { "New user" } %>
 <h1>New User</h1>
 
 <%= render 'form' %>
-
-<div class="menu">
-	<%= menu %> 
-</div>

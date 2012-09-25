@@ -2,7 +2,7 @@
 	context_menu = [
 		{
 			:key => :new, 
-			:name => t('navigation.new' , model: Group.model_name.human), 
+			:name => t('navigation.new' , model: Membership.model_name.human), 
 			:url => url_for([:new,@group,:membership]),
 			:options => {
 				:container_class => 'menu',
@@ -43,7 +43,7 @@
 		t.rows.alternate = :odd
     	t.rows.each do |row, membership, index|
 			# Notice there's no need to explicitly define the title
-			row.email			membership.user.email
+			row.email			membership.user.email_at
 			row.destroy_h		link_to t('action.remove').downcase, [@group,membership], confirm: 'Are you sure?', method: :delete
 		end
 	end

@@ -7,9 +7,10 @@ form {
 }
 
 input,
-textarea    { padding: 4px 8px; border: 1px solid #aaa; background: #fff; }
+textarea    { padding: 4px 8px; border: 1px solid #aaa; background: #fff; padding-left: 1em; }
 textarea    { height: 12em; }
 
 .formtastic .stringish input {
   line-height: 22px;
+  padding-left: 0.5em; 
 }

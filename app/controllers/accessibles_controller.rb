@@ -11,12 +11,12 @@ class AccessiblesController < ApplicationController
   end
   
   def create
-    @accessible = @model.accessibles.build(params[:accessible])
+    @accessible = @parent.accessibles.build(params[:accessible])
     
-    respond_with(@model,@accessible) do |format|
+    respond_with(@parent,@accessible) do |format|
       if @accessible.save
-        format.html { redirect_to [@model], notice: 'Group now has permissions in project.' }
-        format.json { render json: @accessible, status: :created, location: [@model,@accessible] }
+        format.html { redirect_to [@parent], notice: 'Group now has permissions in project.' }
+        format.json { render json: @accessible, status: :created, location: [@parent,@accessible] }
       else
         format.html { render action: "new" }
         format.json { render json: @accessible.errors, status: :unprocessable_entity }
@@ -32,7 +32,8 @@ class AccessiblesController < ApplicationController
   private
   
   def determine_model
-    @model = Model.find(params[:model_id])
+    @klass = params.keys.find { |k| k.ends_with?"_id" }.gsub(/_id/,'').capitalize.constantize
+    @parent = @klass.find( params[params.keys.find { |k| k.ends_with?"_id" }])
   end
 
 
