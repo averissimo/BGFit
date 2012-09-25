@@ -4,7 +4,7 @@ class ExperimentsController < ApplicationController
   before_filter :determine_models , :only => [ :show, :gompertz, :edit, :update, :destroy]
   before_filter :authenticate_user!, :except => [:index,:show]
   
-  load_and_authorize_resource
+  load_and_authorize_resource :except => [:new,:create]
   
   # GET /experiments
   # GET /experiments.json
@@ -46,6 +46,8 @@ class ExperimentsController < ApplicationController
   def new    
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.build
+
+    authorize! :update, @model
     
     @form = [@model,@experiment]
 
@@ -54,6 +56,7 @@ class ExperimentsController < ApplicationController
 
   # GET /experiments/1/edit
   def edit
+    authorize! :create, @experiment
     @form = [@model,@experiment]
     respond_with [@model,@experiment]
   end

@@ -7,9 +7,15 @@ class Ability
     can :read, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_view(user) # all classes have this method implemented
     end
-    can :access, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
+    can [:update,:edit,:show,:index,:new,:create,:destroy], [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
+    
+    can [:new], [:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
+      obj.can_edit(user) # all classes have this method implemented
+    end
+    
+    can :new,:models
     
     # Specific to ProxyDynaModel object
     can [:calculate] , :proxy_dyna_models do |obj|
