@@ -68,7 +68,7 @@
 			row.show_h			link_to t('action.show').downcase, [@experiment,measurement] if can? :read, measurement
 			row.edit_h			link_to t('action.edit').downcase, [:edit,@experiment,measurement] if can? :update, measurement
 			row.destroy_h		link_to t('action.remove').downcase, [@experiment,measurement], confirm: 'Are you sure?', method: :delete if can? :update, measurement
-			row.regression_h	link_to 'regression', [:regression,@experiment,measurement] if can? :update, measurement
+			row.regression_h	link_to 'regression', [:regression,@experiment,measurement] if can? :regression, measurement
 			row.csv				link_to 'download .csv', experiment_measurement_path(@experiment,measurement, :format => :csv)
 		end
 	end

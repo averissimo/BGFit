@@ -10,6 +10,15 @@ class Ability
     can :access, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
+
+    # Specific to Measurement object
+    can [:regression,:read], [:measurements] do |obj|
+      obj.can_view(user) # all classes have this method implemented
+    end
+    can [:update_regression] , :measurements do |obj|
+      obj.can_edit(user) # all classes have this method implemented
+    end
+
     
     # Dyna Model
     can [:edit,:update,:destroy], :dyna_models, DynaModel do |dm|

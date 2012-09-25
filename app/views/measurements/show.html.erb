@@ -16,6 +16,7 @@
 			:name => t('.linear'), 
 			:url => url_for([:regression,@experiment,@measurement]),
 			:options => {
+				:if => Proc.new { can?(:regression, @measurement) },
 				:container_class => 'menu'
 			}
 		},
