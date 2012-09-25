@@ -9,7 +9,7 @@ gem 'mysql2'
 
 gem 'paper_trail'
 
-gem 'blankslate'
+gem 'blankslate' # required by table_helper
 gem 'hirb'
 gem 'fancy_irb'
 gem 'wirb'

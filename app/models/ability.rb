@@ -4,6 +4,9 @@ class Ability
   def initialize(user)
 
     # Model
+    can [:edit,:new,:update,:create], Model do |model|
+      !user.nil? && !Model.where(Model.arel_table[:id].eq( model.id )).viewable( user ).blank?
+    end
     can :access, :models, Model do |model|
       unless user.nil?
         !Model.where(Model.arel_table[:id].eq( model.id )).viewable( user ).blank?
@@ -13,7 +16,10 @@ class Ability
     end
     
     # Experiment
-    can :access, :experiments, Experiment do |exp|
+    can [:edit,:new,:update,:create], :experiments, Experiment do |exp|
+      !user.nil? && !Model.where(Model.arel_table[:id].eq( exp.model_id )).viewable( user ).blank?
+    end
+    can :read, :experiments, Experiment do |exp|
       unless user.nil?
         !Model.where(Model.arel_table[:id].eq( exp.model_id )).viewable( user ).blank?
       else
@@ -22,7 +28,10 @@ class Ability
     end
     
     # Measurement
-    can :access, :measurements, Measurement do |m|
+    can [:edit,:new,:update,:create], :measurements, Measurement do |m|
+      !user.nil? && !Model.where(Model.arel_table[:id].eq( m.experiment.model_id )).viewable( user ).blank?
+    end
+    can :read, :measurements, Measurement do |m|
       unless user.nil?
         !Model.where(Model.arel_table[:id].eq( m.experiment.model_id )).viewable( user ).blank?
       else
@@ -31,7 +40,10 @@ class Ability
     end
     
     # Line 
-    can :access, :lines, Line do |l|
+    can [:edit,:new,:update,:create], :lines, Line do |l|
+      !user.nil? && !Model.where(Model.arel_table[:id].eq( l.measurement.experiment.model_id )).viewable( user ).blank?
+    end
+    can :read, :lines, Line do |l|
       unless user.nil?
         !Model.where(Model.arel_table[:id].eq( l.measurement.experiment.model_id )).viewable( user ).blank?
       else
@@ -65,6 +77,5 @@ class Ability
 
     # Any user can do
     can :read, :dyna_models
-    can :new, :all, :except => :params
   end
 end

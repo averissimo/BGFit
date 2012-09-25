@@ -1,9 +1,8 @@
 class Model < ActiveRecord::Base
   has_many :experiments, :dependent => :destroy
-  has_many :models, through: :accessibles
+  has_many :accessibles, :as => :permitable
   
-  has_many :accessibles, :dependent => :destroy, as: :accessible
-  has_many :groups, through: :accessibles, as: :accessible
+  has_many :groups, through: :accessibles, as: :permitable
 
   accepts_nested_attributes_for :experiments
   

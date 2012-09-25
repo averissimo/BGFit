@@ -13,7 +13,7 @@
 		{
 			:key => :home, 
 			:name => 'Back', 
-			:url => url_for([@parent]),
+			:url => url_for([@permitable]),
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',

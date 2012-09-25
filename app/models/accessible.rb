@@ -1,11 +1,11 @@
 class Accessible < ActiveRecord::Base
   belongs_to :group
-  belongs_to :accessible, :polymorphic => true
+  belongs_to :permitable, :polymorphic => true
   
-  validates_uniqueness_of :accessible_id, :scope => [:group_id,:accessible_type]
+  validates_uniqueness_of :permitable_id, :scope => [:group_id,:permitable_type]
 
   validates :group, :presence => true
-  validates :accessible, :presence => true
+  validates :permitable, :presence => true
   #validates :permission_level, :presence => true
 
   def permissions
