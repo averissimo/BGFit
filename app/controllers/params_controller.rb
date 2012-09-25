@@ -50,8 +50,7 @@ class ParamsController < ApplicationController
     @dyna_model = DynaModel.find(params[:dyna_model_id])
     @param = @dyna_model.params.find(params[:id])
 
-
-    respond_with [@dyna_model,@param] do |format|
+    respond_with [@dyna_model] do |format|
       if @param.update_attributes(params[:param])
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Parameter")
       else
@@ -59,7 +58,6 @@ class ParamsController < ApplicationController
         format.json { render json: @param.errors, status: :unprocessable_entity }
       end
     end
-
   end
   
   def show
