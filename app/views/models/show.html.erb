@@ -104,7 +104,7 @@
 			row.show_h			link_to t('action.show').downcase, [@model,experiment] if can? :read, experiment
 			row.edit_h			link_to t('action.edit').downcase, [:edit,@model,experiment] if can? :update, experiment
 			#row.exp_h			link_to 'download .exp' , model_experiment_path(@model,experiment,:format => :exp)
-			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete if can? :update, experiment
+			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete if can? :destroy, experiment
 		end
 	end
 %>
@@ -120,9 +120,9 @@
 		t.header :experiment
 		t.header :title
 		t.header :date
-		t.header :show_h,		"", class: "no-sort" if can? :read, @model
-		t.header :csv,			"", class: "no-sort" if can? :read, @model
-		t.header :regression_h,	"", class: "no-sort" if can? :update, @model
+		t.header :show_h,		"", class: "no-sort" if @measurements.find { |m| can? :read, m}
+		t.header :csv,			"", class: "no-sort" if @measurements.find { |m| can? :read, m}
+		t.header :regression_h,	"", class: "no-sort" if @measurements.find { |m| can? :regression, m}
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
