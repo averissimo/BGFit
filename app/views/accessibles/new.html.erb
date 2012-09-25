@@ -13,7 +13,7 @@
 		{
 			:key => :home, 
 			:name => 'Back', 
-			:url => url_for([@model]),
+			:url => url_for([@parent]),
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
@@ -23,8 +23,8 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "New user" } %>
-<h1>New User</h1>
+<% content_for(:title) { "Associate Group" } %>
+<h1>Associate Group</h1>
 
 <%= render 'form' %>
 

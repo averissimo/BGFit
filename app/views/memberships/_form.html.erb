@@ -2,7 +2,7 @@
   <%= f.semantic_errors :state %>
 
   <%= f.inputs do %>
-  	<%= f.input :user, collection: User.remove_group_users(Group.find(@group.id)), member_label: :email %>
+  	<%= f.input :user_email, :as => :email,:required => true %>
   <% end %>
 
   <%= f.actions do %>

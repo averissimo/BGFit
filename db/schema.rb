@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120923010459) do
+ActiveRecord::Schema.define(:version => 20120925110237) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "accessible_id"
@@ -46,6 +46,8 @@ ActiveRecord::Schema.define(:version => 20120923010459) do
     t.string   "estimation"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.boolean  "only_owner_can_change"
   end
 
   create_table "experiments", :force => true do |t|

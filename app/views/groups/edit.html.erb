@@ -12,8 +12,8 @@
 		},
 		{
 			:key => :home, 
-			:name => t('navigation.goto' , destination: Model.model_name.human.downcase), 
-			:url => dyna_model_path(@dyna_model),
+			:name => t('navigation.goto' , destination: Group.model_name.human.downcase), 
+			:url => group_path(@group),
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
@@ -22,8 +22,8 @@
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { t('title.edit' , model: Model.model_name.human) }
-%><h1><%=t('title.edit' , model: Model.model_name.human)%></h1>
+	content_for(:title) { t('title.edit' , model: Group.model_name.human) }
+%><h1><%=t('title.edit' , model: Group.model_name.human)%></h1>
 
 <%= render 'form' %>
 

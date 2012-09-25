@@ -3,7 +3,9 @@ class ProxyDynaModelsController < ApplicationController
   
   before_filter :determine_models , :except => [:index, :new, :create, :calculate]
   before_filter :authenticate_user!, :except => [:index,:show]
-  
+
+  load_and_authorize_resource
+
   def index
     @measurement = Measurement.find(params[:measurement_id])
     @experiment = @measurement.experiment

@@ -2,6 +2,8 @@ class DynaModelsController < ApplicationController
   respond_to :html, :json, :csv
   before_filter :authenticate_user!, :except => [:index,:show]
   
+  load_and_authorize_resource
+
   def index
     @dyna_models = DynaModel.all
     respond_with(@dyna_models)
@@ -14,6 +16,7 @@ class DynaModelsController < ApplicationController
 
   def create
     @dyna_model = DynaModel.new(params[:dyna_model])
+    @dyna_model.owner = current_user
     respond_with @dyna_model do | format |
       if @dyna_model.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Dyna Model")

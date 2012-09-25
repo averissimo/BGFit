@@ -19,6 +19,15 @@
 			}
 		},
 		{
+			:key => :new_group, 
+			:name => 'Associate team', 
+			:url => new_model_accessible_path(@model),
+			:options => {
+				:container_class => 'menu',
+				class: "text"
+			}
+		},
+		{
 			:key => :index, 
 			:name => t('navigation.index' , model: Model.model_name.human.pluralize), 
 			:url => models_path,
@@ -44,7 +53,7 @@
 <h3>
 	Domain
 </h3>
-<p><%= Model.human_attribute_name(:owner) %>:  <%= @model.owner.email.gsub(/@/,' (at) ') %></p>
+<p><%= Model.human_attribute_name(:owner) %>:  <%= @model.owner.email_at %></p>
 <p>
 <%- if @model.is_published %>
   <%= Model.model_name.human %> is public
@@ -53,18 +62,18 @@
 <%- end %>
 <%- # TODO: add can edit? 
 %>
-<h4>Groups with access</h4>
+<h4>Teams with access</h4>
   <%= 
-	collection_table(@model.accessibles, :id => 'groups' , :class => 'formatted dataTable') do |t|
+	collection_table(@model.accessibles, :id => 'teams' , :class => 'formatted dataTable') do |t|
 		t.header :title,		Group.human_attribute_name(:title)
-		t.header :permission_level,	Group.human_attribute_name(:permission_level)
+		#t.header :permission_level,	Group.human_attribute_name(:permission_level)
 		t.header :destroy_h,	"", class: "no-sort"
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, accesible, index|
 			# Notice there's no need to explicitly define the title
 			row.title			accesible.group.title
-			row.permission_level		accesible.permission_level
+			#row.permission_level		accesible.permission_human
 			row.destroy_h		link_to t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete
 		end
 	end

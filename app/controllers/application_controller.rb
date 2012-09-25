@@ -2,7 +2,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   rescue_from CanCan::Unauthorized do |exception|
-    redirect_to root_url, :alert => exception.message
+    if request.referer.nil? || request.referer.blank? 
+      redirect_to root_url, :alert => exception.message
+    else
+      redirect_to request.referer, :alert => exception.message
+    end
   end
   
 end
