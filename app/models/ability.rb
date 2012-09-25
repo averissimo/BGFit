@@ -4,43 +4,11 @@ class Ability
   def initialize(user)
 
     # Model
-    can :read, :models, Model do |model|
-      model.can_view(user)
+    can :read, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
+      obj.can_view(user) # all classes have this method implemented
     end
-    can :access, :models, Model do |model|
-      model.can_edit(user)
-    end
-    
-    # Experiment
-    can [:edit,:new,:update,:create], :experiments, Experiment do |exp|
-      exp.can_edit(user)
-    end
-    can :read, :experiments, Experiment do |exp|
-      exp.can_view(user)
-    end
-    
-    # Measurement
-    can [:edit,:new,:update,:create], :measurements, Measurement do |m|
-      m.can_edit(user)
-    end
-    can :read, :measurements, Measurement do |m|
-      m.can_view(user)
-    end
-    
-    # Line 
-    can [:edit,:new,:update,:create], :lines, Line do |l|
-      l.can_edit(user)
-    end
-    can :read, :lines, Line do |l|
-      l.can_view(user)
-    end
-    
-    # Proxy Dyna Model
-    can :access, :proxy_dyna_models, ProxyDynaModel do |pdm|
-      pdm.can_edit(user)
-    end
-    can :read, :proxy_dyna_models, ProxyDynaModel do |pdm|
-      pdm.can_view(user)
+    can :access, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
+      obj.can_edit(user) # all classes have this method implemented
     end
     
     # Dyna Model
