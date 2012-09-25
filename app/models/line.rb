@@ -45,6 +45,14 @@ class Line < ActiveRecord::Base
 
   end
   
+  def can_view(user)
+    measurement.experiment.model.can_view(user)
+  end
+  
+  def can_edit(user)
+    measurement.experiment.model.can_edit(user)
+  end
+  
   protected
   
     def clear_flag

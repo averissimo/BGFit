@@ -14,12 +14,12 @@
 ActiveRecord::Schema.define(:version => 20120925110237) do
 
   create_table "accessibles", :force => true do |t|
-    t.integer  "accessible_id"
-    t.string   "accessible_type"
+    t.integer  "permitable_id"
+    t.string   "permitable_type"
     t.integer  "group_id"
     t.integer  "permission_level"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "delayed_jobs", :force => true do |t|
@@ -62,8 +62,8 @@ ActiveRecord::Schema.define(:version => 20120925110237) do
 
   create_table "groups", :force => true do |t|
     t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "lines", :force => true do |t|

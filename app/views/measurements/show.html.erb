@@ -7,6 +7,7 @@
 			:name => t('.dyna'), 
 			:url => new_measurement_proxy_dyna_model_path(@measurement),
 			:options => {
+				:if => Proc.new { can?(:update, @measurement) },
 				:container_class => 'menu'
 			}
 		},
@@ -15,6 +16,7 @@
 			:name => t('.linear'), 
 			:url => url_for([:regression,@experiment,@measurement]),
 			:options => {
+				:if => Proc.new { can?(:regression, @measurement) },
 				:container_class => 'menu'
 			}
 		},
@@ -23,6 +25,7 @@
 			:name => t('action.edit'),
 			:url => url_for([:edit,@experiment,@measurement]),
 			:options => {
+				:if => Proc.new { can?(:update, @measurement) },
 				:container_class => 'menu',
 				:class => "text"
 			}
@@ -41,6 +44,7 @@
 			:name => t('.new-line'), 
 			:url => new_measurement_line_path(@measurement),
 			:options => {
+				:if => Proc.new { can?(:update, @measurement) },
 				:container_class => 'menu',
 				:class => "text"
 			}
@@ -83,8 +87,8 @@
 		t.header :y
 		t.header :z
 		t.header :note
-		t.header :edit_h,		"", class: "no-sort"
-		t.header :destroy_h,	"", class: "no-sort"
+		t.header( :edit_h,		"", class: "no-sort") if can? :update, @measurement
+		t.header( :destroy_h,	"", class: "no-sort") if can? :update, @measurement
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, line, index|
@@ -93,8 +97,8 @@
 			row.y			line.y
 			row.z			line.z
 			row.note		line.note
-			row.edit_h		link_to t('action.edit').downcase, [:edit,@measurement,line]
-			row.destroy_h	link_to t('action.remove').downcase, [@measurement,line], confirm: 'Are you sure?', method: :delete
+			row.edit_h		link_to t('action.edit').downcase, [:edit,@measurement,line] if can? :update, line
+			row.destroy_h	link_to t('action.remove').downcase, [@measurement,line], confirm: 'Are you sure?', method: :delete if can? :update, line
 		end
 	end
 %>
@@ -110,8 +114,8 @@
 		t.header :rmse
 		t.header :notes
 		t.header :show_h,		"", class: "no-sort"
-		t.header :edit_h,		"", class: "no-sort"
-		t.header :destroy_h,	"", class: "no-sort"
+		t.header(:edit_h,		"", class: "no-sort") if can? :update, @measurement
+		t.header(:destroy_h,	"", class: "no-sort") if can? :update, @measurement
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, proxy_dyna_model, index|
@@ -119,9 +123,9 @@
 			row.title		proxy_dyna_model.title
 			row.rmse		proxy_dyna_model.rmse
 			row.notes		{ if proxy_dyna_model.notes.nil? then "" else word_wrap(proxy_dyna_model.notes,:line_width => 40).gsub(/\n/, '<br/>') end }
-			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model]
-			row.edit_h		link_to t('action.edit').downcase, [:edit,proxy_dyna_model]
-			row.destroy_h	link_to t('action.remove').downcase, [proxy_dyna_model], confirm: 'Are you sure?', method: :delete
+			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model] if can? :read, proxy_dyna_model
+			row.edit_h		link_to t('action.edit').downcase, [:edit,proxy_dyna_model] if can? :update, proxy_dyna_model
+			row.destroy_h	link_to t('action.remove').downcase, [proxy_dyna_model], confirm: 'Are you sure?', method: :delete if can? :update, proxy_dyna_model
 		end
 	end
 %>

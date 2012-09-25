@@ -95,6 +95,14 @@ class Experiment < ActiveRecord::Base
     }.max
   end
   
+  def can_view(user)
+    model.can_view(user)
+  end
+  
+  def can_edit(user)
+    model.can_edit(user)
+  end
+  
   private
   
   def calc_stdev(array,mean)

@@ -1,9 +1,8 @@
 class Model < ActiveRecord::Base
   has_many :experiments, :dependent => :destroy
-  has_many :models, through: :accessibles
+  has_many :accessibles, :as => :permitable
   
-  has_many :accessibles, :dependent => :destroy, as: :accessible
-  has_many :groups, through: :accessibles, as: :accessible
+  has_many :groups, through: :accessibles, as: :permitable
 
   accepts_nested_attributes_for :experiments
   
@@ -33,5 +32,18 @@ class Model < ActiveRecord::Base
         return description
       end
     end
-      
+    
+    def can_view(user)
+      is_published? || (!user.nil? && ( can?(user,GlobalConstants::PERMISSIONS[:read]) || can_edit(user) ) )
+    end
+    
+    def can_edit(user)
+      !user.nil? && ( owner.id.equal?(user.id) || can?(user,GlobalConstants::PERMISSIONS[:write]) )
+    end
+    
+    def can?(user,arg)
+      accessible = self.accessibles.find { |a| a.group.users.include?(User.find(7)) }
+       !accessible.nil? && !accessible.blank? && accessible.permission_level == arg
+    end
+
 end
