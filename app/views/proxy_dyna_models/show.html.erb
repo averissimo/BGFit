@@ -7,15 +7,7 @@
 			:name => 'Edit this proxy dyna model', 
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
-			:key => :model, 
-			:name => 'Goto dyna model', 
-			:url => url_for([@proxy_dyna_model.dyna_model]),
-			:options => {
+				:if => Proc.new { can?(:calculate, @proxy_dyna_model) },
 				:container_class => 'menu',
 				:class => "text"
 			}
@@ -26,6 +18,15 @@
 			:url => url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement]),
 			:options => {
 				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
+				:container_class => 'menu',
+				:class => ("text" if can?(:calculate, @proxy_dyna_model))
+			}
+		},
+		{
+			:key => :model, 
+			:name => 'Goto dyna model', 
+			:url => url_for([@proxy_dyna_model.dyna_model]),
+			:options => {
 				:container_class => 'menu',
 				:class => "text"
 			}
@@ -107,10 +108,16 @@
 			</tr>
 		</tbody>
 	</table>
+	<%- if can? :calculate, @proxy_dyna_model %>
 	<%= button_tag "Recalculate Parameters" , disable_with: "calculating, please wait..." %>
+	<%- end %>
 </div>
 
 <% end %>
+
+<div class="menu">
+	<%= menu %>
+</div>
 
 <%- if !@proxy_dyna_model.rmse.nil? || !@proxy_dyna_model.rmse.blank? %>
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
@@ -136,9 +143,7 @@
 
 </div>
 <%- end %>
-<div class="menu">
-	<%= menu %>
-</div>
+
 
 
 

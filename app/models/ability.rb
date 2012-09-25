@@ -3,11 +3,16 @@ class Ability
 
   def initialize(user)
 
-    # Model
+    # Model structure
     can :read, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_view(user) # all classes have this method implemented
     end
     can :access, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
+      obj.can_edit(user) # all classes have this method implemented
+    end
+    
+    # Specific to ProxyDynaModel object
+    can [:calculate] , :proxy_dyna_models do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
 
@@ -21,7 +26,7 @@ class Ability
 
     
     # Dyna Model
-    can [:edit,:update,:destroy], :dyna_models, DynaModel do |dm|
+    can [:update,:edit,:destroy,:show,:index,:new,:create], :dyna_models, DynaModel do |dm|
       !user.nil? && ( !dm.only_owner_can_change || dm.owner_id == user.id )
     end
     
