@@ -38,7 +38,7 @@ class Model < ActiveRecord::Base
     end
     
     def can_edit(user)
-      !user.nil? && ( owner.id.equal?(user.id) || can?(user,GlobalConstants::PERMISSIONS[:write]) )
+      !user.nil? && ( self.new_record? || owner.id.equal?(user.id) || can?(user,GlobalConstants::PERMISSIONS[:write]) )
     end
     
     def can?(user,arg)
