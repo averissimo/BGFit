@@ -6,6 +6,9 @@ class LinesController < ApplicationController
   
   load_and_authorize_resource :except => [:new,:create]
 
+  #TODO move to initializer once all controllers have this support
+  include ActiveModel::ForbiddenAttributesProtection
+
   # GET /lines
   # GET /lines.json
   def index
@@ -45,7 +48,7 @@ class LinesController < ApplicationController
   # POST /lines
   # POST /lines.json
   def create
-    @line = @measurement.lines.build(params[:line])
+    @line = @measurement.lines.build(permitted_params.line)
 
     authorize! :create, @line
 
@@ -64,7 +67,7 @@ class LinesController < ApplicationController
   # PUT /lines/1.json
   def update
     respond_with [@measurement,@line] do |format|
-      if @line.update_attributes(params[:line])
+      if @line.update_attributes(permitted_params.line)
         format.html { redirect_to [@experiment,@measurement], notice: 'Measurement line was successfully updated.' }
         format.json { head :ok }
       else

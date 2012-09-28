@@ -6,6 +6,10 @@ class ExperimentsController < ApplicationController
   
   load_and_authorize_resource :except => [:new,:create]
   
+  #TODO move to initializer once all controllers have this support
+  include ActiveModel::ForbiddenAttributesProtection
+
+  
   # GET /experiments
   # GET /experiments.json
   def index
@@ -65,7 +69,7 @@ class ExperimentsController < ApplicationController
   # POST /experiments.json
   def create
     @model = Model.find(params[:model_id])
-    @experiment = @model.experiments.build(params[:experiment])
+    @experiment = @model.experiments.build(permitted_params.experiment)
     
     respond_with [@model,@experiment] do | format |
       if @experiment.save
@@ -82,7 +86,7 @@ class ExperimentsController < ApplicationController
   def update
 
     respond_with [@model,@experiment] do |format|
-      if @experiment.update_attributes(params[:experiment])
+      if @experiment.update_attributes(permitted_params.experiment)
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Model")
       else
         format.html { render action: "edit" }

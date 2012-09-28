@@ -12,7 +12,7 @@
 		},
 		{
 			:key => :index, 
-			:name => 'Goto measurement', 
+			:name => t('navigation.goto' , destination: Measurement.model_name.human.pluralize.downcase), 
 			:url => url_for([@experiment,@measurement]),
 			:options => {
 				:container_class => 'menu',
@@ -21,7 +21,7 @@
 		},
 		{
 			:key => :index, 
-			:name => 'Goto experiment', 
+			:name => t('navigation.goto' , destination: Experiment.model_name.human.pluralize.downcase), 
 			:url => url_for([@model,@experiment]),
 			:options => {
 				:container_class => 'menu',
@@ -30,7 +30,7 @@
 		},
 		{
 			:key => :index, 
-			:name => 'Goto scope', 
+			:name => t('navigation.goto' , destination: Model.model_name.human.pluralize.downcase), 
 			:url => url_for(@model),
 			:options => {
 				:container_class => 'menu',

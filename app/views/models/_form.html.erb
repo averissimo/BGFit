@@ -5,9 +5,9 @@
   	<%= f.input :title %>
   	<%= f.input :description, as: :text %>
   	<%= f.input :is_published, as: :boolean %>
-  	<%- if permitted_params.model_attributes.include? :owner_id %>
+  	<%- if permitted_params.model_attributes.include?(:owner_id) %>
   	<%= f.input :owner, as: :select, 
-  	 collection: User.where(User.arel_table[:id].not_eq(@model.owner_id)), 
+  	 collection: User.all, 
   	 member_label: :email
     %>
   	<%- end%>

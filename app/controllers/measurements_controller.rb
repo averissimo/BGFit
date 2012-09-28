@@ -6,6 +6,8 @@ class MeasurementsController < ApplicationController
 
   load_and_authorize_resource :except => [:new,:create]
 
+  #TODO move to initializer once all controllers have this support
+  include ActiveModel::ForbiddenAttributesProtection
   
   # GET /measurements
   # GET /measurements.json
@@ -79,7 +81,7 @@ class MeasurementsController < ApplicationController
   def create
     @experiment = Experiment.find(params[:experiment_id])
     @model = @experiment.model
-    @measurement = Measurement.new(params[:measurement])
+    @measurement = Measurement.new(permitted_params.measurement)
     @measurement.experiment = @experiment
     @measurement.convert_original_data
 
@@ -99,7 +101,7 @@ class MeasurementsController < ApplicationController
   # PUT /measurements/1
   # PUT /measurements/1.json
   def update
-    @measurement.assign_attributes(params[:measurement])
+    @measurement.assign_attributes(permitted_params.measurement)
     #@measurement.convert_original_data
     
     respond_with(@experiment,@measurement) do |format|
@@ -114,7 +116,7 @@ class MeasurementsController < ApplicationController
 
   def update_regression
     respond_with(@experiment,@measurement) do |format|
-      if @measurement.update_attributes(params[:measurement])
+      if @measurement.update_attributes(permitted_params.measurement)
         format.html { render action: "regression" }
       else
         format.html { render action: "regression" }

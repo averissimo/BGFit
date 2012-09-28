@@ -68,7 +68,7 @@ class ModelsController < ApplicationController
     @model = Model.find(params[:id])
     
     respond_with @model do |format|
-      if @model.update_attributes(params[:model])
+      if @model.update_attributes(permitted_params.model)
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Model")
       else
         format.html { render action: "edit" }
