@@ -5,13 +5,19 @@ class AccessiblesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :determine_model
   
+  load_and_authorize_resource :except => [:new,:create]
+  
   def new
+    authorize! :update, @permitable
     @accessible = Accessible.new
     respond_with @accessible
   end
   
   def create
     @accessible = @permitable.accessibles.build(params[:accessible])
+    
+    authorize! :update, @permitable
+
     
     respond_with(@permitable,@accessible) do |format|
       if @accessible.save

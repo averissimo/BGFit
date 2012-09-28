@@ -7,7 +7,7 @@ class Ability
     can :read, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_view(user) # all classes have this method implemented
     end
-    can [:update,:edit,:show,:index,:new,:create,:destroy], [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
+    can [:update,:edit,:show,:new,:create,:destroy], [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
     
@@ -15,7 +15,8 @@ class Ability
       obj.can_edit(user) # all classes have this method implemented
     end
     
-    can :new,:models
+    can :index, [:experiments,:measurements,:lines,:proxy_dyna_models]
+    can [:new,:index],:models
     
     # Specific to ProxyDynaModel object
     can [:calculate] , :proxy_dyna_models do |obj|
@@ -42,8 +43,14 @@ class Ability
     end
     
     # Group
-    can :access, :groups, Group do |g|
+    can [:update,:edit,:show,:destroy], :groups, Group do |g|
       !user.nil? && g.can_access(user)
+    end
+   
+    can [:new, :index,:create], :groups
+    
+    can [:new,:create,:destroy], :accessibles, Accessible do |acc|
+      user.present? && acc.group.users.include? { |u| u.id == user.id}
     end
 
     # Any user can do
