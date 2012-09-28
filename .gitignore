@@ -35,3 +35,4 @@ pickle-email-*.html
 .project
 
 *~
+.buildpath

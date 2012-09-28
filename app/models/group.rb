@@ -23,7 +23,7 @@ class Group < ActiveRecord::Base
   scope :viewable, lambda { |user| joins( :memberships ).where( Membership.arel_table[:user_id].eq(user.id) ) }
   
   def can_access user
-    self.users.include?(user)
+    !user.nil? && self.users.present? && self.users.include?(user)
   end
     
 end
