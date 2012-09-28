@@ -47,12 +47,20 @@ class PermittedParams < Struct.new(:params,:user)
     #attr_hash if user && user.admin?
     attr_hash
   end
+    
+  #
+  # accessible
+  def accessible
+    params.require(:accessible).permit(*accessible_attributes)
+  end
   
+  def accessible_attributes
+    attr_hash = [:permission_level] 
+    #attr_hash if user && user.admin?
+    attr_hash
+  end
   
-  
-  
-  
-  
+  # TODO: rest of the controllers  
   
   
   

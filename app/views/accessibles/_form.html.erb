@@ -2,7 +2,7 @@
   <%= f.semantic_errors :state %>
 
   <%= f.inputs do %>
-  	<%= f.input :group, collection: Group.remove_model_groups(@permitable.class.find(@permitable.id)), member_label: :title %>
+  	<%= f.input :group, collection: Group.viewable(current_user).remove_model_groups(@permitable.class.find(@permitable.id)), member_label: :title %>
   	<%= f.input :permission_level, collection: @accessible.permissions, as: :select %>
   <% end %>
 

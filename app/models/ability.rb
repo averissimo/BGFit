@@ -50,7 +50,7 @@ class Ability
     can [:new, :index,:create], :groups
     
     can [:new,:create,:destroy], :accessibles, Accessible do |acc|
-      user.present? && acc.group.users.include? { |u| u.id == user.id}
+      user.present? && acc.group.users.find{ |u| u.id == user.id}.present?
     end
     
     can [:destroy,:new,:create], :memberships, Membership do |memb|

@@ -7,6 +7,9 @@ class AccessiblesController < ApplicationController
   
   load_and_authorize_resource :except => [:new,:create]
   
+  #TODO move to initializer once all controllers have this support
+  include ActiveModel::ForbiddenAttributesProtection
+  
   def new
     authorize! :update, @permitable
     @accessible = Accessible.new
@@ -14,11 +17,14 @@ class AccessiblesController < ApplicationController
   end
   
   def create
-    @accessible = @permitable.accessibles.build(params[:accessible])
-    
-    authorize! :update, @permitable
-
-    
+    authorize! :update, @permitable # check permissions
+    @accessible = @permitable.accessibles.build(permitted_params.accessible) # builds without associating group
+    if params[:accessible][:group_id].present?
+      @group = Group.find(params[:accessible][:group_id])
+      authorize! :update, @group
+      @accessible.group = @group
+    end
+        
     respond_with(@permitable,@accessible) do |format|
       if @accessible.save
         format.html { redirect_to [@permitable], notice: "Team '#{@accessible.group.title}' now has permissions in '#{@permitable.title}'." }
