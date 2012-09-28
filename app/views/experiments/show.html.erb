@@ -23,7 +23,7 @@
 		},
 		{
 			:key => :model, 
-			:name => 'Goto model', 
+			:name => t('navigation.goto' , destination: Model.model_name.human.pluralize.downcase), 
 			:url => model_path(@experiment.model),
 			:options => {
 				:container_class => 'menu',

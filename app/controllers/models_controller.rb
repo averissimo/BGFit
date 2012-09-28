@@ -4,6 +4,9 @@ class ModelsController < ApplicationController
   
   load_and_authorize_resource
   
+  #TODO move to initializer once all controllers have this support
+  include ActiveModel::ForbiddenAttributesProtection
+  
   # GET /models
   # GET /models.json
   def index
@@ -46,7 +49,7 @@ class ModelsController < ApplicationController
   # POST /models
   # POST /models.json
   def create
-    @model = Model.new(params[:model])
+    @model = Model.new(permitted_params.model)
     @model.owner = current_user
     
     respond_with @model do | format |
@@ -63,9 +66,9 @@ class ModelsController < ApplicationController
   # PUT /models/1.json
   def update
     @model = Model.find(params[:id])
-
+    
     respond_with @model do |format|
-      if @model.update_attributes(params[:model])
+      if @model.update_attributes(permitted_params.model)
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Model")
       else
         format.html { render action: "edit" }
@@ -82,4 +85,5 @@ class ModelsController < ApplicationController
     @model.destroy
     respond_with(@model, :location => models_path)
   end
+  
 end

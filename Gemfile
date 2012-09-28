@@ -55,3 +55,4 @@ gem 'cancan', github: 'ryanb/cancan', branch: '2.0'
 gem 'simple-navigation', github: 'andi/simple-navigation'
 gem 'table_helper', github: 'rchekaluk/table_helper'
 
+gem 'strong_parameters'

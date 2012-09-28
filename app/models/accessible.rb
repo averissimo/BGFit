@@ -8,6 +8,12 @@ class Accessible < ActiveRecord::Base
   validates :permitable, :presence => true
   validates :permission_level, :presence => true
 
+  scope :permitable_is, lambda { |obj| 
+    where(
+      Accessible.arel_table[:permitable_id].eq(obj.id).and(
+      Accessible.arel_table[:permitable_type].eq(obj.class.model_name)))
+   }
+    
   def permissions
     return GlobalConstants::PERMISSIONS
   end

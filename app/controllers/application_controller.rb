@@ -8,5 +8,11 @@ class ApplicationController < ActionController::Base
       redirect_to request.referer, :alert => exception.message
     end
   end
+private
+  
+  def permitted_params
+    @permitted_params ||= PermittedParams.new(params,current_user)
+  end
+  helper_method :permitted_params
   
 end
