@@ -4,13 +4,17 @@ class MembershipsController < ApplicationController
 
   before_filter :authenticate_user!
   before_filter :determine_group
-  
+
+  load_and_authorize_resource :except => [:new,:create]
+
   def new
+    authorize! :update, @group
     @membership = Membership.new
     respond_with @membership
   end
   
   def create
+    authorize! :update, @group
     @membership = @group.memberships.build(params[:membership])
     
     respond_with(@group,@membership) do |format|
@@ -29,7 +33,7 @@ class MembershipsController < ApplicationController
     respond_with @group
   end 
   
-  private
+private
   
   def determine_group
     @group = Group.find(params[:group_id])

@@ -52,6 +52,10 @@ class Ability
     can [:new,:create,:destroy], :accessibles, Accessible do |acc|
       user.present? && acc.group.users.include? { |u| u.id == user.id}
     end
+    
+    can [:destroy,:new,:create], :memberships, Membership do |memb|
+      user.present? && memb.group.can_edit(user)
+    end 
 
     # Any user can do
     can :read, :dyna_models

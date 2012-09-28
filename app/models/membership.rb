@@ -15,8 +15,12 @@ class Membership < ActiveRecord::Base
   def user_email=(email)
     self.user = User.where( User.arel_table[:email].eq(email) ).uniq.first
   end
+    
+  def can_edit(user)
+    group.can_edit(user)
+  end  
   
-  private
+private
   
     def validate_user_email
       self.user.nil?
