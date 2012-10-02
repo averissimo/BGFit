@@ -37,7 +37,7 @@
 %>
 <% content_for(:title) { "Dyna Model's detail" } %>
 
-<h1><%= @proxy_dyna_model.title %></h1>
+<h1><%= @proxy_dyna_model.title_join %></h1>
 
 <% if !@proxy_dyna_model.measurement.nil? %>
 <h3><%= @proxy_dyna_model.measurement.model.title %> model's description for <%= @proxy_dyna_model.measurement.title %> measurement:</h3>
