@@ -352,6 +352,7 @@ class ProxyDynaModel < ActiveRecord::Base
         self.json = nil
         self.rmse = nil
         self.bias = nil
+        self.r_square = nil
         self.accuracy = nil
         self.notes = note
         self.proxy_params.each do |p| 
