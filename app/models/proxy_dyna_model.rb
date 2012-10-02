@@ -246,6 +246,7 @@ class ProxyDynaModel < ActiveRecord::Base
       elsif temp_json["result"]
         self.notes = nil
         self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" unless (temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }).nil?
+        temp_json["result"].reject!{ |q| q[1]=='_NaN_'  }
         self.json = temp_json["result"].to_s.gsub(/ /,'')
       else
         clean_stats( "Error while simulating data" )
