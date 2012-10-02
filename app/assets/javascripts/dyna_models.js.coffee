@@ -8,9 +8,9 @@
 
 
 jQuery ->
-    $('.check-all').live 'click' , (event) =>
-        target = $(event.currentTarget)
-        target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
+  $('.check-all').live 'click' , (event) =>
+    target = $(event.currentTarget)
+    target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
   
 if typeof google isnt 'undefined'
   google.load 'visualization', '1.0', {'packages':['corechart','table']}

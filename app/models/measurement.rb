@@ -15,6 +15,14 @@ class Measurement < ActiveRecord::Base
 
   public
 
+    def build_proxy_dyna_model(dyna_model,log_flag=true,no_death_phase=true)
+      p = self.proxy_dyna_models.build
+      p.dyna_model_id = dyna_model.id
+      p.log_flag = log_flag
+      p.no_death_phase = no_death_phase
+      p.save
+    end
+
     def minor_step_cache
       determine_minor_step if minor_step.nil?
       result = read_attribute(:minor_step)
