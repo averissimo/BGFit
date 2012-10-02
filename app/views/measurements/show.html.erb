@@ -120,7 +120,7 @@
 		t.rows.alternate = :odd
     	t.rows.each do |row, proxy_dyna_model, index|
 			# Notice there's no need to explicitly define the title
-			row.title		proxy_dyna_model.title
+			row.title		proxy_dyna_model.title_join
 			row.rmse		proxy_dyna_model.rmse
 			row.notes		{ if proxy_dyna_model.notes.nil? then "" else word_wrap(proxy_dyna_model.notes,:line_width => 40).gsub(/\n/, '<br/>') end }
 			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model] if can? :read, proxy_dyna_model

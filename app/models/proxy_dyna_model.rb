@@ -49,7 +49,7 @@ class ProxyDynaModel < ActiveRecord::Base
     
     # Overides title method to output a complex naming convention
     #
-    def title
+    def title_join
       title_pdm = read_attribute(:title)
       if title_pdm.nil? && !self.dyna_model.nil?
         self.dyna_model.title
