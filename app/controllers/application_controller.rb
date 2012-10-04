@@ -19,9 +19,9 @@ class ApplicationController < ActionController::Base
   
   def sort_column(klass,pref=nil)
     if klass.column_names.include?(params[:sort])
-      params[:sort]
+      klass.arel_table[params[:sort]]
     else
-      pref.nil? ? klass.column_names.first : pref
+      pref.nil? ? klass.arel_table[klass.column_names.first] : klass.arel_table[pref]
     end
   end
   

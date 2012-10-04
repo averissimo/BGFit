@@ -14,7 +14,7 @@ class ModelsController < ApplicationController
     #@search = Model.search do
     #  fulltext params[:search]
     #end
-    @models = Model.viewable(current_user).order(sort_column(Model,"title") + " " + sort_direction).page(params[:page])
+    @models = Model.viewable(current_user).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
     @measurements = Measurement.viewable(current_user).custom_sort.page(params[:m_page]).per(10)
     
     respond_with @models
