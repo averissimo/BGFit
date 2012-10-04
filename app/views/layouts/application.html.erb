@@ -19,8 +19,12 @@
 	</head>
 	<body>
 		<div id="fixed-header">
-			<div id="header" <% if Rails.env != "production" %>style="background-color: #7F0000!important;"<%end%>>
-				<% if Rails.env != "production" %><strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong><%else%><strong>KDBIO INESC-ID</strong>&nbsp;&nbsp; Instituto de Engenharia de Sistemas e Computadores Investigação e Desenvolvimento em Lisboa<%end%>
+			<div id="header" <% if Rails.env != "production" && Rails.env == "test"%>style="background-color: #F78400!important;"<<%elsif Rails.env != "production" %>style="background-color: #7F0000!important;"<%end%>>
+				<%- if Rails.env != "production" %>
+				    <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong>
+				<%- else%>
+				    <strong>KDBIO INESC-ID</strong>&nbsp;&nbsp; Instituto de Engenharia de Sistemas e Computadores Investigação e Desenvolvimento em Lisboa
+		        <%- end%>
 			</div>
 				
 			<div id="menu" class="menu" >
