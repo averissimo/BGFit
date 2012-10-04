@@ -1,0 +1,23 @@
+<h1>Listing <%= pluralize(@models.length, Model.model_name.human.downcase)%></h1>
+
+<%= 
+    collection_table(@models, :id => 'models' , :class => 'formatted dataTable-no_sort') do |t|
+        t.header :title,        sortable(Model.human_attribute_name(:title).downcase,Model)
+        t.header :description,  sortable(Model.human_attribute_name(:description).downcase,Model)
+        t.header :show_h,       "", class: "no-sort"
+        t.header :edit_h,       "", class: "no-sort"
+        t.header :destroy_h,    "", class: "no-sort"
+
+        t.rows.alternate = :odd
+        t.rows.each do |row, model, index|
+            # Notice there's no need to explicitly define the title
+            row.title           word_wrap(model.title,:line_width => 40).gsub(/\n/, '<br/>')
+            row.description     model.description_trimmed.gsub(/\n/, '<br/>')
+            row.show_h          link_to t('action.show').downcase, model if can? :read, model
+            row.edit_h          link_to t('action.edit').downcase, [:edit,model] if can? :update, model
+            row.destroy_h       link_to t('action.remove').downcase, model, confirm: 'Are you sure?', method: :delete if can? :destroy, model
+        end
+    end
+%>
+
+<%= paginate @models , remote: true %>

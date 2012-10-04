@@ -6,6 +6,7 @@ class Measurement < ActiveRecord::Base
  
   accepts_nested_attributes_for :lines
   
+  scope :custom_sort, lambda { joins(:experiment => :model).order(Model.arel_table[:title],:date,:title) }
   scope :model_is, lambda { |model| joins(:experiment).where(:experiments => {:model_id=>model.id} ).order(:experiment_id) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:proxy_dyna_models).where(:proxy_dyna_models => {:dyna_model_id=>dyna_model.id} ).order(:experiment_id) }
   scope :experiment_is, lambda { |experiment| where(:experiment_id=>experiment.id).order(:experiment_id) }
@@ -175,10 +176,7 @@ class Measurement < ActiveRecord::Base
       
       exp_cmp = self.experiment.title <=> o.experiment.title
       return exp_cmp unless exp_cmp == 0
-      
-      date_cmp = self.date <=> o.date
-      return date_cmp unless date_cmp == 0
-      
+            
       return self.title <=> o.title
     end
     

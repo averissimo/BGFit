@@ -88,7 +88,7 @@
 <h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
+	collection_table(@experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
 		t.header :title,		Model.human_attribute_name(:title)
 		t.header :description,	Model.human_attribute_name(:description)
 		t.header :show_h,		"", class: "no-sort" if can? :read, @model
@@ -109,6 +109,8 @@
 	end
 %>
 
+<%= paginate @experiments %>
+
 <div class="menu">
 	<%= menu %>
 </div>
@@ -116,13 +118,15 @@
 <h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human)%> <%= t('aux.in')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
 		t.header :experiment
 		t.header :title
 		t.header :date
 		t.header :show_h,		"", class: "no-sort" if @measurements.find { |m| can? :read, m}
 		t.header :csv,			"", class: "no-sort" if @measurements.find { |m| can? :read, m}
 		t.header :regression_h,	"", class: "no-sort" if @measurements.find { |m| can? :regression, m}
+
+        can_regression = 
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -136,3 +140,5 @@
 		end
 	end
 %>
+
+<%= paginate @measurements ,param_name: "m_page" %>

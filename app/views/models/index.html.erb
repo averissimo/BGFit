@@ -33,57 +33,12 @@
 %>
 <% content_for(:title) { t('.title') } %>
 
-<h1>Listing <%= pluralize(@models.length, Model.model_name.human.downcase)%></h1>
+<%= render 'models'%>
 
-<%= 
-	collection_table(@models, :id => 'models' , :class => 'formatted dataTable') do |t|
-		t.header :title,		Model.human_attribute_name(:title)
-		t.header :description,	Model.human_attribute_name(:description)
-		t.header :show_h,		"", class: "no-sort"
-		t.header :edit_h,		"", class: "no-sort"
-		t.header :destroy_h,	"", class: "no-sort"
-
-		t.rows.alternate = :odd
-    	t.rows.each do |row, model, index|
-			# Notice there's no need to explicitly define the title
-			row.title			word_wrap(model.title,:line_width => 40).gsub(/\n/, '<br/>')
-			row.description		model.description_trimmed.gsub(/\n/, '<br/>')
-			row.show_h			link_to t('action.show').downcase, model if can? :read, model
-			row.edit_h			link_to t('action.edit').downcase, [:edit,model] if can? :update, model
-			row.destroy_h		link_to t('action.remove').downcase, model, confirm: 'Are you sure?', method: :delete if can? :destroy, model
-		end
-	end
-%>
 
 <div class="menu">
 	<%= menu %>
 </div>
-<h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human.downcase)%></h3>
-
-<%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
-		t.header :model,		Model.model_name.human
-		t.header :experiment,	Experiment.model_name.human
-		t.header :title,		Measurement.human_attribute_name(:title)
-		t.header :date,			Measurement.human_attribute_name(:date)
-		t.header :show_h,		"", class: "no-sort"
-		t.header :csv,			"", class: "no-sort"
-		t.header :regression_h,	"", class: "no-sort"
-		#t.header :exp,			"", class: "no-sort"
-
-		t.rows.alternate = :odd
-    	t.rows.each do |row, measure, index|
-			# Notice there's no need to explicitly define the title
-			row.model			word_wrap(measure.model.title,:line_width => 40).gsub(/\n/, '<br/>')
-			row.experiment		measure.experiment.title
-			row.title			measure.title
-			row.date			measure.date
-			row.regression_h	link_to t('.regression').downcase, [:regression,measure.experiment,measure] if can? :update, measure
-			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
-			row.csv				link_to t('action.download_data').downcase, experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
-		#	row.exp				link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
-		end
-	end
-%>
-
-
+<div id="measurements_listing">
+<%= render 'measurements/measurements'%>
+</div>

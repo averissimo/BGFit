@@ -1,5 +1,5 @@
 class ModelsController < ApplicationController
-  respond_to :html, :json
+  respond_to :html, :json, :js
   before_filter :authenticate_user!, :except => [:index,:show]
   
   load_and_authorize_resource
@@ -10,10 +10,11 @@ class ModelsController < ApplicationController
   # GET /models
   # GET /models.json
   def index
-    @models = Model.viewable(current_user).order(Model.arel_table[:title])
-    @experiments = Experiment.viewable(current_user)
-    @measurements = Measurement.viewable(current_user)
-    @measurements.sort!
+    @search = Model.search do
+      fulltext params[:search]
+    end
+    @models = Model.search_is(@search).viewable(current_user).order(sort_column(Model,"title") + " " + sort_direction).page(params[:page])
+    @measurements = Measurement.viewable(current_user).custom_sort.page(params[:m_page]).per(10)
     
     respond_with @models
   end
@@ -22,14 +23,9 @@ class ModelsController < ApplicationController
   # GET /models/1.json
   def show
     @model = Model.find(params[:id])
-    @measurements = []
-    @model.experiments.each do | exp |
-      if exp.measurements != nil
-        @measurements = @measurements | exp.measurements
-      end
-    end
-    @measurements.sort!
-    
+    @experiments = @model.experiments.page(params[:page])
+    @measurements = Measurement.model_is(@model).custom_sort.page(params[:m_page]).per(10)
+    #
     respond_with @model
   end
 

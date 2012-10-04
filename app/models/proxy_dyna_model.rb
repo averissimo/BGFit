@@ -16,6 +16,15 @@ class ProxyDynaModel < ActiveRecord::Base
       Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )
     )
   }
+  
+  searchable do
+    text :title, :boost => 5 do
+      title_join
+    end
+    text :description do
+      dyna_model.description
+    end
+  end
 
   #                                       bbbbbbbb                                                
   #                                       b::::::b            lllllll   iiii                      
@@ -119,7 +128,11 @@ class ProxyDynaModel < ActiveRecord::Base
     #  - Accuracy factor
     #  - Bias Factor
     def statistical_data
-      return nil if ( measurement.nil? && experiment.nil? ) || self.json_cache.nil?   # if proxy_dyna_model does not reference a measurement, then it showld not calculate
+      if ( measurement.nil? && experiment.nil? ) || self.json_cache.nil?
+        # if proxy_dyna_model does not reference a measurement, then it showld not calculate
+        logger.info {"[proxy_dyna_model.statistical_data]: #{measurement.nil?} (measurement.nil?) #{experiment.nil?} (experiment.nil?) #{json_cache.nil?} (json_cache.nil?)"}
+        return nil
+      end 
       
       # TODO death phase optional to dyna_model parameter
       size = 0
@@ -135,13 +148,14 @@ class ProxyDynaModel < ActiveRecord::Base
         reference = measurement
         size = measurement_stats(dataset)
       end
-      
+      debugger
       self.bias = 10 ** (dataset[:bias] / size )
       self.accuracy = 10 ** (dataset[:accu] / size )
       self.rmse = Math.sqrt( dataset[:rmse] / size )
       self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]
       self.notes = ""
       self.save
+      logger.info {"[proxy_dyna_model.statistical_data] statistical_data: #{self.rmse} (rmse) #{self.r_square} (r_square) #{self.bias} (bias) #{self.accuracy} (accuracy)"}
       [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
     end
     
@@ -149,53 +163,53 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # @param params parameters' range that will be used in parameter estimation
     def call_estimation_with_custom_params(params,is_post_method=true)
-      # if certain conditions are met this should not be done
-      if (self.measurement.nil? && self.experiment.nil?) || 
-        (self.dyna_model.estimation.nil?) || (self.dyna_model.estimation.blank?)
-        errors.add(:base,'Error: Measurement is null.') if self.measurement.nil?
-        errors.add(:base,'Error: Experiment is null.') if self.experiment.nil?
-        errors.add(:base,'Error: Estimation url is blank.') if self.dyna_model.estimation.nil? || self.dyna_model.estimation.blank? 
-        return
-      end
-      
-      request_hash = estimation_hash( params )
-      begin
-        if is_post_method
-          response = call_http_post(request_hash)
-        else
-          response = call_http_get(request_hash)
-        end    
-        
-        if response.body.blank?
-          clean_stats "empty response"
+      self.transaction do
+        # if certain conditions are met this should not be done
+        if (self.measurement.nil? && self.experiment.nil?) || 
+          (self.dyna_model.estimation.nil?) || (self.dyna_model.estimation.blank?)
+          errors.add(:base,'Error: Measurement is null.') if self.measurement.nil?
+          errors.add(:base,'Error: Experiment is null.') if self.experiment.nil?
+          errors.add(:base,'Error: Estimation url is blank.') if self.dyna_model.estimation.nil? || self.dyna_model.estimation.blank? 
           return
         end
-      
-      rescue Timeout::Error => e
-        # TODO: locale it!
-        clean_stats "timeout while calculating parameters, try again"
-        return
+        
+        request_hash = estimation_hash( params )
+        begin
+          if is_post_method
+            response = call_http_post(request_hash)
+          else
+            response = call_http_get(request_hash)
+          end    
+          
+          if response.body.blank?
+            clean_stats "empty response"
+            return
+          end
+        
+        rescue Timeout::Error => e
+          # TODO: locale it!
+          clean_stats "timeout while calculating parameters, try again", e
+        rescue StandardError::SocketError => e
+          clean_stats "cannot access dyna model, try again in a while and make sure the url is accessible", e
+        else
+          handle_http_response(response,params)
+        end
       end
-      handle_http_response(response,params)
     end
       
     def handle_http_response(response,params)
       begin
         result = JSON.parse( response.body.gsub(/(\n|\t| )/,'') )
-      rescue JSON::ParserError
-        self.transaction do
+      rescue JSON::ParserError => e
           self.json = nil
           # TODO: locale it!
-          clean_stats('Error: Error when calling estimator.')
+          clean_stats('Error: Error when calling estimator.',e)
           return
-        end 
       end
       if result["error"]
-        self.transaction do
-          self.json = nil
-          clean_stats(result["error"])
-          return
-        end
+        self.json = nil
+        clean_stats(result["error"])
+        return
       end
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
@@ -213,8 +227,14 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # @return json results
     def json_cache
-      return self.json unless self.json.nil?
-      return nil if self.call_solver.nil?
+      unless self.json.nil?
+        logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
+        return self.json
+      end 
+      if self.call_solver.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
+        return nil
+      end 
       self.statistical_data 
       self.json
     end
@@ -223,36 +243,42 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # @param time [int] safety measure allowing to adjust timescale in solver in case of errors
     def call_solver(time=nil)
-          
-      request_hash = solver_url(time)
-      # TODO better handle this
-      return if request_hash.nil?
-
-      begin    
+      self.transaction do
+        request_hash = solver_url(time)
+        # TODO better handle this
+        if request_hash.nil?
+          logger.info {"[proxy_dyna_model.call_solver]: request hash is nil"}
+          return
+        end 
+  
+        begin    
           response = call_http_get(request_hash)
-     rescue Timeout::Error
-        self.notes = "timeout while simulating, try again"
-        self.json = nil
+        rescue Timeout::Error => e
+          self.notes = "timeout while simulating, try again"
+          logger.info {"[proxy_dyna_model.call_solver]: #{self.notes} + #{e.message}"}
+          self.json = nil
+          self.save
+          return
+        rescue URI::InvalidURIError => e
+          logger.info {"[proxy_dyna_model.call_solver]: invalid URI + #{e.message}"}
+          self.json = nil
+          self.save
+          return
+        end
+        temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
+        if temp_json["error"]
+            clean_stats( "Error while simulating data: " + temp_json["error"].to_s )
+        elsif temp_json["result"]
+          self.notes = nil
+          self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" unless (temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }).nil?
+          temp_json["result"].reject!{ |q| q[1]=='_NaN_'  }
+          self.json = temp_json["result"].to_s.gsub(/ /,'')
+        else
+          clean_stats( "Error while simulating data" )
+        end
         self.save
-        return
-      rescue URI::InvalidURIError
-        self.json = nil
-        self.save
-        return
+        self.json
       end
-      temp_json = JSON.parse( response.body.gsub(/(\n|\t)/,'') )
-      if temp_json["error"]
-          clean_stats( "Error while simulating data: " + temp_json["error"].to_s )
-      elsif temp_json["result"]
-        self.notes = nil
-        self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" unless (temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }).nil?
-        temp_json["result"].reject!{ |q| q[1]=='_NaN_'  }
-        self.json = temp_json["result"].to_s.gsub(/ /,'')
-      else
-        clean_stats( "Error while simulating data" )
-      end
-      self.save
-      self.json
     end
     
     #
@@ -348,7 +374,8 @@ class ProxyDynaModel < ActiveRecord::Base
     # Clean statistical information from the object in one transaction
     #
     # @param note [String] a note that will be saved with an error/warning/info
-    def clean_stats(note)
+    def clean_stats(note,exception=nil)
+      logger.info {"[proxy_dyna_model.clean_stats]: #{note}. #{if exception.present? then exception.message end}"}
       self.transaction do
         self.json = nil
         self.rmse = nil
@@ -469,8 +496,8 @@ class ProxyDynaModel < ActiveRecord::Base
     # @param url indicates the web address
     def call_http_get(request_hash)
       uri = URI(estimation_url(request_hash))
-      
-      logger.info "URL (GET): #{uri.to_s}"
+     
+      logger.info {"[proxy_dyna_model.call_http_get] #{uri.to_s}"}
       
       request = Net::HTTP::Get.new uri.request_uri
       res = call_http_generic( uri , request )
@@ -479,7 +506,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def call_http_post(request_hash)
       uri = URI(request_hash.delete(:url))
       
-      logger.info "URL (POST): #{uri.to_s} / form: #{request_hash.inspect}" 
+      logger.info {"[proxy_dyna_model.call_http_post] #{uri.to_s} / form: #{request_hash.inspect}"} 
       request = Net::HTTP::Post.new uri.request_uri
       request.set_form_data(request_hash)
       res = call_http_generic( uri , request )
@@ -524,7 +551,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def estimation_url( request_hash )
       unless request_hash.has_key?(:url)
         errors.add(:base,'Error: url was not given.')
-        logger.error("Error: url was not given: #{request_hash.inspect}")
+        logger.error {"[proxy_dyna_model.estimation_url] Error: url was not given: #{request_hash.inspect}"}
         return
       end
       url = "#{request_hash.delete(:url)}"
@@ -571,22 +598,26 @@ class ProxyDynaModel < ActiveRecord::Base
     
     # helper method to calculate statistical for experiment
     def experiment_stats(dataset)
+      logger.info {"[proxy_dyna_model.experiment_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
       experiment.measurements.each do |m|
         dataset[:lines] = m.lines_no_death_phase(self.no_death_phase)
         size += dataset[:lines].size
         dataset = statistical_data_measurement( dataset )
       end
+      logger.info {"[proxy_dyna_model.experiment_stats] #{dataset.inspect}"}
       size
     end
     
     # helper method to calculate statistical for measurement
     #
     def measurement_stats(dataset)
+      logger.info {"[proxy_dyna_model.measurement_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
       dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
       size += dataset[:lines].size
       dataset = statistical_data_measurement( dataset )
+      logger.info {"[proxy_dyna_model.measurement_stats] #{dataset.inspect}"}
       size
     end
     
@@ -597,6 +628,7 @@ class ProxyDynaModel < ActiveRecord::Base
     # @see #statistical_data
     def statistical_data_measurement( hash )
       json_parsed = JSON.parse(self.json) # array of [x,y]
+      
       begin
         simulated_value = json_parsed.shift
         prev_sim_value = nil

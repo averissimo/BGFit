@@ -43,8 +43,8 @@ gem 'formtastic'
 # gem 'capistrano'
 
 # To use debugger
-gem 'ruby-debug19', :require => 'ruby-debug'
-
+#gem 'ruby-debug19', :require => 'ruby-debug'
+gem 'debugger', group: ['development','test']
 group :test do
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
@@ -57,3 +57,10 @@ gem 'simple-navigation', github: 'andi/simple-navigation'
 gem 'table_helper', github: 'rchekaluk/table_helper'
 
 gem 'strong_parameters'
+
+#gem 'will_paginate', '~> 3.0.0'
+
+gem 'sunspot_rails'
+gem 'sunspot_solr' # optional pre-packaged Solr distribution for use in development
+
+gem 'kaminari'
