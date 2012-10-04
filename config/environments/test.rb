@@ -8,7 +8,7 @@ BacteriaGrowth::Application.configure do
   config.action_controller.relative_url_root = "/test"
   config.cache_classes = true
 
-  config.action_controller.relative_url_root = "/rails/bacteria_growth"
+  config.action_controller.relative_url_root = "/test"
 
 
   # Configure static asset server for tests with Cache-Control for performance
