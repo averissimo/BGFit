@@ -1,5 +1,20 @@
 module ApplicationHelper
   
+  def total_pages(count)
+   if count > 1
+     " in #{count} pages"
+   else
+     ""
+   end 
+  end
+  
+  def sortable(column, klass, prefix="",title=nil)
+    title ||= column.titleize
+    css_class = column == sort_column(klass) ? "current #{sort_direction}" : nil
+    direction = column == sort_column(klass) && sort_direction == "asc" ? "desc" : "asc"     
+    link_to title, {"#{prefix}sort" => column, "#{prefix}direction" => direction}, {:class => css_class}
+  end
+  
   def javascript(*files)
     content_for(:head) { javascript_include_tag(*files) }
   end

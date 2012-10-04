@@ -1,6 +1,6 @@
 class ParamsController < ApplicationController
 
-  load_and_authorize_resource  
+  load_and_authorize_resource :except => [:new,:create]
 
   respond_to :html, :json
   before_filter :authenticate_user!, :except => [:index,:show]
@@ -16,13 +16,15 @@ class ParamsController < ApplicationController
 
   def new
     @dyna_model = DynaModel.find(params[:dyna_model_id])
+    authorize! :update, @dyna_model
     @param = @dyna_model.params.build
     respond_with [@dyna_model,@param]
   end
 
   def create
     @dyna_model = DynaModel.find(params[:dyna_model_id])
-    @param = Param.new(params[:param])
+    authorize! :update, @dyna_model
+    @param = @dyna_model.params.build(params[:param])
     @param.dyna_model = @dyna_model
 
     @dyna_model.transaction do
@@ -36,7 +38,7 @@ class ParamsController < ApplicationController
         end
       end
     end
-
+  
   end
   
   

@@ -1,0 +1,31 @@
+
+<h3><%= t('aux.listing')%> <%= pluralize(@measurements.total_count, Measurement.model_name.human.downcase)%><%= total_pages @measurements.total_pages%></h3>
+
+<%= 
+    collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
+        t.header :model,        Model.model_name.human
+        t.header :experiment,   Experiment.model_name.human
+        t.header :title,        Measurement.human_attribute_name(:title)
+        t.header :date,         Measurement.human_attribute_name(:date)
+        t.header :show_h,       "", class: "no-sort"
+        t.header :csv,          "", class: "no-sort"
+        t.header :regression_h, "", class: "no-sort"
+        #t.header :exp,         "", class: "no-sort"
+
+        t.rows.alternate = :odd
+        t.rows.each do |row, measure, index|
+            # Notice there's no need to explicitly define the title
+            row.model           word_wrap(measure.model.title,:line_width => 40).gsub(/\n/, '<br/>')
+            row.experiment      measure.experiment.title
+            row.title           measure.title
+            row.date            measure.date
+            row.regression_h    link_to t('.regression').downcase, [:regression,measure.experiment,measure] if can? :update, measure
+            row.show_h          link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
+            row.csv             link_to t('action.download_data').downcase, experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
+        #   row.exp             link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
+        end
+    end
+%>
+
+<%= paginate @measurements,param_name: "m_page" , remote: true, update: "measurements" %>
+

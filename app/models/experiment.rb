@@ -12,6 +12,11 @@ class Experiment < ActiveRecord::Base
   
   has_paper_trail
   
+  searchable do
+    text :title, :boost => 5
+    text :description
+  end
+  
   public
   
   def compare(dyna_model_id)

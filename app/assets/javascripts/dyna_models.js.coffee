@@ -6,7 +6,6 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
-
 jQuery ->
   $('.check-all').live 'click' , (event) =>
     target = $(event.currentTarget)
@@ -61,59 +60,6 @@ if typeof google isnt 'undefined'
         wrapper.children('.chart').css("height",options.height)
         process_chart(wrapper.children('.chart'))
       false
-
-
-jQuery ->
-  $.fn.dataTableExt.sErrMode = "throw"
-  try
-    $('.dataTable-complex').dataTable
-      "aoColumnDefs": [ 
-        { "bSortable": false, "aTargets": [ "no-sort" ] },
-      ],
-      bJQueryUI: true
-  catch error
-    #
-  try    
-    $('.dataTable').dataTable
-      "aoColumnDefs": [ 
-        { "bSortable": false, "aTargets": [ "no-sort" ] },
-      ],
-      bPaginate: false, 
-      bFilter: false,
-      bJQueryUI: true    
-  catch error
-    #
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

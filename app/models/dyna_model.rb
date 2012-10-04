@@ -9,7 +9,12 @@ class DynaModel < ActiveRecord::Base
   validates :title, :solver, :presence => true
   
   has_paper_trail
-
+  
+  searchable do
+    text :title, :boost => 5
+    text :description
+  end
+  
   public
   #
   def description_trimmed
