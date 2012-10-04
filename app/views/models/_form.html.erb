@@ -4,6 +4,15 @@
   <%= f.inputs do %>
   	<%= f.input :title %>
   	<%= f.input :description, as: :text %>
+  	<%= f.input :is_published, as: :boolean %>
+  	<%- if permitted_params.model_attributes.include?(:owner_id) %>
+  	<%= f.input :owner, as: :select, 
+  	 collection: User.all, 
+  	 member_label: :email
+    %>
+  	<%- end%>
+  	
+  	
   <% end %>
 
   <%= f.actions do %>

@@ -7,15 +7,7 @@
 			:name => 'Edit this proxy dyna model', 
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
-			:key => :model, 
-			:name => 'Goto dyna model', 
-			:url => url_for([@proxy_dyna_model.dyna_model]),
-			:options => {
+				:if => Proc.new { can?(:calculate, @proxy_dyna_model) },
 				:container_class => 'menu',
 				:class => "text"
 			}
@@ -27,6 +19,15 @@
 			:options => {
 				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
 				:container_class => 'menu',
+				:class => ("text" if can?(:calculate, @proxy_dyna_model))
+			}
+		},
+		{
+			:key => :model, 
+			:name => 'Goto dyna model', 
+			:url => url_for([@proxy_dyna_model.dyna_model]),
+			:options => {
+				:container_class => 'menu',
 				:class => "text"
 			}
 		}
@@ -36,7 +37,7 @@
 %>
 <% content_for(:title) { "Dyna Model's detail" } %>
 
-<h1><%= @proxy_dyna_model.dyna_model.title %> (dyna model)</h1>
+<h1><%= @proxy_dyna_model.title_join %></h1>
 
 <% if !@proxy_dyna_model.measurement.nil? %>
 <h3><%= @proxy_dyna_model.measurement.model.title %> model's description for <%= @proxy_dyna_model.measurement.title %> measurement:</h3>
@@ -45,7 +46,7 @@
 </p>
 
 <% end%>
-<h3>Dynamic model description</h3>
+<h3>Description</h3>
 
 <p>
   <%= simple_format (show (@proxy_dyna_model.dyna_model.description)) %>
@@ -82,8 +83,8 @@
 				row.title 	param.param.human_title.html_safe
 				row.value	param.value, :class => "highlight"
 				row.description	param.param.description
-				row.bottom 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_bottom", param.bottom) end )
-				row.top 	(if param.param.output_only then "(n/a)" else text_field_tag( param.param.id.to_s+"_top", param.top ) end )
+				row.bottom 	range_value(param.bottom,param,'_bottom')
+				row.top 	range_value(param.top,param,'_top')
 			end
 		end %>
 	</div>
@@ -93,6 +94,7 @@
 		<thead>
 			<tr>
 				<th class="no-sort" scope="col">RMSE</th>
+				<th class="no-sort" scope="col">R<sup>2</sup></th>
 				<th class="no-sort" scope="col">Bias</th>
 				<th class="no-sort" scope="col">Accuracy</th>
 			</tr>
@@ -100,15 +102,22 @@
 		<tbody>
 			<tr>
 				<td><%= @proxy_dyna_model.rmse%></td>
+				<td><%= @proxy_dyna_model.r_square%></td>
 				<td><%= @proxy_dyna_model.bias%></td>
 				<td><%= @proxy_dyna_model.accuracy%></td>
 			</tr>
 		</tbody>
 	</table>
+	<%- if can? :calculate, @proxy_dyna_model %>
 	<%= button_tag "Recalculate Parameters" , disable_with: "calculating, please wait..." %>
+	<%- end %>
 </div>
 
 <% end %>
+
+<div class="menu">
+	<%= menu %>
+</div>
 
 <%- if !@proxy_dyna_model.rmse.nil? || !@proxy_dyna_model.rmse.blank? %>
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
@@ -120,7 +129,7 @@
 	</div>
 	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
 	<div style="display:none;" class="model-data">
-		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.dyna_model.title%></div>
+		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.title%></div>
 	</div>
 	<div style="display:none;" class="measurement-data">
 		<% if @proxy_dyna_model.measurement.nil? %>
@@ -134,9 +143,7 @@
 
 </div>
 <%- end %>
-<div class="menu">
-	<%= menu %>
-</div>
+
 
 
 

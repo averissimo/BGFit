@@ -1,0 +1,14 @@
+<%= semantic_form_for([@group,@membership]) do |f| %>
+  <%= f.semantic_errors :state %>
+
+  <%= f.inputs do %>
+  	<%= f.input :user_email, :as => :email,:required => true %>
+  <% end %>
+
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link %>	
+  <% end%>
+<% end %>
+
+<div class="clear"></div>

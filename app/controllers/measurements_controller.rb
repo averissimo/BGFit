@@ -4,6 +4,11 @@ class MeasurementsController < ApplicationController
   before_filter :determine_models , :only => [ :show, :edit, :destroy, :update, :update_regression, :regression ]
   before_filter :authenticate_user!, :except => [:index,:show]
 
+  load_and_authorize_resource :except => [:new,:create]
+
+  #TODO move to initializer once all controllers have this support
+  include ActiveModel::ForbiddenAttributesProtection
+  
   # GET /measurements
   # GET /measurements.json
   def index
@@ -20,7 +25,7 @@ class MeasurementsController < ApplicationController
   # GET /measurements/1
   # GET /measurements/1.json
   def show
-    @log_flag = params[:log]  
+    @log_flag = params[:log] == "true"
     respond_with(@experiment,@measurement) do |format|
       format.csv { 
         csv = render_to_string :csv => @measurement
@@ -57,6 +62,8 @@ class MeasurementsController < ApplicationController
     @model = @experiment.model
     date = @experiment.measurements.last.date if @experiment.measurements.length > 0
     @measurement = @experiment.measurements.build
+    
+    authorize! :update, @experiment
     if @experiment.measurements.length > 0
       @measurement.date = date
     end
@@ -74,9 +81,11 @@ class MeasurementsController < ApplicationController
   def create
     @experiment = Experiment.find(params[:experiment_id])
     @model = @experiment.model
-    @measurement = Measurement.new(params[:measurement])
+    @measurement = Measurement.new(permitted_params.measurement)
     @measurement.experiment = @experiment
     @measurement.convert_original_data
+
+    authorize! :create, @measurement
 
     respond_with(@experiment,@measurement) do |format|
       if @measurement.save
@@ -92,7 +101,7 @@ class MeasurementsController < ApplicationController
   # PUT /measurements/1
   # PUT /measurements/1.json
   def update
-    @measurement.assign_attributes(params[:measurement])
+    @measurement.assign_attributes(permitted_params.measurement)
     #@measurement.convert_original_data
     
     respond_with(@experiment,@measurement) do |format|
@@ -107,7 +116,7 @@ class MeasurementsController < ApplicationController
 
   def update_regression
     respond_with(@experiment,@measurement) do |format|
-      if @measurement.update_attributes(params[:measurement])
+      if @measurement.update_attributes(permitted_params.measurement)
         format.html { render action: "regression" }
       else
         format.html { render action: "regression" }

@@ -5,6 +5,7 @@
 			:name => t('navigation.new' , model: Experiment.model_name.human), 
 			:url => url_for([:new,@model,:experiment]),
 			:options => {
+				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
 				:class => "btn"
 			}
@@ -14,6 +15,17 @@
 			:name => t('action.edit'), 
 			:url => url_for([:edit,@model]),
 			:options => {
+				:if => Proc.new { can?(:update, @model) },
+				:container_class => 'menu',
+				class: "text"
+			}
+		},
+		{
+			:key => :new_group, 
+			:name => 'Associate team', 
+			:url => new_model_accessible_path(@model),
+			:options => {
+				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
 				class: "text"
 			}
@@ -24,7 +36,7 @@
 			:url => models_path,
 			:options => {
 				:container_class => 'menu',
-				:class => "text"
+				:class => ("text" if can?(:update, @model))
 		}}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
@@ -35,32 +47,69 @@
 
 <h3><%= Model.human_attribute_name(:description)%></h3>
 <p>
+<%- if @model.description.nil? || @model.description.blank? %>
+(no description provided)
+<%- else %>
   <%= simple_format @model.description %>
+<%- end %>
+</p>
+<h3>
+	Domain
+</h3>
+<p><%= Model.human_attribute_name(:owner) %>:  <%= @model.owner.email_at %></p>
+<p>
+<%- if @model.is_published %>
+  <%= Model.model_name.human %> is public
+<%- else %>
+  <%= Model.model_name.human %> is not yet public
+<%- end %>
+<%- # TODO: add can edit? 
+%>
+<h4>Teams with access</h4>
+  <%= 
+	collection_table(@model.accessibles, :id => 'teams' , :class => 'formatted dataTable') do |t|
+		t.header :title,		Group.human_attribute_name(:title)
+		t.header :permission_level,	Group.human_attribute_name(:permission_level)
+		t.header :destroy_h,	"", class: "no-sort"
+
+		t.rows.alternate = :odd
+    	t.rows.each do |row, accesible, index|
+			# Notice there's no need to explicitly define the title
+			row.title			accesible.group.title
+			row.permission_level		accesible.permission_human
+			row.destroy_h		link_to t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete
+		end
+	end
+%>
+
+
 </p>
 
 <h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@model.experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
+	collection_table(@experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
 		t.header :title,		Model.human_attribute_name(:title)
 		t.header :description,	Model.human_attribute_name(:description)
-		t.header :show_h,		"", class: "no-sort"
+		t.header :show_h,		"", class: "no-sort" if can? :read, @model
 		#t.header :exp_h,		"", class: "no-sort"
-		t.header :edit_h,		"", class: "no-sort"
-		t.header :destroy_h,	"", class: "no-sort"
+		t.header :edit_h,		"", class: "no-sort" if can? :update, @model
+		t.header :destroy_h,	"", class: "no-sort" if can? :update, @model
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, experiment, index|
 			# Notice there's no need to explicitly define the title
 			row.title			experiment.title
 			row.description		experiment.description
-			row.show_h			link_to t('action.show').downcase, [@model,experiment]
-			row.edit_h			link_to t('action.edit').downcase, [:edit,@model,experiment]
+			row.show_h			link_to t('action.show').downcase, [@model,experiment] if can? :read, experiment
+			row.edit_h			link_to t('action.edit').downcase, [:edit,@model,experiment] if can? :update, experiment
 			#row.exp_h			link_to 'download .exp' , model_experiment_path(@model,experiment,:format => :exp)
-			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete
+			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete if can? :destroy, experiment
 		end
 	end
 %>
+
+<%= paginate @experiments %>
 
 <div class="menu">
 	<%= menu %>
@@ -69,13 +118,15 @@
 <h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human)%> <%= t('aux.in')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
+	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
 		t.header :experiment
 		t.header :title
 		t.header :date
-		t.header :show_h,		"", class: "no-sort"
-		t.header :regression_h,	"", class: "no-sort"
-		t.header :csv,			"", class: "no-sort"
+		t.header :show_h,		"", class: "no-sort" if @measurements.find { |m| can? :read, m}
+		t.header :csv,			"", class: "no-sort" if @measurements.find { |m| can? :read, m}
+		t.header :regression_h,	"", class: "no-sort" if @measurements.find { |m| can? :regression, m}
+
+        can_regression = 
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measure, index|
@@ -83,9 +134,11 @@
 			row.experiment		measure.experiment.title
 			row.title			measure.title
 			row.date			measure.date
-			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure]
-			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure]
-			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv)
+			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure] if can? :regression, measure
+			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
+			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
 		end
 	end
 %>
+
+<%= paginate @measurements ,param_name: "m_page" %>

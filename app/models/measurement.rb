@@ -6,13 +6,43 @@ class Measurement < ActiveRecord::Base
  
   accepts_nested_attributes_for :lines
   
+  scope :custom_sort, lambda { joins(:experiment => :model).order(Model.arel_table[:title],:date,:title) }
   scope :model_is, lambda { |model| joins(:experiment).where(:experiments => {:model_id=>model.id} ).order(:experiment_id) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:proxy_dyna_models).where(:proxy_dyna_models => {:dyna_model_id=>dyna_model.id} ).order(:experiment_id) }
   scope :experiment_is, lambda { |experiment| where(:experiment_id=>experiment.id).order(:experiment_id) }
-  
-  has_paper_trail
-  
+  scope :viewable, lambda { |user| joins(:experiment).where( Experiment.arel_table[:model_id].in( Model.viewable(user).map { |m| m.id } )) }
+ 
+  has_paper_trail :skip => [:original_data]
+
   public
+
+    def build_proxy_dyna_model(dyna_model,log_flag=true,no_death_phase=true)
+      p = self.proxy_dyna_models.build
+      p.dyna_model_id = dyna_model.id
+      p.log_flag = log_flag
+      p.no_death_phase = no_death_phase
+      p.save
+    end
+
+    def minor_step_cache
+      determine_minor_step if minor_step.nil?
+      result = read_attribute(:minor_step)
+      result
+    end
+    
+    def determine_minor_step
+      prev_l = nil
+      minor_step = nil
+      lines_temp = lines_no_death_phase(false).each do |l|
+        unless prev_l.nil?
+          minor_step_temp = (l.x - prev_l.x).abs
+          minor_step = minor_step_temp if minor_step.nil? || minor_step > minor_step_temp
+        end
+        prev_l = l    
+      end
+      self.minor_step = minor_step
+      self.save
+    end
   
     def get_proxy_dyna_model_with_dyna_model(dyna_model)
       ProxyDynaModel.where(:measurement_id=>self.id,:dyna_model_id=>dyna_model.id).first
@@ -146,10 +176,15 @@ class Measurement < ActiveRecord::Base
       
       exp_cmp = self.experiment.title <=> o.experiment.title
       return exp_cmp unless exp_cmp == 0
-      
-      date_cmp = self.date <=> o.date
-      return date_cmp unless date_cmp == 0
-      
+            
       return self.title <=> o.title
+    end
+    
+    def can_view(user)
+      experiment.model.can_view(user)
+    end
+    
+    def can_edit(user)
+      experiment.model.can_edit(user)
     end
 end

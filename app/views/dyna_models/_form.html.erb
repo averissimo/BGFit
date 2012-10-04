@@ -5,6 +5,9 @@
   	<%= f.input :title %>
   	<%= f.input :solver , as: :url %>
   	<%= f.input :estimation, as: :url %>
+  	<%- if @dyna_model.owner_id == current_user.id || @dyna_model.new_record? %> 
+  	<%= f.input :only_owner_can_change, as: :boolean, hint: "lock the model, allowing only the owner to edit it." %>
+  	<%- end %>
   	<%= f.input :description, as: :text %>
   	<%= f.input :definition, as: :text %>
   <% end %>

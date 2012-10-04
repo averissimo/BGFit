@@ -1,8 +1,12 @@
 BacteriaGrowth::Application.routes.draw do
 
-  devise_for :users , path_names: { sign_in: "login" , sign_out: "logout"} 
+  devise_for :users , path_names: { sign_in: "login" , sign_out: "logout"}
 
   match "/delayed_job" => DelayedJobWeb, :anchor => false
+
+  resources :groups, path: :teams do
+    resources :memberships, :only => [:new, :create, :destroy]
+  end
 
   resources :dyna_models do
     resources :params
@@ -12,11 +16,12 @@ BacteriaGrowth::Application.routes.draw do
       put :calculate
     end
   end
- 
-  resources :models do
+
+  resources :models, path: :projects do
     resources :experiments
+    resources :accessibles, :only => [:new, :create, :destroy]
   end
-    
+
   resources :experiments, :except => [:new, :create] do
     resources :measurements do
       member do
@@ -26,13 +31,13 @@ BacteriaGrowth::Application.routes.draw do
     end
     resources :proxy_dyna_models, :only => [:new, :create]
   end
-  
+
   resources :measurements, :except => [:new, :create] do
       resources :lines
       #
       resources :proxy_dyna_models
     end
-  
+
   resources :proxy_dyna_models, :except => [:new, :create] do
     member do
       put :calculate
@@ -40,7 +45,7 @@ BacteriaGrowth::Application.routes.draw do
     resources :proxy_params
   end
 
-    
+
   root :to => "home#index"
 
   # The priority is based upon order of creation:

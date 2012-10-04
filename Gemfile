@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.3'
+
+gem 'rails', '3.2.8'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -9,7 +10,7 @@ gem 'mysql2'
 
 gem 'paper_trail'
 
-gem 'blankslate'
+gem 'blankslate' # required by table_helper
 gem 'hirb'
 gem 'fancy_irb'
 gem 'wirb'
@@ -17,8 +18,8 @@ gem 'wirb'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.1.5'
-  gem 'coffee-rails', '~> 3.1.1'
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
 end
 
@@ -42,8 +43,8 @@ gem 'formtastic'
 # gem 'capistrano'
 
 # To use debugger
-gem 'ruby-debug19', :require => 'ruby-debug'
-
+#gem 'ruby-debug19', :require => 'ruby-debug'
+gem 'debugger', group: ['development','test']
 group :test do
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
@@ -51,3 +52,15 @@ end
 
 
 gem 'devise'
+gem 'cancan', github: 'ryanb/cancan', branch: '2.0'
+gem 'simple-navigation', github: 'andi/simple-navigation'
+gem 'table_helper', github: 'rchekaluk/table_helper'
+
+gem 'strong_parameters'
+
+#gem 'will_paginate', '~> 3.0.0'
+
+gem 'sunspot_rails'
+gem 'sunspot_solr' # optional pre-packaged Solr distribution for use in development
+
+gem 'kaminari'

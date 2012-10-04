@@ -1,14 +1,21 @@
 class ModelsController < ApplicationController
-  respond_to :html, :json
+  respond_to :html, :json, :js
   before_filter :authenticate_user!, :except => [:index,:show]
+  
+  load_and_authorize_resource
+  
+  #TODO move to initializer once all controllers have this support
+  include ActiveModel::ForbiddenAttributesProtection
   
   # GET /models
   # GET /models.json
   def index
-    @models = Model.find(:all, :order=> :title)
-    @experiments = Experiment.all
-    @measurements = Measurement.all
-    @measurements.sort!
+    # Full text support using sunspot gem and solr
+    #@search = Model.search do
+    #  fulltext params[:search]
+    #end
+    @models = Model.viewable(current_user).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
+    @measurements = Measurement.viewable(current_user).custom_sort.page(params[:m_page]).per(10)
     
     respond_with @models
   end
@@ -17,14 +24,9 @@ class ModelsController < ApplicationController
   # GET /models/1.json
   def show
     @model = Model.find(params[:id])
-    @measurements = []
-    @model.experiments.each do | exp |
-      if exp.measurements != nil
-        @measurements = @measurements | exp.measurements
-      end
-    end
-    @measurements.sort!
-    
+    @experiments = @model.experiments.page(params[:page])
+    @measurements = Measurement.model_is(@model).custom_sort.page(params[:m_page]).per(10)
+    #
     respond_with @model
   end
 
@@ -44,7 +46,9 @@ class ModelsController < ApplicationController
   # POST /models
   # POST /models.json
   def create
-    @model = Model.new(params[:model])
+    @model = Model.new(permitted_params.model)
+    @model.owner = current_user
+    
     respond_with @model do | format |
       if @model.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Model")
@@ -59,9 +63,9 @@ class ModelsController < ApplicationController
   # PUT /models/1.json
   def update
     @model = Model.find(params[:id])
-
+    
     respond_with @model do |format|
-      if @model.update_attributes(params[:model])
+      if @model.update_attributes(permitted_params.model)
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Model")
       else
         format.html { render action: "edit" }
@@ -78,4 +82,5 @@ class ModelsController < ApplicationController
     @model.destroy
     respond_with(@model, :location => models_path)
   end
+  
 end

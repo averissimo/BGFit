@@ -12,7 +12,7 @@
 		},
 		{
 			:key => :home, 
-			:name => 'Goto experiment', 
+			:name => t('navigation.goto' , destination: Experiment.model_name.human.pluralize.downcase),
 			:url => url_for([@model,@experiment]),
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },

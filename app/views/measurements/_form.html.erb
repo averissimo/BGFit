@@ -10,6 +10,9 @@
   	<%- else %>
   	<%= f.input :original_data, as: :text , :input_html => { :disabled => true  }%>
   	<%- end %>
+  	<%- if permitted_params.measurement_attributes.include? :minor_step %>
+  	 <%= f.input :minor_step %>
+  	<%- end %>
   <% end %>
 
   <%= f.actions do %>

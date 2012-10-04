@@ -5,6 +5,7 @@
 			:name => t('action.dyna_model.estimate'),
 			:url => estimate_dyna_model_path(@dyna_model),
 			:options => {
+				:if => Proc.new { can?(:estimate, @dyna_model) },
 				:container_class => 'menu',
 				:class => "btn"
 			}
@@ -14,6 +15,7 @@
 			:name => t('action.dyna_model.statistical_data'),
 			:url => stats_dyna_model_path(@dyna_model),
 			:options => {
+				:if => Proc.new { can?(:stats, @dyna_model) },
 				:container_class => 'menu',
 				:class => "btn"
 			}
@@ -23,8 +25,9 @@
 			:name => t('action.edit'), 
 			:url => edit_dyna_model_path(@dyna_model),
 			:options => {
+				:if => Proc.new { can?(:edit, @dyna_model) },
 				:container_class => 'menu',
-				:class => "text"
+				:class => ("text" if can?(:estimate, @dyna_model) || can?(:stats,@dyna_model))
 			}
 		},
 		{
@@ -32,6 +35,7 @@
 			:name => t('action.dyna_model.new'),
 			:url => new_dyna_model_param_path(@dyna_model),
 			:options => {
+				:if => Proc.new { can?(:update, @dyna_model) },
 				:container_class => 'menu',
 				:class => "text"
 			}
@@ -42,7 +46,7 @@
 			:url => dyna_models_path,
 			:options => {
 				:container_class => 'menu',
-				:class => "text"
+				:class => ("text" if can?( :update,@dyna_model) || can?(:estimate, @dyna_model) || can?(:stats,@dyna_model))
 			}
 		},
 		{
@@ -70,7 +74,7 @@
 %>
 <% content_for(:title) { t('title.detail' , model: DynaModel.model_name.human) } %>
 
-<h1><%= @dyna_model.title %></h1>
+<h1><%= @dyna_model.title %><%- if @dyna_model.only_owner_can_change then %> (locked by owner)<%- end %></h1>
 
 <h3><%= DynaModel.human_attribute_name(:solver) %></h3>
 <p>

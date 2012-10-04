@@ -70,7 +70,7 @@ class ProxyParam < ActiveRecord::Base
   private
   
   def reset_all_params
-    self.proxy_dyna_model.reset
+    self.proxy_dyna_model.perform_clean_stats
   end
   
 end

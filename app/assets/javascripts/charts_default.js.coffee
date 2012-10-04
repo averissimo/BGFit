@@ -67,8 +67,15 @@ if typeof google isnt 'undefined'
       true
     
     process_google_chart = (el,data) ->
-      v_max = Math.max.apply(null, [data.getColumnRange(1).max , data.getColumnRange(2).max])
-      v_min = Math.min.apply(null, [data.getColumnRange(1).min , data.getColumnRange(2).min])
+      
+      v_max_arr = for num in [1..(data.getNumberOfColumns()-1)]
+        do ->
+          data.getColumnRange(num).max
+      v_min_arr = for num in [1..(data.getNumberOfColumns()-1)]
+        do ->
+          data.getColumnRange(num).min
+      v_max = Math.max.apply(null, v_max_arr)
+      v_min = Math.min.apply(null, v_min_arr)
       offset = Math.abs( v_max - v_min ) * OFFSET_RATIO
       v_max = v_max + offset
       if v_min - offset < 0 && v_min >= 0
@@ -118,6 +125,7 @@ if typeof google isnt 'undefined'
     data_add = (data, list) ->
       list.forEach (i) => 
         l = data.addColumn 'number' , i.title , i.id
+#        alert_flag = 0
         rows = []
         i.rows.forEach (j) =>
           #
@@ -125,9 +133,16 @@ if typeof google isnt 'undefined'
             row = []
           else
             row = (null for num in [1..l-1])
-          row.unshift j.c[0].v
-          row.push j.c[1].v
-          rows.push row
+          if j.c[0].v != "-_Inf_" && j.c[1].v != "-_Inf_" 
+            row.unshift j.c[0].v
+            row.push j.c[1].v
+            rows.push row
+#          else if alert_flag == 0
+#            if j.c[0].v == "-_Inf_"
+#              alert_flag = j.c[0].v
+#            else
+#              alert_flag = j.c[1].v
+#            alert 'Attention: ' + i.title + ' has ' + alert_flag + ' values!'
         #
         data.addRows rows
       data
@@ -176,6 +191,7 @@ if typeof google isnt 'undefined'
             
             list.forEach (i) => 
               l = data.addColumn 'number' , i.title , i.title.toLowerCase()
+#              alert_flag = 0
               if options.series == undefined
                 options.series = {}
               temp = { lineWidth: 3, pointSize: 0}
@@ -188,9 +204,16 @@ if typeof google isnt 'undefined'
                   row = []
                 else
                   row = (null for num in [1..l-1])
-                row.unshift j[0]
-                row.push j[1]
-                rows.push row
+                if j[0] != "-_Inf_" && j[1] != "-_Inf_" 
+                  row.unshift j[0]
+                  row.push j[1]
+                  rows.push row
+#                else if alert_flag == 0
+#                  if j[0] == "-_Inf_"
+#                    alert_flag = j.c[0]
+#                  else
+#                    alert_flag = j[1]
+#                  alert 'Attention: ' + i.title + ' has ' + alert_flag + ' values!'
               #
               data.addRows rows
             #

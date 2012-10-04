@@ -8,9 +8,15 @@ class Experiment < ActiveRecord::Base
   
   scope :model_is, lambda { |model| where(:model_id=>model.id).order(:model_id) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}).group('experiments.id').order(:model_id) }
-
+  scope :viewable, lambda { |user| where( Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )) }
   
   has_paper_trail
+  
+  # Fulltext support using sunspot
+  #searchable do
+  #  text :title, :boost => 5
+  #  text :description
+  #end
   
   public
   
@@ -93,6 +99,14 @@ class Experiment < ActiveRecord::Base
     self.measurements.collect{ |m| 
       m.end
     }.max
+  end
+  
+  def can_view(user)
+    model.can_view(user)
+  end
+  
+  def can_edit(user)
+    model.can_edit(user)
   end
   
   private

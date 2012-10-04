@@ -1,7 +1,8 @@
 
 
 <%= form_for([@model,@experiment,@measurement], :url => {:action => :update_regression}) do |f| %>
-	
+
+
 	<div style="display:none;">
 	<%= 
 
@@ -25,9 +26,11 @@
 %>
 
 	</div>
+	<%- if can? :update_regression, @measurement %>
 	<div class="actions">
 		<%= f.submit "Save regression", :class => "btn" %>
 	</div>
+	<%- end %>
 
 <% end %>
 	

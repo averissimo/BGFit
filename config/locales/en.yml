@@ -20,10 +20,12 @@ en:
     in: in
     root: Home
     
+  groups:
+    index:
+      title: Team management
   models:
     index:
       title: Data Management
-      regression: Regression
   
   measurements:
     show:
@@ -60,6 +62,8 @@ en:
     remove: Remove
     confirm: Are you sure?
     download_data: Download .csv
+    measurement:
+      regression: Regression
     dyna_model:
       new: New parameter
       download_stats: Download stats
@@ -77,10 +81,13 @@ en:
   
   activerecord:
     models:
+      group: Team
       model: Project
       dyna_model: "Dynamic Model"
       params: Parameters
     attributes:
+      model:
+        is_published: Published?
       param:
         initial_condition: Initial Condition
         ic: I.Cond.

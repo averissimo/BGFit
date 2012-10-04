@@ -16,6 +16,8 @@
 /dumps/
 /public/test
 /public
+/doc
+/.yardoc
 
 *.rbc
 *.sassc
@@ -33,3 +35,6 @@ pickle-email-*.html
 .project
 
 *~
+.buildpath
+/solr/
+*.sql

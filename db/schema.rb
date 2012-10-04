@@ -11,7 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120907142007) do
+ActiveRecord::Schema.define(:version => 20120926181358) do
+
+  create_table "accessibles", :force => true do |t|
+    t.integer  "permitable_id"
+    t.string   "permitable_type"
+    t.integer  "group_id"
+    t.integer  "permission_level"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -37,6 +46,8 @@ ActiveRecord::Schema.define(:version => 20120907142007) do
     t.string   "estimation"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.boolean  "only_owner_can_change"
   end
 
   create_table "experiments", :force => true do |t|
@@ -48,6 +59,12 @@ ActiveRecord::Schema.define(:version => 20120907142007) do
   end
 
   add_index "experiments", ["model_id"], :name => "index_experiments_on_model_id"
+
+  create_table "groups", :force => true do |t|
+    t.string   "title"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "lines", :force => true do |t|
     t.float    "x"
@@ -70,15 +87,23 @@ ActiveRecord::Schema.define(:version => 20120907142007) do
     t.datetime "updated_at"
     t.date     "date"
     t.string   "title"
+    t.float    "minor_step"
   end
 
   add_index "measurements", ["experiment_id"], :name => "index_measurements_on_experiment_id"
+
+  create_table "memberships", :force => true do |t|
+    t.integer "user_id"
+    t.integer "group_id"
+  end
 
   create_table "models", :force => true do |t|
     t.text     "description"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
+    t.boolean  "is_published"
+    t.integer  "owner_id"
   end
 
   create_table "params", :force => true do |t|
@@ -109,6 +134,8 @@ ActiveRecord::Schema.define(:version => 20120907142007) do
     t.text     "notes"
     t.boolean  "no_death_phase"
     t.boolean  "log_flag"
+    t.string   "title"
+    t.float    "r_square"
   end
 
   add_index "proxy_dyna_models", ["dyna_model_id"], :name => "index_proxy_dyna_models_on_dyna_model_id"
@@ -140,6 +167,7 @@ ActiveRecord::Schema.define(:version => 20120907142007) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "admin"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

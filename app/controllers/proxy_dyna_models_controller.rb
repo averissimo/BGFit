@@ -3,7 +3,9 @@ class ProxyDynaModelsController < ApplicationController
   
   before_filter :determine_models , :except => [:index, :new, :create, :calculate]
   before_filter :authenticate_user!, :except => [:index,:show]
-  
+
+  load_and_authorize_resource :except => [:new,:create]
+
   def index
     @measurement = Measurement.find(params[:measurement_id])
     @experiment = @measurement.experiment
@@ -39,6 +41,8 @@ class ProxyDynaModelsController < ApplicationController
       @proxy_dyna_model = @measurement.proxy_dyna_models.build
     end
     @model = @experiment.model
+
+    authorize! :update, @model
     
     @proxy_dyna_model.no_death_phase = true
     respond_with @proxy_dyna_model
@@ -55,7 +59,8 @@ class ProxyDynaModelsController < ApplicationController
       @proxy_dyna_model.dyna_model
     end
     @model = @experiment.model
-  
+    authorize! :create, @measurement
+
     #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])
     respond_with @proxy_dyna_model do | format |
       if @proxy_dyna_model.save
@@ -87,7 +92,7 @@ class ProxyDynaModelsController < ApplicationController
   
   def show
     if @proxy_dyna_model.rmse.nil?
-      flash[:notice] = t('proxy_dyna_models.show.empty')
+      flash[:notice] = [ t('proxy_dyna_models.show.empty') ]
     end
     unless @proxy_dyna_model.notes.nil? || @proxy_dyna_model.notes.blank?
       if flash[:notice].nil?

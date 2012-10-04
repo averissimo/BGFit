@@ -7,6 +7,7 @@
 			:name => 'New measurement', 
 			:url => url_for([:new,@experiment,:measurement]),
 			:options => {
+				:if => Proc.new { can?(:update, @experiment) },
 				:container_class => 'menu'
 			}
 		},
@@ -15,17 +16,18 @@
 			:name => 'Edit', 
 			:url => url_for([:edit,@model,@experiment]),
 			:options => {
+				:if => Proc.new { can?(:update, @experiment) },
 				:container_class => 'menu',
 				class: "text"
 			}
 		},
 		{
 			:key => :model, 
-			:name => 'Goto model', 
+			:name => t('navigation.goto' , destination: Model.model_name.human.pluralize.downcase), 
 			:url => model_path(@experiment.model),
 			:options => {
 				:container_class => 'menu',
-				:class => "text"
+				:class => ("text" if can?(:update, @experiment))
 			}
 		}
 		]
@@ -48,29 +50,34 @@
 <h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>
 
 <%= 
-	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable-complex') do |t|
+	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
 		t.header :title
 		t.header :date
-		t.header :show_h,		"", class: "no-sort"
-		t.header :edit_h,		"", class: "no-sort"
-		t.header :destroy_h,	"", class: "no-sort"
-		t.header :regression_h,	"", class: "no-sort"
-		t.header :csv,			"", class: "no-sort"
+		t.header :show_h,		"", class: "no-sort" if @experiment.measurements.find { |m| can? :read, m}
+		t.header :csv,			"", class: "no-sort" if @experiment.measurements.find { |m| can? :read, m}
+		t.header :regression_h,	"", class: "no-sort" if @experiment.measurements.find { |m| can? :regression, m}
+		t.header :edit_h,		"", class: "no-sort" if @experiment.measurements.find { |m| can? :edit, m}
+		t.header :destroy_h,	"", class: "no-sort" if @experiment.measurements.find { |m| can? :destroy, m}
+		
+
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, measurement, index|
 			# Notice there's no need to explicitly define the title
 			row.title			measurement.title
 			row.date			measurement.date
-			row.show_h			link_to t('action.show').downcase, [@experiment,measurement]
-			row.edit_h			link_to t('action.edit').downcase, [:edit,@experiment,measurement]
-			row.destroy_h		link_to t('action.remove').downcase, [@experiment,measurement], confirm: 'Are you sure?', method: :delete
-			row.regression_h	link_to 'regression', [:regression,@experiment,measurement]
-			row.csv				link_to 'download .csv', experiment_measurement_path(@experiment,measurement, :format => :csv)
+			row.show_h			link_to t('action.show').downcase, [@experiment,measurement] if can? :read, measurement
+			row.edit_h			link_to t('action.edit').downcase, [:edit,@experiment,measurement] if can? :update, measurement
+			row.destroy_h		link_to t('action.remove').downcase, [@experiment,measurement], confirm: 'Are you sure?', method: :delete if can? :destroy, measurement
+			row.regression_h	link_to 'regression', [:regression,@experiment,measurement] if can? :regression, measurement
+			row.csv				link_to 'download .csv', experiment_measurement_path(@experiment,measurement, :format => :csv) if can? :read, measurement
 		end
 	end
 %>
 
+<div class="menu">
+	<%= menu %>
+</div>
 
 <h3>Measurements chart</h3>
 
@@ -82,12 +89,8 @@
 	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
 	<div style="display:none;" class="measurement-data">
 		<% @experiment.measurements.each do |m| %>
-		<div data-source="<%= experiment_measurement_path(@experiment,m,:format=>:json) %>">m.title</div>
+		<div data-source="<%= experiment_measurement_path(@experiment,m,:format=>:json) %>"><%= m.title%></div>
 		<% end %> 
 	</div>
 
-</div>
-
-<div class="menu">
-	<%= menu %>
 </div>
