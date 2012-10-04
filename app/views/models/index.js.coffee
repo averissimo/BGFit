@@ -1,3 +1,4 @@
+$("#models_listing").html "<%= escape_javascript(render("models")) %>"
 $("#measurements_listing").html "<%= escape_javascript(render("measurements/measurements")) %>"
 <%- req_temp = request.clone %>
 <%- req_temp.params.delete(:_) %>
