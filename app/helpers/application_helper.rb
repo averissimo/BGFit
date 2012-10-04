@@ -12,7 +12,7 @@ module ApplicationHelper
     title ||= column.titleize
     css_class = column == sort_column(klass) ? "current #{sort_direction}" : nil
     direction = column == sort_column(klass) && sort_direction == "asc" ? "desc" : "asc"     
-    link_to title, {"#{prefix}sort" => column, "#{prefix}direction" => direction}, {:class => css_class}
+    link_to title, {"#{prefix}sort" => column, "#{prefix}direction" => direction}, {:class => css_class,remote:true}
   end
   
   def javascript(*files)

@@ -10,7 +10,8 @@ class Model < ActiveRecord::Base
   
   belongs_to :owner, :class_name => 'User'
    
-  scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
+  # Fulltext support using sunspot
+  #scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:experiments => {:measurements => :proxy_dyna_models}).where(:experiments=>{:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}}).group('models.id').order(:id) }
   scope :viewable, lambda { |user| 
     if user.nil? then
@@ -24,10 +25,11 @@ class Model < ActiveRecord::Base
   
   has_paper_trail
   
-  searchable do
-    text :title, :boost => 5
-    text :description
-  end
+  # Fulltext support using sunspot
+  #searchable do
+  #  text :title, :boost => 5
+  #  text :description
+  #end
   
   public
     def description_trimmed

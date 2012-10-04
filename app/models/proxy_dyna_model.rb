@@ -17,14 +17,15 @@ class ProxyDynaModel < ActiveRecord::Base
     )
   }
   
-  searchable do
-    text :title, :boost => 5 do
-      title_join
-    end
-    text :description do
-      dyna_model.description
-    end
-  end
+  # Fulltext support using sunspot
+  #searchable do
+  #  text :title, :boost => 5 do
+  #    title_join
+  #  end
+  #  text :description do
+  #    dyna_model.description
+  #  end
+  #end
 
   #                                       bbbbbbbb                                                
   #                                       b::::::b            lllllll   iiii                      

@@ -10,10 +10,11 @@ class ModelsController < ApplicationController
   # GET /models
   # GET /models.json
   def index
-    @search = Model.search do
-      fulltext params[:search]
-    end
-    @models = Model.search_is(@search).viewable(current_user).order(sort_column(Model,"title") + " " + sort_direction).page(params[:page])
+    # Full text support using sunspot gem and solr
+    #@search = Model.search do
+    #  fulltext params[:search]
+    #end
+    @models = Model.viewable(current_user).order(sort_column(Model,"title") + " " + sort_direction).page(params[:page])
     @measurements = Measurement.viewable(current_user).custom_sort.page(params[:m_page]).per(10)
     
     respond_with @models

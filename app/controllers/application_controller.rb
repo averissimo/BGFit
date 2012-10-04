@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   helper_method :permitted_params
   
   def sort_column(klass,pref=nil)
-    if klass.column_names.include?(params[:sort].downcase)
+    if klass.column_names.include?(params[:sort])
       params[:sort]
     else
       pref.nil? ? klass.column_names.first : pref
