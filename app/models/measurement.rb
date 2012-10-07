@@ -180,11 +180,11 @@ class Measurement < ActiveRecord::Base
       return self.title <=> o.title
     end
     
-    def can_view(user)
+    def can_view(user=nil)
       experiment.model.can_view(user)
     end
     
-    def can_edit(user)
+    def can_edit(user=nil)
       experiment.model.can_edit(user)
     end
 end

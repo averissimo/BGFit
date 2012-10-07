@@ -7,9 +7,9 @@
         t.header :experiment,   Experiment.model_name.human
         t.header :title,        Measurement.human_attribute_name(:title)
         t.header :date,         Measurement.human_attribute_name(:date)
-        t.header :show_h,       "", class: "no-sort"
-        t.header :csv,          "", class: "no-sort"
-        t.header :regression_h, "", class: "no-sort"
+        t.header :show_h,       "", class: "no-sort" if can_view_column @measurements
+        t.header :csv,          "", class: "no-sort" if can_view_column @measurements
+        t.header :regression_h, "", class: "no-sort" if can_edit_column @measurements
         #t.header :exp,         "", class: "no-sort"
 
         t.rows.alternate = :odd

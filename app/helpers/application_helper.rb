@@ -1,5 +1,13 @@
 module ApplicationHelper
   
+  def can_view_column( array )
+    can_generic_column( array , :can_view )
+  end
+  
+  def can_edit_column( array )
+    can_generic_column( array , :can_edit )
+  end
+  
   def total_pages(count)
    if count > 1
      " in #{count} pages"
@@ -86,6 +94,14 @@ module ApplicationHelper
       },]
     menu = nil
     render_navigation :items => link_array
+  end
+  
+  private
+  
+  def can_generic_column( array, method )
+    array.map { |m|
+      m.send(method, *current_user)
+    }.include?(true)
   end
   
 end

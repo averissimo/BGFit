@@ -16,7 +16,7 @@ class Membership < ActiveRecord::Base
     self.user = User.where( User.arel_table[:email].eq(email) ).uniq.first
   end
     
-  def can_edit(user)
+  def can_edit(user=nil)
     group.can_edit(user)
   end  
   
