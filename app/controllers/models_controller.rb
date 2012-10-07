@@ -26,6 +26,7 @@ class ModelsController < ApplicationController
     @model = Model.find(params[:id])
     @experiments = @model.experiments.page(params[:page])
     @measurements = Measurement.model_is(@model).custom_sort.page(params[:m_page]).per(10)
+    @accessibles = @model.accessibles
     #
     respond_with @model
   end
@@ -39,6 +40,8 @@ class ModelsController < ApplicationController
 
   def new_measurement
     @model = Model.find(params[:id])
+    @measurements = Measurement.model_is(@model).custom_sort.page(params[:m_page]).per(10)
+    @accessibles = @model.accessibles
     exp_title = params[:experiment_title]
     exp_title ||= t('experiments.default.title') 
     @experiment = @model.experiments.find_or_create_by_title(exp_title)

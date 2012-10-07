@@ -65,23 +65,15 @@
 <%- end %>
 <%- # TODO: add can edit? 
 %>
-<h4>Teams with access</h4>
-  <%= 
-	collection_table(@model.accessibles, :id => 'teams' , :class => 'formatted dataTable') do |t|
-		t.header :title,		Group.human_attribute_name(:title)
-		t.header :permission_level,	Group.human_attribute_name(:permission_level)
-		t.header :destroy_h,	"", class: "no-sort"
 
-		t.rows.alternate = :odd
-    	t.rows.each do |row, accesible, index|
-			# Notice there's no need to explicitly define the title
-			row.title			accesible.group.title
-			row.permission_level		accesible.permission_human
-			row.destroy_h		link_to t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete
-		end
-	end
-%>
-
+<%- if @accessibles.present? %>
+<%= render "accessibles/index"%>
+<%- else %>
+<div class="text-center new">
+    <%= link_to 'Associate team' ,[:new,@model,:accessible], class: "btn blank"%>
+    <p>tip: give write or read permissions to a team.</p>
+</div>
+<%- end %>
 
 </p>
 
@@ -90,7 +82,12 @@
 <%= render 'experiments/experiments'%>
 </div>
 <%- else %>
-<%= link_to 'New Measurement (in default experiment)' ,[:new_measurement,@model],remote:true%>
+<h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
+<div class="text-center new">
+<p>Tip: an experiment aggregates different measurements, you can use different experiments to aggregate identical conditions or if you wish to logically separate your results, otherwise just use the default experiment.</p>
+<%= link_to 'New measurement' ,[:new_measurement,@model],remote:true, class: "btn"%> <%= link_to 'New Experiment' ,[:new,@model,:experiment], class: "btn"%>
+<p>atention: just by clicking the "New measurement" button a default experiment will be created.</p>
+</div>
 <%- end%>
 
 <div class="menu">
