@@ -1,9 +1,38 @@
-$("#models_listing").html "<%= escape_javascript(render("models")) %>"
-$("#measurements_listing").html "<%= escape_javascript(render("measurements/measurements")) %>"
-<%- req_temp = request.clone %>
-<%- req_temp.params.delete(:_) %>
-<%- req_temp.params.delete(:action) %>
-<%- req_temp.params.delete(:controller) %>
-history.pushState null, document.title, "<%= URI.decode "#{req_temp.base_url}#{req_temp.path}" + ( req_temp.params.size > 0 ? "?#{req_temp.params.collect { |k,v| k.to_s + "=" + v.to_s }.join("&")}" : "" )%>"
- 
-convert_tables()
+change = (newEl,selector,rootSelector) ->
+  $("#{rootSelector}").append newEl
+  convert_tables()
+  height_old = $("#{rootSelector} .dataTables_wrapper").height()
+  height_new = $("#{selector} .dataTables_wrapper").height()
+  $("#{selector} table").parentsUntil("#{rootSelector}",".dataTables_wrapper").css("height", height_old)
+    .css "overflow" , "hidden"
+    
+  
+  $("#{rootSelector}").html($("#{selector}").html())
+  
+  
+  
+  $("#{rootSelector} > div").hide()
+  $("#{rootSelector} > div").fadeIn 500,"easeInOutCirc"
+  $("#{rootSelector} .dataTables_wrapper").animate {height: height_new},1500,"easeInOutCirc"
+
+wrap_it = (content) ->
+  hash = $("<div>#{content}</div>").find("table").attr "data-sig"
+  wrapped = $ "<div id='#{hash}'>#{content}</div>"
+
+wrapped_models = wrap_ip "<%= escape_javascript(render('models')) %>"
+alert $(wrapped_models).html()
+$("#models_listing").html $(wrapped_models).html()
+wrapped_m = wrap_it "<%= escape_javascript(render("measurements/measurements")) %>"
+hash_m = wrapped_m.attr("id")
+
+
+calculated_hash = hash_m
+table_hash = $("#measurements_listing table").attr("data-sig")
+
+if calculated_hash == table_hash
+  convert_tables()
+else 
+  change(wrapped_m,"##{hash_m}",'#measurements_listing')
+  
+url_path = "<%= raw request.url %>"
+history.pushState null, document.title, unescape(url_path) 

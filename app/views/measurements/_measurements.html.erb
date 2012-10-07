@@ -1,8 +1,8 @@
 
-<h3><%= t('aux.listing')%> <%= pluralize(@measurements.total_count, Measurement.model_name.human.downcase)%><%= total_pages @measurements.total_pages%></h3>
+<h3><%= page_entries_info @measurements%></h3>
 
 <%= 
-    collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-no_sort') do |t|
+    collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable-no_sort', "data-sig" => @measurements.map(&:id).hash.to_s) do |t|
         t.header :model,        Model.model_name.human
         t.header :experiment,   Experiment.model_name.human
         t.header :title,        Measurement.human_attribute_name(:title)
@@ -27,5 +27,5 @@
     end
 %>
 
-<%= paginate @measurements,param_name: "m_page" , remote: true%>
+<%= paginate @measurements,param_name: "m_page" , remote: true, :window => 3, :outer_window => 1%>
 
