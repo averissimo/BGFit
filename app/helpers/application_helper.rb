@@ -8,10 +8,10 @@ module ApplicationHelper
    end 
   end
   
-  def sortable(column, klass, prefix="",title=nil)
+  def sortable(column, klass, prefix="",title=nil,pref=nil)
     title ||= column.titleize
-    css_class = column == sort_column(klass) ? "current #{sort_direction}" : nil
-    direction = column == sort_column(klass).name  && sort_direction == "asc" ? "desc" : "asc"     
+    css_class = column == sort_column(klass,pref) ? "current #{sort_direction}" : nil
+    direction = column == sort_column(klass,pref).name  && sort_direction == "asc" ? "desc" : "asc"     
     link_to title, params.merge("#{prefix}sort" => column, "#{prefix}direction" => direction), {:class => css_class, remote:true}
   end
   
