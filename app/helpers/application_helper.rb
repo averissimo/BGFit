@@ -1,11 +1,18 @@
 module ApplicationHelper
   
-  def can_view_column( array )
-    can_generic_column( array , :can_view )
+  def remote_activated?
+    defined?(no_remote_flag).nil?
+  end
+    
+  
+  def data_sig(array,method=:id)
+    array.map(&method).hash.to_s
   end
   
-  def can_edit_column( array )
-    can_generic_column( array , :can_edit )
+  def can_column?(method,array )
+    array.map { |m|
+      return true if can? method , m
+    }.include?(true)
   end
   
   def total_pages(count)
@@ -98,10 +105,6 @@ module ApplicationHelper
   
   private
   
-  def can_generic_column( array, method )
-    array.map { |m|
-      m.send(method, *current_user)
-    }.include?(true)
-  end
+
   
 end
