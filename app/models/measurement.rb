@@ -119,6 +119,7 @@ class Measurement < ActiveRecord::Base
     end
   
    def convert_original_data
+     return if original_data.nil?
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
 # removes header from data

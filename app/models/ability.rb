@@ -59,6 +59,6 @@ class Ability
 
     # Any user can do
     can :read, :dyna_models
-    can :manage, :all if user.present? && user.admin?
+    can [:manage,:new_measurement], :all if user.present? && user.admin?
   end
 end

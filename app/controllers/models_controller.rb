@@ -2,7 +2,7 @@ class ModelsController < ApplicationController
   respond_to :html, :json, :js
   before_filter :authenticate_user!, :except => [:index,:show]
   
-  load_and_authorize_resource
+  load_and_authorize_resource :except => :new_measurement
   
   #TODO move to initializer once all controllers have this support
   include ActiveModel::ForbiddenAttributesProtection
@@ -35,6 +35,17 @@ class ModelsController < ApplicationController
   def new
     @model = Model.new
     respond_with @model
+  end
+
+  def new_measurement
+    @model = Model.find(params[:id])
+    exp_title = params[:experiment_title]
+    exp_title ||= t('experiments.default.title') 
+    @experiment = @model.experiments.find_or_create_by_title(exp_title)
+    @experiment.description = t('experiments.default.description')
+    @experiment.save
+    @measurement = @experiment.measurements.build
+    respond_with @measurement
   end
 
   # GET /models/1/edit

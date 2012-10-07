@@ -85,10 +85,13 @@
 
 </p>
 
+<%- if @experiments.present? %>
 <div id="experiments_listing">
 <%= render 'experiments/experiments'%>
 </div>
-
+<%- else %>
+<%= link_to 'New Measurement (in default experiment)' ,[:new_measurement,@model],remote:true%>
+<%- end%>
 
 <div class="menu">
 	<%= menu %>

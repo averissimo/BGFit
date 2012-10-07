@@ -27,6 +27,11 @@ en:
     index:
       title: Data Management
   
+  experiments:
+    default:
+      title: "Default"
+      description: "Insert description here.. (tip: could use conditions for measurements)"
+
   measurements:
     show:
       dyna: Associate dynamic model
