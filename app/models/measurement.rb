@@ -49,20 +49,22 @@ class Measurement < ActiveRecord::Base
     end
   
     def lines_no_death_phase(no_death_phase=true)
-      p_l = nil
-      p_2_l = nil
+      p_l = p_2_l = nil
       finish = false
-      result = self.lines.sort_by{|l| l.x}.collect { |l|
-        next if finish
-        
-        if p_l && p_2_l
-          if no_death_phase && l.y < p_l && p_l < p_2_l  
+      result = self.lines.collect { |l|
+        break if finish
+        if no_death_phase 
+          if p_l && p_2_l && l.y < p_l && p_l < p_2_l
             finish = true
+            nil
+          else
+            p_2_l = p_l
+            p_l = l.y
+            l
           end
+        else
+          l
         end
-        p_2_l = p_l
-        p_l = l.y
-        l
       }.compact
       last = result.pop
       if no_death_phase && last.y < result.last.y
@@ -86,7 +88,7 @@ class Measurement < ActiveRecord::Base
     def y_array(log=false,no_death_phase=true)
       self.lines_no_death_phase(no_death_phase).sort.collect { |l|
         if log
-          Math.log( l.y )
+          l.ln_y
         else
           l.y
         end  

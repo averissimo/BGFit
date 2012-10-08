@@ -1,13 +1,14 @@
 class Line < ActiveRecord::Base
   belongs_to :measurement
   
+  default_scope :order => 'measurement_id ASC, x ASC'
   scope :viewable, lambda { |user| joins(:measurement => :experiment).where( Experiment.arel_table[:model_id].in( Model.viewable(user).map { |m| m.id } )) }
   
   has_paper_trail
   
-  before_create :clear_flag
   before_destroy :clear_flag
-  before_update :clear_flag 
+  before_save :clear_flag 
+  
   # returns y_value in log scale
   #
   # @param log flag that indicates if y_value should be in log scale
@@ -56,6 +57,7 @@ class Line < ActiveRecord::Base
   protected
   
     def clear_flag
+      self.ln_y = Math.log(y) if changed_attributes.keys.include?("y")
       self.measurement.minor_step = nil
       self.measurement.save
     end
