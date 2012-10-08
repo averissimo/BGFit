@@ -18,6 +18,9 @@ BacteriaGrowth::Application.routes.draw do
   end
 
   resources :models, path: :projects do
+    member do
+      get :new_measurement
+    end
     resources :experiments
     resources :accessibles, :only => [:new, :create, :destroy]
   end

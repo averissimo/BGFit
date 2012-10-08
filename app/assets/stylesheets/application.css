@@ -4,6 +4,7 @@
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require_self
  *= require jquery.ui.core
+ *= require jquery.ui.all
  *= require dataTables/src/demo_table_jui
  *= require jquery.ui.theme
  *= require custom_forms

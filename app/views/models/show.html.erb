@@ -65,80 +65,34 @@
 <%- end %>
 <%- # TODO: add can edit? 
 %>
-<h4>Teams with access</h4>
-  <%= 
-	collection_table(@model.accessibles, :id => 'teams' , :class => 'formatted dataTable') do |t|
-		t.header :title,		Group.human_attribute_name(:title)
-		t.header :permission_level,	Group.human_attribute_name(:permission_level)
-		t.header :destroy_h,	"", class: "no-sort"
 
-		t.rows.alternate = :odd
-    	t.rows.each do |row, accesible, index|
-			# Notice there's no need to explicitly define the title
-			row.title			accesible.group.title
-			row.permission_level		accesible.permission_human
-			row.destroy_h		link_to t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete
-		end
-	end
-%>
-
+<%- if @accessibles.present? %>
+<%= render "accessibles/index"%>
+<%- else %>
+<div class="text-center new">
+    <%= link_to 'Associate team' ,[:new,@model,:accessible], class: "btn blank"%>
+    <p>tip: give write or read permissions to a team.</p>
+</div>
+<%- end %>
 
 </p>
 
-<h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
-
-<%= 
-	collection_table(@experiments, :id => 'experiments' , :class => 'formatted dataTable') do |t|
-		t.header :title,		Model.human_attribute_name(:title)
-		t.header :description,	Model.human_attribute_name(:description)
-		t.header :show_h,		"", class: "no-sort" if can? :read, @model
-		#t.header :exp_h,		"", class: "no-sort"
-		t.header :edit_h,		"", class: "no-sort" if can? :update, @model
-		t.header :destroy_h,	"", class: "no-sort" if can? :update, @model
-
-		t.rows.alternate = :odd
-    	t.rows.each do |row, experiment, index|
-			# Notice there's no need to explicitly define the title
-			row.title			experiment.title
-			row.description		experiment.description
-			row.show_h			link_to t('action.show').downcase, [@model,experiment] if can? :read, experiment
-			row.edit_h			link_to t('action.edit').downcase, [:edit,@model,experiment] if can? :update, experiment
-			#row.exp_h			link_to 'download .exp' , model_experiment_path(@model,experiment,:format => :exp)
-			row.destroy_h		link_to t('action.remove').downcase, [@model,experiment], confirm: 'Are you sure?', method: :delete if can? :destroy, experiment
-		end
-	end
-%>
-
-<%= paginate @experiments %>
+<%- if @experiments.present? %>
+    <div id="experiments_listing">
+    <%= render 'experiments/experiments'%>
+</div>
+<%- else %>
+    <h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
+    <div class="text-center  new">
+        <%= link_to 'New measurement' ,[:new_measurement,@model],remote:true, class: "btn"%> <%= link_to 'New Experiment' ,[:new,@model,:experiment], class: "btn"%>
+        <p>tip: an experiment aggregates different measurements. <br/>You can use different experiments to aggregate identical conditions<br/> or if you wish to logically separate your results, otherwise just use the default experiment.</p>
+    </div>
+<%- end%>
 
 <div class="menu">
 	<%= menu %>
 </div>
 
-<h3><%= t('aux.listing')%> <%= pluralize(@measurements.length, Measurement.model_name.human)%> <%= t('aux.in')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
-
-<%= 
-	collection_table(@measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
-		t.header :experiment
-		t.header :title
-		t.header :date
-		t.header :show_h,		"", class: "no-sort" if @measurements.find { |m| can? :read, m}
-		t.header :csv,			"", class: "no-sort" if @measurements.find { |m| can? :read, m}
-		t.header :regression_h,	"", class: "no-sort" if @measurements.find { |m| can? :regression, m}
-
-        can_regression = 
-
-		t.rows.alternate = :odd
-    	t.rows.each do |row, measure, index|
-			# Notice there's no need to explicitly define the title
-			row.experiment		measure.experiment.title
-			row.title			measure.title
-			row.date			measure.date
-			row.regression_h	link_to 'regression', [:regression,measure.experiment,measure] if can? :regression, measure
-			row.show_h			link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
-			row.csv				link_to 'download .csv', experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
-		end
-	end
-%>
-
-<%= paginate @measurements ,param_name: "m_page" %>
+<div id="measurements_listing">
+<%= render 'measurements/measurements'%>
+</div>

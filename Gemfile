@@ -19,9 +19,13 @@ gem 'wirb'
 # in production environments by default.
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
+# !!!!!!!
+# changed in order to allow js.coffee views being rendered in production mode
+end  
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
-end
+#end
+# !!!!!!
 
 gem 'jquery-rails'
 
@@ -65,6 +69,6 @@ gem 'sunspot_solr' # optional pre-packaged Solr distribution for use in developm
 
 gem 'kaminari'
 
-group :test,:production do
-  #gem 'therubyracer'
-end
+#group :test,:production do
+#  gem 'therubyracer'
+#end

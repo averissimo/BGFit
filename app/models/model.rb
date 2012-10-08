@@ -41,15 +41,15 @@ class Model < ActiveRecord::Base
       end
     end
     
-    def can_view(user)
+    def can_view(user=nil)
       is_published? || (!user.nil? && ( user.admin? || can?(user,GlobalConstants::PERMISSIONS[:read]) || can_edit(user) ) )
     end
     
-    def can_edit(user)
+    def can_edit(user=nil)
       user.present? && ( user.admin? || self.new_record? || (owner_id.present? && owner.id.equal?(user.id)) || can?(user,GlobalConstants::PERMISSIONS[:write]) )
     end
     
-    def can?(user,arg)
+    def can?(user=nil,arg)
       return true if user.present? && user.admin?
       accessible = self.accessibles.find { |a| a.group.users.include?(User.find(7)) }
        !accessible.nil? && !accessible.blank? && accessible.permission_level == arg

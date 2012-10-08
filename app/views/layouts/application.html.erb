@@ -19,7 +19,11 @@
 	</head>
 	<body>
 		<div id="fixed-header">
-			<div id="header" <% if Rails.env != "production" && Rails.env == "test"%>style="background-color: #F78400!important;"<<%elsif Rails.env != "production" %>style="background-color: #7F0000!important;"<%end%>>
+			<div id="header" 
+			 <%-if Rails.env != "production" && Rails.env == "pre-production"%>style="background-color: #F78400!important;"
+			 <%- elsif Rails.env != "production" && Rails.env == "test"%>style="background-color: #FF00FF!important;"
+			 <%- elsif Rails.env != "production"%>style="background-color: #7F0000!important;"
+			 <%-end%>>
 				<%- if Rails.env != "production" %>
 				    <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong> <%=Rails.env%> environment <strong><%=Rails.env%> environment</strong>
 				<%- else%>
