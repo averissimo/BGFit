@@ -78,16 +78,15 @@
 </p>
 
 <%- if @experiments.present? %>
-<div id="experiments_listing">
-<%= render 'experiments/experiments'%>
+    <div id="experiments_listing">
+    <%= render 'experiments/experiments'%>
 </div>
 <%- else %>
-<h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
-<div class="text-center new">
-<p>Tip: an experiment aggregates different measurements, you can use different experiments to aggregate identical conditions or if you wish to logically separate your results, otherwise just use the default experiment.</p>
-<%= link_to 'New measurement' ,[:new_measurement,@model],remote:true, class: "btn"%> <%= link_to 'New Experiment' ,[:new,@model,:experiment], class: "btn"%>
-<p>atention: just by clicking the "New measurement" button a default experiment will be created.</p>
-</div>
+    <h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
+    <div class="text-center  new">
+        <%= link_to 'New measurement' ,[:new_measurement,@model],remote:true, class: "btn"%> <%= link_to 'New Experiment' ,[:new,@model,:experiment], class: "btn"%>
+        <p>tip: an experiment aggregates different measurements. <br/>You can use different experiments to aggregate identical conditions<br/> or if you wish to logically separate your results, otherwise just use the default experiment.</p>
+    </div>
 <%- end%>
 
 <div class="menu">
