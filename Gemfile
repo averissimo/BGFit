@@ -27,9 +27,6 @@ end
 #end
 # !!!!!!
 
-  
-
-
 gem 'jquery-rails'
 
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'

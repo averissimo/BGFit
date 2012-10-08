@@ -1,5 +1,20 @@
 module ApplicationHelper
   
+  def remote_activated?
+    defined?(no_remote_flag).nil?
+  end
+    
+  
+  def data_sig(array,method=:id)
+    array.map(&method).hash.to_s
+  end
+  
+  def can_column?(method,array )
+    array.map { |m|
+      return true if can? method , m
+    }.include?(true)
+  end
+  
   def total_pages(count)
    if count > 1
      " in #{count} pages"
@@ -8,11 +23,11 @@ module ApplicationHelper
    end 
   end
   
-  def sortable(column, klass, prefix="",title=nil)
+  def sortable(column, klass, prefix="",title=nil,pref=nil)
     title ||= column.titleize
-    css_class = column == sort_column(klass) ? "current #{sort_direction}" : nil
-    direction = column == sort_column(klass) && sort_direction == "asc" ? "desc" : "asc"     
-    link_to title, {"#{prefix}sort" => column, "#{prefix}direction" => direction}, {:class => css_class,remote:true}
+    css_class = column == sort_column(klass,pref) ? "current #{sort_direction}" : nil
+    direction = column == sort_column(klass,pref).name  && sort_direction == "asc" ? "desc" : "asc"     
+    link_to title, params.merge("#{prefix}sort" => column, "#{prefix}direction" => direction), {:class => css_class, remote:true}
   end
   
   def javascript(*files)
@@ -87,5 +102,9 @@ module ApplicationHelper
     menu = nil
     render_navigation :items => link_array
   end
+  
+  private
+  
+
   
 end

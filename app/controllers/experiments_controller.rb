@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  respond_to :html, :json, :csv
+  respond_to :html, :json, :csv, :js
   
   before_filter :determine_models , :only => [ :show, :gompertz, :edit, :update, :destroy]
   before_filter :authenticate_user!, :except => [:index,:show]
@@ -108,6 +108,7 @@ class ExperimentsController < ApplicationController
   def determine_models
     @experiment = Experiment.find(params[:id])
     @model = @experiment.model
+    @measurements = @experiment.measurements.page(params[:m_page]).per(10)
   end
   
 end
