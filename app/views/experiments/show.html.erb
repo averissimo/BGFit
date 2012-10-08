@@ -47,33 +47,10 @@
   <%= simple_format( show @experiment.description) %>
 </p>
 
-<h3>Listing <%= pluralize(@experiment.measurements.length, 'measurement')%></h3>
+<div id="measurements_listing">
+<%= render 'measurements/measurements'%>
+</div>
 
-<%= 
-	collection_table(@experiment.measurements, :id => 'measurements' , :class => 'formatted dataTable') do |t|
-		t.header :title
-		t.header :date
-		t.header :show_h,		"", class: "no-sort" if @experiment.measurements.find { |m| can? :read, m}
-		t.header :csv,			"", class: "no-sort" if @experiment.measurements.find { |m| can? :read, m}
-		t.header :regression_h,	"", class: "no-sort" if @experiment.measurements.find { |m| can? :regression, m}
-		t.header :edit_h,		"", class: "no-sort" if @experiment.measurements.find { |m| can? :edit, m}
-		t.header :destroy_h,	"", class: "no-sort" if @experiment.measurements.find { |m| can? :destroy, m}
-		
-
-
-		t.rows.alternate = :odd
-    	t.rows.each do |row, measurement, index|
-			# Notice there's no need to explicitly define the title
-			row.title			measurement.title
-			row.date			measurement.date
-			row.show_h			link_to t('action.show').downcase, [@experiment,measurement] if can? :read, measurement
-			row.edit_h			link_to t('action.edit').downcase, [:edit,@experiment,measurement] if can? :update, measurement
-			row.destroy_h		link_to t('action.remove').downcase, [@experiment,measurement], confirm: 'Are you sure?', method: :delete if can? :destroy, measurement
-			row.regression_h	link_to 'regression', [:regression,@experiment,measurement] if can? :regression, measurement
-			row.csv				link_to 'download .csv', experiment_measurement_path(@experiment,measurement, :format => :csv) if can? :read, measurement
-		end
-	end
-%>
 
 <div class="menu">
 	<%= menu %>
