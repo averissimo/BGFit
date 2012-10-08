@@ -104,7 +104,9 @@ class ProxyDynaModel < ActiveRecord::Base
     # Calls estimation using default parameters
     #  (see #call_estimation_with_custom_params)
     def call_estimation(is_post_method = true) call_estimation_with_custom_params( temp_params , is_post_method) end
-      
+    # Whether the model should show the results and regression in log scale
+    def log_flag() dyna_model.log_flag end
+       
     #
     # Statistical methods
     # >>>>>>>>>>>>>>>>>>>
