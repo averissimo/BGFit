@@ -14,6 +14,16 @@
 	  
 	  <%= stylesheet_link_tag    "application" %>
 	  <%= javascript_include_tag "application"  %>
+	  <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ 
+          showProcessingMessages: false, 
+          messageStyle: "none",
+          jax: ["input/TeX","output/HTML-CSS"],
+          extensions: ["tex2jax.js"]
+        });
+      </script>
+      <%= javascript_include_tag "http://cdn.mathjax.org/mathjax/latest/MathJax.js"  %>
+
 	  <%= csrf_meta_tags %>
 	
 	</head>

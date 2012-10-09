@@ -18,3 +18,4 @@ jQuery ->
       name: 'light'
     }
   })
+  
