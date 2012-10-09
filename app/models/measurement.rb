@@ -52,7 +52,7 @@ class Measurement < ActiveRecord::Base
       p_l = p_2_l = nil
       finish = false
       result = self.lines.collect { |l|
-        break if finish
+        next if finish
         if no_death_phase 
           if p_l && p_2_l && l.y < p_l && p_l < p_2_l
             finish = true

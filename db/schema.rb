@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121008145349) do
+ActiveRecord::Schema.define(:version => 20121008154647) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -128,7 +128,7 @@ ActiveRecord::Schema.define(:version => 20121008145349) do
     t.integer  "dyna_model_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "json",           :limit => 2147483647
+    t.binary   "json",           :limit => 16777215
     t.float    "rmse"
     t.float    "bias"
     t.float    "accuracy"

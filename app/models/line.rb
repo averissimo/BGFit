@@ -14,7 +14,7 @@ class Line < ActiveRecord::Base
   # @param log flag that indicates if y_value should be in log scale
   def y_value(log=false)
     if log
-      Math.log(self.y)
+      self.ln_y
     else
       self.y
     end
