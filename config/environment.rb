@@ -1,3 +1,4 @@
+require 'trim_blob_logging'
 # Load the rails application
 require File.expand_path('../application', __FILE__)
 
