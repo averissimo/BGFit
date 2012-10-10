@@ -30,7 +30,7 @@ en:
   experiments:
     default:
       title: "Default"
-      description: "Insert description here.. (tip: could use conditions for measurements)"
+      description: ""
 
   measurements:
     show:
@@ -83,13 +83,13 @@ en:
       param:
         ic: yada
         
-  
   activerecord:
     models:
       group: Team
       model: Project
-      dyna_model: "Dynamic Model"
-      params: Parameters
+      dyna_model: "Model"
+      params: Parameter
+      proxy_dyna_models: "Proxy Model"
     attributes:
       model:
         is_published: Published?

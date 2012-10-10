@@ -24,7 +24,7 @@ class ModelsController < ApplicationController
   # GET /models/1.json
   def show
     @model = Model.find(params[:id])
-    @experiments = @model.experiments.page(params[:page])
+    @experiments = @model.experiments.trim.page(params[:page])
     @measurements = Measurement.model_is(@model).custom_sort.page(params[:m_page]).per(10)
     @accessibles = @model.accessibles
     #
@@ -46,6 +46,7 @@ class ModelsController < ApplicationController
     exp_title ||= t('experiments.default.title') 
     @experiment = @model.experiments.find_or_create_by_title(exp_title)
     @experiment.description = t('experiments.default.description')
+    @experiment.default = true
     @experiment.save
     @measurement = @experiment.measurements.build
     respond_with @measurement

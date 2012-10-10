@@ -14,15 +14,21 @@
 	  
 	  <%= stylesheet_link_tag    "application" %>
 	  <%= javascript_include_tag "application"  %>
+	  
+	  <!-- initialization script for MathJax -->
 	  <script type="text/x-mathjax-config">
         MathJax.Hub.Config({ 
           showProcessingMessages: false, 
           messageStyle: "none",
+          inlineMath: [['$','$'], ['\\(','\\)']],
           jax: ["input/TeX","output/HTML-CSS"],
-          extensions: ["tex2jax.js"]
+          extensions: ["tex2jax.js"],
+          showMathMenu: false,
+          processEscapes:true
         });
       </script>
       <%= javascript_include_tag "http://cdn.mathjax.org/mathjax/latest/MathJax.js"  %>
+      <!-- initialization script for MathJax -->
 
 	  <%= csrf_meta_tags %>
 	

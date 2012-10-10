@@ -1,17 +1,17 @@
 <h3>First action</h3>
 
 <p>
-	<%= link_to "Manage data" , models_path, :class => 'btn' %>To start using this application and input/manage data goto Projects
+	<%= link_to "Projects" , models_path, :class => 'btn' %>To start using this application and introduce data goto Projects
 </p>
 <p>
-	 <%= link_to "Dynamic models" , dyna_models_path, :class => 'btn blank' %>To view/manage different Dynamic Models
+	 <%= link_to DynaModel.model_name.human.pluralize , dyna_models_path, :class => 'btn blank' %>To view/manage different <%=DynaModel.model_name.human.pluralize%>
 	<br/>
 </p>
 
 <h3>Tips</h3>
 
 <p>
-	The top toolbar has all the navigation links in this web application. There are two static links that are common throught the application <i>(Home & Results)</i> 
+	The top toolbar has all the navigation links in this web application. There are three static links that are common throught the application <i>(Home & <%=Model.model_name.human%> & <%=DynaModel.model_name.human%>)</i> 
 	<br/>
 	The print below shows these two static links
 	<br/>
