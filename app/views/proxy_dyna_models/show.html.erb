@@ -24,7 +24,7 @@
 		},
 		{
 			:key => :model, 
-			:name => 'Goto dyna model', 
+			:name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase), 
 			:url => url_for([@proxy_dyna_model.dyna_model]),
 			:options => {
 				:container_class => 'menu',
@@ -35,7 +35,7 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Dyna Model's detail" } %>
+<% content_for(:title) { t('title.detail' , model: ProxyDynaModel.model_name.human) } %>
 
 <h1><%= @proxy_dyna_model.title_join %></h1>
 
@@ -57,11 +57,11 @@
 <p>
 <%- if @proxy_dyna_model.no_death_phase %>
   Does not include death phase<br/>
-  ##############################<br/>
+  #######################################<br/>
   <%- end 	%>
   <%- if @proxy_dyna_model.log_flag %>
-  Estimation is performed on log scale<br/>
-  ##############################<br/>
+  Estimation is performed on log scale (base e)<br/>
+  #######################################<br/>
   <%- end 	%>
 </p>
 <%- end %>

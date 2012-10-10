@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120926181358) do
+ActiveRecord::Schema.define(:version => 20121009232758) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(:version => 20120926181358) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.boolean  "only_owner_can_change"
+    t.boolean  "log_flag"
   end
 
   create_table "experiments", :force => true do |t|
@@ -56,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20120926181358) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "title"
+    t.boolean  "default"
   end
 
   add_index "experiments", ["model_id"], :name => "index_experiments_on_model_id"
@@ -78,7 +80,7 @@ ActiveRecord::Schema.define(:version => 20120926181358) do
     t.boolean  "regression_flag"
   end
 
-  add_index "lines", ["measurement_id"], :name => "index_measurement_lines_on_measurement_id"
+  add_index "lines", ["measurement_id", "x"], :name => "index_lines_on_measurement_id_and_x"
 
   create_table "measurements", :force => true do |t|
     t.text     "original_data"
@@ -127,13 +129,12 @@ ActiveRecord::Schema.define(:version => 20120926181358) do
     t.integer  "dyna_model_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "json",           :limit => 2147483647
+    t.binary   "json",           :limit => 16777215
     t.float    "rmse"
     t.float    "bias"
     t.float    "accuracy"
     t.text     "notes"
     t.boolean  "no_death_phase"
-    t.boolean  "log_flag"
     t.string   "title"
     t.float    "r_square"
   end

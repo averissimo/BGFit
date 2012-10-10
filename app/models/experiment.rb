@@ -6,6 +6,9 @@ class Experiment < ActiveRecord::Base
   
   accepts_nested_attributes_for :measurements
   
+  scope :trim, lambda { includes(:measurements).where( Experiment.arel_table[:default].eq(nil).or(Experiment.arel_table[:default].eq(false))
+    .or(Experiment.arel_table[:default].eq(true).and(Measurement.arel_table[:id].not_eq(nil))) ) }
+  
   scope :model_is, lambda { |model| where(:model_id=>model.id).order(:model_id) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}).group('experiments.id').order(:model_id) }
   scope :viewable, lambda { |user| where( Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )) }

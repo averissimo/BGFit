@@ -37,6 +37,4 @@ if hash_m != table_hash_m
 else if hash_models != table_hash_models
   $("#measurements_listing").html $(wrapped_m).html()
   change(wrapped_models,"##{hash_models}" , '#models_listing')
-  
-url_path = "<%= raw request.url %>"
-history.pushState null, document.title, unescape(url_path) 
+false 

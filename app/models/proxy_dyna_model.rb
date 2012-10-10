@@ -104,7 +104,9 @@ class ProxyDynaModel < ActiveRecord::Base
     # Calls estimation using default parameters
     #  (see #call_estimation_with_custom_params)
     def call_estimation(is_post_method = true) call_estimation_with_custom_params( temp_params , is_post_method) end
-      
+    # Whether the model should show the results and regression in log scale
+    def log_flag() dyna_model.log_flag end
+       
     #
     # Statistical methods
     # >>>>>>>>>>>>>>>>>>>
@@ -149,15 +151,26 @@ class ProxyDynaModel < ActiveRecord::Base
         reference = measurement
         size = measurement_stats(dataset)
       end
-      debugger
+      
+      if size == 0
+        return [].push("error")
+      end
       self.bias = 10 ** (dataset[:bias] / size )
       self.accuracy = 10 ** (dataset[:accu] / size )
       self.rmse = Math.sqrt( dataset[:rmse] / size )
+      if dataset[:r_square_tot] == 0
+        clean_stats "cannot calculate statistical_measures, try again with a different range."
+        return nil
+      end
       self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]
-      self.notes = ""
+      self.notes ||= ""
       self.save
       logger.info {"[proxy_dyna_model.statistical_data] statistical_data: #{self.rmse} (rmse) #{self.r_square} (r_square) #{self.bias} (bias) #{self.accuracy} (accuracy)"}
-      [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
+      begin
+        [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
+      rescue
+        [].push("n/a").push("n/a").push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
+      end
     end
     
     # Calls estimation using custom parameters
@@ -224,20 +237,43 @@ class ProxyDynaModel < ActiveRecord::Base
       self.json_cache # call solver and calculate statistical data
     end
     
+    # Override to assure serialized hash is retrieved from db without changes in logic
+    def json()
+      data = read_attribute(:json)
+      return Marshal.load( data ) if (data).present?
+      nil
+    end
+    
+    # Override to assure hash is serialized to db without changes in logic
+    def json=(value)
+      if value.nil?
+        write_attribute(:json,nil)
+      else
+        write_attribute(:json,Marshal.dump( value ) )  
+      end
+      
+    end
+    
     # If json has not yet been calculated, then it calls solver method
     #
     # @return json results
-    def json_cache
+    def json_cache(show_log=false)
+      hash = :base10
       unless self.json.nil?
         logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
-        return self.json
+        hash = :log_e if show_log && self.json.keys.include?(:log_e)
+        return self.json[hash].to_s.gsub(/ /,"")
       end 
       if self.call_solver.nil?
         logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
         return nil
       end 
-      self.statistical_data 
-      self.json
+      if self.statistical_data.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to statistical_data was nil"}
+        return
+      end
+      hash = :log_e if show_log && self.json.keys.include?(:log_e) 
+      self.json[hash].to_s.gsub(/ /,"")
     end
     
     # Calls the solver for the calculated parameters
@@ -273,7 +309,16 @@ class ProxyDynaModel < ActiveRecord::Base
           self.notes = nil
           self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" unless (temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }).nil?
           temp_json["result"].reject!{ |q| q[1]=='_NaN_'  }
-          self.json = temp_json["result"].to_s.gsub(/ /,'')
+          h_json = {}
+          if self.log_flag
+            h_json[:base10] = temp_json["result"].map { |data| [data[0],Math.exp(data[1])] }
+            h_json[:log_e] = temp_json["result"]
+            self.json = h_json
+          else
+            h_json[:base10] = temp_json["result"]
+            self.json = h_json
+          end
+          #self.json = temp_json["result"].to_s.gsub(/ /,'')
         else
           clean_stats( "Error while simulating data" )
         end
@@ -403,14 +448,23 @@ class ProxyDynaModel < ActiveRecord::Base
         return nil if p.value.nil?      
         hash[p.param.code]=p.value.to_s
       }
-      hash[:start] =  self.measurement.lines.order(:x).first.x
-      if self.measurement.nil? || time.nil?
-        hash[self.measurement.end_title] = self.measurement.end(self.no_death_phase).to_s
-      else
-        hash[self.measurement.end_title] = (self.measurement.end(self.no_death_phase)-time).to_s
-      end
-      hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0
       
+      if self.measurement.present?
+        # measurement
+        hash[:start] =  self.measurement.lines.order(:x).first.x
+        if  time.nil?
+          hash[:end] = self.measurement.end(self.no_death_phase).to_s
+        else
+          hash[:end] = (self.measurement.end(self.no_death_phase)-time).to_s
+        end
+        hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0  
+      else
+        # experiments
+        hash[:start] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.min_by { |l| l.x }.x
+        hash[:end] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.max_by { |l| l.x }.x
+        minor_step = self.experiment.measurements.select(Measurement.arel_table[:minor_step].minimum.as("min_minor_step")).first.min_minor_step
+        hash[:minor_step] = minor_step if minor_step.present? || minor_step == 0
+      end
       hash
     end
     
@@ -602,7 +656,7 @@ class ProxyDynaModel < ActiveRecord::Base
       logger.info {"[proxy_dyna_model.experiment_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
       experiment.measurements.each do |m|
-        dataset[:lines] = m.lines_no_death_phase(self.no_death_phase)
+        dataset[:lines] = m.lines_no_death_phase()
         size += dataset[:lines].size
         dataset = statistical_data_measurement( dataset )
       end
@@ -615,7 +669,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def measurement_stats(dataset)
       logger.info {"[proxy_dyna_model.measurement_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
-      dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
+      dataset[:lines] = measurement.lines_no_death_phase()
       size += dataset[:lines].size
       dataset = statistical_data_measurement( dataset )
       logger.info {"[proxy_dyna_model.measurement_stats] #{dataset.inspect}"}
@@ -628,18 +682,20 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     # @see #statistical_data
     def statistical_data_measurement( hash )
-      json_parsed = JSON.parse(self.json) # array of [x,y]
+      json_parsed = json[:base10] # array of [x,y]
       
       begin
         simulated_value = json_parsed.shift
         prev_sim_value = nil
         # cycle that covers all lines in hash
+        
         hash[:lines].each do |line|
           # cycle that finds next simulated value
-          while simulated_value[0] < line.x
+          while simulated_value.present? && simulated_value[0] < line.x
             prev_sim_value = simulated_value
             simulated_value = json_parsed.shift # pops first element of json_parsed
           end
+          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil" if simulated_value.nil?
           # checks if current simulated value timepoint is greater or equal than timepoint
           value = nil
           if simulated_value[0] > line.x
@@ -654,20 +710,21 @@ class ProxyDynaModel < ActiveRecord::Base
           end
           if @y_mean.nil?
             @y_mean = 0
-            lines = self.measurement.lines_no_death_phase(log_flag) 
-            lines.each{ |el| @y_mean += el.y_value(log_flag) }
+            lines = self.measurement.lines_no_death_phase() if self.measurement.present?
+            lines = self.experiment.measurements.collect(&:lines_no_death_phase).flatten if self.experiment.present?
+            lines.each{ |el| @y_mean += el.y_value() }
             @y_mean = @y_mean.to_f / lines.size 
           end
-          hash[:rmse] +=  ( value - line.y_value(log_flag) ) ** 2
+          hash[:rmse] +=  ( value - line.y_value() ) ** 2
           hash[:r_square_err] = hash[:rmse] 
-          hash[:r_square_tot] += ( line.y_value(log_flag) - @y_mean ) ** 2
-          hash[:bias] = Math.log( (value / line.y_value(log_flag)).abs ).abs
-          hash[:accu] = Math.log( (value / line.y_value(log_flag)).abs )          
+          hash[:r_square_tot] += ( line.y_value() - @y_mean ) ** 2
+          hash[:bias] = Math.log( (value / line.y_value()).abs ).abs
+          hash[:accu] = Math.log( (value / line.y_value()).abs )          
         end
-
-      rescue Exception => e
-        raise e
-        print "error: " + e.message
+      
+      rescue Exception,NoMethodError  => e
+        #raise e
+        logger.error "[proxy_dyna_model.statistical_data_measurement] error: " + e.message
         
         #clean_stats "error while calculating statistics"
         return [].push(measurement.id).push(-1)
