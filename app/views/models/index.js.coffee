@@ -38,5 +38,8 @@ else if hash_models != table_hash_models
   $("#measurements_listing").html $(wrapped_m).html()
   change(wrapped_models,"##{hash_models}" , '#models_listing')
   
-url_path = "<%= raw request.url %>"
-history.pushState null, document.title, unescape(url_path) 
+<%- req_temp = request.clone %>
+<%- req_temp.params.delete(:_) %>
+<%- req_temp.params.delete(:action) %>
+<%- req_temp.params.delete(:controller) %>
+history.pushState null, document.title, "<%= raw "#{req_temp.base_url}#{req_temp.path}" + ( req_temp.params.size > 0 ? "?#{req_temp.params.collect { |k,v| k.to_s + "=" + v.to_s }.join("&")}" : "" )%>" 
