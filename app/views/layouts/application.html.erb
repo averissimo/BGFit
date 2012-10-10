@@ -11,12 +11,13 @@
 	  <% if content_for?(:head) %>
 	  <%= yield(:head) %>
 	  <% end %>
-	  
+      <!-- initialization script for MathJax -->
+     
+      <!-- initialization script for MathJax -->	  
 	  <%= stylesheet_link_tag    "application" %>
 	  <%= javascript_include_tag "application"  %>
 	  
-	  <!-- initialization script for MathJax -->
-	  <script type="text/x-mathjax-config">
+      <script type="text/x-mathjax-config">
         MathJax.Hub.Config({ 
           showProcessingMessages: false, 
           messageStyle: "none",
@@ -27,8 +28,8 @@
           processEscapes:true
         });
       </script>
-      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
-      <!-- initialization script for MathJax -->
+     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js"></script>
+      
 
 	  <%= csrf_meta_tags %>
 	
