@@ -1,7 +1,9 @@
 jQuery ->
-  $(window).bind "popstate", ->
-    $.getScript location.href
-    
+  if (history && history.pushState)    
+    $(window).bind "popstate", ->
+      jQuery ->
+        $.getScript location.href
+
   $('a[title],input[title]').qtip( {
     show: 'mouseover',
     hide: 'mouseout',
@@ -18,4 +20,5 @@ jQuery ->
       name: 'light'
     }
   })
+
   
