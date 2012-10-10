@@ -7,4 +7,9 @@ en:
       dyna_model:
         log_flag: the model regression and simulation is in log (base e) scale
         only_owner_can_change: lock the model, allowing only the owner to edit it.
-        description: general description for model 
+        description: general description for model
+      proxy_dyna_model:
+        title: "used to differentiate models in case of using different set of ranges or manual tunning"
+        no_death_phase: "removes any sequential values in the end that show a declining pattern"
+        original_data: "use this textbox to manually define the parameter's value"
+        dyna_model: "Model can only be choose when creating, if you wish to change you need to remove it first."

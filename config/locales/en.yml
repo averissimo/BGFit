@@ -88,8 +88,8 @@ en:
       group: Team
       model: Project
       dyna_model: "Model"
-      params: Parameter
-      proxy_dyna_models: "Proxy Model"
+      params: Parameters
+      proxy_dyna_model: "Proxy Model"
     attributes:
       model:
         is_published: Published?

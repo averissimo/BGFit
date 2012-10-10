@@ -107,7 +107,7 @@
 <%= menu %>
 </div>
 
-<h3>Dynamic models (<%= pluralize(@measurement.proxy_dyna_models.length, 'dynamic model')%>)</h3>
+<h3><%= ProxyDynaModel.model_name.human.pluralize(@measurement.proxy_dyna_models.length) %> (<%= @measurement.proxy_dyna_models.length %>)</h3>
 <%= 
 	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted dataTable') do |t|
 		t.header :title, "Model"

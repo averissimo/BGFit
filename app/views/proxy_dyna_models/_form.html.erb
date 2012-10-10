@@ -2,15 +2,15 @@
   <%= f.semantic_errors :state %>
   
   <%= f.inputs do %>
-  	<%= f.input :title, hint: "used to differentiate models in case of using different set of ranges or manual tunning" %>
-  	<% if params[:action] != 'new' %>
-  		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio , :input_html => { :disabled => true  } , hint: "Model can only be choose when creating, if you wish to change you need to remove it first."%>
+  	<%= f.input :title %>
+  	<% if @proxy_dyna_model.new_record? %>
+  		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio , :input_html => { :disabled => true  } %>
   	<% else %>
-  		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio  %>
+  		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio, :hint => false  %>
   	<% end %>
-  	<%= f.input :no_death_phase, as: :boolean, hint: "removes any sequential values in the end that show a declining pattern" %>
-	<% if params[:action] != 'new' %>
-	  <%= f.input :original_data, :as => :text , hint: "use this textbox to manually define the parameter's value"%>  
+  	<%= f.input :no_death_phase, as: :boolean %>
+	<% if @proxy_dyna_model.new_record? %>
+	  <%= f.input :original_data, :as => :text %>  
 	<% end %>
   <% end %>
   
