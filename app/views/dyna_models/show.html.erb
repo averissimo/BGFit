@@ -97,8 +97,8 @@
 <h3><%= DynaModel.human_attribute_name(:description) %></h3>
 <p>
   <%- if @dyna_model.log_flag %>
-  Log flag: true (all measurements that uses this model has its y-axis data transformed in log base e)<br/>
-  ####################################<br/>
+  Log flag: true (all measurements that uses this model have their y-axis data transformed to log  (base e))<br/>
+  ######################################################################################<br/>
   <%- end %>
   <%= simple_format (show (@dyna_model.description)) %>
 </p>
