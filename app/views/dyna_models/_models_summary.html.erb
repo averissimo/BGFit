@@ -2,7 +2,6 @@
 <h3><%= m.title%> <%= m.id %></h3>
 
 <p>(<%= link_to "show_more" , params_merge(m.id) %>)</p>
-<% debugger %>
 <%- if params["models"].present? && params["models"].include?(m.id.to_s)  %>
 <dl>
     <dt>Experiments:</dt>
