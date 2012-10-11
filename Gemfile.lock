@@ -6,10 +6,11 @@ GIT
       activesupport (>= 2.3.2)
 
 GIT
-  remote: git://github.com/rchekaluk/table_helper.git
-  revision: 4b2fac9e8733c7ae97b519cdf46e878d38593477
+  remote: git://github.com/marcandre/table_helper.git
+  revision: e756a24d40dce569d50cac09c7ce565249597c1d
   specs:
     table_helper (0.2.2)
+      rails
 
 GIT
   remote: git://github.com/rweng/jquery-datatables-rails.git
@@ -58,7 +59,6 @@ GEM
     ansi (1.4.3)
     arel (3.0.2)
     bcrypt-ruby (3.0.1)
-    blankslate (3.1.2)
     builder (3.0.3)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -203,7 +203,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  blankslate
   cancan!
   coffee-rails (~> 3.2.1)
   daemons

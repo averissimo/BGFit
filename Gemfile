@@ -10,7 +10,7 @@ gem 'mysql2'
 
 gem 'paper_trail'
 
-gem 'blankslate' # required by table_helper
+#gem 'blankslate' # required by table_helper
 gem 'hirb'
 gem 'fancy_irb'
 gem 'wirb'
@@ -58,7 +58,7 @@ end
 gem 'devise'
 gem 'cancan', github: 'ryanb/cancan', branch: '2.0'
 gem 'simple-navigation', github: 'andi/simple-navigation'
-gem 'table_helper', github: 'rchekaluk/table_helper'
+gem 'table_helper', github: 'marcandre/table_helper'
 
 gem 'strong_parameters'
 
