@@ -88,8 +88,9 @@ class DynaModelsController < ApplicationController
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
-    @experiments = Experiment.dyna_model_is(@dyna_model)
-    respond_with(@dyna_models)
+    @models = Model.dyna_model_is(@dyna_model).page(params[:page]).per(2)
+    
+    respond_with(@dyna_model)
   end
 
   def destroy

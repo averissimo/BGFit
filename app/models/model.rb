@@ -12,7 +12,8 @@ class Model < ActiveRecord::Base
    
   # Fulltext support using sunspot
   #scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
-  scope :dyna_model_is, lambda { |dyna_model| joins(:experiments => {:measurements => :proxy_dyna_models}).where(:experiments=>{:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}}).group('models.id').order(:id) }
+  scope :dyna_model_is, lambda { |dyna_model| 
+    joins(:experiments => {:measurements => :proxy_dyna_models}).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).group(Model.arel_table[:id]).order(Model.arel_table[:id]) }
   scope :viewable, lambda { |user| 
     if user.nil? then
       where( self.arel_table[:is_published].eq(true))

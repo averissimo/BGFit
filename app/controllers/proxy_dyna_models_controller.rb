@@ -91,6 +91,12 @@ class ProxyDynaModelsController < ApplicationController
   end
   
   def show
+
+    if params[:log]=="true" && @proxy_dyna_model.log_flag
+      @json = @proxy_dyna_model.json_cache(true)
+    else
+      @json = @proxy_dyna_model.json_cache(false)
+    end
     if @proxy_dyna_model.rmse.nil?
       flash[:notice] = [ t('proxy_dyna_models.show.empty') ]
     end

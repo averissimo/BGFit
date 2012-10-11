@@ -4,7 +4,6 @@ module ApplicationHelper
     defined?(no_remote_flag).nil?
   end
     
-  
   def data_sig(array,method=:id)
     array.map(&method).hash.to_s
   end

@@ -19,6 +19,9 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me
   
+  def email_trimmed
+    (email[0..(email[/.*@/].size * 2 / 3)]+"(...)"+email[/@.*\./].chop+"(...)").sub("@"," (dot) ")
+  end
   
   def email_at
     email.gsub(/@/,' (at) ').gsub(/\./,' (dot) ')

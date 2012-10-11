@@ -311,8 +311,8 @@ class ProxyDynaModel < ActiveRecord::Base
           temp_json["result"].reject!{ |q| q[1]=='_NaN_'  }
           h_json = {}
           if self.log_flag
-            h_json[:base10] = temp_json["result"].map { |data| [data[0],Math.exp(data[1])] }
             h_json[:log_e] = temp_json["result"]
+            h_json[:base10] = temp_json["result"].map { |data| [data[0],Math.exp(data[1])] }
             self.json = h_json
           else
             h_json[:base10] = temp_json["result"]

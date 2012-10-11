@@ -129,7 +129,7 @@
 	</div>
 	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
 	<div style="display:none;" class="model-data">
-		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.title%></div>
+		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json,log: @proxy_dyna_model.log_flag) %>"><%=@proxy_dyna_model.title%></div>
 	</div>
 	<div style="display:none;" class="measurement-data">
 		<% if @proxy_dyna_model.measurement.nil? %>
