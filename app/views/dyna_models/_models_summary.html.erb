@@ -4,15 +4,20 @@
     <h3><%= m.title%> <%= m.id %></h3>
     
     <%- if params["models"].present? && params["models"].include?(m.id.to_s)  %>
-        <dl>
-            <dt>Experiments:</dt>
+        <dl class="inline">
+            <dt>Experiments count:</dt>
             <dd><%= m.experiments.trim.size %></dd>
-            <dt>Measurements</dt>
+            <dt>Measurements count:</dt>
             <dd><%= Measurement.model_is(m).size %></dd>
         </dl>
     <%- else %>
         <p>(<%= link_to "show_more" , params_merge(m.id) , remote: true %>)</p>
     <%- end %>
+    
+    <h4><%= Experiment.model_name.human.pluralize%></h3>
+    <div id="experiments_listing" class="one_tab">
+        
+    </div>
     
 <%- end %>
 </div>
