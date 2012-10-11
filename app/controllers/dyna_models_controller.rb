@@ -1,5 +1,5 @@
 class DynaModelsController < ApplicationController
-  respond_to :html, :json, :csv
+  respond_to :html, :json, :csv, :js
   before_filter :authenticate_user!, :except => [:index,:show]
   
   load_and_authorize_resource

@@ -1,12 +1,20 @@
+<div id="models_wrapper">
+<%- @models.each do |m| %>
 
-<h3><%= m.title%> <%= m.id %></h3>
-
-<p>(<%= link_to "show_more" , params_merge(m.id) %>)</p>
-<%- if params["models"].present? && params["models"].include?(m.id.to_s)  %>
-<dl>
-    <dt>Experiments:</dt>
-    <dd><%= m.experiments.trim.size %></dd>
-    <dt>Measurements</dt>
-    <dd><%= Measurement.model_is(m).size %></dd>
-</dl>
+    <h3><%= m.title%> <%= m.id %></h3>
+    
+    <%- if params["models"].present? && params["models"].include?(m.id.to_s)  %>
+        <dl>
+            <dt>Experiments:</dt>
+            <dd><%= m.experiments.trim.size %></dd>
+            <dt>Measurements</dt>
+            <dd><%= Measurement.model_is(m).size %></dd>
+        </dl>
+    <%- else %>
+        <p>(<%= link_to "show_more" , params_merge(m.id) , remote: true %>)</p>
+    <%- end %>
+    
 <%- end %>
+</div>
+<%= paginate @models , remote: true%>
+

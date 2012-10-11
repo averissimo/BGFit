@@ -10,8 +10,8 @@ table_hash_m = $("#measurements_listing table").attr("data-sig")
 
 if hash_m != table_hash_m
   $("#models_listing").html $(wrapped_models).html()  
-  change(wrapped_m,"##{hash_m}",'#measurements_listing')
+  change(wrapped_m,"##{hash_m}",'#measurements_listing','.dataTables_wrapper',true)
 else if hash_models != table_hash_models
   $("#measurements_listing").html $(wrapped_m).html()
-  change(wrapped_models,"##{hash_models}" , '#models_listing')
+  change(wrapped_models,"##{hash_models}" , '#models_listing','.dataTables_wrapper',true)
 false 

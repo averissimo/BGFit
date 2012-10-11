@@ -74,9 +74,7 @@
 </div>
 
 <h2><%= Model.model_name.human.pluralize%></h2>
-<div class="one_tab">
-<%- @models.each do |m| %>
-<%= render partial: "models_summary", :locals => {:m => m} %>
-<%- end %>
+
+<div id="models_listing" class="one_tab">
+<%= render partial: "models_summary" %>
 </div>
-<%= paginate @models %>
