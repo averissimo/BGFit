@@ -61,6 +61,6 @@ class Ability
     can :read, :dyna_models
     can [:manage,:new_measurement], :all if user.present? && user.admin?
     
-    can :stats, :dyna_models
+    can [:stats,:experiment_detail], :dyna_models
   end
 end

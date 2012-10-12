@@ -1,0 +1,13 @@
+<div id="experiments_wrapper">
+<%- m.experiments.trim.each do |e| %>
+
+    <h3><%= e.title%></h3>
+    <div id="experiment_<%=e.id%>">
+            <%= render partial: "experiment_info.html", :locals => { :e => e} %>        
+    </div>
+    
+    
+    
+<%- end %>
+</div>
+

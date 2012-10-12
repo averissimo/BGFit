@@ -1,7 +1,8 @@
-<div id="models_wrapper">
-<%- @models.each do |m| %>
+<div>
+    <div id="models_wrapper">
+<%- @models.each do |m|  %>
 
-    <h3><%= m.title%> <%= m.id %></h3>
+    <h3><%= m.title%></h3>
     
     <%- if params["models"].present? && params["models"].include?(m.id.to_s)  %>
         <dl class="inline">
@@ -10,16 +11,16 @@
             <dt>Measurements count:</dt>
             <dd><%= Measurement.model_is(m).size %></dd>
         </dl>
+        
+        <h4><%= Experiment.model_name.human.pluralize%></h3>
+        <div id="experiments_listing" class="one_tab">
+            <%= render partial: "experiments_summary.html", :locals => { :m => m }%>
+        </div>
     <%- else %>
-        <p>(<%= link_to "show_more" , params_merge(m.id) , remote: true %>)</p>
+        <p>(<%= link_to "show_more" , stats_params(m.id,"stats") , remote: true %>)</p>
     <%- end %>
     
-    <h4><%= Experiment.model_name.human.pluralize%></h3>
-    <div id="experiments_listing" class="one_tab">
-        
+    <%- end %>
     </div>
-    
-<%- end %>
-</div>
 <%= paginate @models , remote: true%>
-
+</div>

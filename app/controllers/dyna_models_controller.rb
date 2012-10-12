@@ -29,7 +29,7 @@ class DynaModelsController < ApplicationController
   
   def calculate
     @dyna_model = DynaModel.find(params[:id])
-    @proxy_dyna_models = ProxyDynaModel.where( :id => params["proxy_dyna_model_ids"])
+    @proxy_dyna_models = ProxyDynaModel.viewable(current_user).where( :id => params["proxy_dyna_model_ids"])
     
     custom_params = @dyna_model.params.collect do |param|
       param.top =  params[param.id.to_s+"_top"]
@@ -82,15 +82,30 @@ class DynaModelsController < ApplicationController
 
   def estimate
     @dyna_model = DynaModel.find(params[:id])
-    @models = Model.dyna_model_is(@dyna_model)
+    @models = Model.viewable(current_user).dyna_model_is(@dyna_model)
     respond_with(@dyna_model)
   end
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
-    @models = Model.dyna_model_is(@dyna_model).page(params[:page]).per(2)
+    @models = Model.viewable(current_user).dyna_model_is(@dyna_model).page(params[:page]).per(2)
     
     respond_with(@dyna_model)
+  end
+  
+  def experiment_detail
+    @dyna_model = DynaModel.find(params[:id])
+    @models = Model.viewable(current_user).dyna_model_is(@dyna_model).page(params[:page]).per(2)
+    if params["show_exp"]
+      @show_experiment = Experiment.viewable(current_user).find(params["show_exp"])
+    end
+    respond_with @dyna_model do |format|
+      format.html { render action: "stats" }
+      if params["show_exp"].nil?
+        format.js { render json nothing: true }
+      end
+    end
+    
   end
 
   def destroy

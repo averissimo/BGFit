@@ -1,12 +1,48 @@
 root = exports ? @
 
+root.update_div = (newEl,to_replace,to_animate) ->
+  new_id = "#" + newEl.prop "id"
+  height_old = $(to_replace).children(to_animate).height()
+  $(to_replace).children().wrapAll("<div class='to_remove' />")
+  $(to_replace).append newEl.children()
+  new_element = $(to_replace).children('div:not(.to_remove)')
+  old_element = $('div.to_remove').children()
+  convert_tables()
+  height_new = new_element.height()
+
+  new_element.children(to_animate).height(height_old)
+  #$(to_replace).html($(new_id).html())
+  old_element.parent().hide()
+  new_element.children(to_animate).hide().fadeIn 500,"easeInOutCirc"
+  
+  #overflow = new_element.children(to_animate).css "overflow"
+  #overflow_p = new_element.parent().css "overflow"
+  #overflow_new_el  = new_element.css "overflow"
+  #new_element.children(to_animate).css "overflow" , "visible"
+  #new_element.css( "overflow" , "visible")
+  #new_element.parent().css( "overflow" , "hidden").css("margin" , "0px")
+  new_element.children(to_animate).animate { height: height_new },{
+    step: ->
+      $(@).css "overflow","hidden"
+    ,
+    complete: ->
+      #$(@).css "overflow",overflow
+      $(@).css "height","auto"
+      #$(@).parent().css "overflow" , overflow_p
+      #$(@).parent().parent().css "overflow" , overflow_new_el
+    } , 1500 , "easeInOutCirc"
+
+
+
 root.change = (newEl,selector,rootSelector,optional_class, hide_sub_div) ->
   hide_sub_div = hide_sub_div || false;
+  height_old = $("#{rootSelector} #{optional_class}").height()
+  
   $("#{rootSelector}").append newEl
   convert_tables()
-  height_old = $("#{rootSelector} #{optional_class}").height()
+  
   height_new = $("#{selector} #{optional_class}").height()
-  if (resize = $("#{selector} table").parentsUntil("#{rootSelector}","#{optional_class}")).size() == 0
+  if optional_class == '' || (resize = $("#{selector} table").parentsUntil("#{rootSelector}","#{optional_class}")).size() == 0
     resize = $("#{selector} #{optional_class}")
   resize.height(height_old)
 
@@ -25,7 +61,8 @@ root.change = (newEl,selector,rootSelector,optional_class, hide_sub_div) ->
       $(@).css "overflow","visible"
     ,
     complete: ->
-     s $(@).css "overflow",overflow
+      $(@).css "overflow",overflow
+      $(@).css "height","auto"
     },1500,"easeInOutCirc"
 
 root.wrap_it = (content) ->
@@ -37,8 +74,3 @@ root.wrap_it = (content) ->
     wrapped.attr("id", "temp_div#{Math.floor(Math.random()*101)}")
   wrapped
   
-# app/assets/javascripts/posts.js.coffee
-jQuery ->
-  $('a[data-remote=true]').live 'click', ->
-    window.history.pushState(null, document.title, $(this).attr("href"))
-    false

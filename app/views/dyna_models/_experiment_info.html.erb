@@ -1,0 +1,38 @@
+<div>
+    <%- if params["experiments"].present? && params["experiments"].include?(e.id.to_s)  %>
+    <dl class="inline">
+        <dt>Measurements count:</dt>
+        <dd><%= e.measurements.size %>
+    </dd>
+    </dl>
+    
+    <%= 
+        collection_table(e.measurements.map{ |m| m.proxy_dyna_models.where(:dyna_model_id => @dyna_model.id)}.flatten, :id => 'measurements' , :class => 'formatted dataTable') do |t|
+            t.header :title,        ProxyDynaModel.human_attribute_name(:title)
+            param_list = @dyna_model.params.where(Param.arel_table[:output_only].not_eq(true)) 
+            param_list.each do |param|
+                t.header param.code, param.human_title.html_safe    
+            end
+            t.header :rmse
+            t.header :bias
+            t.header :accuracy
+            t.header :show , ""
+    
+            t.rows.alternate = :odd
+            t.rows.each do |row, pdm, index|
+                # Notice there's no need to explicitly define the title
+                row.title pdm.measurement.title + " " + pdm.title.to_s
+                param_list.each do |param|
+                   row.send(param.code.to_sym, pdm.proxy_params.where( param_id: param.id).first.value.round(5))
+                end
+                row.rmse pdm.rmse.round(5)
+                row.bias pdm.bias.round(5)
+                row.accuracy pdm.accuracy.round(5)
+                row.show "show"
+            end
+        end
+    %>
+    <%- else %>
+        <div><p>(<%= link_to "show experiment's details", experiment_detail_params(e.id,"experiment_detail") , class: "expand_detail", :remote => true %>)</p></div>
+    <%- end %>
+</div>

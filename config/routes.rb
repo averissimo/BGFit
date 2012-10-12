@@ -11,6 +11,7 @@ BacteriaGrowth::Application.routes.draw do
   resources :dyna_models, path: :models do
     resources :params
     member do
+      match "stats/experiment_detail" , :via => :get, :action => "experiment_detail", as: "experiment_detail_stats"
       get :stats
       get :estimate
       put :calculate
@@ -30,7 +31,7 @@ BacteriaGrowth::Application.routes.draw do
       member do
         get :regression
         put :update_regression
-      end
+      end   
     end
     resources :proxy_dyna_models, path: :proxy_models, :only => [:new, :create]
   end
