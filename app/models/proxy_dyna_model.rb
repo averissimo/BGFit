@@ -410,11 +410,11 @@ class ProxyDynaModel < ActiveRecord::Base
 
 
     def can_view(user=nil)
-      measurement.experiment.model.can_view(user)
+      @can_view ||= measurement.experiment.model.can_view(user)
     end
     
     def can_edit(user=nil)
-      measurement.experiment.model.can_edit(user)
+      @can_edit ||= measurement.experiment.model.can_edit(user)
     end
 
   #

@@ -111,8 +111,8 @@
 <%= 
 	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted dataTable') do |t|
 		t.header :title,        DynaModel.model_name.human
-		t.header :rmse,         ProxyDynaModel.human_attribute_name(:rmse)
 		t.header :params,       Param.model_name.pluralize
+		t.header :rmse,         ProxyDynaModel.human_attribute_name(:rmse)
 		t.header :notes,        ProxyDynaModel.human_attribute_name(:note)
 		t.header :show_h,		"", class: "no-sort"
 		t.header(:edit_h,		"", class: "no-sort") if can? :update, @measurement
