@@ -21,16 +21,18 @@ root.update_div = (newEl,to_replace,to_animate) ->
   #new_element.children(to_animate).css "overflow" , "visible"
   #new_element.css( "overflow" , "visible")
   #new_element.parent().css( "overflow" , "hidden").css("margin" , "0px")
-  new_element.children(to_animate).animate { height: height_new },{
-    step: ->
-      $(@).css "overflow","hidden"
-    ,
-    complete: ->
-      #$(@).css "overflow",overflow
-      $(@).css "height","auto"
+  #new_element.children(to_animate).parent().animate { height: height_new },{
+  #  step: ->
+  #    $(@).css "overflow","hidden"
+  #  ,
+  #  complete: ->
+  #    #$(@).css "overflow",overflow
+  #    alert $(@).parent().
+  #    new_element.children(to_animate).height("auto")
+      #$(@).css "height","auto"
       #$(@).parent().css "overflow" , overflow_p
       #$(@).parent().parent().css "overflow" , overflow_new_el
-    } , 1500 , "easeInOutCirc"
+  #  } , 1500 , "easeInOutCirc"
 
 
 

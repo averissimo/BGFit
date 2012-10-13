@@ -1,3 +1,4 @@
+<div>
 <h1>Listing <%= pluralize(@models.length, Model.model_name.human.downcase)%></h1>
 
 <%= 
@@ -25,3 +26,4 @@
 %>
 
 <%= paginate @models , remote: remote_activated? %>
+</div>

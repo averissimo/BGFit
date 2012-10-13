@@ -33,6 +33,6 @@
         end
     %>
     <%- else %>
-        <div><p>(<%= link_to "show experiment's details", experiment_detail_params(e.id,"experiment_detail") , class: "expand_detail", :remote => true %>)</p></div>
+        <div><p>(<%= link_to "show experiment's details", experiment_detail_params(e.id,"experiment_detail") , class: "expand_detail" %>)</p></div>
     <%- end %>
 </div>
