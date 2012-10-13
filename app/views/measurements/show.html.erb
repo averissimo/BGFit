@@ -138,19 +138,4 @@
 
 <h3><%= DynaModel.model_name.human %> and <%=Measurement.model_name.human.downcase%> plots</h3>
 
-<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
-	<div class="chart">
-		 <br/>
-		 <div class="one_tab">loading...</div>
-	</div>
-	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-	<div style="display:none;" class="model-data">
-		<% @measurement.proxy_dyna_models.each do |pdm| %>
-		<div data-source="<%= proxy_dyna_model_path(pdm, :format => :json) %>"><%=pdm.title_join%></div>
-		<% end %>
-	</div>
-	<div style="display:none;" class="measurement-data">
-		<div data-source="<%= experiment_measurement_path(@measurement.experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div> 
-	</div>
-
-</div>
+<%= google_chart( [@measurement] , @measurement.proxy_dyna_models )%>

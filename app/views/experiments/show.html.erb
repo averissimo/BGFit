@@ -58,16 +58,6 @@
 
 <h3>Measurements chart</h3>
 
-<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
-	<div class="chart">
-		 <br/>
-		 <div class="one_tab">loading...</div>
-	</div>
-	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-	<div style="display:none;" class="measurement-data">
-		<% @experiment.measurements.each do |m| %>
-		<div data-source="<%= experiment_measurement_path(@experiment,m,:format=>:json) %>"><%= m.title%></div>
-		<% end %> 
-	</div>
+<%= google_chart( @experiment.measurements , [] )%>
 
-</div>
+

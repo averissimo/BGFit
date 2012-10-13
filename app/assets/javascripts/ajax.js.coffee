@@ -35,7 +35,7 @@ root.update_div = (newEl,to_replace,to_animate) ->
   #  } , 1500 , "easeInOutCirc"
 
 
-
+# deprecated
 root.change = (newEl,selector,rootSelector,optional_class, hide_sub_div) ->
   hide_sub_div = hide_sub_div || false;
   height_old = $("#{rootSelector} #{optional_class}").height()

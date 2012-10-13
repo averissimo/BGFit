@@ -122,26 +122,12 @@
 <%- if !@proxy_dyna_model.rmse.nil? || !@proxy_dyna_model.rmse.blank? %>
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
 
-<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
-	<div class="chart">
-		 <br/>
-		 <div class="one_tab">loading...</div>
-	</div>
-	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-	<div style="display:none;" class="model-data">
-		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json,log: @proxy_dyna_model.log_flag) %>"><%=@proxy_dyna_model.title%></div>
-	</div>
-	<div style="display:none;" class="measurement-data">
-		<% if @proxy_dyna_model.measurement.nil? %>
-		<% @proxy_dyna_model.experiment.measurements.each do |m| %>
-		<div data-source="<%= experiment_measurement_path(@proxy_dyna_model.experiment,m,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= m.title %></div>
-		<% end %>
-		<% else %>
-		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= @measurement.title %></div>
-		<% end %> 
-	</div>
+    <% if @proxy_dyna_model.measurement.nil? %>
+        <%= google_chart( @proxy_dyna_model.experiment.measurements , [@proxy_dyna_model] )%>
+    <%- else %>
+        <%= google_chart( [@measurement] , [@proxy_dyna_model] )%>
+    <%- end %>
 
-</div>
 <%- end %>
 
 
