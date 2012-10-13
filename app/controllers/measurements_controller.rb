@@ -137,6 +137,10 @@ class MeasurementsController < ApplicationController
     respond_with(@experiment,@measurement, :location => [@model,@experiment])
   end
   
+  def summary
+    respond_with(@measurement)
+  end
+  
   private
   
   def determine_models

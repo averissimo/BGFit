@@ -27,16 +27,16 @@ BacteriaGrowth::Application.routes.draw do
   end
 
   resources :experiments, :except => [:new, :create] do
-    resources :measurements do
-      member do
-        get :regression
-        put :update_regression
-      end   
-    end
+    resources :measurements
     resources :proxy_dyna_models, path: :proxy_models, :only => [:new, :create]
   end
 
   resources :measurements, :except => [:new, :create] do
+      member do
+        get :regression
+        put :update_regression
+        get :summary
+      end   
       resources :lines
       #
       resources :proxy_dyna_models, path: :proxy_models

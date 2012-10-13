@@ -14,7 +14,7 @@
 		{
 			:key => :regression, 
 			:name => t('.linear'), 
-			:url => url_for([:regression,@experiment,@measurement]),
+			:url => url_for([:regression,@measurement]),
 			:options => {
 				:if => Proc.new { can?(:regression, @measurement) },
 				:container_class => 'menu'
@@ -131,6 +131,10 @@
 		end
 	end
 %>
+
+<div class="options">
+    <%= link_to "download table as .csv" , {action: :summary, format: :csv}, {class: "dada"} %>
+</div>
 
 <h3><%= DynaModel.model_name.human %> and <%=Measurement.model_name.human.downcase%> plots</h3>
 

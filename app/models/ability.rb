@@ -11,6 +11,10 @@ class Ability
       obj.can_edit(user) # all classes have this method implemented
     end
     
+    can [:summary], [:measurements] do |obj|
+      obj.can_view(user) # all classes have this method implemented
+    end
+    
     can [:new], [:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
