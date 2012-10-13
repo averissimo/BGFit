@@ -88,6 +88,47 @@ class ProxyDynaModel < ActiveRecord::Base
       string
     end
     
+    # Override to assure serialized hash is retrieved from db without changes in logic
+    def json()
+      data = read_attribute(:json)
+      return Marshal.load( data ) if (data).present?
+      nil
+    end
+    
+    # Override to assure hash is serialized to db without changes in logic
+    def json=(value)
+      if value.nil?
+        write_attribute(:json,nil)
+      else
+        write_attribute(:json,Marshal.dump( value ) )  
+      end
+      
+    end
+    
+    
+    # If json has not yet been calculated, then it calls solver method
+    #
+    # @return json results
+    def json_cache(show_log=false)
+      hash = :base10
+      unless self.json.nil?
+        logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
+        hash = :log_e if show_log && self.json.keys.include?(:log_e)
+        return self.json[hash].to_s.gsub(/ /,"")
+      end 
+      if self.call_solver.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
+        return nil
+      end 
+      if self.statistical_data.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to statistical_data was nil"}
+        return
+      end
+      hash = :log_e if show_log && self.json.keys.include?(:log_e) 
+      self.json[hash].to_s.gsub(/ /,"")
+    end
+    
+    
     #
     # public methods for private
     #
@@ -173,6 +214,11 @@ class ProxyDynaModel < ActiveRecord::Base
       end
     end
     
+    #
+    # Parameter estimation methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+    
     # Calls estimation using custom parameters
     #
     # @param params parameters' range that will be used in parameter estimation
@@ -210,7 +256,8 @@ class ProxyDynaModel < ActiveRecord::Base
         end
       end
     end
-      
+    
+    # handle http response for parameter estimation
     def handle_http_response(response,params)
       begin
         result = JSON.parse( response.body.gsub(/(\n|\t| )/,'') )
@@ -236,46 +283,12 @@ class ProxyDynaModel < ActiveRecord::Base
       self.json = nil
       self.json_cache # call solver and calculate statistical data
     end
-    
-    # Override to assure serialized hash is retrieved from db without changes in logic
-    def json()
-      data = read_attribute(:json)
-      return Marshal.load( data ) if (data).present?
-      nil
-    end
-    
-    # Override to assure hash is serialized to db without changes in logic
-    def json=(value)
-      if value.nil?
-        write_attribute(:json,nil)
-      else
-        write_attribute(:json,Marshal.dump( value ) )  
-      end
-      
-    end
-    
-    # If json has not yet been calculated, then it calls solver method
+
     #
-    # @return json results
-    def json_cache(show_log=false)
-      hash = :base10
-      unless self.json.nil?
-        logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
-        hash = :log_e if show_log && self.json.keys.include?(:log_e)
-        return self.json[hash].to_s.gsub(/ /,"")
-      end 
-      if self.call_solver.nil?
-        logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
-        return nil
-      end 
-      if self.statistical_data.nil?
-        logger.info {"[proxy_dyna_model.json_cache] call to statistical_data was nil"}
-        return
-      end
-      hash = :log_e if show_log && self.json.keys.include?(:log_e) 
-      self.json[hash].to_s.gsub(/ /,"")
-    end
-    
+    # Simulation methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+
     # Calls the solver for the calculated parameters
     #
     # @param time [int] safety measure allowing to adjust timescale in solver in case of errors
@@ -370,6 +383,12 @@ class ProxyDynaModel < ActiveRecord::Base
       }
      
     end
+
+    #
+    # Authorization methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+
 
     def can_view(user=nil)
       measurement.experiment.model.can_view(user)
