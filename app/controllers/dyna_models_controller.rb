@@ -88,9 +88,14 @@ class DynaModelsController < ApplicationController
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
-    @models = Model.viewable(current_user).dyna_model_is(@dyna_model).page(params[:page]).per(2)
     
-    respond_with(@dyna_model)
+    respond_with(@dyna_model) do |format|
+      format.html { @models = Model.viewable(current_user).dyna_model_is(@dyna_model).page(params[:page]).per(2) }
+      format.csv {
+        @models = Model.viewable(current_user).dyna_model_is(@dyna_model)
+        @experiments = Experiment.viewable(current_user).dyna_model_is(@dyna_model)
+      }
+    end
   end
   
   def experiment_detail

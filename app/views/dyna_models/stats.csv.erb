@@ -1,7 +1,8 @@
 <%= @dyna_model.title %> (dyna model)
 
-<% @experiments.each do |e| %>
-	<% next unless (proxy_dyna_models = e.measurements.collect_concat(&:proxy_dyna_models).find_all { |p| p.dyna_model == @dyna_model }) %>
+<% @experiments.each do |e|
+	proxy_dyna_models = ProxyDynaModel.viewable(current_user).experiment_is(e).dyna_model_is(@dyna_model)
+	next if proxy_dyna_models.blank? %> 
 	
 <%= e.title %> experiment that belongs to <%= e.model.title %> model
 	
@@ -21,7 +22,8 @@ Measurements
 ,title,od_max,lambda,u_max,n_zero,rmse,bias,accuracy<% 
  #@dyna_model.proxy_dyna_models.collect {|p| if (p.measurement.experiment == e) then p.measurement end }.compact
  e.measurements.each do |m|
- 	next unless (proxy_dyna_models = m.proxy_dyna_models.find_all { |p| p.dyna_model == @dyna_model })
+ 	next unless (proxy_dyna_models = ProxyDynaModel.viewable(current_user).measurement_is(m).dyna_model_is(@dyna_model)
+)
 
  proxy_dyna_models.each do |p_dm|  %>
 ,<%= m.title %>,<% p_dm.proxy_params.sort{ |a,b| a.code <=> b.code }.each do |param| %><% next if param.code == 'o'%><%= param.value %>,<% end %><%=p_dm.rmse%>,<%=p_dm.bias%>,<%=p_dm.accuracy%><%end%><%end%>

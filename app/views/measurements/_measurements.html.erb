@@ -19,7 +19,7 @@
             row.experiment      measure.experiment.title
             row.title           measure.title
             row.date            measure.date
-            row.regression_h    link_to t('action.measurement.regression').downcase, [:regression,measure.experiment,measure] if can? :update, measure
+            row.regression_h    link_to t('action.measurement.regression').downcase, [:regression,measure] if can? :update, measure
             row.show_h          link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
             row.csv             link_to t('action.download_data').downcase, experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
         #   row.exp             link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)

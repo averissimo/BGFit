@@ -9,8 +9,8 @@ class Experiment < ActiveRecord::Base
   scope :trim, lambda { includes(:measurements).where( Experiment.arel_table[:default].eq(nil).or(Experiment.arel_table[:default].eq(false))
     .or(Experiment.arel_table[:default].eq(true).and(Measurement.arel_table[:id].not_eq(nil))) ) }
   
-  scope :model_is, lambda { |model| where(:model_id=>model.id).order(:model_id) }
-  scope :dyna_model_is, lambda { |dyna_model| joins(:measurements => :proxy_dyna_models).where(:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}).group('experiments.id').order(:model_id) }
+  scope :model_is, lambda { |model| where(Model.arel_table[:model_id].eq(model.id)).order(Model.arel_table[:model_id]) }
+  scope :dyna_model_is, lambda { |dyna_model| joins(:measurements => :proxy_dyna_models).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).group('experiments.id').order(:model_id) }
   scope :viewable, lambda { |user| where( Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )) }
   
   has_paper_trail
@@ -43,16 +43,17 @@ class Experiment < ActiveRecord::Base
     
   end
   
-  def get_average_proxy_dyna_model(proxy_dyna_models)
+  def get_average_proxy_dyna_model(dyna_model)
     
-    return nil if proxy_dyna_models.nil? || proxy_dyna_models.size == 0
+    return nil if dyna_model.nil?
     
-    blank = self.proxy_dyna_models.find do |p|
-      p.dyna_model.id == proxy_dyna_models.first.dyna_model.id      
+    begin
+      blank = self.proxy_dyna_models.find(dyna_model.id)
+    rescue
+      blank = self.proxy_dyna_models.build
+      blank.dyna_model = dyna_model
     end
     
-    blank = self.proxy_dyna_models.build if blank.nil?
-    blank.dyna_model = proxy_dyna_models.first.dyna_model
     blank.update_params()
 
     blank.bias = 0
@@ -62,36 +63,34 @@ class Experiment < ActiveRecord::Base
     bias = []
     accu = []
     rmse = []
+    r_square = []
     
-    proxy_dyna_models.each_with_index do |p,i|
-                           
-      blank.proxy_params.each do |blank_param|
+    ProxyDynaModel.experiment_is(self).dyna_model_is(dyna_model).each_with_index do |p,i|
+      params ||= p.params
       
-        blank_param.value = 0 if blank_param.value.nil?
-        param = p.proxy_params.find do |param_a|
-          param_a.param.id == blank_param.param.id
-        end
-        blank_param.mean_add(param.value) unless param.nil? || param.value.nil?
+      # getting the range so that it covers all the exisitng ranges that are
+      #  used to calculate for each measurement
+      params.each do |param|
+      
       end
-           
+      
+                
+      r_square.push( p.r_square )     
       bias.push( p.bias )
       accu.push( p.accuracy )
       rmse.push( p.rmse )
     end
 
-    blank.bias = bias.sum / bias.size
-    blank.accuracy = accu.sum / accu.size
-    blank.rmse = rmse.sum / rmse.size
+    blank.bias_avg = bias.sum / bias.size
+    blank.accuracy_avg = accu.sum / accu.size
+    blank.rmse_avg = rmse.sum / rmse.size
+    blank.r_square_avg = r_square.sum / r_square.size
     
-    blank.bias_stdev = calc_stdev( bias , blank.bias )
-    blank.accuracy_stdev = calc_stdev( accu , blank.accuracy )
-    blank.rmse_stdev = calc_stdev( rmse , blank.rmse )
+    blank.bias_stdev = calc_stdev( bias , blank.bias_avg )
+    blank.accuracy_stdev = calc_stdev( accu , blank.accuracy_avg )
+    blank.rmse_stdev = calc_stdev( rmse , blank.rmse_avg )
+    blank.r_square_stdev = calc_stdev( r_square , blank.r_square_avg )
     
-    blank.proxy_params.each do |p|
-      p.mean
-      p.std_dev
-      p.save
-    end
     blank.json = nil
     blank.save
     #blank.json_cache

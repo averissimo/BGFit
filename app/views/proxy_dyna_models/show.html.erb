@@ -83,8 +83,8 @@
 				row.title 	param.param.human_title.html_safe
 				row.value	param.value, :class => "highlight"
 				row.description	param.param.description
-				row.bottom 	range_value(param.bottom,param,'_bottom')
-				row.top 	range_value(param.top,param,'_top')
+				row.bottom 	range_value(param.bottom_cache,param,'_bottom')
+				row.top 	range_value(param.top_cache,param,'_top')
 			end
 		end %>
 	</div>

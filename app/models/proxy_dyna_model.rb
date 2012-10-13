@@ -6,15 +6,26 @@ class ProxyDynaModel < ActiveRecord::Base
   
   validate :validate_title
   
-  before_create :update_params
-  before_update :update_params
+  before_save :update_params
   
   has_paper_trail :skip => [:json]
   
   scope :viewable, lambda { |user| 
-    join( :measurement => :experiment ).where( 
+    joins( :measurement => :experiment ).where( 
       Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )
     )
+  }
+  
+  scope :experiment_is, lambda { |experiment|
+    joins( :measurement ).where(Measurement.arel_table[:experiment_id].eq(experiment.id))
+  }
+  
+  scope :dyna_model_is, lambda { |dyna_model|
+    where( ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id))
+  }
+  
+  scope :measurement_is, lambda { |measurement|
+    where( ProxyDynaModel.arel_table[:measurement_id].eq(measurement.id))  
   }
   
   ROUND = 5
@@ -63,7 +74,7 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     def title_join
       title_pdm = read_attribute(:title)
-      if title_pdm.nil? && !self.dyna_model.nil?
+      if title_pdm.blank? && !self.dyna_model.nil?
         self.dyna_model.title
       elsif self.dyna_model.nil?
         title_pdm
@@ -165,7 +176,13 @@ class ProxyDynaModel < ActiveRecord::Base
     def log_flag() dyna_model.log_flag end
     
     # default rounding for this class number or attributes
-    def round(symbol) (symbol.class == Symbol ? self.send(symbol) : symbol).round(ROUND) end
+    def round(symbol) 
+      begin
+        (symbol.class == Symbol ? self.send(symbol) : symbol).round(ROUND)
+      rescue
+        nil
+      end
+    end
        
     #
     # Statistical methods
@@ -184,7 +201,23 @@ class ProxyDynaModel < ActiveRecord::Base
     def rmse_stdev=(arg) @rmse_stdev = arg end
     # RMSE standard deviation attribution
     def rmse_stdev () @rmse_stdev end
+    # R² standard deviation attribution
+    def r_square_stdev=(arg) @r_square_stdev = arg end
+    # R² standard deviation attribution
+    def r_square_stdev () @r_square_stdev end
     
+    def rmse_avg() @rmse_avg end
+    def rmse_avg=(arg) @rmse_avg = arg end
+    
+    def bias_avg() @bias_avg end
+    def bias_avg=(arg) @bias_avg = arg end
+    
+    def accuracy_avg() @accuracy_avg end
+    def accuracy_avg=(arg) @accuracy_avg = arg end
+    
+    def r_square_avg() @r_square_avg end
+    def r_square_avg=(arg) @r_square_avg = arg end
+      
     #
     # calculates statiscal data:
     #  - RMSE
@@ -661,8 +694,8 @@ class ProxyDynaModel < ActiveRecord::Base
     def temp_params
       # TODO: refactor to use proxy dyna model proxy params directly
       params = self.proxy_params.collect do |p|
-        p.param.bottom = p.bottom
-        p.param.top = p.top
+        p.param.bottom = p.bottom_cache
+        p.param.top = p.top_cache
         p.param
       end
     end
