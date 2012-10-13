@@ -112,6 +112,7 @@
 	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted dataTable') do |t|
 		t.header :title, "Model"
 		t.header :rmse
+		t.header :params
 		t.header :notes
 		t.header :show_h,		"", class: "no-sort"
 		t.header(:edit_h,		"", class: "no-sort") if can? :update, @measurement
@@ -121,7 +122,8 @@
     	t.rows.each do |row, proxy_dyna_model, index|
 			# Notice there's no need to explicitly define the title
 			row.title		proxy_dyna_model.title_join
-			row.rmse		proxy_dyna_model.rmse
+			row.rmse		proxy_dyna_model.round(:rmse), :class => "small"
+			row.params      proxy_dyna_model.params_to_string.html_safe, :class => "small"
 			row.notes		{ if proxy_dyna_model.notes.nil? then "" else word_wrap(proxy_dyna_model.notes,:line_width => 40).gsub(/\n/, '<br/>') end }
 			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model] if can? :read, proxy_dyna_model
 			row.edit_h		link_to t('action.edit').downcase, [:edit,proxy_dyna_model] if can? :update, proxy_dyna_model

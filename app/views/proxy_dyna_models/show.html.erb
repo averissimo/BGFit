@@ -101,10 +101,10 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><%= @proxy_dyna_model.rmse%></td>
-				<td><%= @proxy_dyna_model.r_square%></td>
-				<td><%= @proxy_dyna_model.bias%></td>
-				<td><%= @proxy_dyna_model.accuracy%></td>
+				<td><%= @proxy_dyna_model.round(:rmse)%></td>
+				<td><%= @proxy_dyna_model.round(:r_square)%></td>
+				<td><%= @proxy_dyna_model.round(:bias)%></td>
+				<td><%= @proxy_dyna_model.round(:accuracy)%></td>
 			</tr>
 		</tbody>
 	</table>

@@ -17,6 +17,8 @@ class ProxyDynaModel < ActiveRecord::Base
     )
   }
   
+  ROUND = 5
+  
   # Fulltext support using sunspot
   #searchable do
   #  text :title, :boost => 5 do
@@ -68,6 +70,15 @@ class ProxyDynaModel < ActiveRecord::Base
       else
         self.dyna_model.title + ': ' + title_pdm
       end
+    end
+    
+    #
+    # Parameters to string
+    def params_to_string
+      self.proxy_params.collect { |p|
+        next if p.param.output_only?
+        p.param.human_title + "=" + p.value.to_s
+      }.compact.join(",")
     end
     
     # Does not allow to save data in this field 
@@ -135,18 +146,26 @@ class ProxyDynaModel < ActiveRecord::Base
     
     # Getter method for generating default estimation url
     def get_estimation_url() estimation_url(estimation_hash(temp_params)) end
+    
     # Getter method for generating default solver url
     def get_solver_url() estimation_url(solver_url) end
+    
     # Cleans statistical data
     def perform_clean_stats() clean_stats(nil) end
+    
     # Prepares ProxyDynaModel to perform background calculation of parameters
     # TODO: move string to language file
     def call_pre_estimation_background_job() clean_stats "parameters are being calculated in background" end
+    
     # Calls estimation using default parameters
     #  (see #call_estimation_with_custom_params)
     def call_estimation(is_post_method = true) call_estimation_with_custom_params( temp_params , is_post_method) end
+    
     # Whether the model should show the results and regression in log scale
     def log_flag() dyna_model.log_flag end
+    
+    # default rounding for this class number or attributes
+    def round(symbol) (symbol.class == Symbol ? self.send(symbol) : symbol).round(ROUND) end
        
     #
     # Statistical methods
