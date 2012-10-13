@@ -14,7 +14,7 @@ if typeof google isnt 'undefined'
       width: 900,
       height: 500,
       legend: {
-        position: "bottom"
+        #position: "bottom"
       }
       chartArea: {
           width:"80%",

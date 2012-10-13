@@ -110,10 +110,10 @@
 <h3><%= ProxyDynaModel.model_name.human.pluralize(@measurement.proxy_dyna_models.length) %> (<%= @measurement.proxy_dyna_models.length %>)</h3>
 <%= 
 	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted dataTable') do |t|
-		t.header :title, "Model"
-		t.header :rmse
-		t.header :params
-		t.header :notes
+		t.header :title,        DynaModel.model_name.human
+		t.header :rmse,         ProxyDynaModel.human_attribute_name(:rmse)
+		t.header :params,       Param.model_name.pluralize
+		t.header :notes,        ProxyDynaModel.human_attribute_name(:note)
 		t.header :show_h,		"", class: "no-sort"
 		t.header(:edit_h,		"", class: "no-sort") if can? :update, @measurement
 		t.header(:destroy_h,	"", class: "no-sort") if can? :update, @measurement
@@ -132,7 +132,7 @@
 	end
 %>
 
-<h3>Models and measurement chart</h3>
+<h3><%= DynaModel.model_name.human %> and <%=Measurement.model_name.human.downcase%> plots</h3>
 
 <div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
 	<div class="chart">
