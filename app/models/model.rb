@@ -10,6 +10,8 @@ class Model < ActiveRecord::Base
   
   belongs_to :owner, :class_name => 'User'
    
+  validates :title, :presence => {:message => 'Title cannot be blank'}
+   
   # Fulltext support using sunspot
   #scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
   scope :dyna_model_is, lambda { |dyna_model| 

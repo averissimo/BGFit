@@ -4,6 +4,10 @@
 en:
   formtastic:
     hints:
+      model:
+        is_published: if checked then the data is visible to the world, otherwise, only owner and associated teams can view it.
+        description: text describing the scope of this project
+        title: identifier used for this project
       dyna_model:
         log_flag: the model regression and simulation is in log (base e) scale
         only_owner_can_change: lock the model, allowing only the owner to edit it.
