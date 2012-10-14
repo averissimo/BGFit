@@ -1,6 +1,6 @@
 class ModelsController < ApplicationController
   respond_to :html, :json, :js
-  before_filter :authenticate_user!, :except => [:index,:show]
+  before_filter :authenticate_user!, :except => [:index,:show,:public]
   
   load_and_authorize_resource :except => :new_measurement
   
