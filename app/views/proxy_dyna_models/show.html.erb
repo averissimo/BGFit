@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :edit, 
-			:name => 'Edit this proxy dyna model', 
+			:name => 'Edit this proxy model', 
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
 				:if => Proc.new { can?(:calculate, @proxy_dyna_model) },
@@ -119,7 +119,7 @@
 		</tbody>
 	</table>
 	<%- if can? :calculate, @proxy_dyna_model %>
-	<%= button_tag "Recalculate Parameters" , disable_with: "calculating, please wait..." %>
+	<%= button_tag ((@proxy_dyna_model.rmse.present? ? "Re" : "") + "Calculate parameters") , disable_with: "calculating, please wait..." %>
 	<%- end %>
 </div>
 

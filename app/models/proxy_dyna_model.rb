@@ -20,7 +20,7 @@ class ProxyDynaModel < ActiveRecord::Base
   }
   
   scope :experiment_is, lambda { |experiment|
-    joins( :measurement ).where(Measurement.arel_table[:experiment_id].eq(experiment.id))
+    joins( :measurement ).where(Measurement.arel_table[:experiment_id].eq(experiment.id).or(ProxyDynaModel.arel_table[:experiment_id].eq(experiment.id)))
   }
   
   scope :dyna_model_is, lambda { |dyna_model|

@@ -59,7 +59,7 @@ class Model < ActiveRecord::Base
     
     def can?(user=nil,arg)
       return true if user.present? && user.admin?
-      accessible = self.accessibles.find { |a| a.group.users.include?(User.find(7)) }
+      accessible = self.accessibles.find { |a| a.group.users.include?(user) }
        !accessible.nil? && !accessible.blank? && accessible.permission_level == arg
     end
 

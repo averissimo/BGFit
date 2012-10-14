@@ -2,7 +2,7 @@
 	context_menu = [
 		{
 			:key => :show, 
-			:name => "Goto dynamic model", 
+			:name => "Goto model", 
 			:url => dyna_model_path(@proxy_dyna_model.dyna_model),
 			:options => {
 				:container_class => 'menu',
@@ -21,7 +21,7 @@
 		},
 		{
 			:key => :home, 
-			:name => 'Dynamic models index', 
+			:name => 'Models index', 
 			:url => proxy_dyna_models_url,
 			:options => {
 				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
@@ -31,7 +31,7 @@
 		}]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { "Edit Dynamic Model Association" }
+	content_for(:title) { "Edit Model Association" }
 %><h1>Edit dynamic model association</h1>
 
 <%= render 'form' %>
