@@ -26,12 +26,9 @@ body {
 #login_menu {
   @extend #content;
   ul.menu {
-    overflow: visible;
     padding-top: 48px;
     li {
-      overflow: visible;
       a {
-        overflow: visible;
       }
     }
   }
@@ -97,9 +94,40 @@ body {
 // Menu
 ////////////////////////////////
 
+#menu ul.menu,
+#login_menu ul.menu {
+  height: 100%;
+  margin:0px;
+  li {
+    height: 100%;
+    line-height: $header_line;
+    padding: 0;
+    position: relative;
+    vertical-align: top;
+    a {
+      text-align:center;
+      height: 100%;
+      border-top: 2px solid transparent;
+      color: white;
+      text-decoration: none;
+      padding-right: 5px;
+      padding-left: 5px;
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: #8FB77C;
+      }
+      &.selected {
+        border-top: 2px solid #DD4B39;
+        color: white;
+        text-align: center;
+      }
+    }
+  }
+}
+
 #login_menu ul.menu {
   float: right;
-  margin: 0px;
   border-right: 1px solid #5EB935;
   border-left: 1px solid #5EB935;
   border-bottom: 1px solid #5EB935;
@@ -109,19 +137,10 @@ body {
   margin-left: auto;
   margin-right: 0px;
     li {
-      overflow: visible;
       color: gray;
-      span {
-        padding: 5px;
-      }
+
       a {
-        padding-right: 5px;
-        padding-left: 5px;
-        width: 105%;
-        line-height: $header_line + 6;
-        border-top: 2px solid transparent;
         color: gray;
-        text-decoration: none;
         &:hover,
         &:active,
         &:focus {
@@ -134,7 +153,6 @@ body {
           &:focus {
             color:white;
           }
-          border-top: 2px solid #DD4B39;
           color: gray;
         }
       }
@@ -148,6 +166,10 @@ body {
   margin:0px;
   padding:0px;
   padding-left: 40px;
+  ul.menu {
+    margin-top: 0px;
+  }
+  // used for '>' character
   span {
       margin-left: 10px;
       vertical-align: middle;
@@ -155,43 +177,10 @@ body {
       float:left;
       line-height: $header_line + 6;
       font-size:1.5em;
-      padding-right:10px;
     }
   div.menu-wrapper {
     float:left;
     height: 100%;
-  }
-  ul.menu {
-    margin-top: 0px;
-    height: 100%;
-    margin:0px;
-    li {
-      height: 100%;
-      line-height: $header_line;
-      padding: 0;
-      position: relative;
-      vertical-align: top;
-      padding-right: 2px;
-      a {
-        width: 105%;
-        height: 100%;
-        border-top: 2px solid transparent;
-        color: white;
-        text-decoration: none;
-        padding-right: 5px;
-        padding-left: 5px;
-        &:hover,
-        &:active,
-        &:focus {
-          background-color: #8FB77C;
-        }
-        &.selected {
-          border-top: 2px solid #DD4B39;
-          color: white;
-          text-align: center;
-        }
-      }
-    }
   }
 }
 

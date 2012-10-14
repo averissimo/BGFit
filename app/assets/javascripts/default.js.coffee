@@ -24,13 +24,12 @@
 #  })
 
 jQuery ->
-  if $('.menu a.selected')
-    for el in $('.menu a.selected')
+  if $('.menu a')
+    for el in $('.menu a')
       weight = $(el).css("font-weight")
-      if weight && weight != $(el).siblings().first().css("font-weight") 
-        $(el).css("font-weight" , "normal")
-        width = $(el).width()
-        $(el).css("font-weight" , weight )
-        $(el).width(width)
+      $(el).css("font-weight" , "normal")
+      width = $(el).width()
+      $(el).css("font-weight" , weight )
+      $(el).width(width+10)
 
 
