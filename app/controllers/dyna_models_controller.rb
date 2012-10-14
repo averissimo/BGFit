@@ -31,14 +31,18 @@ class DynaModelsController < ApplicationController
     @dyna_model = DynaModel.find(params[:id])
     @proxy_dyna_models = ProxyDynaModel.viewable(current_user).where( :id => params["proxy_dyna_model_ids"])
     
-    custom_params = @dyna_model.params.collect do |param|
-      param.top =  params[param.id.to_s+"_top"]
-      param.bottom = params[param.id.to_s+"_bottom"]
-      param
+    if params[:param] == "0"
+      custom_params = @dyna_model.params.collect do |param|
+        param.top =  params[param.id.to_s+"_top"]
+        param.bottom = params[param.id.to_s+"_bottom"]
+        param
+      end
+    else
+      custom_params = nil
     end
   
     @proxy_dyna_models.each do |p|
-      p.call_pre_estimation_background_job
+      ProxyDynaModel.find(p.id).call_pre_estimation_background_job
       Delayed::Job.enqueue CalculateJob.new( p.id , custom_params ), { priority: 0 , run_at: Time.now  }  
     end
     

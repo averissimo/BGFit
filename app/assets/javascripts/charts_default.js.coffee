@@ -8,7 +8,6 @@ if typeof google isnt 'undefined'
     if not $(".proxy_dyna_model_chart").length
       return; 
     
-    window = exports ? this # allowing to define global functions and variables
       
     options = {
       curveType: 'function',
@@ -20,7 +19,7 @@ if typeof google isnt 'undefined'
         #position: "bottom" # places the legend on bottom, instead of on the side
       }
       chartArea: {
-          width:"80%",
+          width:"70%",
           height: "80%"
       },
       animation: {
@@ -34,6 +33,9 @@ if typeof google isnt 'undefined'
         viewWindowMode: "explicit"
       }
     }
+    
+    window = exports ? this # allowing to define global functions and variables
+    window.options = options
     
     setup_m = {
       timeout: 10000,
@@ -224,6 +226,49 @@ if typeof google isnt 'undefined'
 
 
 
+  
+    #
+    #
+    #
+    #
+    # Estimate specific javascript
+    #    
+    $('a.estimate_chart').live 'click' , (event) =>
+      target = $(event.currentTarget)
+      wrapper = target.parents('.experiments').find('.proxy_dyna_model_chart')
+      # set the measurement title to the chart
+      wrapper.find('.chart_name').html(target.parent().siblings(".measurement-title").html())
+      if !wrapper.children('.proxy_dyna_model_chart').is(':visible')
+        wrapper.children('.chart').css("height",options.height)
+        wrapper.slideDown()
+      wrapper.find('.model-data div').attr('data-source'      , target.parent().siblings(".measurement-model_d").attr('data-source'))
+      wrapper.find('.model-data div').html( target.parent().siblings(".measurement-model_d").html() )
+      wrapper.find('.measurement-data div').attr('data-source', target.parent().siblings(".measurement-data_d").attr('data-source'))
+      wrapper.find('.measurement-data div').html( target.parent().siblings(".measurement-data_d").html() )
+      window.process_chart(wrapper.children('.chart'))
+      false
+    #
+    #
+    #
+    #
+    # Stats specific javascript
+    #
+    
+          
+    $('h5.button').live 'click' , (event) =>
+      target = $(event.currentTarget)
+      wrapper = $(target).parent().children('div.toggle')
+      if wrapper.is(":visible") 
+        wrapper.slideUp()
+      else
+        wrapper.slideDown()
+        if !wrapper.children('.chart').is('.chart')
+          wrapper.effect('highlight')
+
+      if wrapper.children('.chart').is('.chart') && !wrapper.children('.chart').attr('loaded')
+        wrapper.children('.chart').css("height",options.height)
+        window.process_chart(wrapper.children('.chart'))
+      false
 
 
 

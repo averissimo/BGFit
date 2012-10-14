@@ -74,7 +74,7 @@ en:
     dyna_model:
       new: New parameter
       download_stats: Download stats
-      estimate: Estimate parameters
+      estimate: Estimate in batch
       estimate_short: Estimate
       stats: Stats
       
