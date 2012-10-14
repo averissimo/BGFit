@@ -15,13 +15,23 @@
 		{
 			:key => :index, 
 			:name => 'Goto measurement', 
-			:url => url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement]),
+			:url => Proc.new {url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement])},
 			:options => {
 				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
 				:container_class => 'menu',
 				:class => ("text" if can?(:calculate, @proxy_dyna_model))
 			}
 		},
+        {
+            :key => :index, 
+            :name => 'Goto experiment', 
+            :url => Proc.new {url_for([@proxy_dyna_model.experiment])},
+            :options => {
+                :unless => Proc.new { @proxy_dyna_model.experiment.nil? },
+                :container_class => 'menu',
+                :class => ("text" if can?(:calculate, @proxy_dyna_model))
+            }
+        },
 		{
 			:key => :model, 
 			:name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase), 

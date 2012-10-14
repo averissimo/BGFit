@@ -47,13 +47,13 @@ class Experiment < ActiveRecord::Base
     
     return nil if dyna_model.nil?
     
+    blank = nil
     self.transaction do
       blank = self.proxy_dyna_models.where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).first
       if blank.nil?
         blank = self.proxy_dyna_models.build
         blank.dyna_model = dyna_model
       end
-      debugger
       return nil unless blank.save
       
       blank.update_params(false)
@@ -76,7 +76,6 @@ class Experiment < ActiveRecord::Base
       end
       
       params = dyna_model.params.collect do |param|
-        next if param.output_only?
         ProxyParam.where(ProxyParam.arel_table[:proxy_dyna_model_id].in(pdms_ids)).param_is(param) do |p|
           param.top    = p.top_cache    if param.top.nil?    || ( p.top_cache.present?    && param.top    < p.top_cache )
           param.bottom = p.bottom_cache if param.bottom.nil? || ( p.bottom_cache.present? && param.bottom < p.bottom_cache )
@@ -84,7 +83,6 @@ class Experiment < ActiveRecord::Base
         param
       end.compact
       
-      debugger
       
       blank.call_estimation_with_custom_params( params , true )
   

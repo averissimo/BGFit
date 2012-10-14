@@ -332,6 +332,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
         temp_param = params.find { |par| par.id == d_p.param_id }
+        debugger if temp_param.nil?
         d_p.top = temp_param.top
         d_p.bottom = temp_param.bottom
         d_p.save
@@ -448,11 +449,19 @@ class ProxyDynaModel < ActiveRecord::Base
 
 
     def can_view(user=nil)
-      measurement.experiment.model.can_view(user)
+      if measurement.present?
+        measurement.experiment.model.can_view(user)
+      else
+        experiment.model.can_view(user)
+      end
     end
     
     def can_edit(user=nil)
-      measurement.experiment.model.can_edit(user)
+      if measurement.present?
+        measurement.experiment.model.can_edit(user)
+      else
+        experiment.model.can_edit(user)
+      end
     end
 
   #
