@@ -1,5 +1,5 @@
 class DynaModelsController < ApplicationController
-  respond_to :html, :json, :csv
+  respond_to :html, :json, :csv, :js
   before_filter :authenticate_user!, :except => [:index,:show]
   
   load_and_authorize_resource
@@ -29,7 +29,7 @@ class DynaModelsController < ApplicationController
   
   def calculate
     @dyna_model = DynaModel.find(params[:id])
-    @proxy_dyna_models = ProxyDynaModel.where( :id => params["proxy_dyna_model_ids"])
+    @proxy_dyna_models = ProxyDynaModel.viewable(current_user).where( :id => params["proxy_dyna_model_ids"])
     
     custom_params = @dyna_model.params.collect do |param|
       param.top =  params[param.id.to_s+"_top"]
@@ -82,14 +82,35 @@ class DynaModelsController < ApplicationController
 
   def estimate
     @dyna_model = DynaModel.find(params[:id])
-    @models = Model.dyna_model_is(@dyna_model)
+    @models = Model.viewable(current_user).dyna_model_is(@dyna_model)
     respond_with(@dyna_model)
   end
   
   def stats
     @dyna_model = DynaModel.find(params[:id])
-    @experiments = Experiment.dyna_model_is(@dyna_model)
-    respond_with(@dyna_models)
+    
+    respond_with(@dyna_model) do |format|
+      format.html { @models = Model.viewable(current_user).dyna_model_is(@dyna_model).page(params[:page]).per(2) }
+      format.csv {
+        @models = Model.viewable(current_user).dyna_model_is(@dyna_model)
+        @experiments = Experiment.viewable(current_user).dyna_model_is(@dyna_model)
+      }
+    end
+  end
+  
+  def experiment_detail
+    @dyna_model = DynaModel.find(params[:id])
+    @models = Model.viewable(current_user).dyna_model_is(@dyna_model).page(params[:page]).per(2)
+    if params["show_exp"]
+      @show_experiment = Experiment.viewable(current_user).find(params["show_exp"])
+    end
+    respond_with @dyna_model do |format|
+      format.html { render action: "stats" }
+      if params["show_exp"].nil?
+        format.js { render json nothing: true }
+      end
+    end
+    
   end
 
   def destroy

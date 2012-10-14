@@ -4,7 +4,6 @@ module ApplicationHelper
     defined?(no_remote_flag).nil?
   end
     
-  
   def data_sig(array,method=:id)
     array.map(&method).hash.to_s
   end
@@ -102,9 +101,32 @@ module ApplicationHelper
     menu = nil
     render_navigation :items => link_array
   end
-  
-  private
-  
+
+  #
+  # helper function to generate google charts
+  def google_chart(measurements,proxy_dyna_models) 
+      
+      content_tag :div, class: "proxy_dyna_model_chart auto-load", style: "display:none" do 
+        [content_tag( :div, class: "chart") do 
+          [tag("br"),
+          content_tag(:div, "loading.." , class: "one_tab")].join(" ").html_safe
+        end,
+        content_tag(:div, class: "options", style: "display:none;") do
+          link_to "Download chart as .svg", "#", class: "download svg"
+        end,
+        content_tag(:div, class: "model-data", style: "display:none;") do
+          proxy_dyna_models.collect do |pdm|
+            content_tag :div , pdm.title_join, data: { source: proxy_dyna_model_path(pdm, :format => :json) } 
+          end.join.html_safe
+        end,
+        content_tag(:div, class: "measurement-data", style: "display:none;") do
+          measurements.collect do |m|
+            content_tag :div , m.title , data: { source: measurement_path(m,:format=>:json) } 
+          end.join.html_safe
+        end
+       ].join(" ").html_safe
+      end
+    end  
 
   
 end

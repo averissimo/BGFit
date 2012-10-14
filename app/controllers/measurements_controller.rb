@@ -25,6 +25,7 @@ class MeasurementsController < ApplicationController
   # GET /measurements/1
   # GET /measurements/1.json
   def show
+    @proxy_dyna_models = @measurement.proxy_dyna_models
     @log_flag = params[:log] == "true"
     respond_with(@experiment,@measurement) do |format|
       format.csv { 
@@ -135,6 +136,10 @@ class MeasurementsController < ApplicationController
     @measurement.destroy
     flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Measurement", title: @measurement.title)
     respond_with(@experiment,@measurement, :location => [@model,@experiment])
+  end
+  
+  def summary
+    respond_with(@measurement)
   end
   
   private

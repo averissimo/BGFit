@@ -1,15 +1,15 @@
-<%= semantic_form_for([@measurement,@proxy_dyna_model]) do |f| %>
+<%= semantic_form_for([@datable,@proxy_dyna_model]) do |f| %>
   <%= f.semantic_errors :state %>
   
   <%= f.inputs do %>
   	<%= f.input :title %>
-  	<% if @proxy_dyna_model.new_record? %>
+  	<% unless @proxy_dyna_model.new_record? %>
   		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio , :input_html => { :disabled => true  } %>
   	<% else %>
   		<%= f.input :dyna_model , label: DynaModel.model_name.human, :as => :radio, :hint => false  %>
   	<% end %>
   	<%= f.input :no_death_phase, as: :boolean %>
-	<% if @proxy_dyna_model.new_record? %>
+	<% unless @proxy_dyna_model.new_record? %>
 	  <%= f.input :original_data, :as => :text %>  
 	<% end %>
   <% end %>

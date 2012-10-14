@@ -28,6 +28,8 @@ en:
       title: Data Management
   
   experiments:
+    show:
+      dyna: Associate dynamic model
     default:
       title: "Default"
       description: ""
@@ -91,6 +93,8 @@ en:
       params: Parameters
       proxy_dyna_model: "Proxy Model"
     attributes:
+      proxy_dyna_model:
+        rmse: RMSE
       model:
         is_published: Published?
       param:

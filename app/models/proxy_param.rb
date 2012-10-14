@@ -3,9 +3,21 @@ class ProxyParam < ActiveRecord::Base
   belongs_to :param
   has_paper_trail
 
+  scope :param_is, lambda { |param|
+    where(ProxyParam.arel_table[:param_id].eq(param.id))
+  }
+  
+  scope :proxy_dyna_model_is, lambda { |pdm|
+    where(ProxyParam.arel_table[:proxy_dyna_model_id].eq(pdm.id))
+  }
+  
+  scope :dyna_model_is, lambda { |dm|
+    joins( :proxy_dyna_model ).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dm.id))
+  }
+  
   before_destroy :reset_all_params
   
-  def top
+  def top_cache
     if read_attribute(:top).nil?
       self.param.top
     else
@@ -13,7 +25,7 @@ class ProxyParam < ActiveRecord::Base
     end
   end
   
-  def bottom
+  def bottom_cache
     if read_attribute(:bottom).nil?
       self.param.bottom
     else

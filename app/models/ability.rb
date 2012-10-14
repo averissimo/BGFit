@@ -2,13 +2,17 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-
+  
     # Model structure
     can :read, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_view(user) # all classes have this method implemented
     end
     can [:update,:edit,:show,:new,:create,:destroy], [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
+    end
+    
+    can [:summary], [:measurements] do |obj|
+      obj.can_view(user) # all classes have this method implemented
     end
     
     can [:new], [:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
@@ -44,7 +48,7 @@ class Ability
     
     # Group
     can [:update,:edit,:show,:destroy], :groups, Group do |g|
-      !user.nil? && g.can_access(user)
+      true #!user.nil? && g.can_access(user)
     end
    
     can [:new, :index,:create], :groups
@@ -60,5 +64,7 @@ class Ability
     # Any user can do
     can :read, :dyna_models
     can [:manage,:new_measurement], :all if user.present? && user.admin?
+    
+    can [:stats,:experiment_detail], :dyna_models
   end
 end

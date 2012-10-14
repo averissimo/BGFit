@@ -29,7 +29,7 @@ class ExperimentsController < ApplicationController
   # GET /experiments/1
   # GET /experiments/1.json
   def show
-
+    @proxy_dyna_models = @experiment.proxy_dyna_models
     respond_with [@model,@experiments] do |format|
       format.exp { 
         exp = render_to_string :exp => @experiment

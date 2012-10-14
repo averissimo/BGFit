@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121009232758) do
+ActiveRecord::Schema.define(:version => 20121014021044) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -21,6 +21,16 @@ ActiveRecord::Schema.define(:version => 20121009232758) do
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
   end
+
+  create_table "blobs", :force => true do |t|
+    t.binary   "data",          :limit => 16777215
+    t.integer  "blobable_id"
+    t.string   "blobable_type"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "blobs", ["blobable_id"], :name => "index_blobs_on_blobable_id"
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -129,7 +139,6 @@ ActiveRecord::Schema.define(:version => 20121009232758) do
     t.integer  "dyna_model_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.binary   "json",           :limit => 16777215
     t.float    "rmse"
     t.float    "bias"
     t.float    "accuracy"

@@ -126,7 +126,7 @@
     	t.rows.each do |row, param, index|
 			# Notice there's no need to explicitly define the title
 			row.code			param.code
-			row.human_title		param.human_title
+			row.human_title		param.human_title.html_safe
 			row.output			param.output_only
 			row.ic				param.initial_condition
 			row.description		param.description_trimmed.gsub(/\n/, '<br/>')

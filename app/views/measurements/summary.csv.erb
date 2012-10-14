@@ -1,0 +1,4 @@
+"<%=  DynaModel.model_name.human %>","<%= Param.model_name.pluralize %>","<%= ProxyDynaModel.human_attribute_name(:rmse)%>","<%= %>","<%= ProxyDynaModel.human_attribute_name(:note)%>"
+<%- @measurement.proxy_dyna_models.each do |p| %>
+"<%= p.title_join %>","<%= p.round(:rmse) %>","<%= p.params_to_string.html_safe%>","<%= p.notes%>"
+<%- end%>

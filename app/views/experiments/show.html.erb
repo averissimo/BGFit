@@ -11,6 +11,15 @@
 				:container_class => 'menu'
 			}
 		},
+        {
+            :key => :new, 
+            :name => t('.dyna'), 
+            :url => new_experiment_proxy_dyna_model_path(@experiment),
+            :options => {
+                :if => Proc.new { can?(:update, @experiment) },
+                :container_class => 'menu'
+            }
+        },
 		{
 			:key => :edit, 
 			:name => 'Edit', 
@@ -51,23 +60,15 @@
 <%= render 'measurements/measurements'%>
 </div>
 
-
 <div class="menu">
 	<%= menu %>
 </div>
 
+<h3><%= ProxyDynaModel.model_name.human.pluralize(@proxy_dyna_models.length) %> (<%= @proxy_dyna_models.length %>)</h3>
+<%= render "proxy_dyna_models/summary" %>
+
 <h3>Measurements chart</h3>
 
-<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
-	<div class="chart">
-		 <br/>
-		 <div class="one_tab">loading...</div>
-	</div>
-	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-	<div style="display:none;" class="measurement-data">
-		<% @experiment.measurements.each do |m| %>
-		<div data-source="<%= experiment_measurement_path(@experiment,m,:format=>:json) %>"><%= m.title%></div>
-		<% end %> 
-	</div>
+<%= google_chart( @experiment.measurements , @proxy_dyna_models )%>
 
-</div>
+

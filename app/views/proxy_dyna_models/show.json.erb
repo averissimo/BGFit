@@ -1,5 +1,5 @@
 <%- if @proxy_dyna_model.json_cache.nil? %>
 {"result": []}
 <%- else %>
-{"result": <%= @proxy_dyna_model.json_cache(params[:controller]=="proxy_dyna_models").html_safe %>}
+{"result": <%= @json.html_safe %>}
 <%- end %>

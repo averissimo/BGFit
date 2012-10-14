@@ -3,7 +3,7 @@ BacteriaGrowth::Application.routes.draw do
   devise_for :users , path_names: { sign_in: "login" , sign_out: "logout"}
 
   match "/delayed_job" => DelayedJobWeb, :anchor => false
-
+    
   resources :groups, path: :teams do
     resources :memberships, :only => [:new, :create, :destroy]
   end
@@ -11,12 +11,14 @@ BacteriaGrowth::Application.routes.draw do
   resources :dyna_models, path: :models do
     resources :params
     member do
+      match "stats/experiment_detail" , :via => :get, :action => "experiment_detail", as: "experiment_detail_stats"
       get :stats
       get :estimate
       put :calculate
     end
   end
 
+  match "projects/public", via: :get, action: "public", controller: :models, as: "public_models"
   resources :models, path: :projects do
     member do
       get :new_measurement
@@ -26,16 +28,16 @@ BacteriaGrowth::Application.routes.draw do
   end
 
   resources :experiments, :except => [:new, :create] do
-    resources :measurements do
-      member do
-        get :regression
-        put :update_regression
-      end
-    end
+    resources :measurements
     resources :proxy_dyna_models, path: :proxy_models, :only => [:new, :create]
   end
 
   resources :measurements, :except => [:new, :create] do
+      member do
+        get :regression
+        put :update_regression
+        get :summary
+      end   
       resources :lines
       #
       resources :proxy_dyna_models, path: :proxy_models

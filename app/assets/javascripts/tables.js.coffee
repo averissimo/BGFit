@@ -3,7 +3,7 @@ root = exports ? this
 
 root.convert_tables = () ->
     $.fn.dataTableExt.sErrMode = "throw"
-    options = {"aoColumnDefs": [ { "bSortable": false, "aTargets": [ "no-sort" ] } ], bJQueryUI: true, bLengthChange: false, bFilter: false, bPaginate: false}
+    options = {"aoColumnDefs": [ { "bSortable": false, "aTargets": [ "no-sort" ] } ], bJQueryUI: false, bLengthChange: false, bFilter: false, bPaginate: false}
 
     try
       $('div:not(.dataTables_wrapper) > table.dataTable').dataTable options
@@ -15,6 +15,7 @@ root.convert_tables = () ->
       $('div:not(.dataTables_wrapper) > table.dataTable-no_sort').dataTable temp_options
     catch error
       #
+    
       
 jQuery ->
   root.convert_tables()

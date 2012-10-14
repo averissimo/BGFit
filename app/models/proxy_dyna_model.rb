@@ -3,19 +3,35 @@ class ProxyDynaModel < ActiveRecord::Base
   belongs_to :experiment
   belongs_to :dyna_model
   has_many :proxy_params, :dependent => :destroy
+  has_one :simulation, as: :blobable, class_name: Blob.model_name
+  
+  accepts_nested_attributes_for :simulation
   
   validate :validate_title
   
-  before_create :update_params
-  before_update :update_params
+  before_save :update_params
   
   has_paper_trail :skip => [:json]
   
-  scope :viewable, lambda { |user| 
-    join( :measurement => :experiment ).where( 
-      Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )
+  scope :viewable, lambda { |user,only_mine=false| 
+    joins( :measurement => :experiment ).where( 
+      Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )
     )
   }
+  
+  scope :experiment_is, lambda { |experiment|
+    joins( :measurement ).where(Measurement.arel_table[:experiment_id].eq(experiment.id))
+  }
+  
+  scope :dyna_model_is, lambda { |dyna_model|
+    where( ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id))
+  }
+  
+  scope :measurement_is, lambda { |measurement|
+    where( ProxyDynaModel.arel_table[:measurement_id].eq(measurement.id))  
+  }
+  
+  ROUND = 5
   
   # Fulltext support using sunspot
   #searchable do
@@ -61,13 +77,22 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     def title_join
       title_pdm = read_attribute(:title)
-      if title_pdm.nil? && !self.dyna_model.nil?
+      if title_pdm.blank? && !self.dyna_model.nil?
         self.dyna_model.title
       elsif self.dyna_model.nil?
         title_pdm
       else
         self.dyna_model.title + ': ' + title_pdm
       end
+    end
+    
+    #
+    # Parameters to string
+    def params_to_string
+      self.proxy_params.collect { |p|
+        next if p.param.output_only?
+        p.param.human_title + "=" + p.value.to_s
+      }.compact.join(",")
     end
     
     # Does not allow to save data in this field 
@@ -88,24 +113,81 @@ class ProxyDynaModel < ActiveRecord::Base
       string
     end
     
+    # Override to assure serialized hash is retrieved from db without changes in logic
+    def json()
+      return nil if self.simulation.nil? || self.simulation.data.nil?
+      data = self.simulation.data
+      return Marshal.load( data ) if (data).present?
+      nil
+    end
+    
+    # Override to assure hash is serialized to db without changes in logic
+    def json=(value)
+      self.simulation ||= Blob.new
+      if value.nil?
+        simulation.data = value
+      else
+        simulation.data = Marshal.dump( value )  
+      end
+      
+    end
+    
+    
+    # If json has not yet been calculated, then it calls solver method
+    #
+    # @return json results
+    def json_cache(show_log=false)
+      hash = :base10
+      unless self.json.nil?
+        logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
+        hash = :log_e if show_log && self.json.keys.include?(:log_e)
+        return self.json[hash].to_s.gsub(/ /,"")
+      end 
+      if self.call_solver.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
+        return nil
+      end 
+      if self.statistical_data.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to statistical_data was nil"}
+        return
+      end
+      hash = :log_e if show_log && self.json.keys.include?(:log_e) 
+      self.json[hash].to_s.gsub(/ /,"")
+    end
+    
+    
     #
     # public methods for private
     #
     
     # Getter method for generating default estimation url
     def get_estimation_url() estimation_url(estimation_hash(temp_params)) end
+    
     # Getter method for generating default solver url
     def get_solver_url() estimation_url(solver_url) end
+    
     # Cleans statistical data
     def perform_clean_stats() clean_stats(nil) end
+    
     # Prepares ProxyDynaModel to perform background calculation of parameters
     # TODO: move string to language file
     def call_pre_estimation_background_job() clean_stats "parameters are being calculated in background" end
+    
     # Calls estimation using default parameters
     #  (see #call_estimation_with_custom_params)
     def call_estimation(is_post_method = true) call_estimation_with_custom_params( temp_params , is_post_method) end
+    
     # Whether the model should show the results and regression in log scale
     def log_flag() dyna_model.log_flag end
+    
+    # default rounding for this class number or attributes
+    def round(symbol) 
+      begin
+        (symbol.class == Symbol ? self.send(symbol) : symbol).round(ROUND)
+      rescue
+        nil
+      end
+    end
        
     #
     # Statistical methods
@@ -124,7 +206,23 @@ class ProxyDynaModel < ActiveRecord::Base
     def rmse_stdev=(arg) @rmse_stdev = arg end
     # RMSE standard deviation attribution
     def rmse_stdev () @rmse_stdev end
+    # R² standard deviation attribution
+    def r_square_stdev=(arg) @r_square_stdev = arg end
+    # R² standard deviation attribution
+    def r_square_stdev () @r_square_stdev end
     
+    def rmse_avg() @rmse_avg end
+    def rmse_avg=(arg) @rmse_avg = arg end
+    
+    def bias_avg() @bias_avg end
+    def bias_avg=(arg) @bias_avg = arg end
+    
+    def accuracy_avg() @accuracy_avg end
+    def accuracy_avg=(arg) @accuracy_avg = arg end
+    
+    def r_square_avg() @r_square_avg end
+    def r_square_avg=(arg) @r_square_avg = arg end
+      
     #
     # calculates statiscal data:
     #  - RMSE
@@ -173,6 +271,11 @@ class ProxyDynaModel < ActiveRecord::Base
       end
     end
     
+    #
+    # Parameter estimation methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+    
     # Calls estimation using custom parameters
     #
     # @param params parameters' range that will be used in parameter estimation
@@ -210,7 +313,8 @@ class ProxyDynaModel < ActiveRecord::Base
         end
       end
     end
-      
+    
+    # handle http response for parameter estimation
     def handle_http_response(response,params)
       begin
         result = JSON.parse( response.body.gsub(/(\n|\t| )/,'') )
@@ -228,6 +332,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
         temp_param = params.find { |par| par.id == d_p.param_id }
+        debugger if temp_param.nil?
         d_p.top = temp_param.top
         d_p.bottom = temp_param.bottom
         d_p.save
@@ -236,46 +341,12 @@ class ProxyDynaModel < ActiveRecord::Base
       self.json = nil
       self.json_cache # call solver and calculate statistical data
     end
-    
-    # Override to assure serialized hash is retrieved from db without changes in logic
-    def json()
-      data = read_attribute(:json)
-      return Marshal.load( data ) if (data).present?
-      nil
-    end
-    
-    # Override to assure hash is serialized to db without changes in logic
-    def json=(value)
-      if value.nil?
-        write_attribute(:json,nil)
-      else
-        write_attribute(:json,Marshal.dump( value ) )  
-      end
-      
-    end
-    
-    # If json has not yet been calculated, then it calls solver method
+
     #
-    # @return json results
-    def json_cache(show_log=false)
-      hash = :base10
-      unless self.json.nil?
-        logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
-        hash = :log_e if show_log && self.json.keys.include?(:log_e)
-        return self.json[hash].to_s.gsub(/ /,"")
-      end 
-      if self.call_solver.nil?
-        logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
-        return nil
-      end 
-      if self.statistical_data.nil?
-        logger.info {"[proxy_dyna_model.json_cache] call to statistical_data was nil"}
-        return
-      end
-      hash = :log_e if show_log && self.json.keys.include?(:log_e) 
-      self.json[hash].to_s.gsub(/ /,"")
-    end
-    
+    # Simulation methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+
     # Calls the solver for the calculated parameters
     #
     # @param time [int] safety measure allowing to adjust timescale in solver in case of errors
@@ -311,8 +382,8 @@ class ProxyDynaModel < ActiveRecord::Base
           temp_json["result"].reject!{ |q| q[1]=='_NaN_'  }
           h_json = {}
           if self.log_flag
-            h_json[:base10] = temp_json["result"].map { |data| [data[0],Math.exp(data[1])] }
             h_json[:log_e] = temp_json["result"]
+            h_json[:base10] = temp_json["result"].map { |data| [data[0],Math.exp(data[1])] }
             self.json = h_json
           else
             h_json[:base10] = temp_json["result"]
@@ -371,12 +442,26 @@ class ProxyDynaModel < ActiveRecord::Base
      
     end
 
+    #
+    # Authorization methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+
+
     def can_view(user=nil)
-      measurement.experiment.model.can_view(user)
+      if measurement.present?
+        measurement.experiment.model.can_view(user)
+      else
+        experiment.model.can_view(user)
+      end
     end
     
     def can_edit(user=nil)
-      measurement.experiment.model.can_edit(user)
+      if measurement.present?
+        measurement.experiment.model.can_edit(user)
+      else
+        experiment.model.can_edit(user)
+      end
     end
 
   #
@@ -413,7 +498,7 @@ class ProxyDynaModel < ActiveRecord::Base
     # @return [int] validation
     def validate_title
       t = ProxyDynaModel.arel_table
-      result = ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model_id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)).and(t[:measurement_id].eq(self.measurement_id)) ).size
+      result = ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model_id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)).and(t[:measurement_id].eq(self.measurement_id).and(t[:experiment_id].eq(self.experiment_id))) ).size
       errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if result > 0
     end
   
@@ -623,8 +708,8 @@ class ProxyDynaModel < ActiveRecord::Base
     def temp_params
       # TODO: refactor to use proxy dyna model proxy params directly
       params = self.proxy_params.collect do |p|
-        p.param.bottom = p.bottom
-        p.param.top = p.top
+        p.param.bottom = p.bottom_cache
+        p.param.top = p.top_cache
         p.param
       end
     end
