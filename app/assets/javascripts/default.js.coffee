@@ -27,9 +27,9 @@ jQuery ->
   if $('.menu a')
     for el in $('.menu a')
       weight = $(el).css("font-weight")
-      $(el).css("font-weight" , "normal")
+      $(el).css("font-weight" , 700)
       width = $(el).width()
       $(el).css("font-weight" , weight )
-      $(el).width(width+10)
+      $(el).width(width+4)
 
 
