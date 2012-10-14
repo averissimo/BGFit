@@ -26,5 +26,31 @@ module DynaModelsHelper
     result[:show_exp] = id 
     params_merge(id,"experiments",result)
   end
+
+  def csv_title_line_for_proxy_dyna_model(dyna_model)
+    result = ["title"]
+    dyna_model.params.order(:code).each do |param|
+      next if param.output_only?
+      result << param.code
+    end
+    result << "rmse"
+    result << "bias"
+    result << "accuracy"
+    result << "r_square"
+    result.join ","
+  end
+  
+  def csv_line_for_proxy_dyna_model(p_dm,title,show_title=false)
+    result = [title]
+    p_dm.proxy_params.joins(:param).order(:code).each do |param|
+      next if param.param.output_only?
+      result << param.value
+    end
+    result << p_dm.rmse
+    result << p_dm.bias
+    result << p_dm.accuracy
+    result << p_dm.r_square
+    "\"" + result.join("\",\"") + "\""
+  end
   
 end
