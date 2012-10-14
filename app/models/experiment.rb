@@ -47,53 +47,61 @@ class Experiment < ActiveRecord::Base
     
     return nil if dyna_model.nil?
     
-    begin
-      blank = self.proxy_dyna_models.find(dyna_model.id)
-    rescue
-      blank = self.proxy_dyna_models.build
-      blank.dyna_model = dyna_model
-    end
-    
-    blank.update_params()
-
-    blank.bias = 0
-    blank.accuracy = 0
-    blank.rmse = 0
-    
-    bias = []
-    accu = []
-    rmse = []
-    r_square = []
-    
-    ProxyDynaModel.experiment_is(self).dyna_model_is(dyna_model).each_with_index do |p,i|
-      params ||= p.params
+    self.transaction do
+      blank = self.proxy_dyna_models.where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).first
+      if blank.nil?
+        blank = self.proxy_dyna_models.build
+        blank.dyna_model = dyna_model
+      end
+      debugger
+      return nil unless blank.save
       
-      # getting the range so that it covers all the exisitng ranges that are
-      #  used to calculate for each measurement
-      params.each do |param|
+      blank.update_params(false)
+  
+      blank.bias = 0
+      blank.accuracy = 0
+      blank.rmse = 0
       
+      bias = []
+      accu = []
+      rmse = []
+      r_square = []
+      
+      pdms_ids = ProxyDynaModel.experiment_is(self).dyna_model_is(dyna_model).collect do |p,i|              
+        r_square.push( p.r_square )     
+        bias.push( p.bias )
+        accu.push( p.accuracy )
+        rmse.push( p.rmse )
+        p.id
       end
       
-                
-      r_square.push( p.r_square )     
-      bias.push( p.bias )
-      accu.push( p.accuracy )
-      rmse.push( p.rmse )
+      params = dyna_model.params.collect do |param|
+        next if param.output_only?
+        ProxyParam.where(ProxyParam.arel_table[:proxy_dyna_model_id].in(pdms_ids)).param_is(param) do |p|
+          param.top    = p.top_cache    if param.top.nil?    || ( p.top_cache.present?    && param.top    < p.top_cache )
+          param.bottom = p.bottom_cache if param.bottom.nil? || ( p.bottom_cache.present? && param.bottom < p.bottom_cache )
+        end
+        param
+      end.compact
+      
+      debugger
+      
+      blank.call_estimation_with_custom_params( params , true )
+  
+      blank.bias_avg = bias.sum / bias.size
+      blank.accuracy_avg = accu.sum / accu.size
+      blank.rmse_avg = rmse.sum / rmse.size
+      blank.r_square_avg = r_square.sum / r_square.size
+      
+      blank.bias_stdev = calc_stdev( bias , blank.bias_avg )
+      blank.accuracy_stdev = calc_stdev( accu , blank.accuracy_avg )
+      blank.rmse_stdev = calc_stdev( rmse , blank.rmse_avg )
+      blank.r_square_stdev = calc_stdev( r_square , blank.r_square_avg )
+      
+      blank.json = nil
+      blank.save
+      #blank.json_cache
     end
-
-    blank.bias_avg = bias.sum / bias.size
-    blank.accuracy_avg = accu.sum / accu.size
-    blank.rmse_avg = rmse.sum / rmse.size
-    blank.r_square_avg = r_square.sum / r_square.size
-    
-    blank.bias_stdev = calc_stdev( bias , blank.bias_avg )
-    blank.accuracy_stdev = calc_stdev( accu , blank.accuracy_avg )
-    blank.rmse_stdev = calc_stdev( rmse , blank.rmse_avg )
-    blank.r_square_stdev = calc_stdev( r_square , blank.r_square_avg )
-    
-    blank.json = nil
-    blank.save
-    #blank.json_cache
     return blank
   end
   

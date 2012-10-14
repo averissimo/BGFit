@@ -55,7 +55,7 @@ if typeof google isnt 'undefined'
     $('a.download.svg').live 'hover' , (event) =>
       $(event.currentTarget).prop('href','#')
     
-    $('a.download').live 'click' , (event) =>
+    $('a.download.svg').live 'click' , (event) =>
       target = $(event.currentTarget)
       base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
 

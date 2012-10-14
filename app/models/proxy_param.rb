@@ -6,7 +6,15 @@ class ProxyParam < ActiveRecord::Base
   scope :param_is, lambda { |param|
     where(ProxyParam.arel_table[:param_id].eq(param.id))
   }
-
+  
+  scope :proxy_dyna_model_is, lambda { |pdm|
+    where(ProxyParam.arel_table[:proxy_dyna_model_id].eq(pdm.id))
+  }
+  
+  scope :dyna_model_is, lambda { |dm|
+    joins( :proxy_dyna_model ).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dm.id))
+  }
+  
   before_destroy :reset_all_params
   
   def top_cache
