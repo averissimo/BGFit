@@ -17,7 +17,7 @@
             row.title           word_wrap(model.title,:line_width => 40).gsub(/\n/, '<br/>')
             row.description     model.description_trimmed.gsub(/\n/, '<br/>')
             row.owner           model.owner.email_trimmed , class: "small"
-            row.teams           model.accessibles.map { |a| a.group.title }.join(", ")
+            row.teams           word_wrap(model.accessibles.map { |a| a.group.title }.join(", "),line_width: 40), class: "small"
             row.show_h          link_to t('action.show').downcase, model if can? :read, model
             row.edit_h          link_to t('action.edit').downcase, [:edit,model] if can? :update, model
             row.destroy_h       link_to t('action.remove').downcase, model, confirm: 'Are you sure?', method: :delete if can? :destroy, model
