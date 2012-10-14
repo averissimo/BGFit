@@ -13,9 +13,9 @@ class ProxyDynaModel < ActiveRecord::Base
   
   has_paper_trail :skip => [:json]
   
-  scope :viewable, lambda { |user| 
+  scope :viewable, lambda { |user,only_mine=false| 
     joins( :measurement => :experiment ).where( 
-      Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )
+      Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )
     )
   }
   

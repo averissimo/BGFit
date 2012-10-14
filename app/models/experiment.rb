@@ -11,7 +11,7 @@ class Experiment < ActiveRecord::Base
   
   scope :model_is, lambda { |model| where(Model.arel_table[:model_id].eq(model.id)).order(Model.arel_table[:model_id]) }
   scope :dyna_model_is, lambda { |dyna_model| joins(:measurements => :proxy_dyna_models).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).group('experiments.id').order(:model_id) }
-  scope :viewable, lambda { |user| where( Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )) }
+  scope :viewable, lambda { |user,only_mine=false| where( Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )) }
   
   has_paper_trail
   

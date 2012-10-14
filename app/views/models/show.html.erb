@@ -35,9 +35,22 @@
 			:name => t('navigation.index' , model: Model.model_name.human.pluralize), 
 			:url => models_path,
 			:options => {
+				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
 				:class => ("text" if can?(:update, @model))
-		}}]
+	       	}
+       	},
+       	{
+            :key => :index, 
+            :name => "Goto public " + Model.model_name.human.pluralize.downcase, 
+            :url => models_path,
+            :options => {
+                :if => Proc.new { cannot?(:update, @model) },
+                :container_class => 'menu',
+                :class => ("text" if can?(:update, @model))
+            }
+        }
+		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
@@ -68,7 +81,7 @@
 
 <%- if @accessibles.present? %>
 <%= render "accessibles/index"%>
-<%- else %>
+<%- elsif can?( :update, @model) %>
 <div class="text-center new">
     <%= link_to 'Associate team' ,[:new,@model,:accessible], class: "btn blank"%>
     <p><%= t "help.group.tip" %></p>
@@ -77,7 +90,7 @@
 
 </p>
 
-<%- if @experiments.present? %>
+<%- if @experiments.present? || cannot?( :update, @model) %>
     <div id="experiments_listing">
     <%= render 'experiments/experiments'%>
 </div>

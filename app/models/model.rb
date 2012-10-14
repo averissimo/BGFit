@@ -16,15 +16,20 @@ class Model < ActiveRecord::Base
   #scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
   scope :dyna_model_is, lambda { |dyna_model| 
     joins(:experiments => {:measurements => :proxy_dyna_models}).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).group(Model.arel_table[:id]).order(Model.arel_table[:id]) }
-  scope :viewable, lambda { |user| 
+  
+  scope :viewable, lambda { |user,only_mine=false| 
     if user.nil? then
       where( self.arel_table[:is_published].eq(true))
     else
       includes( Group.arel_table.name => Membership.arel_table.name ).where( 
-          Model.arel_table[:owner_id].eq(user.id).or( Model.arel_table[:is_published].eq(true) ).or( Membership.arel_table[:user_id].eq(user.id) ) 
+          Model.arel_table[:owner_id].eq(user.id)
+          .or( Model.arel_table[:is_published].eq(true).and(!only_mine) ) 
+          .or( Membership.arel_table[:user_id].eq(user.id) )
           ).group( Model.arel_table[:id] )
     end
   }
+  
+  scope :published, lambda { where( Model.arel_table[:is_published].eq( true )) }
   
   has_paper_trail
   

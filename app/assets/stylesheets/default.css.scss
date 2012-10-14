@@ -168,13 +168,15 @@ body {
       padding: 0;
       position: relative;
       vertical-align: top;
-      padding-right: 10px;
+      padding-right: 2px;
       a {
+        width: 105%;
         height: 100%;
         border-top: 2px solid transparent;
         color: white;
         text-decoration: none;
-        padding-right: 10px;
+        padding-right: 5px;
+        padding-left: 5px;
         &:hover,
         &:active,
         &:focus {

@@ -18,6 +18,7 @@ BacteriaGrowth::Application.routes.draw do
     end
   end
 
+  match "projects/public", via: :get, action: "public", controller: :models, as: "public_models"
   resources :models, path: :projects do
     member do
       get :new_measurement
