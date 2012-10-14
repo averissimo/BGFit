@@ -3,6 +3,9 @@ class ProxyDynaModel < ActiveRecord::Base
   belongs_to :experiment
   belongs_to :dyna_model
   has_many :proxy_params, :dependent => :destroy
+  has_one :simulation, as: :blobable, class_name: Blob.model_name
+  
+  accepts_nested_attributes_for :simulation
   
   validate :validate_title
   
@@ -112,17 +115,19 @@ class ProxyDynaModel < ActiveRecord::Base
     
     # Override to assure serialized hash is retrieved from db without changes in logic
     def json()
-      data = read_attribute(:json)
+      return nil if self.simulation.nil? || self.simulation.data.nil?
+      data = self.simulation.data
       return Marshal.load( data ) if (data).present?
       nil
     end
     
     # Override to assure hash is serialized to db without changes in logic
     def json=(value)
+      self.simulation ||= Blob.new
       if value.nil?
-        write_attribute(:json,nil)
+        simulation.data = value
       else
-        write_attribute(:json,Marshal.dump( value ) )  
+        simulation.data = Marshal.dump( value )  
       end
       
     end
