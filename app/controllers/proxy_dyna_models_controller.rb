@@ -35,13 +35,15 @@ class ProxyDynaModelsController < ApplicationController
     if params[:experiment_id]
       @experiment = Experiment.find(params[:experiment_id])
       @proxy_dyna_model = @experiment.proxy_dyna_models.build
+      @datable = @experiment
     elsif params[:measurement_id]
       @measurement = Measurement.find(params[:measurement_id])
       @experiment = @measurement.experiment
       @proxy_dyna_model = @measurement.proxy_dyna_models.build
+      @datable = @measurement
     end
     @model = @experiment.model
-
+    
     authorize! :update, @model
     
     @proxy_dyna_model.no_death_phase = true
@@ -51,7 +53,7 @@ class ProxyDynaModelsController < ApplicationController
   def create
     if params[:experiment_id]
       @experiment = Experiment.find(params[:experiment_id])
-      @proxy_dyna_model = @experiment.proxy_dyna_models.build(params[:dyna_model])
+      @proxy_dyna_model = @experiment.proxy_dyna_models.build(params[:proxy_dyna_model])
     elsif params[:measurement_id]
       @measurement = Measurement.find(params[:measurement_id])
       @experiment = @measurement.experiment
@@ -59,7 +61,7 @@ class ProxyDynaModelsController < ApplicationController
       @proxy_dyna_model.dyna_model
     end
     @model = @experiment.model
-    authorize! :create, @measurement
+    authorize! :update, @experiment
 
     #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])
     respond_with @proxy_dyna_model do | format |
@@ -91,7 +93,6 @@ class ProxyDynaModelsController < ApplicationController
   end
   
   def show
-
     if params[:log]=="true" && @proxy_dyna_model.log_flag
       @json = @proxy_dyna_model.json_cache(true)
     else

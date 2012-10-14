@@ -28,6 +28,8 @@ en:
       title: Data Management
   
   experiments:
+    show:
+      dyna: Associate dynamic model
     default:
       title: "Default"
       description: ""
