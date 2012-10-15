@@ -18,6 +18,10 @@ body * {
   overflow:hidden;
 }
 
+ul,li {
+  overflow:visible;
+}
+
 body {
   margin: 0px;
   padding:0px;
@@ -254,7 +258,7 @@ img.noborder{
   margin-left: 0em;
 }
 
-p,dl {
+p,dl,ul {
   margin-left: $tab;
 }
 

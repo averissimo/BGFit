@@ -1,10 +1,17 @@
-<h3>First action</h3>
+<h1>BGFIT: Data modeling</h1>
+
+    <div class="cols btn blank"><strong>Data modeling</strong> tool that leverages data introduced in the application, allowing to easily use existing models (or new ones) to your own data</div>
+    <div class="cols last_col btn blank">Data-management tool that allows to <strong>collaborate and publish data using a central point of access</strong>.</div> 
+    
+    <div style="clear:both;"></div>
+    
+<h2>First action</h2>
 
 <p>
-	<%= link_to "Projects" , models_path, :class => 'btn' %>To start using this application and introduce data goto Projects
+	<%= link_to "Projects" , models_path, :class => 'btn' %>To start using this application and <strong>introduce data goto Projects</strong>
 </p>
 <p>
-	 <%= link_to DynaModel.model_name.human.pluralize , dyna_models_path, :class => 'btn blank' %>To view/manage different <%=DynaModel.model_name.human.pluralize%>
+	 <%= link_to DynaModel.model_name.human.pluralize , dyna_models_path, :class => 'btn blank' %>To view the existing <%=DynaModel.model_name.human.pluralize%>
 	<br/>
 </p>
 
@@ -12,7 +19,26 @@
 <div id="tips" style="margin-left:2em">
 
 <div class="tip">
-    <h4>Manage data:</h4>
+    <h4>Dictionary for BGFit:</h4>
+    <div>
+        <dl>
+            <dt>Project</dt>
+            <dd>A top-level layer where permissions and public scope of the data is defined (see in "Manage data" topic below)</dd>
+            <dt>Experiment</dt>
+            <dd>Folder that aggregates different collections of data, which can also be modeled</dd>
+            <dt>Measurement</dt>
+            <dd>3-dimensional data that can also be annotaded. Each measurement can be modeled.</dd>
+            <dt>Model</dt>
+            <dd>Model extension that is available in BGFIT. This can be a dynamic model that is defined using a diferential or algebraic equation.</dd>
+            <dt>Proxy Model</dt>
+            <dd>These are implementation of models that are associated with the set of data (either measurement or experiment) that will model this set.</dd>
+        </dl>
+    </div>
+    
+</div>
+
+<div class="tip">
+    <h4>Manage data: (structure for data-management)</h4>
     <div style="display:hidden;" class="preview">
         <p>Data management is divided in three layers: project <i class="gray">(top-level folder)</i> -> experiment <i class="gray">(folder)</i> -> measurement <i class="gray">(actual data)</i></p>
     </div>
@@ -31,6 +57,7 @@
 </div>
 
 <div class="tip">
+    
     <h4>Navigation:</h4>
     <div style="display:hidden;" class="preview">
         <p>The top toolbar has all the navigation links in this web application.</p>

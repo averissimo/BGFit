@@ -3,6 +3,7 @@ BacteriaGrowth::Application.routes.draw do
   devise_for :users , path_names: { sign_in: "login" , sign_out: "logout"}
 
   match "/delayed_job" => DelayedJobWeb, :anchor => false
+  match "/documentation" , via: :get, controller: :home, action: "documentation", as: "documentation"  
     
   resources :groups, path: :teams do
     resources :memberships, :only => [:new, :create, :destroy]
