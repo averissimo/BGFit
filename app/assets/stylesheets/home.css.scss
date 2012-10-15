@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.btn, {
+#content .btn, {
   padding: 10px 15px 10px 15px;
   margin-right: 10px;
   display: inline-block;
@@ -23,7 +23,7 @@
 
 }
 
-a.btn{
+#content  a.btn{
   @extend .btn;
   text-shadow: -1px -1px 2px #618926;
   &:hover {
@@ -34,19 +34,19 @@ a.btn{
     background: -webkit-gradient(linear,left top,left bottom,color-stop(0, #245192),color-stop(.75, #1e3b73),color-stop(1, #12295d));
   }
 }
-.blank {
+#content  .blank {
   background: none;
   color: #000000;
 }
 
-a.blank {
+#content  a.blank {
   @extend .blank;
   &:hover {
     color: #ffffff;
   }
 }
 
-input.btn {
+#content  input.btn {
   @extend a.btn;
   margin-left: 3em;
   margin-right: 0px;
@@ -63,7 +63,21 @@ input.btn {
   }
 }
 
-#content .menu li.text a {
+.cols {
+  float:left;
+  width: 35%;
+  margin-right: 100px;
+  min-height: 4em;
+  padding: 20px;
+}
+
+.last_col {
+  clear:right;
+}
+
+#content .menu li.text a,
+#content .menu li.blank,
+#content .menu li.btn {
   color: #000;
   background: none;
   border: 0px solid transparent;
@@ -86,14 +100,4 @@ input.btn {
 }
 
 
-.cols {
-  float:left;
-  width: 35%;
-  margin-right: 100px;
-  min-height: 4em;
-  padding: 20px;
-}
 
-.last_col {
-  clear:right;
-}

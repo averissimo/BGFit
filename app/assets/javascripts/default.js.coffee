@@ -24,7 +24,7 @@
 #  })
 
 jQuery ->
-  if $('.menu a')
+  if $('#menu .menu a,#login-menu .menu a')
     for el in $('.menu a')
       weight = $(el).css("font-weight")
       $(el).css("font-weight" , 700)
