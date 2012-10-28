@@ -63,10 +63,10 @@ en:
       chart_for: Chart for
   
   action:
-    show: Show
-    edit: Edit
+    show: Goto
+    edit: Edit settings
     edit_this: Edit %{model}
-    remove: Remove
+    remove: Delete
     confirm: Are you sure?
     download_data: Download .csv
     measurement:

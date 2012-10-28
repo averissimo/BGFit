@@ -13,6 +13,8 @@ class ProxyDynaModel < ActiveRecord::Base
   
   has_paper_trail :skip => [:json]
   
+  validates :dyna_model, :presence => { :message => 'A model must be choosen.' }
+  
   scope :viewable, lambda { |user,only_mine=false| 
     joins( :measurement => :experiment ).where( 
       Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )
@@ -741,7 +743,7 @@ class ProxyDynaModel < ActiveRecord::Base
       logger.info {"[proxy_dyna_model.experiment_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
       experiment.measurements.each do |m|
-        dataset[:lines] = m.lines_no_death_phase()
+        dataset[:lines] = m.lines_no_death_phase(no_death_phase)
         size += dataset[:lines].size
         dataset = statistical_data_measurement( dataset )
       end
@@ -754,7 +756,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def measurement_stats(dataset)
       logger.info {"[proxy_dyna_model.measurement_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
-      dataset[:lines] = measurement.lines_no_death_phase()
+      dataset[:lines] = measurement.lines_no_death_phase(no_death_phase)
       size += dataset[:lines].size
       dataset = statistical_data_measurement( dataset )
       logger.info {"[proxy_dyna_model.measurement_stats] #{dataset.inspect}"}
@@ -773,7 +775,7 @@ class ProxyDynaModel < ActiveRecord::Base
         simulated_value = json_parsed.shift
         prev_sim_value = nil
         # cycle that covers all lines in hash
-        
+
         hash[:lines].each do |line|
           # cycle that finds next simulated value
           while simulated_value.present? && simulated_value[0] < line.x

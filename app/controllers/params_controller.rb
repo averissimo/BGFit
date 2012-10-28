@@ -16,19 +16,19 @@ class ParamsController < ApplicationController
 
   def new
     @dyna_model = DynaModel.find(params[:dyna_model_id])
-    authorize! :update, @dyna_model
+    #authorize! :update, @dyna_model
     @param = @dyna_model.params.build
     respond_with [@dyna_model,@param]
   end
 
   def create
     @dyna_model = DynaModel.find(params[:dyna_model_id])
-    authorize! :update, @dyna_model
+    #authorize! :update, @dyna_model
     @param = @dyna_model.params.build(params[:param])
     @param.dyna_model = @dyna_model
 
     @dyna_model.transaction do
-      respond_with [@dyna_model,@param] do | format |
+      respond_with [@dyna_model] do | format |
         if @param.save
           @dyna_model.proxy_dyna_models.each { |p_d| p_d.update_params }
           flash[:notice] = t('flash.actions.create.notice', :resource_name => "Parameter")

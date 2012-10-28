@@ -37,13 +37,18 @@ class Ability
 
     
     # Dyna Model
-    can [:update,:edit,:destroy,:show,:index,:new,:create], :dyna_models, DynaModel do |dm|
+    can [:new,:create], :dyna_models, DynaModel do |dm|
+      !user.nil?
+    end
+    
+    can [:update,:edit,:destroy,:show,:index], :dyna_models, DynaModel do |dm|
       !user.nil? && ( !dm.only_owner_can_change || dm.owner_id == user.id )
     end
     
     # Params (for Dyna Models)
-    can [:new,:create,:edit,:update,:destroy], :params, Param do |p|
-      !user.nil? && ( !p.dyna_model.only_owner_can_change? || p.dyna_model.owner_id == user.id )
+    can [:edit,:update,:destroy], :params, Param do |p|
+      true
+      #!user.nil? && ( !p.dyna_model.only_owner_can_change? || p.dyna_model.owner_id == user.id )
     end
     
     # Group

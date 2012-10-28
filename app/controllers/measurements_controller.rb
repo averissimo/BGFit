@@ -103,7 +103,10 @@ class MeasurementsController < ApplicationController
   # PUT /measurements/1.json
   def update
     @measurement.assign_attributes(permitted_params.measurement)
-    #@measurement.convert_original_data
+    if params[:measurement][:change_original_data] == "1"
+      @measurement.remove_all_lines
+      @measurement.convert_original_data
+    end
     
     respond_with(@experiment,@measurement) do |format|
       if @measurement.save
