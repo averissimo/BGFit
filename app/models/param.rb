@@ -4,6 +4,9 @@ class Param < ActiveRecord::Base
   
   has_paper_trail
   
+  validates :code , presence: true
+  validates :human_title , presence: true
+  
   public
     def description_trimmed
         return "" if description.nil?

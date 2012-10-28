@@ -78,9 +78,8 @@ if typeof google isnt 'undefined'
         $(el).attr('loaded','true')
       # Error Event
       google.visualization.events.addListener chart, 'error', (error) =>
-        alert("error loading chart!")
         $(el)[0].innerHTML = 'failed to load chart.'
-        $(el).parent().slideDown(1500, "swing").effect("highlight")
+        #$(el).parent().slideDown(1500, "swing").effect("highlight")
       chart.draw(data, options)
     
     data_add = (data, list) ->

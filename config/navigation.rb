@@ -51,7 +51,7 @@ SimpleNavigation::Configuration.run do |navigation|
     #
     primary.dom_class = 'menu'
     primary.item :home, 'Home', root_path
-    primary.item :models, Model.model_name.human.pluralize, models_path , :highlights_on => /^.*\/(projects|experiments|measurements|proxy_models)/
+    primary.item :models, Model.model_name.human.pluralize, models_path , :highlights_on => /^.*\/(projects|experiments|measurements|proxy_models)/ , :if => Proc.new{ current_user }
     primary.item :public, "Public projects", public_models_path , :highlights_on => /^.*\/(projects\/public)/
     primary.item :dyna_models, DynaModel.model_name.human.pluralize, dyna_models_path , :highlights_on => /^.*\/models/
     primary.item :docmentation, "Documentation", documentation_path , :highlights_on => /^.*\/documentation/

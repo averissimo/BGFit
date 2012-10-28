@@ -13,11 +13,18 @@ class Measurement < ActiveRecord::Base
   scope :viewable, lambda { |user,only_mine=false| joins(:experiment).where( Experiment.arel_table[:model_id].in( Model.viewable(user,only_mine).map { |m| m.id } )) }
  
   scope :published, lambda { joins(:experiment).where( Experiment.arel_table[:model_id].in( Model.published.map { |m| m.id } )) }
-
  
   has_paper_trail :skip => [:original_data]
 
   public
+
+    def change_original_data=(value)
+      @change_original_data ||= value
+    end
+
+    def change_original_data
+      @change_original_data
+    end
 
     def build_proxy_dyna_model(dyna_model,log_flag=true,no_death_phase=true)
       p = self.proxy_dyna_models.build
@@ -45,6 +52,15 @@ class Measurement < ActiveRecord::Base
       end
       self.minor_step = minor_step
       self.save
+    end
+  
+    def remove_all_lines
+      self.transaction do
+        lines.each do |l|
+          l.destroy
+        end
+      end
+
     end
   
     def get_proxy_dyna_model_with_dyna_model(dyna_model)

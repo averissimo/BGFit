@@ -1,5 +1,5 @@
 class DynaModel < ActiveRecord::Base
-  has_many :params
+  has_many :params, :dependent => :destroy
   has_many :proxy_dyna_models, :dependent => :destroy
   
   belongs_to :owner, :class_name => 'User'

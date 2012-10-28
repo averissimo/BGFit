@@ -24,8 +24,8 @@
 #  })
 
 jQuery ->
-  if $('#menu .menu a,#login-menu .menu a')
-    for el in $('.menu a')
+  if $('#menu .menu a, #login-menu .menu a')
+    for el in $('#menu .menu a, #login-menu .menu a')
       weight = $(el).css("font-weight")
       $(el).css("font-weight" , 700)
       width = $(el).width()

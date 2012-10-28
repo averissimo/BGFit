@@ -46,7 +46,6 @@ class ProxyDynaModelsController < ApplicationController
     
     authorize! :update, @model
     
-    @proxy_dyna_model.no_death_phase = true
     respond_with @proxy_dyna_model
   end
 

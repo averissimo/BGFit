@@ -119,7 +119,7 @@
 		</tbody>
 	</table>
 	<%- if can? :calculate, @proxy_dyna_model %>
-	<%= button_tag ((@proxy_dyna_model.rmse.present? ? "Re" : "") + "Calculate parameters") , disable_with: "calculating, please wait..." %>
+	<%= button_tag ((@proxy_dyna_model.rmse.present? ? "re" : "") + "calculate parameters").capitalize , disable_with: "calculating, please wait..." %>
 	<%- end %>
 </div>
 
