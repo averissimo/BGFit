@@ -1,3 +1,20 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class ModelsController < ApplicationController
   respond_to :html, :json, :js
   before_filter :authenticate_user!, :except => [:index,:show,:public]
@@ -107,7 +124,7 @@ class ModelsController < ApplicationController
   # DELETE /models/1.json
   def destroy
     @model = Model.find(params[:id])
-    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Scope", title: @model.title)
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Model", title: @model.title)
     @model.destroy
     respond_with(@model, :location => models_path)
   end
