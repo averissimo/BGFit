@@ -124,7 +124,16 @@ class ProxyDynaModelsController < ApplicationController
         flash[:notice] << @proxy_dyna_model.notes
       end
     end
-    respond_with(@proxy_dyna_model)
+    respond_with(@proxy_dyna_model) do |format|
+      format.csv {
+        csv = render_to_string :csv => @proxy_dyna_model
+        send_data  csv, :filename => 
+          @proxy_dyna_model.title_join +
+          '_' + 
+          @proxy_dyna_model.id.to_s +
+          '.csv'
+      }
+    end
   end
 
   def destroy

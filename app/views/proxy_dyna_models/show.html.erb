@@ -32,10 +32,19 @@
                 :class => ("text" if can?(:calculate, @proxy_dyna_model))
             }
         },
-		{
-			:key => :model, 
-			:name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase), 
-			:url => url_for([@proxy_dyna_model.dyna_model]),
+        {
+            :key => :model, 
+            :name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase), 
+            :url => url_for([@proxy_dyna_model.dyna_model]),
+            :options => {
+                :container_class => 'menu',
+                :class => "text"
+            }
+        },
+        {
+			:key => :csv, 
+			:name => '.csv', 
+			:url => url_for([@proxy_dyna_model])+".csv",
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
