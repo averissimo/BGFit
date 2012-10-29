@@ -64,7 +64,7 @@ en:
   
   action:
     show: Goto
-    edit: Edit settings
+    edit: Edit
     edit_this: Edit %{model}
     remove: Delete
     confirm: Are you sure?

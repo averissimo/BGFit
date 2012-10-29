@@ -10,7 +10,11 @@ time,N,Sim
 [Componentnotes]
 
 [Values]
-<%= @proxy_dyna_model.simulated_values.map { |l| "\"" + l[0].to_s + "\",\"" + l[1].to_s + "\",\"" + l[2].to_s + "\"" }.join("\n").html_safe %>
+<%- if (sim = @proxy_dyna_model.simulated_values) %>
+<%= sim.map { |l| "\"" + l[0].to_s + "\",\"" + l[1].to_s + "\",\"" + l[2].to_s + "\"" }.join("\n").html_safe %>
+<%- else %>
+n/a
+<%- end%>
 
 [Simulated curve]
 
@@ -20,4 +24,8 @@ time,Sim
 [Componentnotes]
 
 [Values]
+<%- if @proxy_dyna_model.json %>
 <%= @proxy_dyna_model.json[:base10].map { |l| "\"" + l[0].to_s + "\",\"" + l[1].to_s + "\"" }.join("\n").html_safe %>
+<%- else %>
+n/a
+<%- end%>
