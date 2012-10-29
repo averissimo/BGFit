@@ -1,0 +1,23 @@
+[Name]
+<%= @proxy_dyna_model.title_join %>
+
+[Notes]
+<%= @proxy_dyna_model.dyna_model.description %>
+
+[Components]
+time,N,Sim
+
+[Componentnotes]
+
+[Values]
+<%= @proxy_dyna_model.simulated_values.map { |l| "\"" + l[0].to_s + "\",\"" + l[1].to_s + "\",\"" + l[2].to_s + "\"" }.join("\n").html_safe %>
+
+[Simulated curve]
+
+[Components]
+time,Sim
+
+[Componentnotes]
+
+[Values]
+<%= @proxy_dyna_model.json[:base10].map { |l| "\"" + l[0].to_s + "\",\"" + l[1].to_s + "\"" }.join("\n").html_safe %>

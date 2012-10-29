@@ -483,6 +483,18 @@ class ProxyDynaModel < ActiveRecord::Base
       end
     end
 
+
+
+    def simulated_values
+      if self.measurement
+        simulated_lines( self.measurement.lines_no_death_phase(no_death_phase) )
+      elsif self.experiment
+        self.experiment.measurements.collect do |m|
+          simulated_lines m.lines_no_death_phase(no_death_phase)
+        end.compact.flatten(1).sort!{|a,b| a[0]<=>b[0]}
+      end
+    end
+
   #
   #                                           iiii                                                  tttt                              
   #                                          i::::i                                              ttt:::t                              
@@ -780,6 +792,7 @@ class ProxyDynaModel < ActiveRecord::Base
       size
     end
     
+   
     # helper method that calculates statistical data for a measurement
     #  in case it is a complex structure (i.e. experiment), then it will
     #  use introduce the values for the hash
@@ -835,8 +848,41 @@ class ProxyDynaModel < ActiveRecord::Base
       end
       return hash
     end
-  
-  
+    
+    def simulated_lines(lines)
+      begin
+        json_parsed = json[:base10] # array of [x,y]
+        simulated_value = json_parsed.shift
+        prev_sim_value = nil
+        # cycle that covers all lines in hash
+        result = lines.collect do |line|
+          # cycle that finds next simulated value
+          while simulated_value.present? && simulated_value[0] < line.x
+            prev_sim_value = simulated_value
+            simulated_value = json_parsed.shift # pops first element of json_parsed
+          end
+          logger.error "[proxy_dyna_model.simulated_lines] simulated_value is nil" if simulated_value.nil?
+          # checks if current simulated value timepoint is greater or equal than timepoint
+          value = nil
+          if simulated_value[0] > line.x
+            #  if it is greater then averages weighted simulated value with previous
+            difference = (simulated_value[0] - prev_sim_value[0]).abs
+            prev_weight = (line.x - prev_sim_value[0]).abs / difference
+            next_weight = (line.x - simulated_value[0]).abs / difference
+            value = prev_weight * prev_sim_value[1] + next_weight * simulated_value[1]
+          else
+            # if timepoint is equal then it uses y value 
+            value = simulated_value[1]
+          end
+          [line.x , line.y_value , value]
+        end
+        result
+      rescue Exception => e
+          logger.error "[proxy_dyna_model.simulated_lines] " + e.message
+          nil
+      end
+      
+    end
   
   
 end
