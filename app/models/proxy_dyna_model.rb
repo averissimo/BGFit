@@ -844,7 +844,7 @@ class ProxyDynaModel < ActiveRecord::Base
         logger.error "[proxy_dyna_model.statistical_data_measurement] error: " + e.message
         
         #clean_stats "error while calculating statistics"
-        return [].push(measurement.id).push(-1)
+        return [].push(self.measurement.id).push(-1)
       end
       return hash
     end
