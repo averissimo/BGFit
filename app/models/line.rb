@@ -74,7 +74,14 @@ class Line < ActiveRecord::Base
   protected
   
     def clear_flag
-      self.ln_y = Math.log(y) if changed_attributes.keys.include?("y")
+      begin
+        self.ln_y = Math.log(y) if changed_attributes.keys.include?("y")
+      rescue Exception => e
+        self.ln_y
+      end
+        
+      self.ln_y = nil if [-Float::INFINITY ,Float::INFINITY ].include? self.ln_y
+      
       self.measurement.minor_step = nil
       self.measurement.save
     end
