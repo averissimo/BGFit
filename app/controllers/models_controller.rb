@@ -42,7 +42,7 @@ class ModelsController < ApplicationController
     #@search = Model.search do
     #  fulltext params[:search]
     #end
-    @models = Model.published.order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
+    @models = Model.published(current_user).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
     @measurements = Measurement.published.custom_sort.page(params[:m_page]).per(10)
     
     respond_with @models do |format|
