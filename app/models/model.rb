@@ -46,7 +46,11 @@ class Model < ActiveRecord::Base
     end
   }
   
-  scope :published, lambda { where( Model.arel_table[:is_published].eq( true )) }
+  scope :published, lambda { |user=nil|
+    if user.nil? || !user.admin then
+      where( Model.arel_table[:is_published].eq( true ))
+    end
+  }
   
   has_paper_trail
   
