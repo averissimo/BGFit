@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121014021044) do
+ActiveRecord::Schema.define(:version => 20121107002550) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -59,6 +59,8 @@ ActiveRecord::Schema.define(:version => 20121014021044) do
     t.integer  "owner_id"
     t.boolean  "only_owner_can_change"
     t.boolean  "log_flag"
+    t.string   "equation"
+    t.integer  "eq_type"
   end
 
   create_table "experiments", :force => true do |t|

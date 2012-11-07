@@ -16,6 +16,8 @@ BacteriaGrowth::Application.routes.draw do
       get :stats
       get :estimate
       put :calculate
+      get :definition
+      match "download/model" , via: :get, action: "definition" , as: "model"
     end
   end
 

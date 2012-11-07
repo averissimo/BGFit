@@ -31,6 +31,20 @@ class DynaModelsController < ApplicationController
     respond_with @dyna_model
   end
 
+  def definition
+    respond_with @dyna_model do |format|
+      format.m { 
+        result = render_to_string action: :model
+        send_data result , filename: @dyna_model.title.to_s.gsub(/ /,"_").downcase + ".m" , type: "application/mfile"
+      }
+    end
+  end
+  
+  def download
+    
+    #send_data "yada" , filename: @dyna_model.title.to_s.gsub(/ /,"_").downcase + ".m" , type: "application/mfile"
+  end
+
   def create
     @dyna_model = DynaModel.new(params[:dyna_model])
     @dyna_model.owner = current_user

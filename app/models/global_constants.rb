@@ -17,4 +17,6 @@
 
 module GlobalConstants
 	PERMISSIONS = { read: 0, write: 1 }.freeze
+
+  EQUATION_TYPE = {Algebraic: 0, Differential: 1}.freeze
 end

@@ -1,0 +1,31 @@
+<%= collection_table(@dyna_model.params.reject{|p| p.output_only}, :id => 'params' , :class => 'formatted dataTable') do |t|
+        t.header :code,         Param.human_attribute_name(:code)
+        t.header :title,        Param.human_attribute_name(:human_title)
+        t.header :description,  Param.human_attribute_name(:description)
+        
+        t.rows.alternate = :odd
+        t.rows.each do |row, param, index|
+            # Notice there's no need to explicitly define the title
+            row.code            param.code
+            row.title           param.human_title.html_safe
+            row.description     param.description
+        end
+    end
+%>
+
+<%= semantic_form_for([@dyna_model]) do |f| %>
+  <%= f.semantic_errors :state %>
+  
+  <%= f.inputs do %>
+  	<%= f.input :eq_type, label: "Type" , :as => :radio, :collection => @dyna_model.types , required: true%>
+  	<%= f.input :equation , required: true, hint: "describe the equation using the parameters' code that is listed above as f(t)=x<br/>example for parameters a and b: a+bt^2 + exp(t)<br/>example for differential equation that has parameter a as initial condition: 2bt + x".html_safe %>
+  	
+  <% end %>
+  	  
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link, label: t('form.cancel') %>	
+  <% end%>
+<% end %>
+
+<div class="clear"></div>

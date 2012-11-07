@@ -44,6 +44,10 @@ class DynaModel < ActiveRecord::Base
     end
   end
   
+  def types
+    return GlobalConstants::EQUATION_TYPE
+  end
+  
   def get_models
     Model.dyna_model_is(self)
   end

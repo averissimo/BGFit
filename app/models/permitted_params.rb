@@ -77,6 +77,18 @@ class PermittedParams < Struct.new(:params,:user)
     attr_hash
   end
   
+  #
+  # model
+  def dyna_model
+    params.require(:dyna_model).permit(*model_attributes)
+  end
+  
+  def dyna_model_attributes
+    attr_hash = [:description, :title, :definition, :solver, :estimation, :only_owner_can_change, :log_flag, :equation, :eq_type] 
+    attr_hash.concat [:owner_id] if user && user.admin?
+    attr_hash
+  end
+  
   # TODO: rest of the controllers  
   
   
