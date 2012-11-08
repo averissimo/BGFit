@@ -21,9 +21,9 @@
 <p><%= link_to "Help page" , "http://oracle.inesc-id.pt/wiki/Modeling-Extensions/overview" , class: "btn blank"%>Reference the tutorial on the model extensions for more information, especially on how to deploy</p>
 
 <h3>Download links</h3>
-<%- if @dyna_model.equation && @dyna_model.eq_type && @dyna_model.eq_type == GlobalConstants::EQUATION_TYPE[:Differential] && !@dyna_model.params.find {|p| p.initial_condition }%>
+<%- if @dyna_model.equation.blank? && @dyna_model.eq_type.blank? && @dyna_model.eq_type == GlobalConstants::EQUATION_TYPE[:Differential] && !@dyna_model.params.find {|p| p.initial_condition }%>
 <p>Error: A differential model needs that one of the parameters is flagged as the initial condition, please correct this.</p>
-<%- elsif @dyna_model.equation && @dyna_model.eq_type%>
+<%- elsif @dyna_model.equation.blank? && @dyna_model.eq_type.blank?%>
 <p><%= link_to @dyna_model.model_m_name, url_for([:model,@dyna_model]) + ".m" , class: "btn"%> Model that contains the equation</p>
 <p><%= link_to @dyna_model.estimator_m_name, url_for([:estimator,@dyna_model]) + ".m" , class: "btn"%> Estimator for the model</p>
 <p><%= link_to @dyna_model.simulator_m_name, url_for([:simulator,@dyna_model]) + ".m" , class: "btn"%> Simulator for the model</p>
