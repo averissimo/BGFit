@@ -1,3 +1,20 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
@@ -11,55 +28,5 @@ jQuery ->
     target = $(event.currentTarget)
     target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
   
-if typeof google isnt 'undefined'
-  google.load 'visualization', '1.0', {'packages':['corechart','table']}
-  $(document).ready () => 
-  
-    if not $(".proxy_dyna_model_chart").length
-      return
-  
-    #
-    #
-    #
-    #
-    # Estimate specific javascript
-    #    
-    $('a.estimate_chart').live 'click' , (event) =>
-      target = $(event.currentTarget)
-      wrapper = target.parents('.experiments').find('.proxy_dyna_model_chart')
-      # set the measurement title to the chart
-      wrapper.find('.chart_name').html(target.parent().siblings(".measurement-title").html())
-      if !wrapper.children('.proxy_dyna_model_chart').is(':visible')
-        wrapper.children('.chart').css("height",options.height)
-        wrapper.slideDown()
-      wrapper.find('.model-data div').attr('data-source'      , target.parent().siblings(".measurement-model_d").attr('data-source'))
-      wrapper.find('.model-data div').html( target.parent().siblings(".measurement-model_d").html() )
-      wrapper.find('.measurement-data div').attr('data-source', target.parent().siblings(".measurement-data_d").attr('data-source'))
-      wrapper.find('.measurement-data div').html( target.parent().siblings(".measurement-data_d").html() )
-      process_chart(wrapper.children('.chart'))
-      false
-    #
-    #
-    #
-    #
-    # Stats specific javascript
-    #
-    
-          
-    $('h5.button').live 'click' , (event) =>
-      target = $(event.currentTarget)
-      wrapper = $(target).parent().children('div.toggle')
-      if wrapper.is(":visible") 
-        wrapper.slideUp()
-      else
-        wrapper.slideDown()
-        if !wrapper.children('.chart').is('.chart')
-          wrapper.effect('highlight')
-
-      if wrapper.children('.chart').is('.chart') && !wrapper.children('.chart').attr('loaded')
-        wrapper.children('.chart').css("height",options.height)
-        process_chart(wrapper.children('.chart'))
-      false
-
 
 

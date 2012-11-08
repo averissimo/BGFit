@@ -5,11 +5,10 @@
   	<%= f.input :experiment, :input_html => { :disabled => true  }%>
   	<%= f.input :title %> 
     <%= f.input :date , as: :date_select, :include_blank => true %>
-  	<%- if params[:action] == "new"%>
-  	<%= f.input :original_data, as: :text, hint: "data should be copied as tab delimeted columns: X&nbsp;&nbsp;&nbsp;Y&nbsp;&nbsp;&nbsp;Z&nbsp;&nbsp;&nbsp;note"%>
-  	<%- else %>
-  	<%= f.input :original_data, as: :text , :input_html => { :disabled => true  }%>
+  	<%- if !@measurement.new_record? %>
+  	 <%= f.input :change_original_data, as: :boolean%>
   	<%- end %>
+    <%= f.input :original_data, as: :text, hint: "data should be copied as tab delimeted columns: X&nbsp;&nbsp;&nbsp;Y&nbsp;&nbsp;&nbsp;Z&nbsp;&nbsp;&nbsp;note"%>
   	<%- if permitted_params.measurement_attributes.include? :minor_step %>
   	 <%= f.input :minor_step %>
   	<%- end %>

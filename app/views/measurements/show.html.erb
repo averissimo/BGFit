@@ -14,7 +14,7 @@
 		{
 			:key => :regression, 
 			:name => t('.linear'), 
-			:url => url_for([:regression,@experiment,@measurement]),
+			:url => url_for([:regression,@measurement]),
 			:options => {
 				:if => Proc.new { can?(:regression, @measurement) },
 				:container_class => 'menu'
@@ -107,44 +107,13 @@
 <%= menu %>
 </div>
 
-<h3>Dynamic models (<%= pluralize(@measurement.proxy_dyna_models.length, 'dynamic model')%>)</h3>
-<%= 
-	collection_table(@measurement.proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted dataTable') do |t|
-		t.header :title, "Model"
-		t.header :rmse
-		t.header :notes
-		t.header :show_h,		"", class: "no-sort"
-		t.header(:edit_h,		"", class: "no-sort") if can? :update, @measurement
-		t.header(:destroy_h,	"", class: "no-sort") if can? :update, @measurement
+<h3><%= ProxyDynaModel.model_name.human.pluralize(@proxy_dyna_models.length) %> (<%= @proxy_dyna_models.length %>)</h3>
+<%= render "proxy_dyna_models/summary" %>
 
-		t.rows.alternate = :odd
-    	t.rows.each do |row, proxy_dyna_model, index|
-			# Notice there's no need to explicitly define the title
-			row.title		proxy_dyna_model.title_join
-			row.rmse		proxy_dyna_model.rmse
-			row.notes		{ if proxy_dyna_model.notes.nil? then "" else word_wrap(proxy_dyna_model.notes,:line_width => 40).gsub(/\n/, '<br/>') end }
-			row.show_h		link_to t('action.show').downcase, [proxy_dyna_model] if can? :read, proxy_dyna_model
-			row.edit_h		link_to t('action.edit').downcase, [:edit,proxy_dyna_model] if can? :update, proxy_dyna_model
-			row.destroy_h	link_to t('action.remove').downcase, [proxy_dyna_model], confirm: 'Are you sure?', method: :delete if can? :update, proxy_dyna_model
-		end
-	end
-%>
-
-<h3>Models and measurement chart</h3>
-
-<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
-	<div class="chart">
-		 <br/>
-		 <div class="one_tab">loading...</div>
-	</div>
-	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-	<div style="display:none;" class="model-data">
-		<% @measurement.proxy_dyna_models.each do |pdm| %>
-		<div data-source="<%= proxy_dyna_model_path(pdm, :format => :json) %>"><%=pdm.title%></div>
-		<% end %>
-	</div>
-	<div style="display:none;" class="measurement-data">
-		<div data-source="<%= experiment_measurement_path(@measurement.experiment,@measurement,:format=>:json) %>"><%= @measurement.title %></div> 
-	</div>
-
+<div class="options">
+    <%= link_to "Download table as .csv" , {action: :summary, format: :csv}, {class: "download"} %>
 </div>
+
+<h3><%= DynaModel.model_name.human %> and <%=Measurement.model_name.human.downcase%> plots</h3>
+
+<%= google_chart( [@measurement] , @proxy_dyna_models )%>

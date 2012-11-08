@@ -1,0 +1,5 @@
+
+$dt_width:13em;
+
+dl.inline dt { width: $dt_width; float:left; text-align:right; } // clear to force it to the next line
+dl.inline dd { width: auto; margin-left: $dt_width + 1em; }

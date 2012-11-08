@@ -1,6 +1,7 @@
-<h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
+<h3><%= t('aux.listing')%> <%= pluralize(@experiments.length, Experiment.model_name.human.downcase)%></h3>
 
 <%= 
+    
     collection_table(@experiments, :id => 'experiments' , :class => 'formatted dataTable-no_sort', "data-sig" => data_sig(@experiments) ) do |t|
         t.header :title,        Model.human_attribute_name(:title)
         t.header :description,  Model.human_attribute_name(:description)

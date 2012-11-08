@@ -1,3 +1,20 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class ExperimentsController < ApplicationController
   respond_to :html, :json, :csv, :js
   
@@ -29,7 +46,7 @@ class ExperimentsController < ApplicationController
   # GET /experiments/1
   # GET /experiments/1.json
   def show
-
+    @proxy_dyna_models = @experiment.proxy_dyna_models
     respond_with [@model,@experiments] do |format|
       format.exp { 
         exp = render_to_string :exp => @experiment

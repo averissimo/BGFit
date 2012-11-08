@@ -1,0 +1,48 @@
+<h1>Generate <%= DynaModel.model_name.human %> Octave/Matlab</h1>
+
+<h3>Download links</h3>
+<%- if @dyna_model.equation && @dyna_model.eq_type && @dyna_model.eq_type == GlobalConstants::EQUATION_TYPE[:Differential] && !@dyna_model.params.find {|p| p.initial_condition }%>
+<p>Error: A differential model needs that one of the parameters is flagged as the initial condition, please correct this.</p>
+<%- elsif @dyna_model.equation && @dyna_model.eq_type%>
+<p><%= link_to @dyna_model.model_m_name, url_for([:model,@dyna_model]) + ".m" , class: "btn text"%> Model that contains the equation</p>
+<p><%= link_to @dyna_model.estimator_m_name, url_for([:estimator,@dyna_model]) + ".m" , class: "btn text"%> Estimator for the model</p>
+<p><%= link_to @dyna_model.simulator_m_name, url_for([:simulator,@dyna_model]) + ".m" , class: "btn text"%> Simulator for the model</p>
+<%- else %>
+<p>Before the download links are available it is required to fill the fields below</p>
+<%- end %>
+
+<h3>Parameters</h3>
+<%= collection_table(@dyna_model.params.reject{|p| p.output_only}, :id => 'params' , :class => 'formatted dataTable') do |t|
+        t.header :code,         Param.human_attribute_name(:code)
+        t.header :title,        Param.human_attribute_name(:human_title)
+        t.header :description,  Param.human_attribute_name(:description)
+        t.header :initial_condition,  Param.human_attribute_name(:initial_condition)
+        
+        t.rows.alternate = :odd
+        t.rows.each do |row, param, index|
+            # Notice there's no need to explicitly define the title
+            row.code            param.code
+            row.title           param.human_title.html_safe
+            row.description     param.description
+            row.initial_condition     param.initial_condition
+        end
+    end
+%>
+
+<%= semantic_form_for([@dyna_model], url: [:definition,@dyna_model]) do |f| %>
+  <%= f.semantic_errors :state %>
+  
+  <%= f.inputs do %>
+  	<%= f.input :eq_type, label: "Type" , :as => :radio, :collection => @dyna_model.types , required: true%>
+  	<%= f.input :equation , required: true, hint: "describe the equation using the parameters' code that is listed above as f(t)=x<br/>example for parameters a and b: a+bt^2 + exp(t)<br/>example for differential equation that has parameter a as initial condition: 2bt + x".html_safe %>
+  	
+  <% end %>
+  	  
+  <%= f.actions do %>
+  	<%= f.action :submit, :as => :button %>
+  	<%= f.action :cancel, :as => :link, label: t('form.cancel') %>	
+  <% end%>
+<% end %>
+
+<div class="clear"></div>
+

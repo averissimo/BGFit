@@ -1,3 +1,20 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class Model < ActiveRecord::Base
   has_many :experiments, :dependent => :destroy
   has_many :accessibles, :as => :permitable
@@ -10,16 +27,28 @@ class Model < ActiveRecord::Base
   
   belongs_to :owner, :class_name => 'User'
    
+  validates :title, :presence => {:message => 'Title cannot be blank'}
+   
   # Fulltext support using sunspot
   #scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
-  scope :dyna_model_is, lambda { |dyna_model| joins(:experiments => {:measurements => :proxy_dyna_models}).where(:experiments=>{:measurements=>{:proxy_dyna_models=>{:dyna_model_id=>dyna_model.id}}}).group('models.id').order(:id) }
-  scope :viewable, lambda { |user| 
+  scope :dyna_model_is, lambda { |dyna_model| 
+    joins(:experiments => {:measurements => :proxy_dyna_models}).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).group(Model.arel_table[:id]).order(Model.arel_table[:id]) }
+  
+  scope :viewable, lambda { |user,only_mine=false| 
     if user.nil? then
       where( self.arel_table[:is_published].eq(true))
     else
       includes( Group.arel_table.name => Membership.arel_table.name ).where( 
-          Model.arel_table[:owner_id].eq(user.id).or( Model.arel_table[:is_published].eq(true) ).or( Membership.arel_table[:user_id].eq(user.id) ) 
+          Model.arel_table[:owner_id].eq(user.id)
+          .or( Model.arel_table[:is_published].eq(true).and(!only_mine) ) 
+          .or( Membership.arel_table[:user_id].eq(user.id) )
           ).group( Model.arel_table[:id] )
+    end
+  }
+  
+  scope :published, lambda { |user=nil|
+    if user.nil? || !user.admin then
+      where( Model.arel_table[:is_published].eq( true ))
     end
   }
   
@@ -51,7 +80,7 @@ class Model < ActiveRecord::Base
     
     def can?(user=nil,arg)
       return true if user.present? && user.admin?
-      accessible = self.accessibles.find { |a| a.group.users.include?(User.find(7)) }
+      accessible = self.accessibles.find { |a| a.group.users.include?(user) }
        !accessible.nil? && !accessible.blank? && accessible.permission_level == arg
     end
 

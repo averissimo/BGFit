@@ -5,11 +5,12 @@
   	<%= f.input :title %>
   	<%= f.input :solver , as: :url %>
   	<%= f.input :estimation, as: :url %>
+    <%= f.input :log_flag, as: :boolean %>
   	<%- if @dyna_model.owner_id == current_user.id || @dyna_model.new_record? %> 
-  	<%= f.input :only_owner_can_change, as: :boolean, hint: "lock the model, allowing only the owner to edit it." %>
+  	<%= f.input :only_owner_can_change, as: :boolean %>
   	<%- end %>
   	<%= f.input :description, as: :text %>
-  	<%= f.input :definition, as: :text %>
+  	<%= f.input :definition, as: :text, hint: "use latex formula surrounded by '\\<span>(</span>' and '\\<span>)</span>', example: <br/>&nbsp;\\\\(\\)(y(t)=2+1t^{2}\\\\(\\)) => \\(y(t)=2+1t^{2}\\)".html_safe %>
   <% end %>
   	  
   <%= f.actions do %>

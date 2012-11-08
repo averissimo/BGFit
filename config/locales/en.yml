@@ -28,9 +28,11 @@ en:
       title: Data Management
   
   experiments:
+    show:
+      dyna: Associate dynamic model
     default:
       title: "Default"
-      description: "Insert description here.. (tip: could use conditions for measurements)"
+      description: ""
 
   measurements:
     show:
@@ -61,10 +63,10 @@ en:
       chart_for: Chart for
   
   action:
-    show: Show
+    show: Goto
     edit: Edit
     edit_this: Edit %{model}
-    remove: Remove
+    remove: Delete
     confirm: Are you sure?
     download_data: Download .csv
     measurement:
@@ -72,7 +74,7 @@ en:
     dyna_model:
       new: New parameter
       download_stats: Download stats
-      estimate: Estimate parameters
+      estimate: Estimate in batch
       estimate_short: Estimate
       stats: Stats
       
@@ -83,14 +85,16 @@ en:
       param:
         ic: yada
         
-  
   activerecord:
     models:
       group: Team
       model: Project
-      dyna_model: "Dynamic Model"
+      dyna_model: "Model"
       params: Parameters
+      proxy_dyna_model: "Proxy Model"
     attributes:
+      proxy_dyna_model:
+        rmse: RMSE
       model:
         is_published: Published?
       param:

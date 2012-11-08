@@ -1,6 +1,23 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class ModelsController < ApplicationController
   respond_to :html, :json, :js
-  before_filter :authenticate_user!, :except => [:index,:show]
+  before_filter :authenticate_user!, :except => [:index,:show,:public]
   
   load_and_authorize_resource :except => :new_measurement
   
@@ -14,17 +31,31 @@ class ModelsController < ApplicationController
     #@search = Model.search do
     #  fulltext params[:search]
     #end
-    @models = Model.viewable(current_user).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
-    @measurements = Measurement.viewable(current_user).custom_sort.page(params[:m_page]).per(10)
+    @models = Model.viewable(current_user,true).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
+    @measurements = Measurement.viewable(current_user,true).custom_sort.page(params[:m_page]).per(10)
     
     respond_with @models
+  end
+
+  def public
+    # Full text support using sunspot gem and solr
+    #@search = Model.search do
+    #  fulltext params[:search]
+    #end
+    @models = Model.published(current_user).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
+    @measurements = Measurement.published.custom_sort.page(params[:m_page]).per(10)
+    
+    respond_with @models do |format|
+      format.html { render "index"  }
+      format.js { render "index" }  
+    end
   end
 
   # GET /models/1
   # GET /models/1.json
   def show
     @model = Model.find(params[:id])
-    @experiments = @model.experiments.page(params[:page])
+    @experiments = @model.experiments.trim.page(params[:page])
     @measurements = Measurement.model_is(@model).custom_sort.page(params[:m_page]).per(10)
     @accessibles = @model.accessibles
     #
@@ -46,6 +77,7 @@ class ModelsController < ApplicationController
     exp_title ||= t('experiments.default.title') 
     @experiment = @model.experiments.find_or_create_by_title(exp_title)
     @experiment.description = t('experiments.default.description')
+    @experiment.default = true
     @experiment.save
     @measurement = @experiment.measurements.build
     respond_with @measurement
@@ -92,7 +124,7 @@ class ModelsController < ApplicationController
   # DELETE /models/1.json
   def destroy
     @model = Model.find(params[:id])
-    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Scope", title: @model.title)
+    flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Model", title: @model.title)
     @model.destroy
     respond_with(@model, :location => models_path)
   end

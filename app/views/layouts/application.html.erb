@@ -11,9 +11,24 @@
 	  <% if content_for?(:head) %>
 	  <%= yield(:head) %>
 	  <% end %>
-	  
+      <!-- initialization script for MathJax -->
+     
+      <!-- initialization script for MathJax -->	  
 	  <%= stylesheet_link_tag    "application" %>
 	  <%= javascript_include_tag "application"  %>
+	  
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({ 
+          showProcessingMessages: false, 
+          messageStyle: "none",
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          jax: ["input/TeX","output/HTML-CSS"],
+          extensions: ["tex2jax.js"],
+          showMathMenu: false,
+          processEscapes:true
+        });
+      </script>
+      
 	  <%= csrf_meta_tags %>
 	
 	</head>
@@ -36,7 +51,7 @@
 					<%= render_navigation %>
 				</div>
 				<% if content_for?(:context_menu) %>
-				<div><span>&gt;</span></div>
+				<span>&gt;</span>
 				<div class="menu-wrapper">
 					<%= yield(:context_menu) %>
 				</div>

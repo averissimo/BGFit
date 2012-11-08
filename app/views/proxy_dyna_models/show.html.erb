@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :edit, 
-			:name => 'Edit this proxy dyna model', 
+			:name => 'Edit this proxy model', 
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
 				:if => Proc.new { can?(:calculate, @proxy_dyna_model) },
@@ -15,17 +15,36 @@
 		{
 			:key => :index, 
 			:name => 'Goto measurement', 
-			:url => url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement]),
+			:url => Proc.new {url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement])},
 			:options => {
 				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
 				:container_class => 'menu',
 				:class => ("text" if can?(:calculate, @proxy_dyna_model))
 			}
 		},
-		{
-			:key => :model, 
-			:name => 'Goto dyna model', 
-			:url => url_for([@proxy_dyna_model.dyna_model]),
+        {
+            :key => :index, 
+            :name => 'Goto experiment', 
+            :url => Proc.new {url_for([@proxy_dyna_model.experiment])},
+            :options => {
+                :unless => Proc.new { @proxy_dyna_model.experiment.nil? },
+                :container_class => 'menu',
+                :class => ("text" if can?(:calculate, @proxy_dyna_model))
+            }
+        },
+        {
+            :key => :model, 
+            :name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase), 
+            :url => url_for([@proxy_dyna_model.dyna_model]),
+            :options => {
+                :container_class => 'menu',
+                :class => "text"
+            }
+        },
+        {
+			:key => :csv, 
+			:name => '.csv', 
+			:url => url_for([@proxy_dyna_model])+".csv",
 			:options => {
 				:container_class => 'menu',
 				:class => "text"
@@ -35,7 +54,7 @@
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
-<% content_for(:title) { "Dyna Model's detail" } %>
+<% content_for(:title) { t('title.detail' , model: ProxyDynaModel.model_name.human) } %>
 
 <h1><%= @proxy_dyna_model.title_join %></h1>
 
@@ -57,11 +76,11 @@
 <p>
 <%- if @proxy_dyna_model.no_death_phase %>
   Does not include death phase<br/>
-  ##############################<br/>
+  #######################################<br/>
   <%- end 	%>
   <%- if @proxy_dyna_model.log_flag %>
-  Estimation is performed on log scale<br/>
-  ##############################<br/>
+  Estimation is performed on log scale (base e)<br/>
+  #######################################<br/>
   <%- end 	%>
 </p>
 <%- end %>
@@ -83,8 +102,8 @@
 				row.title 	param.param.human_title.html_safe
 				row.value	param.value, :class => "highlight"
 				row.description	param.param.description
-				row.bottom 	range_value(param.bottom,param,'_bottom')
-				row.top 	range_value(param.top,param,'_top')
+				row.bottom 	range_value(param.bottom_cache,param,'_bottom')
+				row.top 	range_value(param.top_cache,param,'_top')
 			end
 		end %>
 	</div>
@@ -101,15 +120,15 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><%= @proxy_dyna_model.rmse%></td>
-				<td><%= @proxy_dyna_model.r_square%></td>
-				<td><%= @proxy_dyna_model.bias%></td>
-				<td><%= @proxy_dyna_model.accuracy%></td>
+				<td><%= @proxy_dyna_model.round(:rmse)%></td>
+				<td><%= @proxy_dyna_model.round(:r_square)%></td>
+				<td><%= @proxy_dyna_model.round(:bias)%></td>
+				<td><%= @proxy_dyna_model.round(:accuracy)%></td>
 			</tr>
 		</tbody>
 	</table>
 	<%- if can? :calculate, @proxy_dyna_model %>
-	<%= button_tag "Recalculate Parameters" , disable_with: "calculating, please wait..." %>
+	<%= button_tag ((@proxy_dyna_model.rmse.present? ? "re" : "") + "calculate parameters").capitalize , disable_with: "calculating, please wait..." %>
 	<%- end %>
 </div>
 
@@ -122,26 +141,12 @@
 <%- if !@proxy_dyna_model.rmse.nil? || !@proxy_dyna_model.rmse.blank? %>
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>
 
-<div style="display:none;" class="proxy_dyna_model_chart auto-load" >	
-	<div class="chart">
-		 <br/>
-		 <div class="one_tab">loading...</div>
-	</div>
-	<div class="options" style="display:none;text-align: right;"><a class="download" href='#'>Download chart as .svg</a></div>
-	<div style="display:none;" class="model-data">
-		<div data-source="<%= proxy_dyna_model_path(@proxy_dyna_model, :format => :json) %>"><%=@proxy_dyna_model.title%></div>
-	</div>
-	<div style="display:none;" class="measurement-data">
-		<% if @proxy_dyna_model.measurement.nil? %>
-		<% @proxy_dyna_model.experiment.measurements.each do |m| %>
-		<div data-source="<%= experiment_measurement_path(@proxy_dyna_model.experiment,m,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= m.title %></div>
-		<% end %>
-		<% else %>
-		<div data-source="<%= experiment_measurement_path(@experiment,@measurement,:format=>:json,log: @proxy_dyna_model.log_flag) %>"><%= @measurement.title %></div>
-		<% end %> 
-	</div>
+    <% if @proxy_dyna_model.measurement.nil? %>
+        <%= google_chart( @proxy_dyna_model.experiment.measurements , [@proxy_dyna_model] )%>
+    <%- else %>
+        <%= google_chart( [@measurement] , [@proxy_dyna_model] )%>
+    <%- end %>
 
-</div>
 <%- end %>
 
 
