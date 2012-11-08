@@ -43,6 +43,16 @@
 			}
 		},
 		{
+            :key => :generate, 
+            :name => "Generate source",
+            :url => url_for([:definition,@dyna_model]),
+            :options => {
+                :if => Proc.new { can?(:update, @dyna_model) },
+                :container_class => 'menu',
+                :class => "text"
+            }
+        },
+		{
 			:key => :index, 
 			:name => t('navigation.index', model: DynaModel.model_name.human.pluralize.downcase.capitalize), 
 			:url => dyna_models_path,
@@ -139,8 +149,6 @@
 		end
 	end
 %>
-
-<%= link_to "Generate model" , [:definition,@dyna_model]%>
 
 <div class="menu">
 	<%= menu %>
