@@ -38,8 +38,6 @@ function output = <%=@dyna_model.estimator_m_name(false)%>(test_data, draw_plot,
     end
     %% Options for estimation
     % options retrieved from build estimation
-    options.TolFun = 1e-7; % becomes too slow with default value
-    options.TolX = 1e-7; % becomes too slow with default value
     %% perform parameter estimation
     output = analytical_estimator(input, model, options, flag, debug_flag);
 
