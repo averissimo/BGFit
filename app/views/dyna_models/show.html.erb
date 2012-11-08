@@ -1,4 +1,6 @@
 <%
+    javascript 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured'
+    
 	context_menu = [
 		{
 			:key => :stats, 
@@ -40,6 +42,16 @@
 				:class => "text"
 			}
 		},
+		{
+            :key => :generate, 
+            :name => "Generate source",
+            :url => url_for([:definition,@dyna_model]),
+            :options => {
+                :if => Proc.new { can?(:update, @dyna_model) },
+                :container_class => 'menu',
+                :class => "text"
+            }
+        },
 		{
 			:key => :index, 
 			:name => t('navigation.index', model: DynaModel.model_name.human.pluralize.downcase.capitalize), 

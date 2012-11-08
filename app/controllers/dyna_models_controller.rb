@@ -31,6 +31,35 @@ class DynaModelsController < ApplicationController
     respond_with @dyna_model
   end
 
+  def definition
+    respond_with @dyna_model do |format|
+      format.m { 
+        template_type = GlobalConstants::EQUATION_TYPE.key(@dyna_model.eq_type).to_s.downcase
+        result = render_to_string action: template_type.to_s
+        send_data result , filename: @dyna_model.model_m_name , type: "application/mfile"
+      }
+    end
+  end
+  
+  def estimator
+    respond_with @dyna_model do |format|
+      format.m { 
+        result = render_to_string action: "estimator"
+        send_data result , filename: @dyna_model.estimator_m_name , type: "application/mfile"
+      }
+    end
+  end
+  
+  def simulator
+    respond_with @dyna_model do |format|
+      format.m { 
+        result = render_to_string action: "simulator"
+        send_data result , filename: @dyna_model.simulator_m_name , type: "application/mfile"
+      }
+    end
+  end
+  
+
   def create
     @dyna_model = DynaModel.new(params[:dyna_model])
     @dyna_model.owner = current_user
@@ -84,8 +113,14 @@ class DynaModelsController < ApplicationController
 
   def update
     @dyna_model = DynaModel.find(params[:id])
-
-    respond_with @dyna_model do |format|
+    
+    if params[:dyna_model][:equation]
+      response = [:definition,@dyna_model]
+    else
+      response = @dyna_model
+    end
+    
+    respond_with response do |format|
       if @dyna_model.update_attributes(params[:dyna_model])
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Dyna Model")
       else

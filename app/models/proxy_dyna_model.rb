@@ -654,11 +654,11 @@ class ProxyDynaModel < ActiveRecord::Base
         ic_flag = true
       }
       return nil unless ic_flag
-      if ic_flag
-        uri_params[:names] << 't'
-        uri_params[:top] << measurement.end(self.no_death_phase)
-        uri_params[:bottom] << 0
-      end
+      #if ic_flag
+      #  uri_params[:names] << 't'
+      #  uri_params[:top] << measurement.end(self.no_death_phase)
+      #  uri_params[:bottom] << 0
+      #end
       uri_params
     end
     

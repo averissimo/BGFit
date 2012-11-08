@@ -191,6 +191,7 @@ body {
 
 div.menu {
   ul.menu {
+    margin-left:0px;
     padding-left: 0px;
     display: inline-block;
     list-style: none outside none;
@@ -204,6 +205,15 @@ div.menu {
           font-weight: bold;
         }
       }
+    }
+  }
+}
+
+#content {
+  ul.menu {
+    li {
+      padding:0px;
+      margin-right: 2px;
     }
   }
 }

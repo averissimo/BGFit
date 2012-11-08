@@ -44,6 +44,26 @@ class DynaModel < ActiveRecord::Base
     end
   end
   
+  def types
+    return GlobalConstants::EQUATION_TYPE
+  end
+  
+  def suffix
+    GlobalConstants::EQUATION_SUFFIX[GlobalConstants::EQUATION_TYPE.key(self.eq_type)]
+  end
+  
+  def model_m_name(extension=true)
+    self.title.gsub(/ /, "_").downcase + suffix + ( if extension then ".m" else "" end )
+  end
+  
+  def estimator_m_name(extension=true)
+    self.title.gsub(/ /, "_").downcase + suffix + "_est" + ( if extension then ".m" else "" end )
+  end
+  
+  def simulator_m_name(extension=true)
+    self.title.gsub(/ /, "_").downcase + suffix + "_sim" + ( if extension then ".m" else "" end )
+  end
+  
   def get_models
     Model.dyna_model_is(self)
   end

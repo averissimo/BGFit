@@ -58,7 +58,7 @@ class Ability
       !user.nil?
     end
     
-    can [:update,:edit,:destroy,:show,:index], :dyna_models, DynaModel do |dm|
+    can [:update,:edit,:destroy,:show,:index,:definition, :estimator, :simulator], :dyna_models, DynaModel do |dm|
       !user.nil? && ( !dm.only_owner_can_change || dm.owner_id == user.id )
     end
     
