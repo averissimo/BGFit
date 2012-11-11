@@ -1,36 +1,57 @@
-<h1>BGFIT: Data modeling</h1>
 
-    <div class="cols btn blank"><strong>Data modeling</strong> tool that leverages data introduced in the application, allowing to easily use existing models (or new ones) to your own data</div>
-    <div class="cols last_col btn blank">Data-management tool that allows to <strong>collaborate and publish data using a central point of access</strong>.</div>
+</div>
+
+
+    <div class="cols border big text-justify">Use bgfit to manage your experimental data and automatically perform <strong>data modeling</strong> on your sets</div>
+    <div class="cols last_col border big">Use it to collaborate on the same data, allowing to publish your findings using a central point of access.</div>
 
     <div style="clear:both;"></div>
 
 <h2>First action</h2>
 
-<p>
-	<%= link_to "Projects" , models_path, :class => 'btn' %>To start using this application and <strong>introduce data goto Projects</strong>
-</p>
-<p>
-	 <%= link_to DynaModel.model_name.human.pluralize , dyna_models_path, :class => 'btn blank' %>To view the existing <%=DynaModel.model_name.human.pluralize%>
-	<br/>
-</p>
+<div class="half_cols">
+    <p class="text-center">
+	<%= link_to "Projects" , models_path, :class => 'btn' %><br/>
+	Start using this application by introducing data
+	</p>
+</div>
+<div class="half_cols">
+    <p class="text-center">
+	 <%= link_to DynaModel.model_name.human.pluralize , dyna_models_path, :class => 'btn blank' %><br/>
+	 View existing <%=DynaModel.model_name.human.pluralize%> (or create new ones)
+    </p>
+</div>
+<div class="half_cols">
+    <p class="text-center">
+     <%= link_to "Public " + Model.model_name.human.pluralize.downcase , public_models_path, :class => 'btn blank' %><br/>
+     View published models <%= Model.model_name.human.pluralize %>
+    </p>
+</div>
+<div class="half_cols last_col">
+    <p class="text-center">
+     <%= link_to "Documentation" , documentation_path, :class => 'btn blank' %><br/>
+     BGFit documentation
+    </p>
+</div>
+<div style="clear:both;"></div>
+
+<hr/>
 
 <h3>Tips</h3>
 <div id="tips" style="margin-left:2em">
-
 <div class="tip">
     <h4>Dictionary for BGFit:</h4>
-    <div>
+    <div class="dictionary">
         <dl>
-            <dt>Project</dt>
+            <dt class="title">Project</dt>
             <dd>A top-level layer where permissions and public scope of the data is defined (see in "Manage data" topic below)</dd>
-            <dt>Experiment</dt>
+            <dt class="title">Experiment</dt>
             <dd>Folder that aggregates different collections of data, which can also be modeled</dd>
-            <dt>Measurement</dt>
+            <dt class="title">Measurement</dt>
             <dd>3-dimensional data that can also be annotaded. Each measurement can be modeled.</dd>
-            <dt>Model</dt>
+            <dt class="title">Model</dt>
             <dd>Model extension that is available in BGFIT. This can be a dynamic model that is defined using a diferential or algebraic equation.</dd>
-            <dt>Proxy Model</dt>
+            <dt class="title">Proxy Model</dt>
             <dd>These are implementation of models that are associated with the set of data (either measurement or experiment) that will model this set.</dd>
         </dl>
     </div>

@@ -25,6 +25,7 @@ ul,li {
 body {
   margin: 0px;
   padding:0px;
+  background-image: image-url("background.png");
 }
 
 #login_menu {
@@ -38,11 +39,28 @@ body {
   }
 }
 
-#content {
+$gray:#aaa;
+$radius:5px;
+$padding:30px;
+
+#content_wrapper {
+  border-left: 1px solid $gray;
+  border-right: 1px solid $gray;
+  border-bottom: 1px solid $gray;
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  padding-left: $padding;
+  padding-right: $padding;
+  width: $width;
   margin-left:auto;
   margin-right:auto;
-  width: $width;
   //border: 1px solid black;
+  background-image: none;
+  background-color: #fff;
+}
+
+#content {
+  
 }
 
 #fixed-header {
