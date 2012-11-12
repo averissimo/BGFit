@@ -55,15 +55,13 @@
 
 <%= 
     collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted dataTable') do |t|
-        t.header :code
-        t.header :human_title
+        t.header :title
         t.header :description
 
         t.rows.alternate = :odd
         t.rows.each do |row, param, index|
             # Notice there's no need to explicitly define the title
-            row.code            param.code
-            row.human_title     param.human_title
+            row.title           param.human_title.html_safe
             row.description     param.description_trimmed.gsub(/\n/, '<br/>')
         end
     end
