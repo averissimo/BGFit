@@ -62,25 +62,26 @@
 		</div>
 
         <div id="content_wrapper">
-		<div id="login_menu" class="menu">
-			<div class="menu-wrapper">
-				<%= login_menu %>
-			</div>
-		</div>
-
-		<div id="content">
-	      <div style="margin-bottom:1em;"><%= link_to image_tag("logo.png" , width: "200" , height:"63" , title: "BGFIT: data modelign" , class: "noborder") , root_path%>
-		  <%- flash.each do |key, value| %>
-		  	<%- if value.is_a?(String)%>
-		    	<%= content_tag(:div, value.html_safe, :class => "flash #{key}") %>
-		    <%- else %>
-		    	<%= content_tag(:div, value.join("<br/>").html_safe, :class => "flash #{key}") %>
-		    <%- end %>
-		  <%- end %>
-
-
-			<%= yield %>
-		</div>
+    		<div id="login_menu" class="menu">
+    			<div class="menu-wrapper">
+    				<%= login_menu %>
+    			</div>
+    		</div>
+    
+    		<div id="content">
+    	      <div style="margin-bottom:1em;"><%= link_to image_tag("logo.png" , width: "200" , height:"63" , title: "BGFIT: data modelign" , class: "noborder") , root_path%>
+    		  <%- flash.each do |key, value| %>
+    		  	<%- if value.is_a?(String)%>
+    		    	<%= content_tag(:div, value.html_safe, :class => "flash #{key}") %>
+    		    <%- else %>
+    		    	<%= content_tag(:div, value.join("<br/>").html_safe, :class => "flash #{key}") %>
+    		    <%- end %>
+    		  <%- end %>
+    
+    
+    			<%= yield %>
+    		  </div>
+    		</div>
 		</div>
 		<div id="footer">
 			<%= render_navigation %>
@@ -88,5 +89,6 @@
 			<br/>
 			<span><%= Time.now.year %>  KDBIO | INESC-ID</span>
 		</div>
+		
 	</body>
 </html>
