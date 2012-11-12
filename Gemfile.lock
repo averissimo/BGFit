@@ -100,6 +100,7 @@ GEM
       unicode-display_width (>= 0.1.1)
     formtastic (2.2.1)
       actionpack (>= 3.0)
+    google-analytics-rails (0.0.3)
     haml (3.1.7)
     hike (1.2.1)
     hirb (0.7.0)
@@ -212,6 +213,7 @@ DEPENDENCIES
   devise
   fancy_irb
   formtastic
+  google-analytics-rails
   hirb
   jquery-datatables-rails!
   jquery-rails

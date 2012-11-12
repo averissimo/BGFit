@@ -69,6 +69,8 @@ gem 'sunspot_solr' # optional pre-packaged Solr distribution for use in developm
 
 gem 'kaminari'
 
+gem 'google-analytics-rails'
+
 #group :test,:production do
 #  gem 'therubyracer'
 #end
