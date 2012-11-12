@@ -59,10 +59,6 @@ $padding:30px;
   background-color: #fff;
 }
 
-#content {
-  
-}
-
 #fixed-header {
   opacity: 1;
   position: fixed;
@@ -70,6 +66,15 @@ $padding:30px;
   width: 100%;
   z-index: 990;
 }
+
+#header-wrapper {
+  width: $width + $padding*2;
+  margin:auto;
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  
+}
+
 #header {
   background-color: #036;
   color: white;

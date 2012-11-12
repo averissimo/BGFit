@@ -34,6 +34,7 @@
 	</head>
 	<body>
 		<div id="fixed-header">
+		    <div id="header-wrapper">
 			<div id="header" 
 			 <%-if Rails.env != "production" && Rails.env == "pre-production"%>style="background-color: #F78400!important;"
 			 <%- elsif Rails.env != "production" && Rails.env == "test"%>style="background-color: #FF00FF!important;"
@@ -56,6 +57,7 @@
 					<%= yield(:context_menu) %>
 				</div>
 				<% end %>
+			</div>
 			</div>
 		</div>
 
