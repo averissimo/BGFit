@@ -12,7 +12,9 @@
 	  <%= yield(:head) %>
 	  <% end %>
       <!-- initialization script for MathJax -->
-     
+
+      <%= analytics_init if Rails.env.production? %>a
+
       <!-- initialization script for MathJax -->	  
 	  <%= stylesheet_link_tag    "application" %>
 	  <%= javascript_include_tag "application"  %>

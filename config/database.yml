@@ -4,8 +4,8 @@ development:
   encoding: utf8
   database: bacteria_growth
   pool: 5
-  username: kdbio_rails
-  password: "123456"
+  username: root
+  password: "zxc"
 
 production:
   adapter: mysql2
