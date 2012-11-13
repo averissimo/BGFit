@@ -1,0 +1,32 @@
+
+development:
+  adapter: mysql2
+  encoding: utf8
+  database: bgfit_dev
+  pool: 5
+  username: kdbio
+  password: "123456"
+
+test:
+  adapter: mysql2
+  encoding: utf8
+  database: bgfit_dev
+  pool: 5
+  username: kdbio
+  password: "123456"
+
+pre-production:
+  adapter: mysql2
+  encoding: utf8
+  database: bgfit_pre
+  pool: 5
+  username: kdbio
+  password: "123456"
+
+production:
+  adapter: mysql2
+  encoding: utf8
+  database: bgfit_prd
+  pool: 5
+  username: kdbio_prd
+  password: "123456"
