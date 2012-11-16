@@ -17,6 +17,45 @@
 
 module ApplicationHelper
   
+  def back_menu(fallback=nil)
+    back = []
+    back << {
+      :key => :back, 
+      :name => 'Back', 
+      :url => url_for(:back),
+      :options => {
+        :unless => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back)},
+        :container_class => 'menu',
+        :class => "text"
+      }
+    }
+    
+    if fallback
+      back << {
+      :key => fallback[:key], 
+      :name => fallback[:name], 
+      :url => fallback[:path],
+      :options => {
+        :if => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back) },
+        :container_class => 'menu',
+        :class => "text"
+      }
+    }
+    else
+      back << {
+      :key => :home, 
+      :name => 'Goto to home', 
+      :url => root_path,
+      :options => {
+        :if => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back) },
+        :container_class => 'menu',
+        :class => "text"
+      }
+    }  
+    end
+    back
+  end
+  
   def remote_activated?
     defined?(no_remote_flag).nil?
   end
