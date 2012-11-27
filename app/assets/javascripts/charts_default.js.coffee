@@ -76,7 +76,7 @@ if typeof google isnt 'undefined'
     
     $('a.download.svg').live 'click' , (event) =>
       target = $(event.currentTarget)
-      base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart iframe').contents().find('html body div#chartArea')[0].innerHTML
+      base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart svg').parent()[0].innerHTML
 
       target.prop('href','data:image/svg;base64,'+ btoa(base64))
       true

@@ -157,7 +157,7 @@ class DynaModelsController < ApplicationController
   
   def experiment_detail
     @dyna_model = DynaModel.find(params[:id])
-    @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page]).per(2)
+    @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page])
     if params["show_exp"]
       @show_experiment = Experiment.viewable(current_user,true).find(params["show_exp"])
     end

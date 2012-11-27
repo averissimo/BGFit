@@ -28,11 +28,11 @@
                 row.rmse pdm.rmse.round(5)
                 row.bias pdm.bias.round(5)
                 row.accuracy pdm.accuracy.round(5)
-                row.show "show"
+                row.show link_to "show" , pdm
             end
         end
     %>
     <%- else %>
-        <div><p>(<%= link_to "show experiment's details", experiment_detail_params(e.id,"experiment_detail") , class: "expand_detail" %>)</p></div>
+        <div><p><%= link_to "show measurements", experiment_detail_params(e.id,"experiment_detail") , class: "expand_detail show_more btn blank btn_small", remote:true %></p></div>
     <%- end %>
 </div>

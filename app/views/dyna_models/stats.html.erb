@@ -46,6 +46,8 @@
 
 <h1><%= @dyna_model.title %></h1>
 
+<p>The information below represents a consolidated view of the parameter estimation results for the <%= @dyna_model.title.downcase %> model. It only shows projects and data where this model is used.</p>
+
 <h3>Description:</h3>
 <p>
   <%= simple_format (show (@dyna_model.description)) %>
@@ -67,7 +69,7 @@
     end
 %>
 
-<h2><%= Model.model_name.human.pluralize%></h2>
+<h2>Parameter Estimation Results</h2>
 
 <div id="models_listing" class="one_tab">
 <%= render partial: "models_summary" %>
