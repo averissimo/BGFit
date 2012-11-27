@@ -1,29 +1,11 @@
 <% 
-	context_menu = [
-		{
-			:key => :back, 
-			:name => 'Back', 
-			:url => url_for(:back),
-			:options => {
-				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
-			:key => :home, 
-			:name => t('navigation.goto' , destination: Experiment.model_name.human.pluralize.downcase), 
-			:url => url_for([@model,@experiment]),
-			:options => {
-				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
-				:container_class => 'menu',
-				:class => "text"
-			}
-		}]
+	context_menu = [].concat( back_menu( {key: :home, 
+		name: t('navigation.goto' , destination: Experiment.model_name.human.pluralize.downcase), 
+		path: url_for([@model,@experiment]) }))
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 	content_for(:title) { "New experiment" }
 %>
 <h1>Editing experiment</h1>
 
-<%= render 'form' %>
+<%= render 'form' , menu: menu %>

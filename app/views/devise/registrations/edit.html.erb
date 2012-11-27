@@ -1,3 +1,8 @@
+<% 
+	context_menu = [].concat(back_menu)
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
 <% semantic_form_for(:title) { "Edit Profile" } %>
 <h2>Edit <%= resource_name.to_s.humanize %></h2>
 
@@ -14,6 +19,8 @@
 
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button, :label => "Update" %>
-  	<%= f.action :cancel, :as => :link , label: t('form.cancel') %>
+  	<div class="menu">
+		<%= menu %>
+	</div>	
   <% end%>
 <% end %>

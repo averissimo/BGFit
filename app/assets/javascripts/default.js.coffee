@@ -41,6 +41,10 @@
 #  })
 
 jQuery ->
+  $('div.flash a.close_flash').live 'click', (e)->
+    div = $(@).parent().slideToggle();
+    false
+  
   if $('#menu .menu a, #login-menu .menu a')
     for el in $('#menu .menu a, #login-menu .menu a')
       weight = $(el).css("font-weight")

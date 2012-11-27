@@ -35,6 +35,7 @@
 	
 	</head>
 	<body>
+		<div id="main-content">
 		<div id="fixed-header">
 		    <div id="header-wrapper">
 			<div id="header" 
@@ -60,7 +61,19 @@
 				</div>
 				<% end %>
 			</div>
+			
+			<%- flash.each do |key, value| %>
+    		  	<%= content_tag(:div, :class => "flash #{key}") do %>
+	    		  	<%- if value.is_a?(String)%>
+	    		    		<%= value.html_safe %>
+	    		    <%- else %>
+	    		    		<%= value.join("<br/>").html_safe %>
+	    		    <%- end %>
+    		    <%= link_to "<div class='right'>x</div>".html_safe , "#" , class: "close_flash"%>
+    		    <%- end %>
+    		  <%- end %>
 			</div>
+			
 		</div>
 
         <div id="content_wrapper">
@@ -71,20 +84,14 @@
     		</div>
     
     		<div id="content">
-    	      <div style="margin-bottom:1em;"><%= link_to image_tag("logo.png" , width: "200" , height:"63" , title: "BGFIT: data modelign" , class: "noborder") , root_path%>
-    		  <%- flash.each do |key, value| %>
-    		  	<%- if value.is_a?(String)%>
-    		    	<%= content_tag(:div, value.html_safe, :class => "flash #{key}") %>
-    		    <%- else %>
-    		    	<%= content_tag(:div, value.join("<br/>").html_safe, :class => "flash #{key}") %>
-    		    <%- end %>
-    		  <%- end %>
-    
-    
+    	      <div class="logo"><%= link_to image_tag("logo.png" , width: "200" , height:"63" , title: "BGFIT: data modelign" , class: "noborder") , root_path%>
     			<%= yield %>
     		  </div>
     		</div>
 		</div>
+		
+		</div>
+		
 		<div id="footer">
 			<%= render_navigation %>
 			<a href="mailto:averissimo@kdbio.inesc-id.pt">averissimo@kdbio.inesc-id.pt</a>

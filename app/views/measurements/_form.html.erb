@@ -4,7 +4,7 @@
   <%= f.inputs do %>
   	<%= f.input :experiment, :input_html => { :disabled => true  }%>
   	<%= f.input :title %> 
-    <%= f.input :date , as: :date_select, :include_blank => true %>
+    <%= f.input :date , label:"Date",as: :date_select, :include_blank => true %>
   	<%- if !@measurement.new_record? %>
   	 <%= f.input :change_original_data, as: :boolean%>
   	<%- end %>
@@ -16,7 +16,9 @@
 
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button %>
-  	<%= f.action :cancel, :as => :link , label: t('form.cancel')%>	
+  	<div class="menu">
+		<%= menu %>
+	</div>		
   <% end%>
 
 <% end %>
