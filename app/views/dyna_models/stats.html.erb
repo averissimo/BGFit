@@ -67,12 +67,12 @@
     end
 %>
 
-<div class="menu">
-    <%= menu %>
-</div>
-
 <h2><%= Model.model_name.human.pluralize%></h2>
 
 <div id="models_listing" class="one_tab">
 <%= render partial: "models_summary" %>
+</div>
+
+<div class="menu">
+    <%= menu %>
 </div>
