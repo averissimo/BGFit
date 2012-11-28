@@ -2,6 +2,8 @@ BacteriaGrowth::Application.routes.draw do
 
   devise_for :users , path_names: { sign_in: "login" , sign_out: "logout"}
 
+  match "/404", :to => "errors#not_found"
+
   match "/delayed_job" => DelayedJobWeb, :anchor => false
   match "/documentation" , via: :get, controller: :home, action: "documentation", as: "documentation"  
     
