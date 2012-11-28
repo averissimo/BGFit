@@ -31,15 +31,6 @@
 			}
 		},
 		{
-			:key => :csv, 
-			:name => t('.csv'), 
-			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
 			:key => :new, 
 			:name => t('.new-line'), 
 			:url => new_measurement_line_path(@measurement),
@@ -102,6 +93,10 @@
 		end
 	end
 %>
+
+<div class="options">
+	<%= link_to "Download table as .csv" , experiment_measurement_path(@experiment,@measurement, :format => :csv), class: "download" %>
+</div>
 
 <div class="menu">
 <%= menu %>
