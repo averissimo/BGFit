@@ -97,6 +97,15 @@ module ApplicationHelper
     end
   end
   
+  def empty(text,type=nil)
+    if text.nil? || text.blank? || text.strip.blank?
+      type ||= ""
+      "(no " + type + " provided)"
+    else
+      text
+    end
+  end
+  
   def login_menu
     link_array = [
       {

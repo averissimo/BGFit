@@ -71,6 +71,12 @@
 
 <%= simple_format @model.description %>
 
+<h4>
+	Description
+</h4>
+
+<%= simple_format empty(@measurement.description,"description") %>
+
 <h3>Measured data (<%= pluralize(@measurement.lines.length, 'line')%>)</h3>
 <%= 
 	collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted dataTable') do |t|
