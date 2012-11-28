@@ -21,7 +21,6 @@ $(function() {
     if ($('body').attr('data-state-href') === location.href) {
       return false;
     }
-    return false;
     if (e.state !== null) {
       // do something with your state object
     }
