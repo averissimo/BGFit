@@ -12,7 +12,9 @@
 	  <%= yield(:head) %>
 	  <% end %>
       <!-- initialization script for MathJax -->
-     
+
+      <%= analytics_init if Rails.env.production? %>
+
       <!-- initialization script for MathJax -->	  
 	  <%= stylesheet_link_tag    "application" %>
 	  <%= javascript_include_tag "application"  %>
@@ -33,7 +35,9 @@
 	
 	</head>
 	<body>
+		<div id="main-content">
 		<div id="fixed-header">
+		    <div id="header-wrapper">
 			<div id="header" 
 			 <%-if Rails.env != "production" && Rails.env == "pre-production"%>style="background-color: #F78400!important;"
 			 <%- elsif Rails.env != "production" && Rails.env == "test"%>style="background-color: #FF00FF!important;"
@@ -57,25 +61,35 @@
 				</div>
 				<% end %>
 			</div>
-		</div>
-
-		<div id="login_menu" class="menu">
-			<div class="menu-wrapper">
-				<%= login_menu %>
+			
+			<%- flash.each do |key, value| %>
+    		  	<%= content_tag(:div, :class => "flash #{key}") do %>
+	    		  	<%- if value.is_a?(String)%>
+	    		    		<%= value.html_safe %>
+	    		    <%- else %>
+	    		    		<%= value.join("<br/>").html_safe %>
+	    		    <%- end %>
+    		    <%= link_to "<div class='right'>x</div>".html_safe , "#" , class: "close_flash"%>
+    		    <%- end %>
+    		  <%- end %>
 			</div>
+			
 		</div>
 
-		<div id="content">
-		  <%- flash.each do |key, value| %>
-		  	<%- if value.is_a?(String)%>
-		    	<%= content_tag(:div, value.html_safe, :class => "flash #{key}") %>
-		    <%- else %>
-		    	<%= content_tag(:div, value.join("<br/>").html_safe, :class => "flash #{key}") %>
-		    <%- end %>
-		  <%- end %>
-
-
-			<%= yield %>
+        <div id="content_wrapper">
+    		<div id="login_menu" class="menu">
+    			<div class="menu-wrapper">
+    				<%= login_menu %>
+    			</div>
+    		</div>
+    
+    		<div id="content">
+    	      <div class="logo"><%= link_to image_tag("logo.png" , width: "200" , height:"63" , title: "BGFIT: data modelign" , class: "noborder") , root_path%>
+    			<%= yield %>
+    		  </div>
+    		</div>
+		</div>
+		
 		</div>
 		
 		<div id="footer">
@@ -84,5 +98,6 @@
 			<br/>
 			<span><%= Time.now.year %>  KDBIO | INESC-ID</span>
 		</div>
+		
 	</body>
 </html>

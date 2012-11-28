@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 jQuery ->
-  $(".tip .preview").show().find("p").append("<br/><span>&nbsp;(<a href='#' data-remote='true' class='show_more'>show more...</a>)</span>")
+  $(".tip .preview").show().find("p").append("<span>&nbsp;<a href='#' data-remote='true' class='show_more btn blank btn_small'>show more...</a></span>")
   $(".tip .detail").hide()
   $(".tip .detail").css('overflow','hidden')
   

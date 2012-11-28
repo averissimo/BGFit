@@ -1,12 +1,32 @@
+<%
+    javascript 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured'
+    
+    context_menu = [
+        {
+            :key => :back, 
+            :name => t('navigation.back'),
+            :url => url_for(@dyna_model),
+            :options => {
+                :unless => Proc.new { url_for(:back) == "javascript:history.back()" },
+                :container_class => 'menu',
+                :class => "text"
+            }
+        },
+      ]
+    menu = nil
+    content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
 <h1>Generate <%= DynaModel.model_name.human %> Octave/Matlab</h1>
 
+<p><%= link_to "Help page" , "http://oracle.inesc-id.pt/wiki/Modeling-Extensions/overview" , class: "btn blank"%>Reference the tutorial on the model extensions for more information, especially on how to deploy</p>
+
 <h3>Download links</h3>
-<%- if @dyna_model.equation && @dyna_model.eq_type && @dyna_model.eq_type == GlobalConstants::EQUATION_TYPE[:Differential] && !@dyna_model.params.find {|p| p.initial_condition }%>
+<%- if @dyna_model.equation.present? && @dyna_model.eq_type.present? && @dyna_model.eq_type == GlobalConstants::EQUATION_TYPE[:Differential] && !@dyna_model.params.find {|p| p.initial_condition }%>
 <p>Error: A differential model needs that one of the parameters is flagged as the initial condition, please correct this.</p>
-<%- elsif @dyna_model.equation && @dyna_model.eq_type%>
-<p><%= link_to @dyna_model.model_m_name, url_for([:model,@dyna_model]) + ".m" , class: "btn text"%> Model that contains the equation</p>
-<p><%= link_to @dyna_model.estimator_m_name, url_for([:estimator,@dyna_model]) + ".m" , class: "btn text"%> Estimator for the model</p>
-<p><%= link_to @dyna_model.simulator_m_name, url_for([:simulator,@dyna_model]) + ".m" , class: "btn text"%> Simulator for the model</p>
+<%- elsif @dyna_model.equation.present? && @dyna_model.eq_type.present?%>
+<p><%= link_to @dyna_model.model_m_name, url_for([:model,@dyna_model]) + ".m" , class: "btn"%> Model that contains the equation</p>
+<p><%= link_to @dyna_model.estimator_m_name, url_for([:estimator,@dyna_model]) + ".m" , class: "btn"%> Estimator for the model</p>
+<p><%= link_to @dyna_model.simulator_m_name, url_for([:simulator,@dyna_model]) + ".m" , class: "btn"%> Simulator for the model</p>
 <%- else %>
 <p>Before the download links are available it is required to fill the fields below</p>
 <%- end %>
@@ -40,9 +60,12 @@
   	  
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button %>
-  	<%= f.action :cancel, :as => :link, label: t('form.cancel') %>	
+  	<div class="menu">
+    <%= menu %>
+</div>
   <% end%>
 <% end %>
 
 <div class="clear"></div>
+
 

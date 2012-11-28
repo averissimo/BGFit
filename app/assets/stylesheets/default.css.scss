@@ -25,12 +25,14 @@ ul,li {
 body {
   margin: 0px;
   padding:0px;
+  background-image: image-url("background.png");
+  overflow-y: scroll;
 }
 
 #login_menu {
   @extend #content;
   ul.menu {
-    padding-top: 57px;
+    //padding-top: 57px;
     li {
       a {
       }
@@ -38,27 +40,82 @@ body {
   }
 }
 
-#content {
+$gray:#aaa;
+$radius:5px;
+$padding:30px;
+
+
+#content_wrapper {
+padding-left: $padding;
+  padding-right: $padding;
+}
+
+.flash {
+  @extend #content_wrapper;
+  padding-top: $padding/2;
+  padding-bottom: $padding/2;
+  text-align: center;
+  div.right {
+    float:right;
+  }
+  & .close_flash {
+    div {
+    border: 1px solid #d38d5f;
+    padding-left:3px;
+    padding-right:3px;
+    padding-bottom:2px;
+    padding-top:1px;
+    }
+    font-size:80%;
+    
+  }
+}
+
+
+#main-content {
+  border-left: 1px solid $gray;
+  border-right: 1px solid $gray;
+  border-bottom: 1px solid $gray;
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  padding-bottom:$padding;
+  width: $width+$padding*2;
   margin-left:auto;
   margin-right:auto;
-  width: $width;
   //border: 1px solid black;
+  background-image: none;
+  background-color: #fff;
+  margin-bottom:$padding;
 }
 
 #fixed-header {
   opacity: 1;
-  position: fixed;
-  top: 0;
+//  position: fixed;
+//  top: 0;
   width: 100%;
   z-index: 990;
 }
+
+#header-wrapper {
+  width: $width + $padding*2;
+  margin:auto;
+  border-bottom-right-radius: $radius;
+  border-bottom-left-radius: $radius;
+  
+}
+
+#logo {
+  margin-bottom:1em;
+  display:block;
+}
+
 #header {
   background-color: #036;
   color: white;
   padding-top: 2px;
   padding-bottom: 2px;
   font-size: 75%;
-  padding-left: 40px;
+  padding-left: $padding;
   line-height: 20px;
 }
 
@@ -170,7 +227,7 @@ body {
   height: $header;
   margin:0px;
   padding:0px;
-  padding-left: 40px;
+  padding-left: $padding - 7;
   ul.menu {
     margin-top: 0px;
   }
@@ -191,6 +248,7 @@ body {
 
 div.menu {
   ul.menu {
+    margin-left:0px;
     padding-left: 0px;
     display: inline-block;
     list-style: none outside none;
@@ -208,6 +266,15 @@ div.menu {
   }
 }
 
+#content {
+  ul.menu {
+    li {
+      padding:0px;
+     // margin-right: 2px;
+    }
+  }
+}
+
 //
 //
 //
@@ -220,10 +287,13 @@ div.menu {
 .alert,
 .success,
 .info {
-  padding: 50px 20px;
-  margin-top: 1em;
+#  padding: 50px 20px;
+#  margin-top: 1em;
 }
 
+.flash {
+  
+}
 .notice {
   background-color: #FFF6BF;
   border: 1px #FFD324 solid;
@@ -268,7 +338,7 @@ p,dl,ul {
 }
 a {
   text-decoration: none;
-  color: black;
+  color: #333;
   &:visited { }
   &:active,
   &:hover,

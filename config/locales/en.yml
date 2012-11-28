@@ -29,14 +29,14 @@ en:
   
   experiments:
     show:
-      dyna: Associate dynamic model
+      dyna: Associate model
     default:
       title: "Default"
       description: ""
 
   measurements:
     show:
-      dyna: Associate dynamic model
+      dyna: Associate model
       linear: Manual regression
       csv: ".csv"
       new-line: New line
@@ -76,7 +76,7 @@ en:
       download_stats: Download stats
       estimate: Estimate in batch
       estimate_short: Estimate
-      stats: Stats
+      stats: Estimation results
       
       statistical_data: Statistical data
   

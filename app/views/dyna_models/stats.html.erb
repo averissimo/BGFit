@@ -46,6 +46,8 @@
 
 <h1><%= @dyna_model.title %></h1>
 
+<p>The information below represents a consolidated view of the parameter estimation results for the <%= @dyna_model.title.downcase %> model. It only shows projects and data where this model is used.</p>
+
 <h3>Description:</h3>
 <p>
   <%= simple_format (show (@dyna_model.description)) %>
@@ -55,26 +57,24 @@
 
 <%= 
     collection_table(@dyna_model.params, :id => 'params' , :class => 'formatted dataTable') do |t|
-        t.header :code
-        t.header :human_title
+        t.header :title
         t.header :description
 
         t.rows.alternate = :odd
         t.rows.each do |row, param, index|
             # Notice there's no need to explicitly define the title
-            row.code            param.code
-            row.human_title     param.human_title
+            row.title           param.human_title.html_safe
             row.description     param.description_trimmed.gsub(/\n/, '<br/>')
         end
     end
 %>
 
-<div class="menu">
-    <%= menu %>
-</div>
-
-<h2><%= Model.model_name.human.pluralize%></h2>
+<h2>Parameter Estimation Results</h2>
 
 <div id="models_listing" class="one_tab">
 <%= render partial: "models_summary" %>
+</div>
+
+<div class="menu">
+    <%= menu %>
 </div>

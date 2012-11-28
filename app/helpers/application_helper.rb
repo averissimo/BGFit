@@ -17,6 +17,45 @@
 
 module ApplicationHelper
   
+  def back_menu(fallback=nil)
+    back = []
+    back << {
+      :key => :back, 
+      :name => 'Back', 
+      :url => url_for(:back),
+      :options => {
+        :unless => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back)},
+        :container_class => 'menu',
+        :class => "text"
+      }
+    }
+    
+    if fallback
+      back << {
+      :key => fallback[:key], 
+      :name => fallback[:name], 
+      :url => fallback[:path],
+      :options => {
+        :if => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back) },
+        :container_class => 'menu',
+        :class => "text"
+      }
+    }
+    else
+      back << {
+      :key => :home, 
+      :name => 'Goto to home', 
+      :url => root_path,
+      :options => {
+        :if => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back) },
+        :container_class => 'menu',
+        :class => "text"
+      }
+    }  
+    end
+    back
+  end
+  
   def remote_activated?
     defined?(no_remote_flag).nil?
   end
@@ -55,6 +94,15 @@ module ApplicationHelper
       "(" + t('aux.not_defined').downcase + ")"
     else
       string
+    end
+  end
+  
+  def empty(text,type=nil)
+    if text.nil? || text.blank? || text.strip.blank?
+      type ||= ""
+      "(no " + type + " provided)"
+    else
+      text
     end
   end
   
@@ -129,7 +177,7 @@ module ApplicationHelper
           content_tag(:div, "loading.." , class: "one_tab")].join(" ").html_safe
         end,
         content_tag(:div, class: "options", style: "display:none;") do
-          link_to "Download chart as .svg", "#", class: "download svg"
+          link_to "Download chart as .svg", "#", class: "download svg", download: "download.svg"
         end,
         content_tag(:div, class: "model-data", style: "display:none;") do
           proxy_dyna_models.collect do |pdm|

@@ -12,11 +12,7 @@
   color: #ffffff;
   background-color: #98ba3f;
   
-  border: 1px solid #618926;
-  
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
+  @extend .border;
   
   background: -moz-linear-gradient(#98ba40, #a6c250 35%, #618926);
   background: -webkit-gradient(linear,left top,left bottom,color-stop(0, #98ba40),color-stop(.35, #a6c250),color-stop(1, #618926));
@@ -63,12 +59,61 @@
   }
 }
 
+.text-justify {
+  text-align: justify;
+}
+
+.border {
+  border: 1px solid #618926;
+  
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  
+}
+
+a.btn.btn_small {
+ font-size: 1em;
+ padding: 5px 10px 5px 10px;
+
+}
+
+.big {
+  font-size: 1.5em;
+}
+
+.half_cols {
+  float:left;
+  width: 21%;
+  min-height: 3em;
+  margin-left: 20px;
+}
+
 .cols {
   float:left;
-  width: 35%;
-  margin-right: 100px;
+  width: 42%;
   min-height: 4em;
   padding: 20px;
+  margin-left: 20px;
+}
+
+hr {
+  width: 75%;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  height: 0em;
+  border:0px solid #98ba3f;
+  border-top:1px dotted #98ba3f;
+  
+}
+
+.dictionary dl{
+  margin-top:0px;
+}
+
+.title {
+  margin-top:1em;
+  font-size:1.2em;
 }
 
 .last_col {
@@ -99,5 +144,7 @@
   }
 }
 
-
+.left {
+  text-align:left;
+}
 

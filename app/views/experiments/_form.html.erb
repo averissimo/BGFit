@@ -13,7 +13,9 @@
   	
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button %>
-  	<%= f.action :cancel, :as => :link , label: t('form.cancel')%>	
+  	<div class="menu">
+		<%= menu %>
+	</div>	
   <% end%>
 
 <% end %>

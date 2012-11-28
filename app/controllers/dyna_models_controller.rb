@@ -146,17 +146,18 @@ class DynaModelsController < ApplicationController
     @dyna_model = DynaModel.find(params[:id])
     
     respond_with(@dyna_model) do |format|
-      format.html { @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page]).per(2) }
+      format.html { @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page]) }
       format.csv {
         @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model)
         @experiments = Experiment.viewable(current_user,true).dyna_model_is(@dyna_model)
       }
+      format.js { @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page]) }
     end
   end
   
   def experiment_detail
     @dyna_model = DynaModel.find(params[:id])
-    @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page]).per(2)
+    @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page])
     if params["show_exp"]
       @show_experiment = Experiment.viewable(current_user,true).find(params["show_exp"])
     end
