@@ -1,4 +1,6 @@
 <%
+    javascript 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured'
+    
 	context_menu = [
 		{
 			:key => :stats, 
@@ -40,6 +42,16 @@
 				:class => "text"
 			}
 		},
+		{
+            :key => :generate, 
+            :name => "Generate source",
+            :url => url_for([:definition,@dyna_model]),
+            :options => {
+                :if => Proc.new { can?(:update, @dyna_model) },
+                :container_class => 'menu',
+                :class => "text"
+            }
+        },
 		{
 			:key => :index, 
 			:name => t('navigation.index', model: DynaModel.model_name.human.pluralize.downcase.capitalize), 
@@ -96,6 +108,10 @@
 
 <h3><%= DynaModel.human_attribute_name(:description) %></h3>
 <p>
+  <%- if @dyna_model.log_flag %>
+  Log flag: true (all measurements that uses this model have their y-axis data transformed to log  (base e))<br/>
+  ######################################################################################<br/>
+  <%- end %>
   <%= simple_format (show (@dyna_model.description)) %>
 </p>
 
@@ -122,7 +138,7 @@
     	t.rows.each do |row, param, index|
 			# Notice there's no need to explicitly define the title
 			row.code			param.code
-			row.human_title		param.human_title
+			row.human_title		param.human_title.html_safe
 			row.output			param.output_only
 			row.ic				param.initial_condition
 			row.description		param.description_trimmed.gsub(/\n/, '<br/>')

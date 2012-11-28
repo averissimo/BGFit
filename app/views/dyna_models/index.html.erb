@@ -40,12 +40,9 @@
 		t.header :title,		DynaModel.human_attribute_name(:title)
 		t.header :description,	DynaModel.human_attribute_name(:description)
 		t.header :show_h,		"", class: "no-sort"
-		t.header :edit_h,		"", class: "no-sort"
-		t.header :destroy_h,	"", class: "no-sort"
-		t.header :stats_h,		"", class: "no-sort" if @dyna_models.find { |d| can? :stats, d } 
-		t.header :d_stats_h,	"", class: "no-sort" if @dyna_models.find { |d| can? :stats, d }
-		t.header :estimate_h,	"", class: "no-sort" if @dyna_models.find { |d| can? :estimate, d }
-
+		t.header :edit_h,		"", class: "no-sort" if can_column? :edit, @dyna_models
+		t.header :stats_h,		"", class: "no-sort" if can_column? :stats, @dyna_models 
+        t.header :destroy_h,    "", class: "no-sort" if can_column? :destroy, @dyna_models
 
 		t.rows.alternate = :odd
     	t.rows.each do |row, dyna_model, index|
@@ -53,11 +50,9 @@
 			row.title			word_wrap(dyna_model.title,:line_width => 40).gsub(/\n/, '<br/>')
 			row.description		dyna_model.description_trimmed.gsub(/\n/, '<br/>')
 			row.show_h			link_to t('action.show').downcase, dyna_model
-			row.stats_h			link_to t('action.dyna_model.stats').downcase, [:stats,dyna_model] if can? :stats, dyna_model
-			row.d_stats_h		link_to t('action.dyna_model.download_stats').downcase, stats_dyna_model_path(dyna_model, :format => :csv) if can? :stats, dyna_model
-			row.estimate_h		link_to t('action.dyna_model.estimate_short').downcase, [:estimate,dyna_model] if can? :estimate, dyna_model
-			row.edit_h			link_to t('action.edit').downcase, [:edit,dyna_model] if can? :edit, dyna_model
-			row.destroy_h		link_to t('action.remove').downcase, dyna_model, confirm: t('action.confirm'), method: :delete if can? :destroy, dyna_model
+			row.stats_h			link_to t('action.dyna_model.stats').downcase, [:stats,dyna_model]                                         if can? :stats, dyna_model
+			row.edit_h			link_to t('action.edit').downcase, [:edit,dyna_model]                                                      if can? :edit, dyna_model
+			row.destroy_h		link_to t('action.remove').downcase, dyna_model, confirm: t('action.confirm'), method: :delete             if can? :destroy, dyna_model
 		end
 	end
 %>

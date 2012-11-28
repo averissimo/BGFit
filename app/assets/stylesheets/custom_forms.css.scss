@@ -1,5 +1,5 @@
 form.formtastic {
-  width: 500px;
+  width: 550px;
 }
 
 form {
@@ -7,10 +7,17 @@ form {
 }
 
 input,
-textarea    { padding: 4px 8px; border: 1px solid #aaa; background: #fff; padding-left: 1em; }
-textarea    { height: 12em; }
+textarea { padding: 4px 8px; border: 1px solid #aaa; background: #fff; padding-left: 1em;}
+textarea { height: 12em; }
 
 .formtastic .stringish input {
   line-height: 22px;
   padding-left: 0.5em; 
+}
+
+.formtastic .input .label {
+  text-align: right;
+  width: 23%;
+  padding-right:2%;
+  //width: 25%;
 }

@@ -1,21 +1,56 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class ProxyDynaModel < ActiveRecord::Base
   belongs_to :measurement
   belongs_to :experiment
   belongs_to :dyna_model
   has_many :proxy_params, :dependent => :destroy
+  has_one :simulation, as: :blobable, class_name: Blob.model_name
+  
+  accepts_nested_attributes_for :simulation
   
   validate :validate_title
   
-  before_create :update_params
-  before_update :update_params
+  before_save :update_params
   
   has_paper_trail :skip => [:json]
   
-  scope :viewable, lambda { |user| 
-    join( :measurement => :experiment ).where( 
-      Experiment.arel_table[:model_id].in(  Model.viewable(user).map { |m| m.id } )
+  validates :dyna_model, :presence => { :message => 'A model must be choosen.' }
+  
+  scope :viewable, lambda { |user,only_mine=false| 
+    joins( :measurement => :experiment ).where( 
+      Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )
     )
   }
+  
+  scope :experiment_is, lambda { |experiment|
+    joins( :measurement ).where(Measurement.arel_table[:experiment_id].eq(experiment.id).or(ProxyDynaModel.arel_table[:experiment_id].eq(experiment.id)))
+  }
+  
+  scope :dyna_model_is, lambda { |dyna_model|
+    where( ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id))
+  }
+  
+  scope :measurement_is, lambda { |measurement|
+    where( ProxyDynaModel.arel_table[:measurement_id].eq(measurement.id))  
+  }
+  
+  ROUND = 5
   
   # Fulltext support using sunspot
   #searchable do
@@ -61,13 +96,26 @@ class ProxyDynaModel < ActiveRecord::Base
     #
     def title_join
       title_pdm = read_attribute(:title)
-      if title_pdm.nil? && !self.dyna_model.nil?
+      if title_pdm.blank? && !self.dyna_model.nil?
         self.dyna_model.title
       elsif self.dyna_model.nil?
         title_pdm
       else
         self.dyna_model.title + ': ' + title_pdm
       end
+    end
+    
+    #
+    # Parameters to string
+    def params_to_string(use_code=false)
+      self.proxy_params.collect { |p|
+        next if p.param.output_only?
+        if use_code
+          p.param.code + "=" + p.value.to_s
+        else
+          p.param.human_title + "=" + p.value.to_s
+        end
+      }.compact.join(",")
     end
     
     # Does not allow to save data in this field 
@@ -88,23 +136,82 @@ class ProxyDynaModel < ActiveRecord::Base
       string
     end
     
+    # Override to assure serialized hash is retrieved from db without changes in logic
+    def json()
+      return nil if self.simulation.nil? || self.simulation.data.nil?
+      data = self.simulation.data
+      return Marshal.load( data ) if (data).present?
+      nil
+    end
+    
+    # Override to assure hash is serialized to db without changes in logic
+    def json=(value)
+      self.simulation ||= Blob.new
+      if value.nil?
+        simulation.data = value
+      else
+        simulation.data = Marshal.dump( value )  
+      end
+      
+    end
+    
+    
+    # If json has not yet been calculated, then it calls solver method
+    #
+    # @return json results
+    def json_cache(show_log=false)
+      hash = :base10
+      unless self.json.nil?
+        logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
+        hash = :log_e if show_log && self.json.keys.include?(:log_e)
+        return self.json[hash].to_s.gsub(/ /,"")
+      end 
+      if self.call_solver.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
+        return nil
+      end 
+      if self.statistical_data.nil?
+        logger.info {"[proxy_dyna_model.json_cache] call to statistical_data was nil"}
+        return
+      end
+      hash = :log_e if show_log && self.json.keys.include?(:log_e) 
+      self.json[hash].to_s.gsub(/ /,"")
+    end
+    
+    
     #
     # public methods for private
     #
     
     # Getter method for generating default estimation url
     def get_estimation_url() estimation_url(estimation_hash(temp_params)) end
+    
     # Getter method for generating default solver url
     def get_solver_url() estimation_url(solver_url) end
+    
     # Cleans statistical data
     def perform_clean_stats() clean_stats(nil) end
+    
     # Prepares ProxyDynaModel to perform background calculation of parameters
     # TODO: move string to language file
     def call_pre_estimation_background_job() clean_stats "parameters are being calculated in background" end
+    
     # Calls estimation using default parameters
     #  (see #call_estimation_with_custom_params)
     def call_estimation(is_post_method = true) call_estimation_with_custom_params( temp_params , is_post_method) end
-      
+    
+    # Whether the model should show the results and regression in log scale
+    def log_flag() dyna_model.log_flag end
+    
+    # default rounding for this class number or attributes
+    def round(symbol) 
+      begin
+        (symbol.class == Symbol ? self.send(symbol) : symbol).round(ROUND)
+      rescue
+        nil
+      end
+    end
+       
     #
     # Statistical methods
     # >>>>>>>>>>>>>>>>>>>
@@ -122,7 +229,23 @@ class ProxyDynaModel < ActiveRecord::Base
     def rmse_stdev=(arg) @rmse_stdev = arg end
     # RMSE standard deviation attribution
     def rmse_stdev () @rmse_stdev end
+    # R² standard deviation attribution
+    def r_square_stdev=(arg) @r_square_stdev = arg end
+    # R² standard deviation attribution
+    def r_square_stdev () @r_square_stdev end
     
+    def rmse_avg() @rmse_avg end
+    def rmse_avg=(arg) @rmse_avg = arg end
+    
+    def bias_avg() @bias_avg end
+    def bias_avg=(arg) @bias_avg = arg end
+    
+    def accuracy_avg() @accuracy_avg end
+    def accuracy_avg=(arg) @accuracy_avg = arg end
+    
+    def r_square_avg() @r_square_avg end
+    def r_square_avg=(arg) @r_square_avg = arg end
+      
     #
     # calculates statiscal data:
     #  - RMSE
@@ -149,16 +272,32 @@ class ProxyDynaModel < ActiveRecord::Base
         reference = measurement
         size = measurement_stats(dataset)
       end
-      debugger
+      
+      if size == 0
+        return [].push("error")
+      end
       self.bias = 10 ** (dataset[:bias] / size )
       self.accuracy = 10 ** (dataset[:accu] / size )
       self.rmse = Math.sqrt( dataset[:rmse] / size )
+      if dataset[:r_square_tot] == 0
+        clean_stats "cannot calculate statistical_measures, try again with a different range."
+        return nil
+      end
       self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]
-      self.notes = ""
+      self.notes ||= ""
       self.save
       logger.info {"[proxy_dyna_model.statistical_data] statistical_data: #{self.rmse} (rmse) #{self.r_square} (r_square) #{self.bias} (bias) #{self.accuracy} (accuracy)"}
-      [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
+      begin
+        [].push(reference.model.id).push(reference.model.title).push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
+      rescue
+        [].push("n/a").push("n/a").push(reference.id).push( self.bias ).push( self.accuracy ).push( self.rmse  ).push( self.r_square )
+      end
     end
+    
+    #
+    # Parameter estimation methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
     
     # Calls estimation using custom parameters
     #
@@ -197,7 +336,8 @@ class ProxyDynaModel < ActiveRecord::Base
         end
       end
     end
-      
+    
+    # handle http response for parameter estimation
     def handle_http_response(response,params)
       begin
         result = JSON.parse( response.body.gsub(/(\n|\t| )/,'') )
@@ -215,6 +355,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
         temp_param = params.find { |par| par.id == d_p.param_id }
+        debugger if temp_param.nil?
         d_p.top = temp_param.top
         d_p.bottom = temp_param.bottom
         d_p.save
@@ -223,23 +364,12 @@ class ProxyDynaModel < ActiveRecord::Base
       self.json = nil
       self.json_cache # call solver and calculate statistical data
     end
-    
-    # If json has not yet been calculated, then it calls solver method
+
     #
-    # @return json results
-    def json_cache
-      unless self.json.nil?
-        logger.info {"[proxy_dyna_model.json_cache] json is in cache"}
-        return self.json
-      end 
-      if self.call_solver.nil?
-        logger.info {"[proxy_dyna_model.json_cache] call to solver was nil"}
-        return nil
-      end 
-      self.statistical_data 
-      self.json
-    end
-    
+    # Simulation methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+
     # Calls the solver for the calculated parameters
     #
     # @param time [int] safety measure allowing to adjust timescale in solver in case of errors
@@ -273,7 +403,16 @@ class ProxyDynaModel < ActiveRecord::Base
           self.notes = nil
           self.notes = "\"-Inf\" or \"Inf\" values have been detected and were removed from curve" unless (temp_json["result"].reject!{ |q| q[1]=='-_Inf_' || q[1]=='_Inf_'  }).nil?
           temp_json["result"].reject!{ |q| q[1]=='_NaN_'  }
-          self.json = temp_json["result"].to_s.gsub(/ /,'')
+          h_json = {}
+          if self.log_flag
+            h_json[:log_e] = temp_json["result"]
+            h_json[:base10] = temp_json["result"].map { |data| [data[0],Math.exp(data[1])] }
+            self.json = h_json
+          else
+            h_json[:base10] = temp_json["result"]
+            self.json = h_json
+          end
+          #self.json = temp_json["result"].to_s.gsub(/ /,'')
         else
           clean_stats( "Error while simulating data" )
         end
@@ -326,12 +465,39 @@ class ProxyDynaModel < ActiveRecord::Base
      
     end
 
+    #
+    # Authorization methods
+    # >>>>>>>>>>>>>>>>>>>
+    #
+
+
     def can_view(user=nil)
-      measurement.experiment.model.can_view(user)
+      if measurement.present?
+        measurement.experiment.model.can_view(user)
+      else
+        experiment.model.can_view(user)
+      end
     end
     
     def can_edit(user=nil)
-      measurement.experiment.model.can_edit(user)
+      if measurement.present?
+        measurement.experiment.model.can_edit(user)
+      else
+        experiment.model.can_edit(user)
+      end
+    end
+
+
+
+    def simulated_values
+      debugger
+      if self.measurement
+        simulated_lines( self.measurement.lines_no_death_phase(no_death_phase) )
+      elsif self.experiment
+        self.experiment.measurements.collect do |m|
+          simulated_lines m.lines_no_death_phase(no_death_phase)
+        end.compact.flatten(1).sort!{|a,b| a[0]<=>b[0]}
+      end
     end
 
   #
@@ -368,7 +534,7 @@ class ProxyDynaModel < ActiveRecord::Base
     # @return [int] validation
     def validate_title
       t = ProxyDynaModel.arel_table
-      result = ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model_id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)).and(t[:measurement_id].eq(self.measurement_id)) ).size
+      result = ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model_id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)).and(t[:measurement_id].eq(self.measurement_id).and(t[:experiment_id].eq(self.experiment_id))) ).size
       errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if result > 0
     end
   
@@ -403,14 +569,23 @@ class ProxyDynaModel < ActiveRecord::Base
         return nil if p.value.nil?      
         hash[p.param.code]=p.value.to_s
       }
-      hash[:start] =  self.measurement.lines.order(:x).first.x
-      if self.measurement.nil? || time.nil?
-        hash[self.measurement.end_title] = self.measurement.end(self.no_death_phase).to_s
-      else
-        hash[self.measurement.end_title] = (self.measurement.end(self.no_death_phase)-time).to_s
-      end
-      hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0
       
+      if self.measurement.present?
+        # measurement
+        hash[:start] =  self.measurement.lines.order(:x).first.x
+        if  time.nil?
+          hash[:end] = self.measurement.end(self.no_death_phase).to_s
+        else
+          hash[:end] = (self.measurement.end(self.no_death_phase)-time).to_s
+        end
+        hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0  
+      else
+        # experiments
+        hash[:start] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.min_by { |l| l.x }.x
+        hash[:end] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.max_by { |l| l.x }.x
+        minor_step = self.experiment.measurements.select(Measurement.arel_table[:minor_step].minimum.as("min_minor_step")).first.min_minor_step
+        hash[:minor_step] = minor_step if minor_step.present? || minor_step == 0
+      end
       hash
     end
     
@@ -484,11 +659,11 @@ class ProxyDynaModel < ActiveRecord::Base
         ic_flag = true
       }
       return nil unless ic_flag
-      if ic_flag
-        uri_params[:names] << 't'
-        uri_params[:top] << measurement.end(self.no_death_phase)
-        uri_params[:bottom] << 0
-      end
+      #if ic_flag
+      #  uri_params[:names] << 't'
+      #  uri_params[:top] << measurement.end(self.no_death_phase)
+      #  uri_params[:bottom] << 0
+      #end
       uri_params
     end
     
@@ -569,8 +744,8 @@ class ProxyDynaModel < ActiveRecord::Base
     def temp_params
       # TODO: refactor to use proxy dyna model proxy params directly
       params = self.proxy_params.collect do |p|
-        p.param.bottom = p.bottom
-        p.param.top = p.top
+        p.param.bottom = p.bottom_cache
+        p.param.top = p.top_cache
         p.param
       end
     end
@@ -602,7 +777,7 @@ class ProxyDynaModel < ActiveRecord::Base
       logger.info {"[proxy_dyna_model.experiment_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
       experiment.measurements.each do |m|
-        dataset[:lines] = m.lines_no_death_phase(self.no_death_phase)
+        dataset[:lines] = m.lines_no_death_phase(no_death_phase)
         size += dataset[:lines].size
         dataset = statistical_data_measurement( dataset )
       end
@@ -615,31 +790,34 @@ class ProxyDynaModel < ActiveRecord::Base
     def measurement_stats(dataset)
       logger.info {"[proxy_dyna_model.measurement_stats] Calculating stats for proxy_dyna_model (#{self.id})"}
       size = 0
-      dataset[:lines] = measurement.lines_no_death_phase(self.no_death_phase)
+      dataset[:lines] = measurement.lines_no_death_phase(no_death_phase)
       size += dataset[:lines].size
       dataset = statistical_data_measurement( dataset )
       logger.info {"[proxy_dyna_model.measurement_stats] #{dataset.inspect}"}
       size
     end
     
+   
     # helper method that calculates statistical data for a measurement
     #  in case it is a complex structure (i.e. experiment), then it will
     #  use introduce the values for the hash
     #
     # @see #statistical_data
     def statistical_data_measurement( hash )
-      json_parsed = JSON.parse(self.json) # array of [x,y]
+      json_parsed = json[:base10] # array of [x,y]
       
       begin
         simulated_value = json_parsed.shift
         prev_sim_value = nil
         # cycle that covers all lines in hash
+
         hash[:lines].each do |line|
           # cycle that finds next simulated value
-          while simulated_value[0] < line.x
+          while simulated_value.present? && simulated_value[0] < line.x
             prev_sim_value = simulated_value
             simulated_value = json_parsed.shift # pops first element of json_parsed
           end
+          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil" if simulated_value.nil?
           # checks if current simulated value timepoint is greater or equal than timepoint
           value = nil
           if simulated_value[0] > line.x
@@ -654,28 +832,62 @@ class ProxyDynaModel < ActiveRecord::Base
           end
           if @y_mean.nil?
             @y_mean = 0
-            lines = self.measurement.lines_no_death_phase(log_flag) 
-            lines.each{ |el| @y_mean += el.y_value(log_flag) }
+            lines = self.measurement.lines_no_death_phase() if self.measurement.present?
+            lines = self.experiment.measurements.collect(&:lines_no_death_phase).flatten if self.experiment.present?
+            lines.each{ |el| @y_mean += el.y_value() }
             @y_mean = @y_mean.to_f / lines.size 
           end
-          hash[:rmse] +=  ( value - line.y_value(log_flag) ) ** 2
+          hash[:rmse] +=  ( value - line.y_value() ) ** 2
           hash[:r_square_err] = hash[:rmse] 
-          hash[:r_square_tot] += ( line.y_value(log_flag) - @y_mean ) ** 2
-          hash[:bias] = Math.log( (value / line.y_value(log_flag)).abs ).abs
-          hash[:accu] = Math.log( (value / line.y_value(log_flag)).abs )          
+          hash[:r_square_tot] += ( line.y_value() - @y_mean ) ** 2
+          hash[:bias] = Math.log( (value / line.y_value()).abs ).abs
+          hash[:accu] = Math.log( (value / line.y_value()).abs )          
         end
-
-      rescue Exception => e
-        raise e
-        print "error: " + e.message
+      
+      rescue Exception,NoMethodError  => e
+        #raise e
+        logger.error "[proxy_dyna_model.statistical_data_measurement] error: " + e.message
         
         #clean_stats "error while calculating statistics"
-        return [].push(measurement.id).push(-1)
+        return [].push(self.id).push(-1)
       end
       return hash
     end
-  
-  
+    
+    def simulated_lines(lines)
+      begin
+        json_parsed = json[:base10] # array of [x,y]
+        simulated_value = json_parsed.shift
+        prev_sim_value = nil
+        # cycle that covers all lines in hash
+        result = lines.collect do |line|
+          # cycle that finds next simulated value
+          while simulated_value.present? && simulated_value[0] < line.x
+            prev_sim_value = simulated_value
+            simulated_value = json_parsed.shift # pops first element of json_parsed
+          end
+          logger.error "[proxy_dyna_model.simulated_lines] simulated_value is nil" if simulated_value.nil?
+          # checks if current simulated value timepoint is greater or equal than timepoint
+          value = nil
+          if simulated_value[0] > line.x
+            #  if it is greater then averages weighted simulated value with previous
+            difference = (simulated_value[0] - prev_sim_value[0]).abs
+            prev_weight = (line.x - prev_sim_value[0]).abs / difference
+            next_weight = (line.x - simulated_value[0]).abs / difference
+            value = prev_weight * prev_sim_value[1] + next_weight * simulated_value[1]
+          else
+            # if timepoint is equal then it uses y value 
+            value = simulated_value[1]
+          end
+          [line.x , line.y_value , value]
+        end
+        result
+      rescue Exception => e
+          logger.error "[proxy_dyna_model.simulated_lines] " + e.message
+          nil
+      end
+      
+    end
   
   
 end

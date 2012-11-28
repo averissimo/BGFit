@@ -1,0 +1,26 @@
+<div>
+    <div id="models_wrapper">
+<%- @models.each do |m|  %>
+
+    <h3><%= m.title%> <%= link_to "(goto " + Model.model_name.human.downcase + ")" , m , class: "small-link" %></h3>
+    
+    <%- if params["models"].present? && params["models"].include?(m.id.to_s)  %>
+        <dl class="inline">
+            <dt>Experiments count:</dt>
+            <dd><%= m.experiments.trim.size %></dd>
+            <dt>Measurements count:</dt>
+            <dd><%= Measurement.model_is(m).size %></dd>
+        </dl>
+        
+        <h4><%= Experiment.model_name.human.pluralize%></h3>
+        <div id="experiments_listing" class="one_tab">
+            <%= render partial: "experiments_summary.html", :locals => { :m => m }%>
+        </div>
+    <%- else %>
+        <p><%= link_to "show experiments" , stats_params(m.id,"stats") , remote: true, class: "show_more btn blank btn_small" %></p>
+    <%- end %>
+    
+    <%- end %>
+    </div>
+<%= paginate @models%>
+</div>

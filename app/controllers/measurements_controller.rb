@@ -1,3 +1,20 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class MeasurementsController < ApplicationController
   respond_to :html, :json, :csv
 
@@ -25,6 +42,7 @@ class MeasurementsController < ApplicationController
   # GET /measurements/1
   # GET /measurements/1.json
   def show
+    @proxy_dyna_models = @measurement.proxy_dyna_models
     @log_flag = params[:log] == "true"
     respond_with(@experiment,@measurement) do |format|
       format.csv { 
@@ -102,7 +120,10 @@ class MeasurementsController < ApplicationController
   # PUT /measurements/1.json
   def update
     @measurement.assign_attributes(permitted_params.measurement)
-    #@measurement.convert_original_data
+    if params[:measurement][:change_original_data] == "1"
+      @measurement.remove_all_lines
+      @measurement.convert_original_data
+    end
     
     respond_with(@experiment,@measurement) do |format|
       if @measurement.save
@@ -135,6 +156,10 @@ class MeasurementsController < ApplicationController
     @measurement.destroy
     flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Measurement", title: @measurement.title)
     respond_with(@experiment,@measurement, :location => [@model,@experiment])
+  end
+  
+  def summary
+    respond_with(@measurement)
   end
   
   private

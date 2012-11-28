@@ -1,3 +1,20 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class ParamsController < ApplicationController
 
   load_and_authorize_resource :except => [:new,:create]
@@ -16,19 +33,19 @@ class ParamsController < ApplicationController
 
   def new
     @dyna_model = DynaModel.find(params[:dyna_model_id])
-    authorize! :update, @dyna_model
+    #authorize! :update, @dyna_model
     @param = @dyna_model.params.build
     respond_with [@dyna_model,@param]
   end
 
   def create
     @dyna_model = DynaModel.find(params[:dyna_model_id])
-    authorize! :update, @dyna_model
+    #authorize! :update, @dyna_model
     @param = @dyna_model.params.build(params[:param])
     @param.dyna_model = @dyna_model
 
     @dyna_model.transaction do
-      respond_with [@dyna_model,@param] do | format |
+      respond_with [@dyna_model] do | format |
         if @param.save
           @dyna_model.proxy_dyna_models.each { |p_d| p_d.update_params }
           flash[:notice] = t('flash.actions.create.notice', :resource_name => "Parameter")

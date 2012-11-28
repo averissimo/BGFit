@@ -35,9 +35,22 @@
 			:name => t('navigation.index' , model: Model.model_name.human.pluralize), 
 			:url => models_path,
 			:options => {
+				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
 				:class => ("text" if can?(:update, @model))
-		}}]
+	       	}
+       	},
+       	{
+            :key => :index, 
+            :name => "Goto public " + Model.model_name.human.pluralize.downcase, 
+            :url => models_path,
+            :options => {
+                :if => Proc.new { cannot?(:update, @model) },
+                :container_class => 'menu',
+                :class => ("text" if can?(:update, @model))
+            }
+        }
+		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 %>
@@ -68,16 +81,16 @@
 
 <%- if @accessibles.present? %>
 <%= render "accessibles/index"%>
-<%- else %>
+<%- elsif can?( :update, @model) %>
 <div class="text-center new">
     <%= link_to 'Associate team' ,[:new,@model,:accessible], class: "btn blank"%>
-    <p>tip: give write or read permissions to a team.</p>
+    <p><%= t "help.group.tip" %></p>
 </div>
 <%- end %>
 
 </p>
 
-<%- if @experiments.present? %>
+<%- if @experiments.present? || cannot?( :update, @model) %>
     <div id="experiments_listing">
     <%= render 'experiments/experiments'%>
 </div>
@@ -85,7 +98,7 @@
     <h3><%= t('aux.listing')%> <%= pluralize(@model.experiments.length, Experiment.model_name.human.downcase)%></h3>
     <div class="text-center  new">
         <%= link_to 'New measurement' ,[:new_measurement,@model],remote:true, class: "btn"%> <%= link_to 'New Experiment' ,[:new,@model,:experiment], class: "btn"%>
-        <p>tip: an experiment aggregates different measurements. <br/>You can use different experiments to aggregate identical conditions<br/> or if you wish to logically separate your results, otherwise just use the default experiment.</p>
+        <p><%= word_wrap( t( "help.experiment.tip"), line_width: 80).gsub( /\n/ , "<br/>").html_safe%></p>
     </div>
 <%- end%>
 

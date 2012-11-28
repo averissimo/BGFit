@@ -1,31 +1,12 @@
 <% 
-	context_menu = [
-		{
-			:key => :show, 
-			:name => "Goto experiment", 
-			:url => url_for([@model,@experiment]),
-			:options => {
-				:container_class => 'menu',
-				:class => 'text'
-			}
-		},
-		{
-			:key => :back, 
-			:name => "Goto model", 
-			:url => url_for(@model),
-			:options => {
-				:container_class => 'menu',
-				:class => 'text'
-			}
-		}]
+	context_menu = [].concat( back_menu( {key: :home, 
+		name: t('navigation.index_of' , model: Experiment.model_name.human.pluralize.downcase), 
+		path: url_for([@experiment]) }))
+	
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 	content_for(:title) { "New measurement" }
 %>
 <h1>New measurement</h1>
 
-<%= render 'form' %>
-
-<div class="menu">
-	<%= menu %>
-</div>
+<%= render 'form', menu: menu %>

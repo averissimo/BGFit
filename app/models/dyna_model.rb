@@ -1,5 +1,22 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class DynaModel < ActiveRecord::Base
-  has_many :params
+  has_many :params, :dependent => :destroy
   has_many :proxy_dyna_models, :dependent => :destroy
   
   belongs_to :owner, :class_name => 'User'
@@ -25,6 +42,26 @@ class DynaModel < ActiveRecord::Base
     else
       return description
     end
+  end
+  
+  def types
+    return GlobalConstants::EQUATION_TYPE
+  end
+  
+  def suffix
+    GlobalConstants::EQUATION_SUFFIX[GlobalConstants::EQUATION_TYPE.key(self.eq_type)]
+  end
+  
+  def model_m_name(extension=true)
+    self.title.gsub(/ /, "_").downcase + suffix + ( if extension then ".m" else "" end )
+  end
+  
+  def estimator_m_name(extension=true)
+    self.title.gsub(/ /, "_").downcase + suffix + "_est" + ( if extension then ".m" else "" end )
+  end
+  
+  def simulator_m_name(extension=true)
+    self.title.gsub(/ /, "_").downcase + suffix + "_sim" + ( if extension then ".m" else "" end )
   end
   
   def get_models

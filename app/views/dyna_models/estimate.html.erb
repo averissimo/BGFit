@@ -55,23 +55,31 @@
 <%= form_tag( calculate_dyna_model_path(@dyna_model) , method: :put) do |f| %>
 
 <h3><%= DynaModel.human_attribute_name("params") %></h3>
-
 	<div class="one_tab">
-		<%= collection_table(@dyna_model.params , :class => 'formatted dataTable dataTable') do |t| 
+	    <p><strong>What type of parameters should be used for estimation?</strong>
+        <br><%= radio_button_tag 'param', '1', true %>Last parameters used with each proxy model
+        <br><%= radio_button_tag 'param', '0' %>Same parameters for all (defined at the table)
+	    </p>
+                
+        <div id="table_params" class="partial-hide">
+	    <p>These are the default parameters defined at the model level, and they will overide the estimates that are executed.</p>
+		<%= collection_table(@dyna_model.params.reject { |p| p.output_only?} , :class => 'formatted dataTable dataTable') do |t| 
 			t.header :title
 			t.header :bottom, class: "no-sort"
 			t.header :top, class: "no-sort"
 		
 			t.rows.alternate = :odd
 			t.rows.each do |row, param, index|
-				next if param.output_only
 				row.title 	param.human_title.html_safe
 				row.top 	text_field_tag param.id.to_s+"_top", param.top
 				row.bottom 	text_field_tag param.id.to_s+"_bottom", param.bottom
 			end
-		end %>
+        end %>
+        </div>
 	</div>
-		
+
+<hr/>
+
 <h3><%= Model.model_name.human.pluralize %></h3>
 
 <% @models.each do |m| %>
@@ -102,7 +110,7 @@
 				row.select		check_box_tag("proxy_dyna_model_ids[]", p_d_m.id )
 				row.title		meas.title
 				row.rmse		number_with_precision(p_d_m.rmse, precision: 6)
-				row.notes		( if p_d_m.notes.nil? then "" else word_wrap(p_d_m.notes,:line_width => 40).gsub(/\n/, '<br/>') end)
+				row.notes		( if p_d_m.notes.nil? then "" else word_wrap(p_d_m.notes,:line_width => 40).gsub(/\n/, '<br/>') end).html_safe
 				row.graph		link_to t('.below'), "#", :class=>"estimate_chart"
 				row.goto		link_to t('.goto'), [p_d_m]
 				row.model_d		p_d_m.dyna_model.title					, :style => "display:none;" , 'data-source' => proxy_dyna_model_path(p_d_m, :format => :json)

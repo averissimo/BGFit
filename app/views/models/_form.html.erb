@@ -2,9 +2,9 @@
   <%= f.semantic_errors :state %>
 
   <%= f.inputs do %>
-  	<%= f.input :title %>
-  	<%= f.input :description, as: :text %>
-  	<%= f.input :is_published, as: :boolean %>
+  	<%= f.input :title, hint: true %>
+  	<%= f.input :description, as: :text, hint: true %>
+  	<%= f.input :is_published, as: :boolean, hint: true %>
   	<%- if permitted_params.model_attributes.include?(:owner_id) %>
   	<%= f.input :owner, as: :select, 
   	 collection: User.all, 
@@ -17,8 +17,10 @@
 
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button %>
-  	<%= f.action :cancel, :as => :link , label: t('form.cancel')%>	
-  <% end%>
-<% end %>
+  	<div class="menu">
+		<%= menu %>
+	</div>	
+  <%- end %>
+<%- end %>
 
 <div class="clear"></div>

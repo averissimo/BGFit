@@ -1,3 +1,20 @@
+# BGFit - Bacterial Growth Curve Fitting
+# Copyright (C) 2012-2012  André Veríssimo
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; version 2
+# of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
 class ProxyDynaModelsController < ApplicationController
   respond_to :html, :json
   
@@ -35,23 +52,24 @@ class ProxyDynaModelsController < ApplicationController
     if params[:experiment_id]
       @experiment = Experiment.find(params[:experiment_id])
       @proxy_dyna_model = @experiment.proxy_dyna_models.build
+      @datable = @experiment
     elsif params[:measurement_id]
       @measurement = Measurement.find(params[:measurement_id])
       @experiment = @measurement.experiment
       @proxy_dyna_model = @measurement.proxy_dyna_models.build
+      @datable = @measurement
     end
     @model = @experiment.model
-
+    
     authorize! :update, @model
     
-    @proxy_dyna_model.no_death_phase = true
     respond_with @proxy_dyna_model
   end
 
   def create
     if params[:experiment_id]
       @experiment = Experiment.find(params[:experiment_id])
-      @proxy_dyna_model = @experiment.proxy_dyna_models.build(params[:dyna_model])
+      @proxy_dyna_model = @experiment.proxy_dyna_models.build(params[:proxy_dyna_model])
     elsif params[:measurement_id]
       @measurement = Measurement.find(params[:measurement_id])
       @experiment = @measurement.experiment
@@ -59,7 +77,7 @@ class ProxyDynaModelsController < ApplicationController
       @proxy_dyna_model.dyna_model
     end
     @model = @experiment.model
-    authorize! :create, @measurement
+    authorize! :update, @experiment
 
     #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])
     respond_with @proxy_dyna_model do | format |
@@ -91,6 +109,11 @@ class ProxyDynaModelsController < ApplicationController
   end
   
   def show
+    if params[:log]=="true" && @proxy_dyna_model.log_flag
+      @json = @proxy_dyna_model.json_cache(true)
+    else
+      @json = @proxy_dyna_model.json_cache(false)
+    end
     if @proxy_dyna_model.rmse.nil?
       flash[:notice] = [ t('proxy_dyna_models.show.empty') ]
     end
@@ -101,7 +124,16 @@ class ProxyDynaModelsController < ApplicationController
         flash[:notice] << @proxy_dyna_model.notes
       end
     end
-    respond_with(@proxy_dyna_model)
+    respond_with(@proxy_dyna_model) do |format|
+      format.csv {
+        csv = render_to_string :csv => @proxy_dyna_model
+        send_data  csv, :filename => 
+          @proxy_dyna_model.title_join +
+          '_' + 
+          @proxy_dyna_model.id.to_s +
+          '.csv'
+      }
+    end
   end
 
   def destroy

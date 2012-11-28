@@ -1,4 +1,4 @@
-
+<div>
 <h3><%= page_entries_info @measurements%></h3>
 
 <%= 
@@ -9,7 +9,7 @@
         t.header :date,         Measurement.human_attribute_name(:date)
         t.header :show_h,       "", class: "no-sort" if can_column? :read , @measurements
         t.header :csv,          "", class: "no-sort" if can_column? :read , @measurements
-        t.header :regression_h, "", class: "no-sort" if can_column? :update , @measurements
+        #t.header :regression_h, "", class: "no-sort" if can_column? :update , @measurements
         t.header :destroy_h,    "", class: "no-sort" if @experiment.present? && can_column?( :destroy , @measurements)
 
         t.rows.alternate = :odd
@@ -19,7 +19,7 @@
             row.experiment      measure.experiment.title
             row.title           measure.title
             row.date            measure.date
-            row.regression_h    link_to t('action.measurement.regression').downcase, [:regression,measure.experiment,measure] if can? :update, measure
+        #    row.regression_h    link_to t('action.measurement.regression').downcase, [:regression,measure] if can? :update, measure
             row.show_h          link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
             row.csv             link_to t('action.download_data').downcase, experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
         #   row.exp             link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
@@ -29,3 +29,4 @@
 
 <%= paginate @measurements,param_name: "m_page" , remote: remote_activated?, :window => 3, :outer_window => 1%>
 
+</div>
