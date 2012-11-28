@@ -97,6 +97,15 @@ module ApplicationHelper
     end
   end
   
+  def empty(text,type=nil)
+    if text.nil? || text.blank? || text.strip.blank?
+      type ||= ""
+      "(no " + type + " provided)"
+    else
+      text
+    end
+  end
+  
   def login_menu
     link_array = [
       {
@@ -168,7 +177,7 @@ module ApplicationHelper
           content_tag(:div, "loading.." , class: "one_tab")].join(" ").html_safe
         end,
         content_tag(:div, class: "options", style: "display:none;") do
-          link_to "Download chart as .svg", "#", class: "download svg"
+          link_to "Download chart as .svg", "#", class: "download svg", download: "download.svg"
         end,
         content_tag(:div, class: "model-data", style: "display:none;") do
           proxy_dyna_models.collect do |pdm|

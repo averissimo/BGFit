@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121107002550) do
+ActiveRecord::Schema.define(:version => 20121128020750) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(:version => 20121107002550) do
     t.date     "date"
     t.string   "title"
     t.float    "minor_step"
+    t.text     "description"
   end
 
   add_index "measurements", ["experiment_id"], :name => "index_measurements_on_experiment_id"

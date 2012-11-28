@@ -1,11 +1,9 @@
 <div id="experiments_wrapper">
 <%- m.experiments.trim.each do |e| %>
 
-    <h3><%= e.title%></h3>
+    <h4><%= e.title%> <%= link_to "(show " + Experiment.model_name.human.downcase + ")" , e , class: "small-link" %></h4>
     <%- pdms = e.proxy_dyna_models.dyna_model_is(@dyna_model).where( ProxyDynaModel.arel_table[:rmse].not_eq(nil) ) %>
-    <%- if pdms.blank? %>
-    <div class="one_tab">There are no models associated with this experiment</div>
-    <%- else %>
+    <%- if pdms.present? %>
     <%= 
         
         collection_table( pdms, :id => 'measurements' , :class => 'formatted dataTable') do |t|
@@ -34,7 +32,7 @@
                 row.rmse pdm.rmse.round(5)
                 row.bias pdm.bias.round(5)
                 row.accuracy pdm.accuracy.round(5)
-                row.show "show"
+                row.show link_to "goto" , pdm
             end
         end
     %>
@@ -46,5 +44,7 @@
     </div>
 
 <%- end %>
+
+<hr/>
 </div>
 

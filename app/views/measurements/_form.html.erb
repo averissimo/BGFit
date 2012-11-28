@@ -1,9 +1,21 @@
+<% 
+	if defined?(menu).nil?
+		context_menu = [].concat( back_menu( {key: :home, 
+			name: t('navigation.index_of' , model: Experiment.model_name.human.pluralize.downcase), 
+			path: url_for([@experiment]) }))
+		
+		menu = nil
+		menu = render_navigation :items => context_menu
+	end
+%>
+
 <%= semantic_form_for([@experiment,@measurement]) do |f| %>
   <%= f.semantic_errors :state %>
 
   <%= f.inputs do %>
-  	<%= f.input :experiment, :input_html => { :disabled => true  }%>
-  	<%= f.input :title %> 
+  	<!--<%= f.input :experiment, :input_html => { :disabled => true  }%>-->
+  	<%= f.input :title %>
+  	<%= f.input :description %>  
     <%= f.input :date , label:"Date",as: :date_select, :include_blank => true %>
   	<%- if !@measurement.new_record? %>
   	 <%= f.input :change_original_data, as: :boolean%>

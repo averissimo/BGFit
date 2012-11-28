@@ -37,7 +37,8 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me
   
   def email_trimmed
-    (email[0..(email[/.*@/].size * 2 / 3)]+"(...)"+email[/@.*\./].chop+"(...)").sub("@"," (dot) ")
+    #(email[0..(email[/.*@/].size * 2 / 3)]+"(...)"+email[/@.*\./].chop+"(...)").sub("@"," (dot) ")
+    email[0..(email[/.*@/].size - 2)]
   end
   
   def email_at

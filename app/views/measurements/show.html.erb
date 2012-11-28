@@ -31,15 +31,6 @@
 			}
 		},
 		{
-			:key => :csv, 
-			:name => t('.csv'), 
-			:url => experiment_measurement_path(@experiment,@measurement, :format => :csv),
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
 			:key => :new, 
 			:name => t('.new-line'), 
 			:url => new_measurement_line_path(@measurement),
@@ -80,6 +71,12 @@
 
 <%= simple_format @model.description %>
 
+<h4>
+	Description
+</h4>
+
+<%= simple_format empty(@measurement.description,"description") %>
+
 <h3>Measured data (<%= pluralize(@measurement.lines.length, 'line')%>)</h3>
 <%= 
 	collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted dataTable') do |t|
@@ -102,6 +99,10 @@
 		end
 	end
 %>
+
+<div class="options">
+	<%= link_to "Download table as .csv" , experiment_measurement_path(@experiment,@measurement, :format => :csv), class: "download" %>
+</div>
 
 <div class="menu">
 <%= menu %>

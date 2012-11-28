@@ -40,16 +40,7 @@
                 :container_class => 'menu',
                 :class => "text"
             }
-        },
-        {
-			:key => :csv, 
-			:name => '.csv', 
-			:url => url_for([@proxy_dyna_model])+".csv",
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		}
+        }
 		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
@@ -106,6 +97,9 @@
 				row.top 	range_value(param.top_cache,param,'_top')
 			end
 		end %>
+		<div class="options">
+			<%= link_to "Download table as .csv" , url_for([@proxy_dyna_model])+".csv", class: "download" %>
+		</div>
 	</div>
 	
 <div class="action text-center">
@@ -127,16 +121,23 @@
 			</tr>
 		</tbody>
 	</table>
-	<%- if can? :calculate, @proxy_dyna_model %>
-	<%= button_tag ((@proxy_dyna_model.rmse.present? ? "re" : "") + "calculate parameters").capitalize , disable_with: "calculating, please wait..." %>
+	<fieldset class="left actions formtastic" style="border:0;">
+	<ol>
+		<%- if can? :calculate, @proxy_dyna_model %>
+	
+		<li class="action"><%= button_tag "estimate parameters".capitalize , disable_with: "calculating, please wait..." %></li>
+	
 	<%- end %>
+	<div class="menu">
+	<%= menu %>
+	</div>
+	</ol>
+	</fieldset>
 </div>
 
 <% end %>
 
-<div class="menu">
-	<%= menu %>
-</div>
+
 
 <%- if !@proxy_dyna_model.rmse.nil? || !@proxy_dyna_model.rmse.blank? %>
 <h3><%= @proxy_dyna_model.dyna_model.title %>'s Curve</h3>

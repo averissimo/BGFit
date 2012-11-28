@@ -107,10 +107,14 @@ class ProxyDynaModel < ActiveRecord::Base
     
     #
     # Parameters to string
-    def params_to_string
+    def params_to_string(use_code=false)
       self.proxy_params.collect { |p|
         next if p.param.output_only?
-        p.param.human_title + "=" + p.value.to_s
+        if use_code
+          p.param.code + "=" + p.value.to_s
+        else
+          p.param.human_title + "=" + p.value.to_s
+        end
       }.compact.join(",")
     end
     
@@ -486,6 +490,7 @@ class ProxyDynaModel < ActiveRecord::Base
 
 
     def simulated_values
+      debugger
       if self.measurement
         simulated_lines( self.measurement.lines_no_death_phase(no_death_phase) )
       elsif self.experiment
