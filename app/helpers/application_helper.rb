@@ -177,7 +177,10 @@ module ApplicationHelper
           content_tag(:div, "loading.." , class: "one_tab")].join(" ").html_safe
         end,
         content_tag(:div, class: "options", style: "display:none;") do
-          link_to "Download chart as .svg", "#", class: "download svg", download: "download.svg"
+          link_to "Download chart as .svg", "#", class: "download svg", download: "chart.svg"
+        end,
+        content_tag(:div, class: "options", style: "display:none;") do
+          link_to "Download chart as .png", "#", class: "download png", download: "chart.png"
         end,
         content_tag(:div, class: "model-data", style: "display:none;") do
           proxy_dyna_models.collect do |pdm|

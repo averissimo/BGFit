@@ -77,10 +77,18 @@ if typeof google isnt 'undefined'
     $('a.download.svg').live 'click' , (event) =>
       target = $(event.currentTarget)
       base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart svg').parent()[0].innerHTML
-
+      
       target.prop('href','data:image/svg;base64,'+ btoa(base64))
       true
-        
+    
+    $('a.download.png').live 'click' , (event) =>
+      target = $(event.currentTarget)
+      base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart svg').parent()[0]
+      imgData = getImgData(base64)
+      target.prop('href',imgData)
+      true
+      
+
     process_google_chart = (el,data) ->
       calculate_view_window( data, options )
       chart = new google.visualization.ScatterChart el
