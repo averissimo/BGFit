@@ -599,11 +599,11 @@ class ProxyDynaModel < ActiveRecord::Base
       
       # TODO make death phase optional
       if self.experiment.nil?
-        x_array = self.measurement.x_array(false,no_death_phase)
+        x_array = self.measurement.x_array(log_flag,no_death_phase)
         y_array = self.measurement.y_array(log_flag,no_death_phase)
       else
         x_array = experiment.measurements.collect { |m|
-          m.x_array(false,no_death_phase).to_s
+          m.x_array(log_flag,no_death_phase).to_s
         }.join('];[')
         
         y_array = experiment.measurements.collect { |m|

@@ -113,22 +113,24 @@ class Measurement < ActiveRecord::Base
   
     def x_array(log=false,no_death_phase=true)
       self.lines_no_death_phase(no_death_phase).sort.collect { |l|
-        if log
-          Math.log( l.x )
+        if log && l.ln_y.nil?
+          nil
         else
           l.x
         end  
-      }.join(",")
+      }.compact.join(",")
     end
     
     def y_array(log=false,no_death_phase=true)
       self.lines_no_death_phase(no_death_phase).sort.collect { |l|
-        if log
+        if log && l.ln_y
           l.ln_y
+        elsif log
+          nil
         else
           l.y
         end  
-      }.join(",")
+      }.compact.join(",")
     end
   
     def end(no_death_phase=true)
