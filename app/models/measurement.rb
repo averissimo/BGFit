@@ -162,41 +162,33 @@ class Measurement < ActiveRecord::Base
      return if original_data.nil?
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
-# removes header from data
-#       next if y == 1
-#       if y == 0
-#         self.title = l
-#         next
-#       end
+
        line = Line.new
        l.split(/\t/).each_with_index do |el , y2|
 
          el = el.gsub("," , ".")
          next if el.match(/N.*A/) || el == nil || el == ""
-         
-         case y2
-          when 0 # time
-            line.x = Float(el)
-          when 1 # OD600 
-            line.y = Float(el)
-            line.ln_y = Math.log( line.y ) unless line.y == 0
-          when 2 # pH
-            line.z = Float(el)
-          when 3 # notes
-            line.note = el
+         begin
+           case y2
+            when 0 # time
+              line.x = Float(el)
+            when 1 # OD600 
+              line.y = Float(el)
+              line.ln_y = Math.log( line.y ) unless line.y == 0
+            when 2 # pH
+              line.z = Float(el)
+            when 3 # notes
+              line.note = el
+            end
+          rescue Exception => e
+            #
+            line.note = "Error importing line."
           end
        end
        self.lines << line
      end
-    #temp_date = title.gsub(/ \(.\)/,"")
-    begin
-#      self.date = Date.strptime self.title, '%d-%m-%Y'
-    rescue
-#      self.date = Date.strptime self.title, '%d/%m/%Y'
-    end
- #   self.title = self.title.strip
-    end
-    
+  end
+      
     def original_data_trimmed
       if original_data.length > 27
         return original_data[0..30] + "..." 

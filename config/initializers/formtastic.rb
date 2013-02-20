@@ -11,6 +11,7 @@
 
 # Should all fields be considered "required" by default?
 # Defaults to true.
+
 # Formtastic::FormBuilder.all_fields_required_by_default = true
 
 # Should select fields have a blank option/prompt by default?
@@ -52,7 +53,7 @@
 # Specifies if labels/hints for input fields automatically be looked up using I18n.
 # Default value: true. Overridden for specific fields by setting value to true,
 # i.e. :label => true, or :hint => true (or opposite depending on initialized value)
-# Formtastic::FormBuilder.i18n_lookups_by_default = false
+Formtastic::FormBuilder.i18n_lookups_by_default = true
 
 # Specifies if I18n lookups of the default I18n Localizer should be cached to improve performance.
 # Defaults to true.

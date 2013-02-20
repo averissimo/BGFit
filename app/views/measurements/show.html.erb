@@ -63,7 +63,7 @@
 	content_for(:title) { t('title.detail' , model: Measurement.model_name.human) }
 %>
 
-<h1><%= @measurement.experiment.title %>: <%= @measurement.title %></h1>
+<h1><%= @measurement.experiment.title %>: <%= @measurement.title %><% if @measurement.date %> (<%= @measurement.date %>)<% end %></h1>
 
 <h4>
 	<%= @model.title %> model and part of <%= @experiment.title %> experiment

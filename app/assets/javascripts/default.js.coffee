@@ -40,6 +40,9 @@
 #    }
 #  })
 
+$(document).on 'page:load ready' , ->
+  $('.date_picker').datepicker()
+
 jQuery ->
   $('div.flash a.close_flash').live 'click', (e)->
     div = $(@).parent().slideToggle();
