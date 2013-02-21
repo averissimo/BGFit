@@ -1,43 +1,29 @@
 <%= @dyna_model.title %> (dyna model)
 
-<%-@models.each do |m|%>
-<%= m.title %>,(model)
-
-<%- m.experiments.each do |e| %>
-,<%= e.title %>,(experiment)
-<%- e_pdms = ProxyDynaModel.where(ProxyDynaModel.arel_table[:experiment_id].eq(e.id)).viewable(current_user,true).dyna_model_is(@dyna_model) %>
-
-<%- if e_pdms.present? %>
-,<%=Experiment.model_name.human%>'s <%= ProxyDynaModel.model_name.human.pluralize(e_pdms.size)%>
-
-,,<%= csv_title_line_for_proxy_dyna_model(@dyna_model).html_safe%>
-<%- e_pdms.each do |p_dm| %>
-,,<%= csv_line_for_proxy_dyna_model(p_dm,e.title).html_safe%>
-<%- end %>
-<%- else %>
-(there are no <%= ProxyDynaModel.model_name.human.pluralize %> for this experiment)
-<%- end %>
-
-,<%= Measurement.model_name.human.pluralize %>
+,Proxy Models for Measurements
 
 ,,model_title,model_id,experiment_title,experiment_id,<%= csv_title_line_for_proxy_dyna_model(@dyna_model).html_safe%>,manual_regression(A),manual_regression(B)
+<%-@models.each do |m|%>
+<%- m.experiments.each do |e| %>
 <%- e.measurements.each do |me| %>
 <%- next unless (proxy_dyna_models = ProxyDynaModel.viewable(current_user).measurement_is(me).dyna_model_is(@dyna_model) ) %>
 <%- proxy_dyna_models.each do |p_dm|  -%>
 ,,<%= m.title %>,<%= m.id %>,<%= e.title %>,<%= e.id %>,<%= csv_line_for_proxy_dyna_model(p_dm,m.title).html_safe%>,<%= me.regression_a%>,<%= me.regression_b%>
-
+<%- end %>
+<%- end %>
 <%- end %>
 <%- end %>
 
-,####
+, Proxy Models for Experiments
 
+,,model_title,model_id,experiment_title,experiment_id,<%= csv_title_line_for_proxy_dyna_model(@dyna_model).html_safe%>
+<%-@models.each do |m|%>
+<%- m.experiments.each do |e| %>
+<%- e_pdms = ProxyDynaModel.where(ProxyDynaModel.arel_table[:experiment_id].eq(e.id)).viewable(current_user,true).dyna_model_is(@dyna_model) %>
+<%- if e_pdms.present? %>
+<%- e_pdms.each do |p_dm| %>
+,,<%= m.title %>,<%= m.id %>,<%= e.title %>,<%= e.id %>,<%= csv_line_for_proxy_dyna_model(p_dm,e.title).html_safe%>
 <%- end %>
-##############################################################################################
-##############################################################################################
-##############################################################################################
- End of <%= Model.model_name.human %> <%= m.title %>
-##############################################################################################
-##############################################################################################
-##############################################################################################
-<% end %>
-
+<%- end %>
+<%- end %>
+<%- end %>
