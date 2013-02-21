@@ -16,6 +16,7 @@ BacteriaGrowth::Application.routes.draw do
     member do
       match "stats/experiment_detail" , :via => :get, :action => "experiment_detail", as: "experiment_detail_stats"
       get :stats
+      get :export
       get :estimate
       put :calculate
       get :definition

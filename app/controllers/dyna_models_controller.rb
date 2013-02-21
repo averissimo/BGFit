@@ -142,6 +142,14 @@ class DynaModelsController < ApplicationController
     respond_with(@dyna_model)
   end
   
+  def export
+    @dyna_model = DynaModel.find(params[:id])
+    @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model)
+    @experiments = Experiment.viewable(current_user,true).dyna_model_is(@dyna_model)
+    respond_with(@dyna_model)
+    
+  end
+  
   def stats
     @dyna_model = DynaModel.find(params[:id])
     

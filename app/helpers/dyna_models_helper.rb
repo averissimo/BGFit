@@ -45,7 +45,7 @@ module DynaModelsHelper
   end
 
   def csv_title_line_for_proxy_dyna_model(dyna_model)
-    result = ["title"]
+    result = ["measurement title"]
     dyna_model.params.order(:code).each do |param|
       next if param.output_only?
       result << param.code
