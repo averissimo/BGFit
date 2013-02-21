@@ -111,11 +111,19 @@
 <%- if @measurement.regression_a.present? %>
 <h3>Manual Regression Results</h3>
 
-<p>
-  y = A + Bx (in log space)<br/>
-  A = <%= @measurement.regression_a %><br/>
-  B = <%= @measurement.regression_b %><br/>
-</dl>
+<table id="regression" class="formatted dataTable-no_sort">
+	<thead>
+		<th>Equation</th>
+		<th>Space</th>
+		<th>Params</th>
+	</thead>
+	<tbody>
+		<td>A + Bx</td>
+		<td class="small">log</td>
+		<td class="small">A=<%= @measurement.regression_a %>,B=<%= @measurement.regression_b %></td>
+	</tbody>
+</table>
+
 <%- end %>
 
 <h3><%= ProxyDynaModel.model_name.human.pluralize(@proxy_dyna_models.length) %> (<%= @proxy_dyna_models.length %>)</h3>
