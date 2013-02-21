@@ -33,9 +33,6 @@ class ProxyDynaModel < ActiveRecord::Base
   validates :dyna_model, :presence => { :message => 'A model must be choosen.' }
   
   scope :viewable, lambda { |user,only_mine=false| 
-    joins( :measurement => :experiment ).where( 
-      Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )
-    )
   }
   
   scope :experiment_is, lambda { |experiment|
@@ -817,7 +814,7 @@ class ProxyDynaModel < ActiveRecord::Base
             prev_sim_value = simulated_value
             simulated_value = json_parsed.shift # pops first element of json_parsed
           end
-          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil" if simulated_value.nil?
+          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil at line.x = " + line.x.to_s if simulated_value.nil?
           # checks if current simulated value timepoint is greater or equal than timepoint
           value = nil
           if simulated_value[0] > line.x
