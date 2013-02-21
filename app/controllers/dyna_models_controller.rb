@@ -154,7 +154,6 @@ class DynaModelsController < ApplicationController
     
     respond_with(@dyna_model) do |format|
       format.html { @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page])
-        debugger
          }
       format.csv {
         @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model)
