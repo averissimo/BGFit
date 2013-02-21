@@ -136,8 +136,11 @@ class MeasurementsController < ApplicationController
   end
 
   def update_regression
+    @measurement.assign_attributes(permitted_params.measurement)
+    @measurement.update_regression
+    debugger
     respond_with(@experiment,@measurement) do |format|
-      if @measurement.update_attributes(permitted_params.measurement)
+      if @measurement.save
         format.html { render action: "regression" }
       else
         format.html { render action: "regression" }

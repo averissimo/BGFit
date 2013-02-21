@@ -213,6 +213,39 @@ class Measurement < ActiveRecord::Base
       return self.title <=> o.title
     end
     
+    def update_regression
+      x = y = sum_x = sum_y = sum_xy = sum_x2 = count = 0
+      self.lines.all.each do |l|
+        next unless l.regression_flag
+        next if l.x.nil? || l.ln_y.nil?
+        
+        x = l.x
+        begin
+          y = l.ln_y
+        rescue Exception => e
+          next
+        end
+          
+        sum_x  += x
+        sum_y  += y
+        sum_xy += x * y
+        sum_x2 += x * x
+        count += 1
+      end    
+      
+      return if count < 2
+      
+      a_top = sum_y * sum_x2 - sum_x * sum_xy # top of A
+      a_bot = count * sum_x2 - sum_x * sum_x  # bottom of A
+      b_top = count * sum_xy - sum_x * sum_y  # top of B
+      b_bot = count * sum_x2 - sum_x * sum_x  # bottom of B
+      a = a_top / a_bot
+      b = b_top / b_bot
+      
+      self.regression_a = a
+      self.regression_b = b
+    end
+    
     def can_view(user=nil)
       experiment.model.can_view(user)
     end

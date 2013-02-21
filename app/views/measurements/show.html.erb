@@ -108,6 +108,16 @@
 <%= menu %>
 </div>
 
+<%- if @measurement.regression_a.present? %>
+<h3>Manual Regression Results</h3>
+
+<p>
+  y = A + Bx (in log space)<br/>
+  A = <%= @measurement.regression_a %><br/>
+  B = <%= @measurement.regression_b %><br/>
+</dl>
+<%- end %>
+
 <h3><%= ProxyDynaModel.model_name.human.pluralize(@proxy_dyna_models.length) %> (<%= @proxy_dyna_models.length %>)</h3>
 <%= render "proxy_dyna_models/summary" %>
 
