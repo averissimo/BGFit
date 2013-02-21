@@ -68,7 +68,7 @@ en:
     edit_this: Edit %{model}
     remove: Delete
     confirm: Are you sure?
-    download_data: Download .csv
+    download_data: Download .csv 
     measurement:
       regression: Regression
     dyna_model:
