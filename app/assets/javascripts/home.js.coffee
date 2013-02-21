@@ -21,7 +21,7 @@ jQuery ->
   $(".tip .detail").css('overflow','hidden')
   
   
-  $('a.show_more').live 'click', ->
+  $('a.show_more').on 'click', ->
     parent = $(@).parentsUntil('div.tip','div.preview').parent()
     detail = parent.children('div.detail')
     preview = parent.children('div.preview') 

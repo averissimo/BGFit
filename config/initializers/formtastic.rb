@@ -11,6 +11,7 @@
 
 # Should all fields be considered "required" by default?
 # Defaults to true.
+
 # Formtastic::FormBuilder.all_fields_required_by_default = true
 
 # Should select fields have a blank option/prompt by default?

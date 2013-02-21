@@ -16,7 +16,7 @@
   	<!--<%= f.input :experiment, :input_html => { :disabled => true  }%>-->
   	<%= f.input :title %>
   	<%= f.input :description %>  
-    <%= f.input :date , label:"Date",as: :date_select, :include_blank => true %>
+    <%= f.input :date , label:"Date",as: :string, input_html: {class: "date_picker"} %>
   	<%- if !@measurement.new_record? %>
   	 <%= f.input :change_original_data, as: :boolean%>
   	<%- end %>

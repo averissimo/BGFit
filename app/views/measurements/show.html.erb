@@ -63,7 +63,7 @@
 	content_for(:title) { t('title.detail' , model: Measurement.model_name.human) }
 %>
 
-<h1><%= @measurement.experiment.title %>: <%= @measurement.title %></h1>
+<h1><%= @measurement.experiment.title %>: <%= @measurement.title %><% if @measurement.date %> (<%= @measurement.date %>)<% end %></h1>
 
 <h4>
 	<%= @model.title %> model and part of <%= @experiment.title %> experiment
@@ -107,6 +107,24 @@
 <div class="menu">
 <%= menu %>
 </div>
+
+<%- if @measurement.regression_a.present? %>
+<h3>Manual Regression Results</h3>
+
+<table id="regression" class="formatted dataTable-no_sort">
+	<thead>
+		<th>Equation</th>
+		<th>Space</th>
+		<th>Params</th>
+	</thead>
+	<tbody>
+		<td>A + Bx</td>
+		<td class="small">log</td>
+		<td class="small">A=<%= @measurement.regression_a %>,B=<%= @measurement.regression_b %></td>
+	</tbody>
+</table>
+
+<%- end %>
 
 <h3><%= ProxyDynaModel.model_name.human.pluralize(@proxy_dyna_models.length) %> (<%= @proxy_dyna_models.length %>)</h3>
 <%= render "proxy_dyna_models/summary" %>
