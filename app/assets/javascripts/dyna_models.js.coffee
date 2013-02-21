@@ -24,7 +24,7 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 jQuery ->
-  $('.check-all').live 'click' , (event) =>
+  $('.check-all').on 'click' , (event) =>
     target = $(event.currentTarget)
     target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
   
