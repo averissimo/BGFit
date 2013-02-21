@@ -578,8 +578,9 @@ class ProxyDynaModel < ActiveRecord::Base
         hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0  
       else
         # experiments
-        hash[:start] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.min_by { |l| l.x }.x
-        hash[:end] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.max_by { |l| l.x }.x
+        lines_aux = self.experiment.measurements.collect{|m|m.lines_no_death_phase(self.no_death_phase)}.flatten
+        hash[:start] = lines_aux.min_by { |l| l.x }.x
+        hash[:end] = lines_aux.max_by { |l| l.x }.x
         minor_step = self.experiment.measurements.select(Measurement.arel_table[:minor_step].minimum.as("min_minor_step")).first.min_minor_step
         hash[:minor_step] = minor_step if minor_step.present? || minor_step == 0
       end
