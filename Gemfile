@@ -76,3 +76,5 @@ gem 'google-analytics-rails'
 #end
 
 gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
+
+gem "octave-ruby"

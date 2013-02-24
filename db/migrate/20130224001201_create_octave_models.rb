@@ -5,7 +5,7 @@ class CreateOctaveModels < ActiveRecord::Migration
       t.references :user
       t.attachment :model
       t.attachment :solver
-      t.attachment :estimation
+      t.attachment :estimator
 
       t.timestamps
     end

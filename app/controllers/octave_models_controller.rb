@@ -1,3 +1,5 @@
+require 'octave'
+
 class OctaveModelsController < ApplicationController
   respond_to :json,:html
   
@@ -11,6 +13,17 @@ class OctaveModelsController < ApplicationController
     @octave_models = OctaveModel.all
 
     respond_with(@octave_models)
+  end
+
+  def solver
+    @engine = Octave::Engine.new
+    @engine.eval 'addpath(genpath("/home/averissimo/work/pneumosys/model_blackbox/toolbox"));'
+    debugger
+    @engine.addpath(File.dirname(@octave_model.model.path))
+    @engine.addpath(File.dirname(@octave_model.solver.path))
+    
+    @response = @engine.eval "#{@octave_model.solver_file_name.gsub(/[.]m/,'')}('#{request.query_parameters.to_param.html_safe}')" 
+    respond_with(@octave_model)
   end
 
   # GET /octave_models/1
@@ -86,6 +99,6 @@ class OctaveModelsController < ApplicationController
     # params.require(:person).permit(:name, :age)
     # Also, you can specialize this method with per-user checking of permissible attributes.
     def octave_model_params
-      params.require(:octave_model).permit(:model, :solver, :estimation, :name)
+      params.require(:octave_model).permit(:model, :solver, :estimator, :name)
     end
 end

@@ -1,13 +1,28 @@
+<% 
+	context_menu = [{key: :cancel, 
+		name: t("form.cancel"), 
+		url: octave_models_path,
+		:options => {
+	        :container_class => 'menu',
+	        :class => "text"}
+        }]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:title) { t('title.edit' , model: Model.model_name.human) }
+%>
 <%= semantic_form_for @octave_model do |f| %>
   <%= form_errors(f) %>
   <%= f.inputs do %>
     <%= f.input :name %>
     <%= f.input :model, as: :file, hint: hint_text(:model_file_name,"model"), required: true %>
     <%= f.input :solver, as: :file, hint: hint_text(:solver_file_name,"solver"), required: true %>
-    <%= f.input :estimation, as: :file, hint: hint_text(:estimation_file_name,"estimator"), required: true %>
+    <%= f.input :estimator, as: :file, hint: hint_text(:estimator_file_name,"estimator"), required: true %>
   <% end %>
 
   <%= f.actions do %>
-    <%= f.action :submit, :as => :input %>
+    <%= f.action :submit, :as => :button %>
+  	<div class="menu">
+		<%= menu %>
+	</div>	
   <% end %>
 <% end %>

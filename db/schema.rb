@@ -134,12 +134,12 @@ ActiveRecord::Schema.define(:version => 20130224001201) do
     t.string   "solver_content_type"
     t.integer  "solver_file_size"
     t.datetime "solver_updated_at"
-    t.string   "estimation_file_name"
-    t.string   "estimation_content_type"
-    t.integer  "estimation_file_size"
-    t.datetime "estimation_updated_at"
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
+    t.string   "estimator_file_name"
+    t.string   "estimator_content_type"
+    t.integer  "estimator_file_size"
+    t.datetime "estimator_updated_at"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
   end
 
   add_index "octave_models", ["user_id"], :name => "index_octave_models_on_user_id"

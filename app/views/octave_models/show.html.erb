@@ -6,15 +6,24 @@
 </p>
 
 <p>
-  <b>User:</b>
-  <%= @octave_model.user %>
+  <b>Owner:</b>
+  <%= @octave_model.user.email_at %>
 </p>
 
 <p>
   <b>Model:</b>
-  <%= @octave_model.model %>
+  <%= link_to "download",@octave_model.model.url %>
 </p>
 
+<p>
+  <b>Solver:</b>
+  <%= link_to "download",@octave_model.solver.url %>
+</p>
+
+<p>
+  <b>Estimator:</b>
+  <%= link_to "download",@octave_model.estimator.url %>
+</p>
 
 <%= link_to 'Edit', edit_octave_model_path(@octave_model) %> |
 <%= link_to 'Back', octave_models_path %>
