@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130220233923) do
+ActiveRecord::Schema.define(:version => 20130224001201) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -122,6 +122,27 @@ ActiveRecord::Schema.define(:version => 20130220233923) do
     t.boolean  "is_published"
     t.integer  "owner_id"
   end
+
+  create_table "octave_models", :force => true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.string   "model_file_name"
+    t.string   "model_content_type"
+    t.integer  "model_file_size"
+    t.datetime "model_updated_at"
+    t.string   "solver_file_name"
+    t.string   "solver_content_type"
+    t.integer  "solver_file_size"
+    t.datetime "solver_updated_at"
+    t.string   "estimation_file_name"
+    t.string   "estimation_content_type"
+    t.integer  "estimation_file_size"
+    t.datetime "estimation_updated_at"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+  end
+
+  add_index "octave_models", ["user_id"], :name => "index_octave_models_on_user_id"
 
   create_table "params", :force => true do |t|
     t.string   "code"

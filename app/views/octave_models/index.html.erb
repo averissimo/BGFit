@@ -1,0 +1,58 @@
+<% 
+	context_menu = [
+		{
+			:key => :new, 
+			:name => t('navigation.new' , model: OctaveModel.model_name.human.downcase), 
+			:url => new_octave_model_path,
+			:options => {
+				:container_class => 'menu'
+			}
+		},
+		{
+			:key => :back, 
+			:name => t('navigation.back'), 
+			:url => url_for(:back),
+			:options => {
+				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => 'text'
+			}
+		},
+		{
+			:key => :home, 
+			:name => t('navigation.goto' , destination: t('aux.root').downcase), 
+			:url => root_url,
+			:options => {
+				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+%>
+<% content_for(:title) { t('.title') } %>
+<h1>Listing <%= OctaveModel.model_name.human.pluralize%></h1>
+
+<%= 
+    collection_table(@octave_models, :id => 'octave_models' , :class => 'formatted dataTable-no_sort' ) do |t|
+        t.header :created_at,	sortable("created_at",OctaveModel,"",nil,OctaveModel.human_attribute_name(:created_at).downcase)
+        t.header :updated_at,	sortable("updated_at",OctaveModel,"",nil,OctaveModel.human_attribute_name(:updated_at).downcase)
+        t.header :name,        sortable(Model.human_attribute_name(:title).downcase,OctaveModel,"",nil,OctaveModel.human_attribute_name(:title).downcase)
+        t.header :show_h,       "", class: "no-sort" if can_column? :read , @octave_models
+        t.header :edit_h,       "", class: "no-sort" if (edit_p = can_column? :update , @octave_models)
+        t.header :destroy_h,    "", class: "no-sort" if edit_p
+
+        t.rows.alternate = :odd
+        t.rows.each do |row, el, index|
+            # Notice there's no need to explicitly define the title
+            row.created_at		el.created_at.strftime("%d/%m/%Y"), class: "small"
+            row.updated_at		el.updated_at.strftime("%d/%m/%Y"), class: "small"
+            row.title           el.name
+            row.show_h          link_to t('action.show').downcase, el if can? :read, el
+            row.edit_h          link_to t('action.edit').downcase, [:edit,el] if can? :update, el
+            row.destroy_h       link_to t('action.remove').downcase, el, confirm: 'Are you sure?', method: :delete if can? :destroy, el
+        end
+    end
+%>
+

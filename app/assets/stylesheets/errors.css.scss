@@ -1,0 +1,13 @@
+// Place all the styles related to the home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.form_errors {
+  background-color: #EEB4B4;
+  margin-bottom: 2em;
+  border: 1px dotted #8E2323;
+  ul.errors {
+    margin-bottom: 1em;
+    margin-top: 1em;
+  }
+}

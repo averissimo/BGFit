@@ -74,3 +74,5 @@ gem 'google-analytics-rails'
 #group :test,:production do
 #  gem 'therubyracer'
 #end
+
+gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"

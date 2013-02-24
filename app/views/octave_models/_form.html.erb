@@ -1,0 +1,13 @@
+<%= semantic_form_for @octave_model do |f| %>
+  <%= form_errors(f) %>
+  <%= f.inputs do %>
+    <%= f.input :name %>
+    <%= f.input :model, as: :file, hint: hint_text(:model_file_name,"model"), required: true %>
+    <%= f.input :solver, as: :file, hint: hint_text(:solver_file_name,"solver"), required: true %>
+    <%= f.input :estimation, as: :file, hint: hint_text(:estimation_file_name,"estimator"), required: true %>
+  <% end %>
+
+  <%= f.actions do %>
+    <%= f.action :submit, :as => :input %>
+  <% end %>
+<% end %>

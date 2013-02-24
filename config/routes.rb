@@ -6,6 +6,8 @@ BacteriaGrowth::Application.routes.draw do
 
   match "/delayed_job" => DelayedJobWeb, :anchor => false
   match "/documentation" , via: :get, controller: :home, action: "documentation", as: "documentation"  
+
+  resources :octave_models
     
   resources :groups, path: :teams do
     resources :memberships, :only => [:new, :create, :destroy]
