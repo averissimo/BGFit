@@ -58,19 +58,6 @@ function [ F ] = <%=@dyna_model.model_m_name(false)%>( params,t )
     end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 %% model parameters are extracted below
 <%- @dyna_model.params.order(:code).reject{|param| param.output_only}.each_with_index do |p,i| %>
 <%= p.code %>  = params(<%= i+1 %>);

@@ -1,6 +1,8 @@
 class OctaveModel < ActiveRecord::Base
   belongs_to :user
   
+  has_many :dyna_models
+  
   has_attached_file :model
   has_attached_file :solver
   has_attached_file :estimator

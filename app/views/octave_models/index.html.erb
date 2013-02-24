@@ -48,7 +48,7 @@
             # Notice there's no need to explicitly define the title
             row.created_at		el.created_at.strftime("%d/%m/%Y"), class: "small"
             row.updated_at		el.updated_at.strftime("%d/%m/%Y"), class: "small"
-            row.title           el.name
+            row.name           el.name
             row.show_h          link_to t('action.show').downcase, el if can? :read, el
             row.edit_h          link_to t('action.edit').downcase, [:edit,el] if can? :update, el
             row.destroy_h       link_to t('action.remove').downcase, el, confirm: 'Are you sure?', method: :delete if can? :destroy, el

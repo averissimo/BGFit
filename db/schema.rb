@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130224001201) do
+ActiveRecord::Schema.define(:version => 20130224221645) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(:version => 20130224001201) do
     t.boolean  "log_flag"
     t.string   "equation"
     t.integer  "eq_type"
+    t.integer  "octave_model_id"
   end
 
   create_table "experiments", :force => true do |t|
