@@ -10,4 +10,5 @@ class OctaveModel < ActiveRecord::Base
   validates_attachment :model, :presence => true
   validates_attachment :solver, :presence => true
   validates_attachment :estimator, :presence => true
+  
 end

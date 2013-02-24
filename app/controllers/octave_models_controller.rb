@@ -3,8 +3,8 @@ require 'octave'
 class OctaveModelsController < ApplicationController
   respond_to :json,:html
   
-  load_and_authorize_resource :except => [:new,:create]
-  before_filter :authenticate_user!
+  load_and_authorize_resource :except => [:new,:create,:estimator,:solver]
+  before_filter :authenticate_user! , except: [:estimator,:solver]
   before_filter :find_model, :except => [:index,:new,:create]
   
   # GET /octave_models
@@ -15,14 +15,31 @@ class OctaveModelsController < ApplicationController
     respond_with(@octave_models)
   end
 
+  def estimator
+    @engine = Octave::Engine.new
+    @engine.eval 'addpath(genpath("/home/averissimo/work/pneumosys/model_blackbox/toolbox"));'
+    @engine.addpath(File.dirname(@octave_model.model.path))
+    @engine.addpath(File.dirname(@octave_model.estimator.path))
+    method_params = if request.post? then
+      request.request_parameters.to_param
+    elsif request.get?
+      request.query_parameters.to_param
+    end
+    @response = @engine.eval "#{@octave_model.estimator_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}')"
+    respond_with(@octave_model)
+  end
+
   def solver
     @engine = Octave::Engine.new
     @engine.eval 'addpath(genpath("/home/averissimo/work/pneumosys/model_blackbox/toolbox"));'
-    debugger
     @engine.addpath(File.dirname(@octave_model.model.path))
     @engine.addpath(File.dirname(@octave_model.solver.path))
-    
-    @response = @engine.eval "#{@octave_model.solver_file_name.gsub(/[.]m/,'')}('#{request.query_parameters.to_param.html_safe}')" 
+    method_params = if request.post? then
+      request.request_parameters.to_param
+    elsif request.get?
+      request.query_parameters.to_param
+    end
+    @response = @engine.eval "#{@octave_model.solver_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}')" 
     respond_with(@octave_model)
   end
 

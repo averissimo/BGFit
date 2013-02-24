@@ -9,7 +9,9 @@ BacteriaGrowth::Application.routes.draw do
 
   resources :octave_models do
     get :estimator, on: :member
+    post :estimator, on: :member
     get :solver, on: :member
+    post :solver, on: :member
   end
     
   resources :groups, path: :teams do
