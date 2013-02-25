@@ -59,7 +59,6 @@ class DynaModelsController < ApplicationController
     end
   end
   
-
   def create
     @dyna_model = DynaModel.new(params[:dyna_model])
     @dyna_model.owner = current_user
@@ -123,7 +122,6 @@ class DynaModelsController < ApplicationController
             @octave_model = if @dyna_model.octave_model.nil? then OctaveModel.new else @dyna_model.octave_model end
             build_octave_model() # helper method to simplify code
         end
-        debugger
         success = @dyna_model.save
       rescue Exception => e
         flash[:notice] = "Error associating model's source"
@@ -206,20 +204,24 @@ class DynaModelsController < ApplicationController
     model = Tempfile.new( [@dyna_model.title.downcase,".m"] )
     template_type = GlobalConstants::EQUATION_TYPE.key(@dyna_model.eq_type).to_s.downcase
     model.write( render_to_string( action: template_type.to_s, formats: :m).force_encoding('utf-8') )
+    model.size
     @octave_model.model = model
-    @octave_model.model_file_name = @dyna_model.title.downcase + ".m"
+    @octave_model.model_file_name = @dyna_model.model_m_name
+    
     
     # saves simulator to octave_model attachment
     simulator = Tempfile.new( [@dyna_model.title.downcase + "_sim",".m"] )
     simulator.write( render_to_string( action: "simulator", formats: :m).force_encoding('utf-8') )
+    simulator.size
     @octave_model.solver = simulator
-    @octave_model.solver_file_name = @dyna_model.title.downcase + "_sim.m"
+    @octave_model.solver_file_name = @dyna_model.simulator_m_name
     
     # saves estimator to octave_model attachment
     estimator = Tempfile.new( [@dyna_model.title.downcase + "_est",".m"] )
     estimator.write( render_to_string( action: "estimator", formats: :m).force_encoding('utf-8') )
+    estimator.size
     @octave_model.estimator = estimator
-    @octave_model.estimator_file_name = @dyna_model.title.downcase + "_est.m"
+    @octave_model.estimator_file_name = @dyna_model.estimator_m_name
     
     # register user
     @octave_model.user = current_user

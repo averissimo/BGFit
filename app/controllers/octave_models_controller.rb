@@ -25,7 +25,7 @@ class OctaveModelsController < ApplicationController
     elsif request.get?
       request.query_parameters.to_param
     end
-    @response = @engine.eval "#{@octave_model.estimator_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}')"
+    @response = @engine.eval "#{@octave_model.estimator_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}');"
     respond_with(@octave_model)
   end
 
@@ -39,7 +39,7 @@ class OctaveModelsController < ApplicationController
     elsif request.get?
       request.query_parameters.to_param
     end
-    @response = @engine.eval "#{@octave_model.solver_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}')" 
+    @response = @engine.eval "#{@octave_model.solver_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}');" 
     respond_with(@octave_model)
   end
 
