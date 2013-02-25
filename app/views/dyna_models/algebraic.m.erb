@@ -24,7 +24,7 @@ function [ F ] = <%=@dyna_model.model_m_name(false)%>( params,t )
 <%-end %>
 
 %% function
-F = <%= @dyna_model.equation %>
+F = <%= @dyna_model.equation %>;
 if size(F,1) > 1 F = F'; end
 
 end

@@ -15,11 +15,15 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-function [ output ] = <%=@dyna_model.simulator_m_name(false)%>( test_data , draw_plot ) % << change
+function [ string_output,output ] = <%=@dyna_model.simulator_m_name(false)%>( test_data , draw_plot ) % << change
 %GOMPERTZA_SIM Summary of this function goes here
 %   Detailed explanation goes here
     if nargin > 0 && test_data
-        s = '';
+        if test_data == 1
+          s = test_query("simulator","<%=@dyna_model.title.downcase%>");
+        else
+          s = test_data;
+        end
         input = qs2struct(s);
     else
         input = qs2struct(getenv('QUERY_STRING'));
@@ -42,11 +46,11 @@ function [ output ] = <%=@dyna_model.simulator_m_name(false)%>( test_data , draw
         if nargin > 1 && draw_plot
             scatter(TimeEnd,values);
         end
-        printJson(output);
+        string_output = printJson(output);
     catch
         err = lasterror();
-        printHeader(0);
-        print_error_json(err,1);
-    end
+        msg = sprintf('{ "error": "%s" }\n',err.message);
+        string_output = msg
+	end
 
 end

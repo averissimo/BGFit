@@ -4,7 +4,7 @@
 </p>
 
 <%= semantic_form_for([@dyna_model,@param]) do |f| %>
-  <%= f.semantic_errors :state %>
+  <%= form_errors(f) %>
 
   <%= f.inputs do %>
   	<%= f.input :code %>

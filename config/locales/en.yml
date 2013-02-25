@@ -19,7 +19,10 @@ en:
     download_chart: Download chart as .svg
     in: in
     root: Home
-    
+  
+  octave_models:
+    index:
+      title: Octave Model management
   groups:
     index:
       title: Team management
@@ -87,6 +90,7 @@ en:
         
   activerecord:
     models:
+      octave_model: Octave Model
       group: Team
       model: Project
       dyna_model: "Model"

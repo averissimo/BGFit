@@ -196,5 +196,10 @@ module ApplicationHelper
       end
     end  
 
-  
+  def form_errors(form_object)    
+    return "" if form_object.object.errors.blank?
+    content_tag :div,class:"form_errors" do
+       form_object.semantic_errors *form_object.object.errors.keys
+     end
+  end
 end

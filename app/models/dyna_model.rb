@@ -19,6 +19,7 @@ class DynaModel < ActiveRecord::Base
   has_many :params, :dependent => :destroy
   has_many :proxy_dyna_models, :dependent => :destroy
   
+  belongs_to :octave_model
   belongs_to :owner, :class_name => 'User'
   
   validates_uniqueness_of :title

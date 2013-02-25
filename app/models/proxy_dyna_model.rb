@@ -317,7 +317,6 @@ class ProxyDynaModel < ActiveRecord::Base
           else
             response = call_http_get(request_hash)
           end    
-          
           if response.body.blank?
             clean_stats "empty response"
             return
