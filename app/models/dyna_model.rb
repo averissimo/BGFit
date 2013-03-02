@@ -24,7 +24,9 @@ class DynaModel < ActiveRecord::Base
   
   validates_uniqueness_of :title
   validate :validate_solver, :validate_estimation
-  validates :title, :solver, :presence => true
+  validates :title, :presence => true
+  
+  attr_accessor :next_step
   
   has_paper_trail
 

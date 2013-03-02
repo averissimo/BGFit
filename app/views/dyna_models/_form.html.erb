@@ -3,8 +3,17 @@
   
   <%= f.inputs do %>
   	<%= f.input :title %>
+  	<%= f.input :next_step, label: "Model definition", required: true, as: :radio , collection: next_step_list %>
+  <% end -%>
+  <%= f.inputs(id: "urls", class:"hidden model_def") do %>
   	<%= f.input :solver , as: :url %>
   	<%= f.input :estimation, as: :url %>
+  <% end -%>
+  <%= f.inputs(id: "equation", class:"hidden model_def") do %>
+  	<%= f.input :eq_type, :as => :radio, :collection => @dyna_model.types , required: true%>
+  	<%= f.input :equation , required: true, hint: "describe the equation using the parameters' code that is listed above as f(t)=x<br/>example for parameters a and b: a+b*t^2 + exp(t)<br/>example for differential equation that has parameter a as initial condition: 2*b*t + x".html_safe %>
+  <% end -%>
+  <%= f.inputs do %>
     <%= f.input :log_flag, as: :boolean %>
   	<%- if @dyna_model.owner_id == current_user.id || @dyna_model.new_record? %> 
   	<%= f.input :only_owner_can_change, as: :boolean %>

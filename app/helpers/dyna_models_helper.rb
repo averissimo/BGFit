@@ -17,6 +17,10 @@
 
 module DynaModelsHelper
   
+  def next_step_list
+    {"By URL" => "urls","By Equation" => "equation"}
+  end
+  
   def params_merge(new_param,param_name,input_params=nil)
     input_params ||= params
     result = input_params.clone
