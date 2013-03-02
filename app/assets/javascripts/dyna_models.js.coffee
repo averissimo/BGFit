@@ -23,7 +23,18 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
-jQuery ->
+
+$(document).on 'page:load ready' , ->
+  
+  $('#dyna_model_next_step_input input').each ->
+    if $(this).prop('checked') == true
+      $("#" + this.value).show()
+  
+  $('#dyna_model_next_step_input').on 'change', 'input' , (event) ->
+    target = $(event.currentTarget)
+    $('.model_def').slideUp()
+    $("#" + this.value).slideDown()  
+  
   $('.check-all').on 'click' , (event) =>
     target = $(event.currentTarget)
     target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
