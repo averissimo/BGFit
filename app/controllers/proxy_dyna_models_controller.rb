@@ -79,8 +79,6 @@ class ProxyDynaModelsController < ApplicationController
     @model = @experiment.model
     authorize! :update, @experiment
 
-    debugger
-
     if params[:proxy_dyna_model][:for_measurements].blank?
       is_saved = @proxy_dyna_model.save
       
