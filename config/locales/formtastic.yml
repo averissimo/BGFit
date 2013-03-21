@@ -6,6 +6,9 @@ en:
     placeholders:
       measurements:
         date: "click here to select date"
+    labels:
+      proxy_dyna_model:
+        for_measurements: Apply dyna model to all measurements
     hints:
       param:
         output_only: "This should only be checked if the parameter is not used as an input for the parameters estimatin"
@@ -27,3 +30,4 @@ en:
         no_death_phase: "removes any sequential values in the end that show a declining pattern"
         original_data: "use this textbox to manually define the parameter's value"
         dyna_model: "Model can only be choose when creating, if you wish to change you need to remove it first."
+        for_measurements: if checked it will associate this model with all measurements
