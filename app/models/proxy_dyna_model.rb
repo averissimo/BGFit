@@ -24,6 +24,8 @@ class ProxyDynaModel < ActiveRecord::Base
   
   accepts_nested_attributes_for :simulation
   
+  attr_accessor :for_measurements
+  
   validate :validate_title
   
   before_save :update_params
