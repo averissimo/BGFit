@@ -34,9 +34,4 @@
 	content_for(:title) { "Edit Model Association" }
 %><h1>Edit dynamic model association</h1>
 
-<%= render 'form' %>
-
-<div class="menu">
-	<%= menu %>
-</div>
-
+<%= render 'form', menu: menu %>

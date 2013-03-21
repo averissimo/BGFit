@@ -79,14 +79,31 @@ class ProxyDynaModelsController < ApplicationController
     @model = @experiment.model
     authorize! :update, @experiment
 
-    #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])
-    respond_with @proxy_dyna_model do | format |
-      if @proxy_dyna_model.save
-        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Proxy Dyna Model")
-      else
-        format.html { render action: "new" }
-        format.json { render json: @proxy_dyna_model.errors, status: :unprocessable_entity }
+    debugger
+
+    if params[:proxy_dyna_model][:for_measurements].blank?
+      is_saved = @proxy_dyna_model.save
+      
+      #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])
+      respond_with @proxy_dyna_model do | format |
+        if is_saved 
+          flash[:notice] = t('flash.actions.create.notice', :resource_name => "Proxy Dyna Model")
+        else
+          format.html { render action: "new" }
+          format.json { render json: @proxy_dyna_model.errors, status: :unprocessable_entity }
+        end
+    end
+    elsif @experiment
+      @experiment.measurements.each do |m|
+        p = m.proxy_dyna_models.build params[:proxy_dyna_model]
+        unless p.save
+          flash[:notice] = [] if flash[:notice].blank?
+          p.errors.each do |key,value|
+            flash[:notice] << "error #{m.id} (#{m.title}): #{value}"
+          end
+        end
       end
+      respond_with @experiment
     end
   end
   
