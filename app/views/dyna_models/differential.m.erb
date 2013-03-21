@@ -19,17 +19,18 @@ function [ F ] = <%=@dyna_model.model_m_name(false)%>( params,t )
 %<%=@dyna_model.model_m_name(false)%> Summary of this function goes here
     % Extract each parameter from the model
     %  one of them must be the initial value for t = 0 / t = start
-    <%- @dyna_model.params.order(:code).reject{|param| param.output_only }.each_with_index do |p,i| %>
+    <% init_p = nil %>
+    <% @dyna_model.params.order(:code).reject{|param| param.output_only }.each_with_index do |p,i| -%>
     <%= p.code %>_  = params(<%= i+1 %>);
-    <%- init_p = p if p.initial_condition %>
-    <%-end %>
+    <% init_p = p if p.initial_condition -%>
+    <% end -%>
     
    function dxdt = ode(t,x,params_)
-        <%- @dyna_model.params.order(:code).reject{|param| param.output_only }.each_with_index do |p,i| %>
+        <%- @dyna_model.params.order(:code).reject{|param| param.output_only || param.initial_condition }.each_with_index do |p,i| %>
         <%= p.code %>  = params(<%= i+1 %>);
         <%-end %>
 
-        dxdt = <%= @dyna_model.equation %>
+        dxdt = <%= @dyna_model.equation.gsub(/;/,"") %>;
     end
 
     if isvector(t)
