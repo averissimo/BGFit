@@ -63,14 +63,16 @@
 			</div>
 			
 			<%- flash.each do |key, value| %>
-    		  	<%= content_tag(:div, :class => "flash #{key}") do %>
-	    		  	<%- if value.is_a?(String)%>
-	    		    		<%= value.html_safe %>
-	    		    <%- else %>
-	    		    		<%= value.join("<br/>").html_safe %>
-	    		    <%- end %>
-    		    <%= link_to "<div class='right'>x</div>".html_safe , "#" , class: "close_flash"%>
-    		    <%- end %>
+			    <% unless value.nil? -%>
+        		  	<%= content_tag(:div, :class => "flash #{key}") do %>
+    	    		  	<%- if value.is_a?(String)%>
+    	    		    		<%= value.html_safe %>
+    	    		    <%- else %>
+    	    		    		<%= value.join("<br/>").html_safe %>
+    	    		    <%- end %>
+        		        <%= link_to "<div class='right'>x</div>".html_safe , "#" , class: "close_flash"%>
+        		    <%- end %>
+    		    <% end -%>
     		  <%- end %>
 			</div>
 			

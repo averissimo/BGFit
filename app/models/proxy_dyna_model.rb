@@ -24,6 +24,8 @@ class ProxyDynaModel < ActiveRecord::Base
   
   accepts_nested_attributes_for :simulation
   
+  attr_accessor :for_measurements
+  
   validate :validate_title
   
   before_save :update_params
@@ -530,6 +532,7 @@ class ProxyDynaModel < ActiveRecord::Base
     # @return [int] validation
     def validate_title
       t = ProxyDynaModel.arel_table
+      debugger
       result = ProxyDynaModel.where( t[:dyna_model_id].eq(self.dyna_model_id).and(t[:title].eq(self.title) ).and(t[:id].not_eq(self.id)).and(t[:measurement_id].eq(self.measurement_id).and(t[:experiment_id].eq(self.experiment_id))) ).size
       errors.add(:title, "choose another title, as it is already identifies a model for this measurement and dynamic model.") if result > 0
     end
