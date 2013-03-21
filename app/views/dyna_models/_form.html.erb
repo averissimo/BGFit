@@ -14,6 +14,10 @@
   	<%= f.input :equation , required: true, hint: "describe the equation using the parameters' code that is listed above as f(t)=x<br/>example for parameters a and b: a+b*t^2 + exp(t)<br/>example for differential equation that has parameter a as initial condition: 2*b*t + x".html_safe %>
   <% end -%>
   <%= f.inputs do %>
+  <% @dyna_model.params.build %>
+  		<%= f.input name: 'Param #%i', for: :params %>
+  <% end -%>
+  <%= f.inputs do %>
     <%= f.input :log_flag, as: :boolean %>
   	<%- if @dyna_model.owner_id == current_user.id || @dyna_model.new_record? %> 
   	<%= f.input :only_owner_can_change, as: :boolean %>
