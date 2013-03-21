@@ -7,6 +7,13 @@ en:
       measurements:
         date: "click here to select date"
     hints:
+      param:
+        output_only: "This should only be checked if the parameter is not used as an input for the parameters estimatin"
+        initial_condition: "This should only be checked if the model is based on differential equations"
+        code: "Logical name for parameter, should start with a letter and not contain any spaces or special characters"
+        human_title: "Name for presenting in the application's interface. Can contain html"
+        bottom: "Default bottom range value when fitting curves"
+        top: "Default top range value when fitting curves"
       model:
         is_published: if checked then the data is visible to the world, otherwise, only owner and associated teams can view it.
         description: text describing the scope of this project

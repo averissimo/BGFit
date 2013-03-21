@@ -9,16 +9,18 @@
   <%= f.inputs do %>
   	<%= f.input :code %>
   	<%= f.input :human_title %>
-  	<%= f.input :output_only, hint: "This should only be checked if the parameter is not used as an input for the parameters estimatin" %>
-  	<%= f.input :initial_condition, hint: "This should only be checked if the model is based on differential equations"%>
+  	<%= f.input :output_only %>
+  	<%= f.input :initial_condition %>
   	<%= f.input :bottom, as: :number %>
   	<%= f.input :top, as: :number %>
   	<%= f.input :description, as: :text %>
   <% end %>
   
   <%= f.actions do %>
-  	<%= f.action :submit, :as => :button %>
-  	<%= f.action :cancel, :as => :link %>	
+  	<%= f.action :submit, :as => :button , label: "Create " + Param.model_name.human.downcase%>
+  	<div class="menu">
+		<%= menu %>
+	</div>
   <% end%>
 <% end %>
 

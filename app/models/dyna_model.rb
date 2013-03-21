@@ -27,6 +27,8 @@ class DynaModel < ActiveRecord::Base
   validates :title, :presence => true
   
   attr_accessor :next_step
+
+  accepts_nested_attributes_for :params
   
   has_paper_trail
 
