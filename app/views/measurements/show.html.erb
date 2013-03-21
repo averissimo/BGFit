@@ -108,8 +108,8 @@
 <%= menu %>
 </div>
 
-<%- if @measurement.regression_a.present? %>
 <h3>Manual Regression Results</h3>
+<%- if @measurement.regression_a.present? %>
 
 <table id="regression" class="formatted dataTable-no_sort">
 	<thead>
@@ -123,7 +123,8 @@
 		<td class="small">A=<%= @measurement.regression_a %>,B=<%= @measurement.regression_b %></td>
 	</tbody>
 </table>
-
+<%- else %>
+	<div class="text-center">Manual regression was not calculated, <%=link_to "click here to calculate now", [:regression,@measurement]%></div>
 <%- end %>
 
 <h3><%= ProxyDynaModel.model_name.human.pluralize(@proxy_dyna_models.length) %> (<%= @proxy_dyna_models.length %>)</h3>
