@@ -6,6 +6,15 @@ form {
   width: 100%;
 }
 
+.formtastic .input .inline {
+  margin: 0em 0px 0px 25%;
+  padding-top: 0px;
+  & input {
+    margin-left: 0px;
+    margin-right: 2px;
+  }
+}
+
 input,
 textarea { padding: 4px 8px; border: 1px solid #aaa; background: #fff; padding-left: 1em;}
 textarea { height: 12em; }

@@ -42,6 +42,9 @@ function [output_string,output] = <%=@dyna_model.estimator_m_name(false)%>(test_
     end
     %% Options for estimation
     % options retrieved from build estimation
+    <% @dyna_model.options.each do |option| -%>
+    options.<%=option.name%> = <%=option.value%>; 
+    <% end -%>
     %% perform parameter estimation
     [output,output_string] = analytical_estimator(input, model, struct, flag, debug_flag);
 end

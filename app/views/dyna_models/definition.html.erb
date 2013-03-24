@@ -50,14 +50,22 @@
 %>
 
 <%= semantic_form_for([@dyna_model], url: [:definition,@dyna_model]) do |f| %>
-  <%= f.semantic_errors :state %>
+  <%= form_errors(f) %>
   
   <%= f.inputs do %>
   	<%= f.input :eq_type, label: "Type" , :as => :radio, :collection => @dyna_model.types , required: true%>
   	<%= f.input :equation , required: true, hint: "describe the equation using the parameters' code that is listed above as f(t)=x<br/>example for parameters a and b: a + b * t * t + exp(t)<br/>example for differential equation that has parameter a as initial condition: 2 * b * t + x".html_safe %>
-  	
+    <li id="dyna_model_options" class="input">
+        <label class="label">Options</label>
+        <%= f.semantic_fields_for :options do |builder| %>
+            <%= render "option_fields", f: builder %>
+        <% end -%>
+    <p class="inline-hints"><%= link_to_add_fields "+ Add Option", f, :options %></p>
+    <p class="inline-hints">Add options to be passed to the estimator, example "TolFun", "TolX", &hellip;</p>
+    
+  	</li>
   <% end %>
-  	  
+  
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button %>
   	<div class="menu">

@@ -23,6 +23,17 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
+$(document).on 'click', 'form .remove_fields', (event) ->
+  $(this).prev('input[type=hidden]').val('1')
+  $(this).closest('fieldset').hide()
+  event.preventDefault()
+
+$(document).on 'click', 'form .add_fields', (event) ->
+  time = new Date().getTime()
+  regexp = new RegExp($(this).data('id'), 'g')
+  $(this).parent().before($(this).data('fields').replace(regexp, time))
+  event.preventDefault()
+
 jQuery ->
   $('.check-all').on 'click' , (event) =>
     target = $(event.currentTarget)

@@ -18,6 +18,9 @@
 class DynaModel < ActiveRecord::Base
   has_many :params, :dependent => :destroy
   has_many :proxy_dyna_models, :dependent => :destroy
+  has_many :options, class_name: "DynaModelOption"
+  
+  accepts_nested_attributes_for :options, allow_destroy: true, :reject_if => proc { |attributes| attributes['name'].blank? }
   
   belongs_to :octave_model
   belongs_to :owner, :class_name => 'User'
@@ -90,6 +93,7 @@ class DynaModel < ActiveRecord::Base
   end
   
   private
+    
   #
   def validate_solver
     return if self.solver.nil? || self.solver.blank?
