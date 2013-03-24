@@ -8,7 +8,7 @@
 <%- e.measurements.each do |me| %>
 <%- next unless (proxy_dyna_models = ProxyDynaModel.viewable(current_user).measurement_is(me).dyna_model_is(@dyna_model) ) %>
 <%- proxy_dyna_models.each do |p_dm|  -%>
-,,<%= m.title %>,<%= m.id %>,<%= e.title %>,<%= e.id %>,<%= csv_line_for_proxy_dyna_model(p_dm,m.title).html_safe%>,<%= me.regression_a%>,<%= me.regression_b%>
+,,<%= m.title %>,<%= m.id %>,<%= e.title %>,<%= e.id %>,<%= csv_line_for_proxy_dyna_model(p_dm,me.title).html_safe%>,<%= me.regression_a%>,<%= me.regression_b%>
 <%- end %>
 <%- end %>
 <%- end %>
