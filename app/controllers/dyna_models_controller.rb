@@ -133,7 +133,13 @@ class DynaModelsController < ApplicationController
       if success
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Dyna Model")
       else
-        format.html { render action: "edit" }
+        format.html { 
+          if params[:dyna_model][:equation]
+            render action: "definition"
+          else
+            render action: "edit"  
+          end
+        }
         format.json { render json: @dyna_model.errors, status: :unprocessable_entity }
       end
     end

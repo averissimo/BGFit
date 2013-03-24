@@ -35,9 +35,20 @@ $(document).on 'page:load ready' , ->
     $('.model_def').slideUp()
     $("#" + this.value).slideDown()  
   
-  $('.check-all').on 'click' , (event) =>
-    target = $(event.currentTarget)
-    target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
+$(document).on 'click', 'form .remove_fields', (event) ->
+  $(this).prev('input[type=hidden]').val('1')
+  $(this).closest('fieldset').hide()
+  event.preventDefault()
+
+$(document).on 'click', 'form .add_fields', (event) ->
+  time = new Date().getTime()
+  regexp = new RegExp($(this).data('id'), 'g')
+  $(this).parent().before($(this).data('fields').replace(regexp, time))
+  event.preventDefault()
+
+$('.check-all').on 'click' , (event) =>
+  target = $(event.currentTarget)
+  target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
   
 
 

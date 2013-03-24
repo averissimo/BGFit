@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/andi/simple-navigation.git
-  revision: 097c64478645135e128cbe59d651b19fec6ef0d9
+  revision: 9191bcd970e6ee36ac94c59b24e0bace69275348
   specs:
     simple-navigation (3.10.0)
       activesupport (>= 2.3.2)
@@ -14,21 +14,21 @@ GIT
 
 GIT
   remote: git://github.com/rweng/jquery-datatables-rails.git
-  revision: 2024c99b26f94a036629ac04bd158c70d2f4f11b
+  revision: 314043cbf1ca8478add536e590eeddaa70a1fd82
   specs:
     jquery-datatables-rails (1.11.1)
       jquery-rails
 
 GIT
   remote: git://github.com/ryanb/cancan.git
-  revision: f1cebde51a87be149b4970a3287826bb63c0ac0b
+  revision: e6bf4c8d12dca316eb4f0923ca30b6d3dfedb7ae
   branch: 2.0
   specs:
     cancan (2.0.0.alpha)
 
 GIT
   remote: git://github.com/thoughtbot/paperclip.git
-  revision: 62264c65f8b327b8078151e2d4cd589c845a1b5a
+  revision: f28d75b81818386407f1ebd505058e0236920fd9
   specs:
     paperclip (3.4.1)
       activemodel (>= 3.0.0)
@@ -40,32 +40,32 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    actionmailer (3.2.8)
-      actionpack (= 3.2.8)
-      mail (~> 2.4.4)
-    actionpack (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
+    actionmailer (3.2.13)
+      actionpack (= 3.2.13)
+      mail (~> 2.5.3)
+    actionpack (3.2.13)
+      activemodel (= 3.2.13)
+      activesupport (= 3.2.13)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
-      rack (~> 1.4.0)
+      rack (~> 1.4.5)
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
-      sprockets (~> 2.1.3)
-    activemodel (3.2.8)
-      activesupport (= 3.2.8)
+      sprockets (~> 2.2.1)
+    activemodel (3.2.13)
+      activesupport (= 3.2.13)
       builder (~> 3.0.0)
-    activerecord (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
+    activerecord (3.2.13)
+      activemodel (= 3.2.13)
+      activesupport (= 3.2.13)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activeresource (3.2.8)
-      activemodel (= 3.2.8)
-      activesupport (= 3.2.8)
-    activesupport (3.2.8)
-      i18n (~> 0.6)
+    activeresource (3.2.13)
+      activemodel (= 3.2.13)
+      activesupport (= 3.2.13)
+    activesupport (3.2.13)
+      i18n (= 0.6.1)
       multi_json (~> 1.0)
     ansi (1.4.3)
     arel (3.0.2)
@@ -81,19 +81,18 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.4.0)
+    coffee-script-source (1.6.2)
     columnize (0.3.6)
     daemons (1.1.9)
-    debugger (1.3.1)
+    debugger (1.5.0)
       columnize (>= 0.3.1)
-      debugger-linecache (~> 1.1.1)
-      debugger-ruby_core_source (~> 1.1.8)
-    debugger-linecache (1.1.2)
-      debugger-ruby_core_source (>= 1.1.1)
-    debugger-ruby_core_source (1.1.9)
+      debugger-linecache (~> 1.2.0)
+      debugger-ruby_core_source (~> 1.2.0)
+    debugger-linecache (1.2.0)
+    debugger-ruby_core_source (1.2.0)
     delayed_job (3.0.5)
       activesupport (~> 3.0)
-    delayed_job_active_record (0.4.1)
+    delayed_job_active_record (0.4.3)
       activerecord (>= 2.1.0, < 4)
       delayed_job (~> 3.0)
     delayed_job_web (1.1.2)
@@ -115,7 +114,7 @@ GEM
       unicode-display_width (>= 0.1.1)
     formtastic (2.2.1)
       actionpack (>= 3.0)
-    google-analytics-rails (0.0.3)
+    google-analytics-rails (0.0.4)
     haml (3.1.8)
     hike (1.2.1)
     hirb (0.7.1)
@@ -124,21 +123,21 @@ GEM
     jquery-rails (2.2.1)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    jquery-ui-rails (4.0.1)
+    jquery-ui-rails (4.0.2)
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.7)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-    mail (2.4.4)
+    mail (2.5.3)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.21)
-    multi_json (1.6.1)
+    multi_json (1.7.2)
     mysql2 (0.3.11)
-    nokogiri (1.5.6)
+    nokogiri (1.5.9)
     octave-ruby (2.0.3)
     orm_adapter (0.4.0)
     paint (0.8.5)
@@ -150,64 +149,65 @@ GEM
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-protection (1.3.2)
+    rack-protection (1.5.0)
       rack
     rack-ssl (1.3.3)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    rails (3.2.8)
-      actionmailer (= 3.2.8)
-      actionpack (= 3.2.8)
-      activerecord (= 3.2.8)
-      activeresource (= 3.2.8)
-      activesupport (= 3.2.8)
+    rails (3.2.13)
+      actionmailer (= 3.2.13)
+      actionpack (= 3.2.13)
+      activerecord (= 3.2.13)
+      activeresource (= 3.2.13)
+      activesupport (= 3.2.13)
       bundler (~> 1.0)
-      railties (= 3.2.8)
-    railties (3.2.8)
-      actionpack (= 3.2.8)
-      activesupport (= 3.2.8)
+      railties (= 3.2.13)
+    railties (3.2.13)
+      actionpack (= 3.2.13)
+      activesupport (= 3.2.13)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
     rake (10.0.3)
-    rdoc (3.12.1)
+    rdoc (3.12.2)
       json (~> 1.4)
     rsolr (1.0.8)
       builder (>= 2.1.2)
-    sass (3.2.5)
+    sass (3.2.7)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
-    sinatra (1.3.4)
+    sinatra (1.3.6)
       rack (~> 1.4)
       rack-protection (~> 1.3)
       tilt (~> 1.3, >= 1.3.3)
-    sprockets (2.1.3)
+    sprockets (2.2.2)
       hike (~> 1.2)
+      multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
     strong_parameters (0.2.0)
       actionpack (~> 3.0)
       activemodel (~> 3.0)
       railties (~> 3.0)
-    sunspot (1.3.3)
+    sunspot (2.0.0)
       pr_geohash (~> 1.0)
       rsolr (~> 1.0.7)
-    sunspot_rails (1.3.3)
+    sunspot_rails (2.0.0)
       nokogiri
-      sunspot (= 1.3.3)
-    sunspot_solr (1.3.3)
+      sunspot (= 2.0.0)
+    sunspot_solr (2.0.0)
     thor (0.17.0)
-    tilt (1.3.3)
+    tilt (1.3.6)
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
     turn (0.8.2)
       ansi (>= 1.2.2)
-    tzinfo (0.3.35)
+    tzinfo (0.3.37)
     uglifier (1.3.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -240,7 +240,7 @@ DEPENDENCIES
   octave-ruby
   paper_trail
   paperclip!
-  rails (= 3.2.8)
+  rails (= 3.2.13)
   sass-rails (~> 3.2.3)
   simple-navigation!
   strong_parameters

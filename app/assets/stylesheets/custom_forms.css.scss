@@ -18,6 +18,14 @@ sup[title=required] {
 .formtastic legend {
   color: #333333;
   white-space: normal;
+
+.formtastic .input .inline {
+  margin: 0em 0px 0px 25%;
+  padding-top: 0px;
+  & input {
+    margin-left: 0px;
+    margin-right: 2px;
+  }
 }
 
 input,

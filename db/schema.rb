@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130224221645) do
+ActiveRecord::Schema.define(:version => 20130324155417) do
 
   create_table "accessibles", :force => true do |t|
     t.integer  "permitable_id"
@@ -47,6 +47,16 @@ ActiveRecord::Schema.define(:version => 20130224221645) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "dyna_model_options", :force => true do |t|
+    t.string   "name"
+    t.float    "value"
+    t.integer  "dyna_model_id"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "dyna_model_options", ["dyna_model_id"], :name => "index_dyna_model_options_on_dyna_model_id"
 
   create_table "dyna_models", :force => true do |t|
     t.string   "title"

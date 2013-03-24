@@ -20,7 +20,7 @@
   	<%- if !@measurement.new_record? %>
   	 <%= f.input :change_original_data, as: :boolean%>
   	<%- end %>
-    <%= f.input :original_data, as: :text, hint: "data should be copied as tab delimeted columns: X&nbsp;&nbsp;&nbsp;Y&nbsp;&nbsp;&nbsp;Z&nbsp;&nbsp;&nbsp;note"%>
+    <%= f.input :original_data, as: :text, hint: "data should be copied as tab delimeted columns, space delimited data is not supported!<br/>example:<br/> X&nbsp;&nbsp;&nbsp;Y&nbsp;&nbsp;&nbsp;Z&nbsp;&nbsp;&nbsp;note".html_safe %>
   	<%- if permitted_params.measurement_attributes.include? :minor_step %>
   	 <%= f.input :minor_step %>
   	<%- end %>
