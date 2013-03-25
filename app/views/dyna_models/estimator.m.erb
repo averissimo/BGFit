@@ -21,7 +21,7 @@ function [output_string,output] = <%=@dyna_model.estimator_m_name(false)%>(test_
     % input paramters are in the environment variable "QUERY_STRING"
     if nargin > 0 && test_data
         if test_data == 1
-          s = test_query("estimator","<%=@dyna_model.title.downcase%>");
+          s = test_query('estimator','<%=@dyna_model.title.downcase%>');
         else
           s = test_data;
         end
