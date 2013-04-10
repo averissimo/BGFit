@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
       redirect_to request.referer, :alert => exception.message
     end
   end
-  
+    
   private
   
   def permitted_params

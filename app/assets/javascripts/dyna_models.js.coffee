@@ -23,10 +23,39 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
-jQuery ->
-  $('.check-all').live 'click' , (event) =>
+
+$(document).on 'page:load ready' , ->
+  
+  $('#dyna_model_next_step_input input').each ->
+    if $(this).prop('checked') == true
+      $("#" + this.value).show()
+  
+  $('#dyna_model_next_step_input').on 'change', 'input' , (event) ->
     target = $(event.currentTarget)
-    target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
+    $('.model_def').slideUp()
+    $("#" + this.value).slideDown()  
+  
+$(document).on 'click', 'form .remove_fields', (event) ->
+  $(this).prev('input[type=hidden]').val('1')
+  $(this).closest('fieldset').hide()
+  event.preventDefault()
+
+$(document).on 'click', 'form .add_fields', (event) ->
+  time = new Date().getTime()
+  regexp = new RegExp($(this).data('id'), 'g')
+  $(this).parent().before($(this).data('fields').replace(regexp, time))
+  $('textarea.autogrow').autoGrow()
+  event.preventDefault()
+
+$(document).on 'click', 'form .add_fields_in_table', (event) ->
+  time = new Date().getTime()
+  regexp = new RegExp($(this).data('id'), 'g')
+  $(this).parent().parent().before($(this).data('fields').replace(regexp, time))
+  event.preventDefault()
+  
+$('.check-all').on 'click' , (event) =>
+  target = $(event.currentTarget)
+  target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
   
 
 

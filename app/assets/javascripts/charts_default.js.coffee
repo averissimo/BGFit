@@ -67,20 +67,28 @@ if typeof google isnt 'undefined'
         #alert(textStatus)
     }
     
-    $('a.hide').live 'click' , (event) =>
+    $('a.hide').on 'click' , (event) =>
       top = $(event.currentTarget).parents('.proxy_dyna_model_chart').slideUp()
       false
     
-    $('a.download.svg').live 'hover' , (event) =>
+    $('a.download.svg').on 'hover' , (event) =>
       $(event.currentTarget).prop('href','#')
     
-    $('a.download.svg').live 'click' , (event) =>
+    $('a.download.svg').on 'click' , (event) =>
       target = $(event.currentTarget)
       base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart svg').parent()[0].innerHTML
-
+      
       target.prop('href','data:image/svg;base64,'+ btoa(base64))
       true
-        
+    
+    $('a.download.png').on 'click' , (event) =>
+      target = $(event.currentTarget)
+      base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart svg').parent()[0]
+      imgData = getImgData(base64)
+      target.prop('href',imgData)
+      true
+      
+
     process_google_chart = (el,data) ->
       calculate_view_window( data, options )
       chart = new google.visualization.ScatterChart el
@@ -249,7 +257,7 @@ if typeof google isnt 'undefined'
     #
     # Estimate specific javascript
     #    
-    $('a.estimate_chart').live 'click' , (event) =>
+    $('a.estimate_chart').on 'click' , (event) =>
       target = $(event.currentTarget)
       wrapper = target.parents('.experiments').find('.proxy_dyna_model_chart')
       # set the measurement title to the chart
@@ -271,7 +279,7 @@ if typeof google isnt 'undefined'
     #
     
           
-    $('h5.button').live 'click' , (event) =>
+    $('h5.button').on 'click' , (event) =>
       target = $(event.currentTarget)
       wrapper = $(target).parent().children('div.toggle')
       if wrapper.is(":visible") 

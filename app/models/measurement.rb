@@ -113,22 +113,24 @@ class Measurement < ActiveRecord::Base
   
     def x_array(log=false,no_death_phase=true)
       self.lines_no_death_phase(no_death_phase).sort.collect { |l|
-        if log
-          Math.log( l.x )
+        if log && l.ln_y.nil?
+          nil
         else
           l.x
         end  
-      }.join(",")
+      }.compact.join(",")
     end
     
     def y_array(log=false,no_death_phase=true)
       self.lines_no_death_phase(no_death_phase).sort.collect { |l|
-        if log
+        if log && l.ln_y
           l.ln_y
+        elsif log
+          nil
         else
           l.y
         end  
-      }.join(",")
+      }.compact.join(",")
     end
   
     def end(no_death_phase=true)
@@ -160,41 +162,34 @@ class Measurement < ActiveRecord::Base
      return if original_data.nil?
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
-# removes header from data
-#       next if y == 1
-#       if y == 0
-#         self.title = l
-#         next
-#       end
+
        line = Line.new
-       l.split(/\t/).each_with_index do |el , y2|
+       debugger
+       l.split(/(\t|[ ]+)/).each_with_index do |el , y2|
 
          el = el.gsub("," , ".")
          next if el.match(/N.*A/) || el == nil || el == ""
-         
-         case y2
-          when 0 # time
-            line.x = Float(el)
-          when 1 # OD600 
-            line.y = Float(el)
-            line.ln_y = Math.log( line.y ) unless line.y == 0
-          when 2 # pH
-            line.z = Float(el)
-          when 3 # notes
-            line.note = el
+         begin
+           case y2
+            when 0 # time
+              line.x = Float(el)
+            when 2 # OD600 
+              line.y = Float(el)
+              line.ln_y = Math.log( line.y ) unless line.y == 0
+            when 4 # pH
+              line.z = Float(el)
+            when 6 # notes
+              line.note = el
+            end
+          rescue Exception => e
+            #
+            line.note = "Error importing line."
           end
        end
        self.lines << line
      end
-    #temp_date = title.gsub(/ \(.\)/,"")
-    begin
-#      self.date = Date.strptime self.title, '%d-%m-%Y'
-    rescue
-#      self.date = Date.strptime self.title, '%d/%m/%Y'
-    end
- #   self.title = self.title.strip
-    end
-    
+  end
+      
     def original_data_trimmed
       if original_data.length > 27
         return original_data[0..30] + "..." 
@@ -217,6 +212,39 @@ class Measurement < ActiveRecord::Base
       return exp_cmp unless exp_cmp == 0
             
       return self.title <=> o.title
+    end
+    
+    def update_regression
+      x = y = sum_x = sum_y = sum_xy = sum_x2 = count = 0
+      self.lines.all.each do |l|
+        next unless l.regression_flag
+        next if l.x.nil? || l.ln_y.nil?
+        
+        x = l.x
+        begin
+          y = l.ln_y
+        rescue Exception => e
+          next
+        end
+          
+        sum_x  += x
+        sum_y  += y
+        sum_xy += x * y
+        sum_x2 += x * x
+        count += 1
+      end    
+      
+      return if count < 2
+      
+      a_top = sum_y * sum_x2 - sum_x * sum_xy # top of A
+      a_bot = count * sum_x2 - sum_x * sum_x  # bottom of A
+      b_top = count * sum_xy - sum_x * sum_y  # top of B
+      b_bot = count * sum_x2 - sum_x * sum_x  # bottom of B
+      a = a_top / a_bot
+      b = b_top / b_bot
+      
+      self.regression_a = a
+      self.regression_b = b
     end
     
     def can_view(user=nil)

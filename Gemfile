@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 
-gem 'rails', '3.2.8'
+gem 'rails', '3.2.13'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -74,3 +74,9 @@ gem 'google-analytics-rails'
 #group :test,:production do
 #  gem 'therubyracer'
 #end
+
+gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
+
+gem "octave-ruby"
+
+gem "autogrow-textarea-rails"

@@ -15,12 +15,16 @@
 % along with this program; if not, write to the Free Software
 % Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-function output = <%=@dyna_model.estimator_m_name(false)%>(test_data, draw_plot, debug)
+function [output_string,output] = <%=@dyna_model.estimator_m_name(false)%>(test_data, draw_plot, debug)
 %
     %% get inputs
     % input paramters are in the environment variable "QUERY_STRING"
     if nargin > 0 && test_data
-        s = 'param_names=[]&param_top=[]&param_bottom=[]&time=[]&values=[]';
+        if test_data == 1
+          s = test_query('estimator','<%=@dyna_model.title.downcase%>');
+        else
+          s = test_data;
+        end
         input = qs2struct(s);
     else
         input = qs2struct(getenv('QUERY_STRING'));
@@ -38,7 +42,9 @@ function output = <%=@dyna_model.estimator_m_name(false)%>(test_data, draw_plot,
     end
     %% Options for estimation
     % options retrieved from build estimation
+    <% @dyna_model.options.each do |option| -%>
+    options.<%=option.name%> = <%=option.value%>; 
+    <% end -%>
     %% perform parameter estimation
-    output = analytical_estimator(input, model, options, flag, debug_flag);
-
+    [output,output_string] = analytical_estimator(input, model, struct, flag, debug_flag);
 end

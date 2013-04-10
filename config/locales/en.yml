@@ -19,7 +19,10 @@ en:
     download_chart: Download chart as .svg
     in: in
     root: Home
-    
+  
+  octave_models:
+    index:
+      title: Octave Model management
   groups:
     index:
       title: Team management
@@ -68,7 +71,7 @@ en:
     edit_this: Edit %{model}
     remove: Delete
     confirm: Are you sure?
-    download_data: Download .csv
+    download_data: Download .csv 
     measurement:
       regression: Regression
     dyna_model:
@@ -87,6 +90,7 @@ en:
         
   activerecord:
     models:
+      octave_model: Octave Model
       group: Team
       model: Project
       dyna_model: "Model"

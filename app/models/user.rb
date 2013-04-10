@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   has_many :groups, :through => :memberships
   has_many :owned_models, :class_name => 'Model'
   has_many :owned_dyna_models, :class_name => 'DynaModel'
+  has_many :octave_models
   
   #todo: use pluck in 3.2
   scope :remove_group_users, lambda { |group| where( User.arel_table[:id].not_in( Membership.where(Membership.arel_table[:group_id].eq(group.id)).collect { |a| a.user_id } )) }

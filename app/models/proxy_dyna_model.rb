@@ -24,6 +24,8 @@ class ProxyDynaModel < ActiveRecord::Base
   
   accepts_nested_attributes_for :simulation
   
+  attr_accessor :for_measurements
+  
   validate :validate_title
   
   before_save :update_params
@@ -33,9 +35,6 @@ class ProxyDynaModel < ActiveRecord::Base
   validates :dyna_model, :presence => { :message => 'A model must be choosen.' }
   
   scope :viewable, lambda { |user,only_mine=false| 
-    joins( :measurement => :experiment ).where( 
-      Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )
-    )
   }
   
   scope :experiment_is, lambda { |experiment|
@@ -320,7 +319,6 @@ class ProxyDynaModel < ActiveRecord::Base
           else
             response = call_http_get(request_hash)
           end    
-          
           if response.body.blank?
             clean_stats "empty response"
             return
@@ -581,8 +579,9 @@ class ProxyDynaModel < ActiveRecord::Base
         hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0  
       else
         # experiments
-        hash[:start] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.min_by { |l| l.x }.x
-        hash[:end] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.max_by { |l| l.x }.x
+        lines_aux = self.experiment.measurements.collect{|m|m.lines_no_death_phase(self.no_death_phase)}.flatten
+        hash[:start] = lines_aux.min_by { |l| l.x }.x
+        hash[:end] = lines_aux.max_by { |l| l.x }.x
         minor_step = self.experiment.measurements.select(Measurement.arel_table[:minor_step].minimum.as("min_minor_step")).first.min_minor_step
         hash[:minor_step] = minor_step if minor_step.present? || minor_step == 0
       end
@@ -602,11 +601,11 @@ class ProxyDynaModel < ActiveRecord::Base
       
       # TODO make death phase optional
       if self.experiment.nil?
-        x_array = self.measurement.x_array(false,no_death_phase)
+        x_array = self.measurement.x_array(log_flag,no_death_phase)
         y_array = self.measurement.y_array(log_flag,no_death_phase)
       else
         x_array = experiment.measurements.collect { |m|
-          m.x_array(false,no_death_phase).to_s
+          m.x_array(log_flag,no_death_phase).to_s
         }.join('];[')
         
         y_array = experiment.measurements.collect { |m|
@@ -817,7 +816,7 @@ class ProxyDynaModel < ActiveRecord::Base
             prev_sim_value = simulated_value
             simulated_value = json_parsed.shift # pops first element of json_parsed
           end
-          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil" if simulated_value.nil?
+          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil at line.x = " + line.x.to_s if simulated_value.nil?
           # checks if current simulated value timepoint is greater or equal than timepoint
           value = nil
           if simulated_value[0] > line.x

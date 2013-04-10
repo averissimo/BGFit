@@ -4,7 +4,7 @@
 </p>
 
 <%= semantic_form_for(@form) do |f| %>
-  <%= f.semantic_errors :state %>
+  <%= form_errors(f) %>
 
   <%= f.inputs do %>
   	<%= f.input :title %>

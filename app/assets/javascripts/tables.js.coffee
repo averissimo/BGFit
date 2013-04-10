@@ -36,3 +36,27 @@ root.convert_tables = () ->
       
 jQuery ->
   root.convert_tables()
+
+root.getImgData = (chartContainer) ->
+  chartArea = $(chartContainer).find('svg').parent()
+  svg = chartArea.find('svg')
+  doc = document
+  canvas = document.createElement('canvas')
+  canvas.setAttribute 'width', svg.prop('width').baseVal.value
+  canvas.setAttribute 'height', svg.prop('height').baseVal.value
+  canvas.setAttribute(
+    'style',
+    'position: absolute; ' +
+    'top: ' + (-svg.prop('height').baseVal.value * 2) + 'px;' +
+    'left: ' + (-svg.prop('width').baseVal.value * 2) + 'px;')
+    
+  document.body.appendChild(canvas)
+  canvg(canvas, chartArea.html())
+  imgData = canvas.toDataURL("image/png")
+  canvas.parentNode.removeChild(canvas)
+  return imgData
+  
+root.saveAsImg = (chartContainer) ->
+  imgData = getImgData(chartContainer)
+  window.location = imgData.replace("image/png", "image/octet-stream")
+  

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @octave_model.name %>
+</p>
+
+<p>
+  <b>Owner:</b>
+  <%= @octave_model.user.email_at %>
+</p>
+
+<p>
+  <b>Model:</b>
+  <%= link_to "download",@octave_model.model.url %>
+</p>
+
+<p>
+  <b>Solver:</b>
+  <%= link_to "download",@octave_model.solver.url %>
+</p>
+
+<p>
+  <b>Estimator:</b>
+  <%= link_to "download",@octave_model.estimator.url %>
+</p>
+
+<%= link_to 'Edit', edit_octave_model_path(@octave_model) %> |
+<%= link_to 'Back', octave_models_path %>

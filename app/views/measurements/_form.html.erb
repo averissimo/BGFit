@@ -10,17 +10,17 @@
 %>
 
 <%= semantic_form_for([@experiment,@measurement]) do |f| %>
-  <%= f.semantic_errors :state %>
+  <%= form_errors(f) %>
 
   <%= f.inputs do %>
   	<!--<%= f.input :experiment, :input_html => { :disabled => true  }%>-->
   	<%= f.input :title %>
   	<%= f.input :description %>  
-    <%= f.input :date , label:"Date",as: :date_select, :include_blank => true %>
+    <%= f.input :date , label:"Date",as: :string, input_html: {class: "date_picker"} %>
   	<%- if !@measurement.new_record? %>
   	 <%= f.input :change_original_data, as: :boolean%>
   	<%- end %>
-    <%= f.input :original_data, as: :text, hint: "data should be copied as tab delimeted columns: X&nbsp;&nbsp;&nbsp;Y&nbsp;&nbsp;&nbsp;Z&nbsp;&nbsp;&nbsp;note"%>
+    <%= f.input :original_data, as: :text, hint: "data should be copied as tab delimeted columns, space delimited data is not supported!<br/>example:<br/> X&nbsp;&nbsp;&nbsp;Y&nbsp;&nbsp;&nbsp;Z&nbsp;&nbsp;&nbsp;note".html_safe %>
   	<%- if permitted_params.measurement_attributes.include? :minor_step %>
   	 <%= f.input :minor_step %>
   	<%- end %>

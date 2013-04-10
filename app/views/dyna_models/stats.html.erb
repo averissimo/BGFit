@@ -13,7 +13,7 @@
         {
             :key => :edit, 
             :name => t('action.download_data'), 
-            :url => stats_dyna_model_path(@dyna_model, :format => :csv),
+            :url => export_dyna_model_path(@dyna_model, :format => :csv),
             :options => {
                 :container_class => 'menu'
             }

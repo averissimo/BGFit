@@ -59,20 +59,6 @@ class DynaModelsController < ApplicationController
     end
   end
   
-
-  def create
-    @dyna_model = DynaModel.new(params[:dyna_model])
-    @dyna_model.owner = current_user
-    respond_with @dyna_model do | format |
-      if @dyna_model.save
-        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Dyna Model")
-      else
-        format.html { render action: "new" }
-        format.json { render json: @dyna_model.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-  
   def calculate
     @dyna_model = DynaModel.find(params[:id])
     @proxy_dyna_models = ProxyDynaModel.viewable(current_user).where( :id => params["proxy_dyna_model_ids"])
@@ -111,20 +97,52 @@ class DynaModelsController < ApplicationController
     respond_with(@dyna_models)
   end
 
+  def create
+    @dyna_model = DynaModel.new(params[:dyna_model])
+    @dyna_model.owner = current_user
+    
+    success = octave_part()
+    
+    respond_with @dyna_model do | format |
+      if success
+        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Dyna Model")
+      else
+        format.html { render action: "new" }
+        format.json { render json: @dyna_model.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def update
     @dyna_model = DynaModel.find(params[:id])
     
-    if params[:dyna_model][:equation]
-      response = [:definition,@dyna_model]
-    else
-      response = @dyna_model
+    response = if params[:dyna_model][:equation] then [:definition,@dyna_model] else @dyna_model end
+    success = false
+    @dyna_model.transaction do
+      begin
+        @dyna_model.assign_attributes(params[:dyna_model])
+        if @dyna_model.equation.present? && @dyna_model.eq_type.present?
+            @octave_model = if @dyna_model.octave_model.nil? then OctaveModel.new else @dyna_model.octave_model end
+            build_octave_model() # helper method to simplify code
+        end
+        success = @dyna_model.save
+      rescue Exception => e
+        flash[:notice] = "Error associating model's source"
+        raise ActiveRecord::Rollback
+      end
     end
     
     respond_with response do |format|
-      if @dyna_model.update_attributes(params[:dyna_model])
+      if success
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Dyna Model")
       else
-        format.html { render action: "edit" }
+        format.html { 
+          if params[:dyna_model][:equation]
+            render action: "definition"
+          else
+            render action: "edit"  
+          end
+        }
         format.json { render json: @dyna_model.errors, status: :unprocessable_entity }
       end
     end
@@ -142,11 +160,19 @@ class DynaModelsController < ApplicationController
     respond_with(@dyna_model)
   end
   
+  def export
+    @dyna_model = DynaModel.find(params[:id])
+    @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model)
+    @experiments = Experiment.viewable(current_user,true).dyna_model_is(@dyna_model)
+    respond_with(@dyna_model)
+  end
+  
   def stats
     @dyna_model = DynaModel.find(params[:id])
     
     respond_with(@dyna_model) do |format|
-      format.html { @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page]) }
+      format.html { @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model).page(params[:page])
+         }
       format.csv {
         @models = Model.viewable(current_user,true).dyna_model_is(@dyna_model)
         @experiments = Experiment.viewable(current_user,true).dyna_model_is(@dyna_model)
@@ -176,6 +202,73 @@ class DynaModelsController < ApplicationController
     @dyna_model.destroy
     respond_with(@dyna_model, :location => dyna_models_path)
 
+  end
+
+  private
+  
+  def octave_part()
+    success = false
+    @dyna_model.transaction do
+      begin
+        if @dyna_model.equation.present? && @dyna_model.eq_type.present?
+            @octave_model = if @dyna_model.octave_model.nil? then OctaveModel.new else @dyna_model.octave_model end
+            build_octave_model() # helper method to simplify code
+        end
+        success = @dyna_model.save
+      rescue Exception => e
+        flash[:notice] = "Error associating model's source"
+        raise ActiveRecord::Rollback
+      end
+    end
+    success
+  end
+  
+  def build_octave_model()
+    @octave_model.name = @dyna_model.title # assigns title
+    
+    # saves model to octave_model attachment
+    model = Tempfile.new( [@dyna_model.title.downcase,".m"] )
+    template_type = GlobalConstants::EQUATION_TYPE.key(@dyna_model.eq_type).to_s.downcase
+    model.write( render_to_string( action: template_type.to_s, formats: :m).force_encoding('utf-8') )
+    model.size
+    @octave_model.model = model
+    @octave_model.model_file_name = @dyna_model.model_m_name
+    
+    
+    # saves simulator to octave_model attachment
+    simulator = Tempfile.new( [@dyna_model.title.downcase + "_sim",".m"] )
+    simulator.write( render_to_string( action: "simulator", formats: :m).force_encoding('utf-8') )
+    simulator.size
+    @octave_model.solver = simulator
+    @octave_model.solver_file_name = @dyna_model.simulator_m_name
+    
+    # saves estimator to octave_model attachment
+    estimator = Tempfile.new( [@dyna_model.title.downcase + "_est",".m"] )
+    estimator.write( render_to_string( action: "estimator", formats: :m).force_encoding('utf-8') )
+    estimator.size
+    @octave_model.estimator = estimator
+    @octave_model.estimator_file_name = @dyna_model.estimator_m_name
+    
+    # register user
+    @octave_model.user = current_user
+    @octave_model.save
+    
+    # close file streams
+    model.close
+    simulator.close
+    estimator.close
+    
+    # deletes temporary files
+    model.unlink
+    simulator.unlink
+    estimator.unlink
+    
+    # saves the octave model
+    @dyna_model.octave_model = @octave_model
+    # stores the URL paths
+    @dyna_model.solver = solver_octave_model_path(@octave_model,format: :json, only_path: false)
+    @dyna_model.estimation = estimator_octave_model_path(@octave_model,format: :json, only_path: false)
+    
   end
 
 end

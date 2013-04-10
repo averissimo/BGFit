@@ -1,21 +1,10 @@
 <% 
 	context_menu = [
 		{
-			:key => :back, 
-			:name => t('navigation.back'), 
-			:url => url_for(:back),
-			:options => {
-				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
 			:key => :home, 
-			:name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase), 
+			:name => t('navigation.back'), 
 			:url => dyna_model_path(@dyna_model),
 			:options => {
-				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
 				:container_class => 'menu',
 				:class => "text"
 			}
@@ -25,5 +14,5 @@
 	content_for(:title) { t('title.edit' , model: DynaModel.model_name.human.downcase) }
 %><h1>Editing <%= DynaModel.model_name.human.downcase %></h1>
 
-<%= render 'form' %>
+<%= render 'form', menu: menu %>
     

@@ -40,8 +40,11 @@
 #    }
 #  })
 
+$(document).on 'page:load ready' , ->
+  $('.date_picker').datepicker()
+
 jQuery ->
-  $('div.flash a.close_flash').live 'click', (e)->
+  $('div.flash a.close_flash').on 'click', (e)->
     div = $(@).parent().slideToggle();
     false
   
@@ -69,12 +72,12 @@ jQuery ->
     $(@).prop("data-height",h)
     hide_partial(0,0.6, h / HIDE,$(@))
 
-  $('input#param_0').live 'change', (e)->
+  $('input#param_0').on 'change', (e)->
     div = $(@).parentsUntil("div").parent().find('#table_params')
     hide_partial(1500 , 1 , div.prop("data-height") , div)
     div.removeProp("data-height")
   
-  $('input#param_1').live 'change', (e)->
+  $('input#param_1').on 'change', (e)->
     div = $(@).parentsUntil("div").parent().find('#table_params')
     div.prop("data-height",div.height())
     hide_partial(1500,0.6, div.height() / HIDE , div)

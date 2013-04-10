@@ -2,8 +2,17 @@ BacteriaGrowth::Application.routes.draw do
 
   devise_for :users , path_names: { sign_in: "login" , sign_out: "logout"}
 
+  match "/404", :to => "errors#not_found"
+
   match "/delayed_job" => DelayedJobWeb, :anchor => false
   match "/documentation" , via: :get, controller: :home, action: "documentation", as: "documentation"  
+
+  resources :octave_models do
+    get :estimator, on: :member
+    post :estimator, on: :member
+    get :solver, on: :member
+    post :solver, on: :member
+  end
     
   resources :groups, path: :teams do
     resources :memberships, :only => [:new, :create, :destroy]
@@ -14,6 +23,7 @@ BacteriaGrowth::Application.routes.draw do
     member do
       match "stats/experiment_detail" , :via => :get, :action => "experiment_detail", as: "experiment_detail_stats"
       get :stats
+      get :export
       get :estimate
       put :calculate
       get :definition
