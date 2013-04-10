@@ -164,7 +164,8 @@ class Measurement < ActiveRecord::Base
      self.original_data.split(/\n/).each_with_index do |l,y|
 
        line = Line.new
-       l.split(/\t/).each_with_index do |el , y2|
+       debugger
+       l.split(/(\t|[ ]+)/).each_with_index do |el , y2|
 
          el = el.gsub("," , ".")
          next if el.match(/N.*A/) || el == nil || el == ""
@@ -172,12 +173,12 @@ class Measurement < ActiveRecord::Base
            case y2
             when 0 # time
               line.x = Float(el)
-            when 1 # OD600 
+            when 2 # OD600 
               line.y = Float(el)
               line.ln_y = Math.log( line.y ) unless line.y == 0
-            when 2 # pH
+            when 4 # pH
               line.z = Float(el)
-            when 3 # notes
+            when 6 # notes
               line.note = el
             end
           rescue Exception => e

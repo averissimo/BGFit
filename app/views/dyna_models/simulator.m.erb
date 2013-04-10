@@ -20,7 +20,7 @@ function [ string_output,output ] = <%=@dyna_model.simulator_m_name(false)%>( te
 %   Detailed explanation goes here
     if nargin > 0 && test_data
         if test_data == 1
-          s = test_query("simulator","<%=@dyna_model.title.downcase%>");
+          s = test_query('simulator','<%=@dyna_model.title.downcase%>');
         else
           s = test_data;
         end

@@ -17,7 +17,7 @@
             <%= render partial: "experiments_summary.html", :locals => { :m => m }%>
         </div>
     <%- else %>
-        <p><%= link_to "show experiments" , stats_params(m.id,"stats") , remote: true, class: "show_more btn blank btn_small" %></p>
+        <p><%= link_to "show experiments" , stats_params(m.id,"stats") , remote: true, class: "btn blank btn_small" %></p>
     <%- end %>
     
     <%- end %>
