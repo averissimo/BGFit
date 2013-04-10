@@ -21,6 +21,7 @@ class DynaModel < ActiveRecord::Base
   has_many :options, class_name: "DynaModelOption"
   
   accepts_nested_attributes_for :options, allow_destroy: true, :reject_if => proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :params, allow_destroy: true, :reject_if => proc { |attributes| attributes['code'].blank? }
   
   belongs_to :octave_model
   belongs_to :owner, :class_name => 'User'
@@ -30,8 +31,6 @@ class DynaModel < ActiveRecord::Base
   validates :title, :presence => true
   
   attr_accessor :next_step
-
-  accepts_nested_attributes_for :params
   
   has_paper_trail
 

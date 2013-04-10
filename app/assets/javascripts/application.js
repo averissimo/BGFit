@@ -8,5 +8,6 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
+//= require jquery.autogrowtextarea
 //= require charts_default
 //= require_tree .

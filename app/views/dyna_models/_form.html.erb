@@ -1,22 +1,39 @@
+<% unless @dyna_model.new_record? -%>
+  <div><i>note:</i> If you wish to edit the equation directly, please goto <%= link_to "Generate source", [:definition,@dyna_model], class: "btn blank"%></div>
+  <br/>
+  <% end -%>
+  
 <%= semantic_form_for([@dyna_model]) do |f| %>
   <%= form_errors(f) %>
-  
+    
   <%= f.inputs do %>
   	<%= f.input :title %>
+  	<% if f.object.new_record? -%>
   	<%= f.input :next_step, label: "Model definition", required: true, as: :radio , collection: next_step_list %>
+  	<% end -%>
   <% end -%>
-  <%= f.inputs(id: "urls", class:"hidden model_def") do %>
+  
+  <%= f.inputs(id: "urls", class:"#{if f.object.new_record? then 'hidden' else '' end} model_def") do %>
   	<%= f.input :solver , as: :url %>
   	<%= f.input :estimation, as: :url %>
   <% end -%>
-  <%= f.inputs(id: "equation", class:"hidden model_def") do %>
-  	<%= f.input :eq_type, :as => :radio, :collection => @dyna_model.types , required: true%>
-  	<%= f.input :equation , required: true, hint: "describe the equation using the parameters' code that is listed above as f(t)=x<br/>example for parameters a and b: a+b*t^2 + exp(t)<br/>example for differential equation that has parameter a as initial condition: 2*b*t + x".html_safe %>
-  <% end -%>
-  <%= f.inputs do %>
-  <% @dyna_model.params.build %>
-  		<%= f.input name: 'Param #%i', for: :params %>
-  <% end -%>
+      
+  <% if f.object.new_record? -%>
+      <%= f.inputs(id: "equation", class:"hidden model_def") do %>
+      	<%= f.input :eq_type, :as => :radio, :collection => @dyna_model.types , required: true%>
+      	<%= f.input :equation , required: true, hint: "describe the equation using the parameters' code that is listed above as f(t)=x<br/>example for parameters a and b: a+b*t^2 + exp(t)<br/>example for differential equation that has parameter a as initial condition: 2*b*t + x".html_safe %>
+      <% end -%>
+    
+        <li id="dyna_model_params" class="input">
+            <label class="label">Params</label>
+            <div>
+            <%= f.semantic_fields_for :params do |builder| %>
+                <%= render "param_fields", f: builder %>
+            <% end -%>
+            <p class="inline-hints"><%= link_to_add_fields "+ Add Param", f, :params %></p>
+            </div>
+ <% end -%>
+    
   <%= f.inputs do %>
     <%= f.input :log_flag, as: :boolean %>
   	<%- if @dyna_model.owner_id == current_user.id || @dyna_model.new_record? %> 
@@ -28,7 +45,9 @@
   	  
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button %>
-  	<%= f.action :cancel, :as => :link, label: t('form.cancel') %>
+  	<div class="menu">
+        <%= menu %>
+    </div>
   <% end %>
 <% end %>
 

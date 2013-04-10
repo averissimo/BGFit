@@ -4,16 +4,21 @@
 en:
   formtastic:
     placeholders:
-      measurements:
+      measurement:
         date: "click here to select date"
+      param:
+        code: "starts with a letter and cannot contain spaces"
+        top: "top range value for estimation"
+        bottom: "top range value for estimation"
+        human_title: "name for interface, can contain html"
     labels:
       proxy_dyna_model:
         for_measurements: Apply dyna model to all measurements
     hints:
       param:
-        output_only: "This should only be checked if the parameter is not used as an input for the parameters estimatin"
-        initial_condition: "This should only be checked if the model is based on differential equations"
-        code: "Logical name for parameter, should start with a letter and not contain any spaces or special characters"
+        output_only: "checked if the parameter is not used as an input"
+        initial_condition: "checked if it's the initial condition for a differential equation"
+        code: "Logical name for parameter that starts with a letter and cannot contain spaces"
         human_title: "Name for presenting in the application's interface. Can contain html"
         bottom: "Default bottom range value when fitting curves"
         top: "Default top range value when fitting curves"

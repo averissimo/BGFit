@@ -78,3 +78,5 @@ gem 'google-analytics-rails'
 gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
 
 gem "octave-ruby"
+
+gem "autogrow-textarea-rails"

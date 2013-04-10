@@ -34,3 +34,6 @@ jQuery ->
       $(@).children("p").css("margin-top",0)
       detail.animate {height: height_new},1500,"easeInOutCirc"
     false
+
+$(document).on 'page:load ready' , ->
+  $('textarea.autogrow').autoGrow()

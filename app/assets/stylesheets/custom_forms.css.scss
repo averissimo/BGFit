@@ -18,6 +18,7 @@ sup[title=required] {
 .formtastic legend {
   color: #333333;
   white-space: normal;
+}
 
 .formtastic .input .inline {
   margin: 0em 0px 0px 25%;
@@ -30,8 +31,14 @@ sup[title=required] {
 
 input,
 textarea { padding: 4px 8px; border: 1px solid #aaa; background: #fff; padding-left: 1em;}
-textarea { height: 12em; }
 
+textarea.autogrow { 
+  height: auto;
+}
+
+textarea { 
+  height: 7em;
+}
 .formtastic .stringish input {
   line-height: 22px;
   padding-left: 0.5em; 

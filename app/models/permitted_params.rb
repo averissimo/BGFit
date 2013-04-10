@@ -84,7 +84,7 @@ class PermittedParams < Struct.new(:params,:user)
   end
   
   def dyna_model_attributes
-    attr_hash = [:description, :title, :definition, :solver, :estimation, :only_owner_can_change, :log_flag, :equation, :eq_type, :options_attributes] 
+    attr_hash = [:description, :title, :definition, :solver, :estimation, :only_owner_can_change, :log_flag, :equation, :eq_type, :options_attributes, :params_attributes] 
     attr_hash.concat [:owner_id] if user && user.admin?
     attr_hash
   end

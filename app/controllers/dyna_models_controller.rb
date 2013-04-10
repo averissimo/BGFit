@@ -59,19 +59,6 @@ class DynaModelsController < ApplicationController
     end
   end
   
-  def create
-    @dyna_model = DynaModel.new(params[:dyna_model])
-    @dyna_model.owner = current_user
-    respond_with @dyna_model do | format |
-      if @dyna_model.save
-        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Dyna Model")
-      else
-        format.html { render action: "new" }
-        format.json { render json: @dyna_model.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-  
   def calculate
     @dyna_model = DynaModel.find(params[:id])
     @proxy_dyna_models = ProxyDynaModel.viewable(current_user).where( :id => params["proxy_dyna_model_ids"])
@@ -110,11 +97,27 @@ class DynaModelsController < ApplicationController
     respond_with(@dyna_models)
   end
 
+  def create
+    @dyna_model = DynaModel.new(params[:dyna_model])
+    @dyna_model.owner = current_user
+    
+    success = octave_part()
+    
+    respond_with @dyna_model do | format |
+      if success
+        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Dyna Model")
+      else
+        format.html { render action: "new" }
+        format.json { render json: @dyna_model.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def update
     @dyna_model = DynaModel.find(params[:id])
     
     response = if params[:dyna_model][:equation] then [:definition,@dyna_model] else @dyna_model end
-    success = false    
+    success = false
     @dyna_model.transaction do
       begin
         @dyna_model.assign_attributes(params[:dyna_model])
@@ -202,6 +205,23 @@ class DynaModelsController < ApplicationController
   end
 
   private
+  
+  def octave_part()
+    success = false
+    @dyna_model.transaction do
+      begin
+        if @dyna_model.equation.present? && @dyna_model.eq_type.present?
+            @octave_model = if @dyna_model.octave_model.nil? then OctaveModel.new else @dyna_model.octave_model end
+            build_octave_model() # helper method to simplify code
+        end
+        success = @dyna_model.save
+      rescue Exception => e
+        flash[:notice] = "Error associating model's source"
+        raise ActiveRecord::Rollback
+      end
+    end
+    success
+  end
   
   def build_octave_model()
     @octave_model.name = @dyna_model.title # assigns title

@@ -44,8 +44,15 @@ $(document).on 'click', 'form .add_fields', (event) ->
   time = new Date().getTime()
   regexp = new RegExp($(this).data('id'), 'g')
   $(this).parent().before($(this).data('fields').replace(regexp, time))
+  $('textarea.autogrow').autoGrow()
   event.preventDefault()
 
+$(document).on 'click', 'form .add_fields_in_table', (event) ->
+  time = new Date().getTime()
+  regexp = new RegExp($(this).data('id'), 'g')
+  $(this).parent().parent().before($(this).data('fields').replace(regexp, time))
+  event.preventDefault()
+  
 $('.check-all').on 'click' , (event) =>
   target = $(event.currentTarget)
   target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
