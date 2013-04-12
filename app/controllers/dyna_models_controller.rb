@@ -210,6 +210,8 @@ class DynaModelsController < ApplicationController
     success = false
     @dyna_model.transaction do
       begin
+        @dyna_model.save if @dyna_model.new_record?
+        
         if @dyna_model.equation.present? && @dyna_model.eq_type.present?
             @octave_model = if @dyna_model.octave_model.nil? then OctaveModel.new else @dyna_model.octave_model end
             build_octave_model() # helper method to simplify code

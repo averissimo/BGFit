@@ -353,7 +353,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
         temp_param = params.find { |par| par.id == d_p.param_id }
-        debugger if temp_param.nil?
+
         d_p.top = temp_param.top
         d_p.bottom = temp_param.bottom
         d_p.save
@@ -488,7 +488,6 @@ class ProxyDynaModel < ActiveRecord::Base
 
 
     def simulated_values
-      debugger
       if self.measurement
         simulated_lines( self.measurement.lines_no_death_phase(no_death_phase) )
       elsif self.experiment

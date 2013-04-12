@@ -16,7 +16,7 @@ form {
 .formtastic .fragments .label label,
 .formtastic .choices .label label {
  position: relative; 
- overflow:visible;
+ overflow: visible;
 }
 
 sup[title=required] {
@@ -62,8 +62,21 @@ textarea {
   width: 100%;
 }
 
-.formtastic .input label.label,
-.formtastic .input fieldset .label label {
+.formtastic .input fieldset legend.label {
+  
+  width: 23%;
+  display:block;
+  padding-right: 2%;
+  & label {
+    text-align: right;
+    padding-right: 9%;
+    width: 100%;
+    display:block;
+  }
+  //width: 25%;
+}
+
+.formtastic .input label.label {
   text-align: right;
   width: 23%;
   padding-right:2%;
