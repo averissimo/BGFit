@@ -13,6 +13,6 @@
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
 	content_for(:title) { t('title.new' , model: DynaModel.model_name.human) }
 %>
-<h1>New dyna model</h1>
+<h1>New <%= DynaModel.model_name.human %></h1>
 
 <%= render 'form', menu: menu %>

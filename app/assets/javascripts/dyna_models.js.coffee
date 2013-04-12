@@ -28,22 +28,25 @@ $(document).on 'page:load ready' , ->
   
   $('#dyna_model_next_step_input input').each ->
     if $(this).prop('checked') == true
-      $("#" + this.value).show()
+      $("#" + this.value).fadeTo('slow',1)
   
   $('#dyna_model_next_step_input').on 'change', 'input' , (event) ->
     target = $(event.currentTarget)
-    $('.model_def').slideUp()
-    $("#" + this.value).slideDown()  
+    $('.model_def:visible:not(#' + this.value + ')').hide()
+    $("#" + this.value).fadeTo(200,1)
   
 $(document).on 'click', 'form .remove_fields', (event) ->
   $(this).prev('input[type=hidden]').val('1')
-  $(this).closest('fieldset').hide()
+  $(this).closest('fieldset').fadeTo('slow' , 0 ).slideUp('slow',"easeInOutExpo")
   event.preventDefault()
 
 $(document).on 'click', 'form .add_fields', (event) ->
   time = new Date().getTime()
   regexp = new RegExp($(this).data('id'), 'g')
-  $(this).parent().before($(this).data('fields').replace(regexp, time))
+  #$(this).parent().before($(this).data('fields').replace(regexp, time))
+  a=$(this).data('fields').replace(regexp, time)
+  #$(this).parent().before(a)
+  $(a).hide().insertBefore($(this).parent()).fadeTo('slow',1)
   $('textarea.autogrow').autoGrow()
   event.preventDefault()
 

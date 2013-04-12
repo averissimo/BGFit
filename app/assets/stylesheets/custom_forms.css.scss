@@ -6,13 +6,27 @@ form {
   width: 100%;
 }
 
-.formtastic .fragments .label label, .formtastic .choices .label label {
+.formtastic li.input {
+ overflow: visible;
+ & label.label {
+  position: relative;  
+ }
+}
+
+.formtastic .fragments .label label,
+.formtastic .choices .label label {
  position: relative; 
+ overflow:visible;
 }
 
 sup[title=required] {
   color: #f00;
-  font-size: 0.7em;
+  font-size: 0.6em;
+  position:absolute;
+  margin-top: 2em;
+  right: 0;
+  padding-right: 7%;
+  width:100%;
 }
 
 .formtastic legend {
@@ -44,9 +58,38 @@ textarea {
   padding-left: 0.5em; 
 }
 
-.formtastic .input .label {
+.formtastic .fragments .label, .formtastic .choices .label {
+  width: 100%;
+}
+
+.formtastic .input label.label,
+.formtastic .input fieldset .label label {
   text-align: right;
   width: 23%;
   padding-right:2%;
+  display:block;
   //width: 25%;
 }
+
+p.inline-hints {
+  font-size: 90%;
+}
+
+form.formtastic div.params{
+  width: 75%;
+  float:left;
+  & p.inline-hints.new {
+    margin: 0.2em 0 0 0;
+    font-size: 100%;
+  }
+  & fieldset {
+    border: solid 1px rgb(94, 185, 53);
+    padding:2em;
+    margin-bottom:2em;
+  }  
+}
+
+::-webkit-input-placeholder { font-size: 0.7em; }
+::-moz-placeholder { font-size: 0.7em; } /* firefox 19+ */
+:-ms-input-placeholder { font-size: 0.7em; } /* ie */
+input:-moz-placeholder { font-size: 0.7em; }
