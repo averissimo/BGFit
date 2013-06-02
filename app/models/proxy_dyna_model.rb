@@ -423,7 +423,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def convert_param(original_args)
       flag = false
       self.proxy_params.each { |param|
-        temp = /#{param.code} = (?<value>[0-9]+[.]?[0-9]*)/.match(original_args)
+        temp = /#{param.code} = (?<value>[-]?[0-9]+[.]?[0-9]*)/.match(original_args)
         if temp
           param.value = temp[:value]
           flag = true if param.save
