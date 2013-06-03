@@ -25,7 +25,10 @@ class OctaveModelsController < ApplicationController
     elsif request.get?
       request.query_parameters.to_param
     end
+    logger.info( method_params.inspect )
+    logger.info( "#{@octave_model.estimator_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}');" )
     @response = @engine.eval "#{@octave_model.estimator_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}');"
+    logger.info( @response.to_s )
     respond_with(@octave_model)
   end
 
