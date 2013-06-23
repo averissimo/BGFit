@@ -1,6 +1,6 @@
-{	"id": <%= @measurement.id%>,
-	"title": "<%= @measurement.title%>",
-	"cols":[{"id":"time","label":"Time","type":"number"},{"id":"od600","label":"OD600","type":"number"},{"id":"ln_od600","label":"Ln( OD600 )","type":"number"},{"id":"ph","label":"pH","type":"number"}],
+{"id": <%= @measurement.id%>,
+"title": "<%= @measurement.title.strip%>",
+"cols": [{"id":"time","label":"Time","type":"number"},{"id":"od600","label":"OD600","type":"number"},{"id":"ln_od600","label":"Ln( OD600 )","type":"number"},{"id":"ph","label":"pH","type":"number"}],
 "rows": [<%= 
 	@measurement.lines.sort_by{|l| l.x}.map{ |line| 
 		if line.x == nil

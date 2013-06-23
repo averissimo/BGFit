@@ -182,7 +182,11 @@ module ApplicationHelper
   def google_chart(measurements,proxy_dyna_models) 
       
       content_tag :div, class: "proxy_dyna_model_chart auto-load", style: "display:none" do 
-        [content_tag( :div, class: "chart") do 
+        [content_tag( :div, id: "chart-errors") do 
+          [tag("br"),
+          content_tag(:div, "" , class: "one_tab")].join(" ").html_safe
+        end,
+        content_tag( :div, class: "chart") do 
           [tag("br"),
           content_tag(:div, "loading.." , class: "one_tab")].join(" ").html_safe
         end,
