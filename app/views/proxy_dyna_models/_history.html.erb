@@ -14,7 +14,7 @@
             t.rows.alternate = :odd
             t.rows.each do |row, param, index|
                 row.version index + 1
-                #row.updated_at (time_ago_in_words(param.updated_at) + " ago")
+                row.updated_at (time_ago_in_words(param.updated_at) + " ago")
                 user_id = if param.version.nil? && @proxy_dyna_model.versions.size > 0 then @proxy_dyna_model.versions.last.whodunnit elsif param.version.nil? then "" else param.version.whodunnit end
                 row.user User.find(user_id).email_trimmed if user_id.present?
                 if param.version.present?
