@@ -105,6 +105,42 @@ class ProxyDynaModel < ActiveRecord::Base
     end
     
     #
+    # Recall Version
+    def revert_to_version(timestamp)
+      self.transaction do
+        new_model = self.version_at(timestamp)
+        new_model.updated_at = Time.now
+        new_model.perform_clean_stats
+        new_model.save
+        new_model.proxy_params.each do |p|
+          p.version_at(timestamp).save
+        end
+        new_model.json = nil
+        new_model.json_cache # call solver and calculate statistical data
+        return new_model
+      end
+    end
+    
+    #
+    # Show unique versions, with different statistical values
+    def show_versions
+      list = self.versions.where(event: "update").collect do |v|
+        if v.reify.rmse.nil?
+          nil
+        else
+          v.reify
+        end
+      end
+      
+      list = list.compact.uniq_by do |u| 
+        # create a unique string
+        u.rmse.to_s + "|" + u.bias.to_s + "|" + u.accuracy.to_s + "|" + u.r_square.to_s
+      end.sort_by(&:updated_at)
+      
+      list << self
+    end
+    
+    #
     # Parameters to string
     def params_to_string(use_code=false)
       self.proxy_params.collect { |p|
@@ -279,7 +315,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.accuracy = 10 ** (dataset[:accu] / size )
       self.rmse = Math.sqrt( dataset[:rmse] / size )
       if dataset[:r_square_tot] == 0
-        clean_stats "cannot calculate statistical_measures, try again with a different range."
+        "cannot calculate statistical_measures, try again with a different range."
         return nil
       end
       self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]

@@ -31,6 +31,13 @@ class ProxyDynaModelsController < ApplicationController
     redirect_to [@experiment,@measurement]
   end
 
+  def revert
+    @proxy_dyna_model = ProxyDynaModel.find(params[:id] )
+    timestamp = @proxy_dyna_model.versions.find(params[:timestamp]).reify.updated_at
+    new_model = @proxy_dyna_model.revert_to_version( timestamp )
+    redirect_to [new_model]
+  end
+
   def calculate
     @proxy_dyna_model = ProxyDynaModel.find(params[:id] )
     custom_params = @proxy_dyna_model.dyna_model.params.collect do |param|

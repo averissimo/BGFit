@@ -76,6 +76,8 @@
 </p>
 <%- end %>
 
+<%= link_to 'Show history' ,[:history,@proxy_dyna_model],remote:true, class: "btn"%>
+
 <h3>Listing <%= pluralize(@proxy_dyna_model.dyna_model.params.length, 'parameter')%></h3>
 
 <%= form_tag( calculate_proxy_dyna_model_path(@proxy_dyna_model) , method: :put) do |f| %>
@@ -114,10 +116,10 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><%= @proxy_dyna_model.round(:rmse)%></td>
-				<td><%= @proxy_dyna_model.round(:r_square)%></td>
-				<td><%= @proxy_dyna_model.round(:bias)%></td>
-				<td><%= @proxy_dyna_model.round(:accuracy)%></td>
+				<td title="<%=@proxy_dyna_model.rmse%>"><%= @proxy_dyna_model.round(:rmse)%></td>
+				<td title="<%=@proxy_dyna_model.r_square%>"><%= @proxy_dyna_model.round(:r_square)%></td>
+				<td title="<%=@proxy_dyna_model.bias%>"><%= @proxy_dyna_model.round(:bias)%></td>
+				<td title="<%=@proxy_dyna_model.accuracy%>"><%= @proxy_dyna_model.round(:accuracy)%></td>
 			</tr>
 		</tbody>
 	</table>
