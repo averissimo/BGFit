@@ -38,3 +38,6 @@ config/database.yml
 .buildpath
 /solr/
 *.sql
+Gemfile.lock
+.settings
+.c9*

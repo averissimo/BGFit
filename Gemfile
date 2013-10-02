@@ -1,19 +1,8 @@
 source 'http://rubygems.org'
 
-
 gem 'rails', '3.2.13'
 
-# Bundle edge Rails instead:
-# gem 'rails',     :git => 'git://github.com/rails/rails.git'
-
 gem 'mysql2'
-
-gem 'paper_trail'
-
-#gem 'blankslate' # required by table_helper
-gem 'hirb'
-gem 'fancy_irb'
-gem 'wirb'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -29,14 +18,6 @@ end
 
 gem 'jquery-rails'
 
-gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails'
-gem 'jquery-ui-rails'
-
-gem 'delayed_job_active_record'
-gem 'delayed_job_web'
-gem 'daemons'
-
-gem 'formtastic'
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
@@ -49,34 +30,71 @@ gem 'formtastic'
 # To use debugger
 #gem 'ruby-debug19', :require => 'ruby-debug'
 gem 'debugger', group: ['development','test']
+
 group :test do
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
 end
 
-
-gem 'devise'
-gem 'cancan', github: 'ryanb/cancan', branch: '2.0'
-gem 'simple-navigation', github: 'andi/simple-navigation'
-gem 'table_helper', github: 'marcandre/table_helper'
-
-gem 'strong_parameters'
-
-#gem 'will_paginate', '~> 3.0.0'
-
-gem 'sunspot_rails'
-gem 'sunspot_solr' # optional pre-packaged Solr distribution for use in development
-
-gem 'kaminari'
-
-gem 'google-analytics-rails'
-
 #group :test,:production do
 #  gem 'therubyracer'
 #end
 
-gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git"
+##### CUSTOM APPLICATION GEMS #####
 
-gem "octave-ruby"
+### Rails 4 Compatible ###
 
-gem "autogrow-textarea-rails"
+# Change history
+gem 'paper_trail' # Rails4 ok
+
+# Forms
+gem 'formtastic' #Rails4 ok
+
+# User management
+gem 'devise' # Rails4 ok
+
+# Feature in Rails4
+gem 'strong_parameters' # Rails4 ok
+
+# Pagination
+gem 'kaminari' # Rails4 ok
+
+# Power-up tables
+gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails' #Rails4 ok
+gem 'jquery-ui-rails' #Rails4 ok
+
+gem 'simple-navigation', github: 'andi/simple-navigation' # Rails4 ok
+
+gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git" # Rails4 ok
+
+gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record' # Rails4 ok - with master branch
+gem 'delayed_job_web' # Rails4 unknown
+
+
+
+### Rails4 Unknown ###
+
+# Generate tables automatically
+gem 'table_helper', github: 'marcandre/table_helper' # Rails4 unknown - but should work
+
+# add google analytics
+gem 'google-analytics-rails' # Rails4 unknown - but should work
+
+# auto grow textareas as you type
+gem "autogrow-textarea-rails" # Rails4 unknown
+
+
+### Rails4 might have problem!! ###
+
+# authorization gem
+gem 'cancan', github: 'ryanb/cancan', branch: '2.0' # Rails4 Unknown!!
+
+
+
+#### Not dependant on Rails ###
+gem 'hirb'
+gem 'fancy_irb'
+gem 'wirb'
+gem "octave-ruby" # Rails4 unknown - but should work
+#### Not dependant on Rails
+
