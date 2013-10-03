@@ -63,7 +63,7 @@ gem 'paper_trail', github: 'airblade/paper_trail', branch: 'master' # Rails4 ok
 gem 'formtastic', github: 'justinfrench/formtastic', branch: 'master' #Rails4 ok
 
 # User management
-gem 'devise' , '~> 3.1.1'# Rails4 ok
+gem 'devise' , '3.0.2' # Rails4 ok
 
 # Pagination
 gem 'kaminari' # Rails4 ok
