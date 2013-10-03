@@ -78,6 +78,10 @@ a.btn.btn_small {
 
 }
 
+.medium {
+  font-size: 1.15em;
+}
+
 .big {
   font-size: 1.5em;
 }
@@ -148,11 +152,11 @@ hr {
   text-align:left;
 }
 
-div#tips {
+div.readable,
+{
   width: 650px;
   float: left;
 }
-
 
 .twitter_logo {
   background-size: 16px 16px;
