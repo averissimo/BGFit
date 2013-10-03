@@ -164,7 +164,6 @@ class Measurement < ActiveRecord::Base
      self.original_data.split(/\n/).each_with_index do |l,y|
 
        line = Line.new
-       debugger
        l.split(/(\t|[ ]+)/).each_with_index do |el , y2|
 
          el = el.gsub("," , ".")

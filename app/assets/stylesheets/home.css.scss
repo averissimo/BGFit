@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-#content .btn, {
+#content .btn {
   padding: 10px 15px 10px 15px;
   margin-right: 10px;
   display: inline-block;
@@ -148,3 +148,24 @@ hr {
   text-align:left;
 }
 
+div#tips {
+  width: 650px;
+  float: left;
+}
+
+
+.twitter_logo {
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  padding-left:16px;
+  background-image: image-url("twitter-bird-light-bgs.png");
+}
+
+.twitter-follow-button {
+  margin-bottom:10px;
+}
+
+.twitter {
+  width: 250px;
+  float: right;
+}

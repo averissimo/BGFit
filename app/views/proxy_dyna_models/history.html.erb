@@ -1,0 +1,21 @@
+<% 
+	context_menu = [
+		{
+			:key => :home, 
+			:name => 'Goto proxy model', 
+			:url => proxy_dyna_model_path(@proxy_dyna_model),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}]
+	menu = nil
+	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:title) { "Proxy Model History" }
+%><h1>Proxy Model History</h1>
+
+<%= render 'history' %>
+
+<div class="menu">
+    <%= menu %>
+</div>

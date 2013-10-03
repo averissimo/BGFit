@@ -57,8 +57,9 @@ if typeof google isnt 'undefined'
     setup_m = {
       timeout: 10000,
       dataType: 'json',
-      error: (jqXHR, textStatus, errorThrown) =>
-        #alert(textStatus)
+      error: (jqXHR, textStatus, errorThrown) ->
+        error_text = "There was a problem retrieving data (<a href=\"" + @url + "\">" + @url + "</a>). Error description: " + textStatus
+        $("#chart-errors").append($("<p>" + error_text + "</p>"))
     }
     setup = {
       timeout: 10000,
@@ -137,10 +138,9 @@ if typeof google isnt 'undefined'
       list = []
       $(el).parent().find('.measurement-data div').each (i,measurement_data) =>
         setup_m.url = $(measurement_data).attr('data-source') 
-        m_ajax = $.ajax setup_m
-        m_ajax.done (json) =>
+        m_ajax = $.ajax(setup_m).done (json) =>
           list.push json
-          #
+
           if list.length != $(el).parent().find('.measurement-data div').length
             return # is not the final measurement
           # 
@@ -199,6 +199,7 @@ if typeof google isnt 'undefined'
       $(element).parent().children('div.chart').each (index,el) =>
         #
         $(el).html("<br/><div class=\"one_tab\">loading...</div>")
+        $(el).parent().slideDown("slow","easeInCirc")
         if $(el).parent().find('.model-data div').length <= 0
           process_measurement( el , data )
         #

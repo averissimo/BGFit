@@ -7,11 +7,24 @@
 			:name => 'Edit this proxy model', 
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
-				:if => Proc.new { can?(:calculate, @proxy_dyna_model) },
 				:container_class => 'menu',
 				:class => "text"
 			}
 		},
+		{
+            :key => :history, 
+            :name => 'Show history', 
+            :url => url_for([:history,@proxy_dyna_model]),
+            :options => {
+                :link => {
+                    :remote => true
+                },
+                remote: true,
+                :if => Proc.new { can?(:calculate, @proxy_dyna_model) },
+                :container_class => 'menu',
+                :class => "text"
+            }
+        },
 		{
 			:key => :index, 
 			:name => 'Goto measurement', 
@@ -114,10 +127,10 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><%= @proxy_dyna_model.round(:rmse)%></td>
-				<td><%= @proxy_dyna_model.round(:r_square)%></td>
-				<td><%= @proxy_dyna_model.round(:bias)%></td>
-				<td><%= @proxy_dyna_model.round(:accuracy)%></td>
+				<td title="<%=@proxy_dyna_model.rmse%>"><%= @proxy_dyna_model.round(:rmse)%></td>
+				<td title="<%=@proxy_dyna_model.r_square%>"><%= @proxy_dyna_model.round(:r_square)%></td>
+				<td title="<%=@proxy_dyna_model.bias%>"><%= @proxy_dyna_model.round(:bias)%></td>
+				<td title="<%=@proxy_dyna_model.accuracy%>"><%= @proxy_dyna_model.round(:accuracy)%></td>
 			</tr>
 		</tbody>
 	</table>

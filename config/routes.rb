@@ -60,8 +60,11 @@ BacteriaGrowth::Application.routes.draw do
     end
 
   resources :proxy_dyna_models, path: :proxy_models, :except => [:new, :create] do
+    
     member do
       put :calculate
+      get :history
+      get :revert
     end
     resources :proxy_params
   end
