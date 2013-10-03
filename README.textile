@@ -27,16 +27,22 @@ h2. Requirements
 
 h2. Installation
 
-<pre>$ git submodule init
-
-$ git submodule update
+<pre>$ git clone https://github.com/averissimo/BGFit.git
 
 $ gem install bundler
 
-$ gem install rails -v 3.2.8
-
 $ bundle install</pre>
 
+Create mysql database.
+
+Fill database.yml with mysql settings.
+
+<pre>$ rake db:migrate
+
+$ rake specs:features
+(to perform tests)
+
+$ rails s</pre>
 
 h2. Acknowledgments
 
