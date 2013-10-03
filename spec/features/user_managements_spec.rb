@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'capybara/rails'
 
 feature "Signing in" do
     
