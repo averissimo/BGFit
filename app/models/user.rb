@@ -23,8 +23,8 @@ class User < ActiveRecord::Base
   has_many :octave_models
   
   #todo: use pluck in 3.2
-  scope :remove_group_users, lambda { |group| where( User.arel_table[:id].not_in( Membership.where(Membership.arel_table[:group_id].eq(group.id)).collect { |a| a.user_id } )) }
-  scope :groups_from, lambda { |user|
+  scope :remove_group_users, ->(group) { where( User.arel_table[:id].not_in( Membership.where(Membership.arel_table[:group_id].eq(group.id)).collect { |a| a.user_id } )) }
+  scope :groups_from, ->(user) { 
     joins( :memberships ).where( Membership.arel_table[:user_id].eq(user.id) )  
   }
   
@@ -34,9 +34,6 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me
-  
   def email_trimmed
     #(email[0..(email[/.*@/].size * 2 / 3)]+"(...)"+email[/@.*\./].chop+"(...)").sub("@"," (dot) ")
     email[0..(email[/.*@/].size - 2)]
