@@ -78,7 +78,7 @@ gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git" # Rails4 ok
 
 gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record' # Rails4 ok - with master branch
 gem 'delayed_job_web' # Rails4 unknown
-
+gem 'daemons'
 # Feature in Rails4
 gem 'strong_parameters' # Rails4 ok
 
