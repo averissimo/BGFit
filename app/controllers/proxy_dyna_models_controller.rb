@@ -53,7 +53,9 @@ class ProxyDynaModelsController < ApplicationController
     
     respond_with @proxy_dyna_model 
   end
-
+  
+  def history
+  end
 
   def new
     if params[:experiment_id]
@@ -86,7 +88,7 @@ class ProxyDynaModelsController < ApplicationController
     @model = @experiment.model
     authorize! :update, @experiment
 
-    if params[:proxy_dyna_model][:for_measurements].blank?
+    if params[:proxy_dyna_model][:for_measurements].blank? || params[:proxy_dyna_model][:for_measurements] == "0"
       is_saved = @proxy_dyna_model.save
       
       #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])

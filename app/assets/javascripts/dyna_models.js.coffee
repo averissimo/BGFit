@@ -55,8 +55,8 @@ $(document).on 'click', 'form .add_fields_in_table', (event) ->
   regexp = new RegExp($(this).data('id'), 'g')
   $(this).parent().parent().before($(this).data('fields').replace(regexp, time))
   event.preventDefault()
-  
-$('.check-all').on 'click' , (event) =>
+
+$(document).on 'click', '.check-all', (event) =>
   target = $(event.currentTarget)
   target.parents('table').find(':checkbox').prop('checked', target.prop("checked"))
   
