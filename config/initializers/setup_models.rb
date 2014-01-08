@@ -1,0 +1,1 @@
+MODEL_BLACKBOX = YAML.load_file("#{::Rails.root}/config/model_blackbox.yml")[::Rails.env]

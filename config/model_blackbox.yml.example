@@ -1,0 +1,14 @@
+defaults: &defaults
+  base_path: "/home/averissimo/work/pneumosys/model_blackbox"
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+  
+pre-production:
+  <<: *defaults
+
+production:
+  <<: *defaults
