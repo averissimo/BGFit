@@ -37,6 +37,7 @@ config/database.yml
 *~
 .buildpath
 /solr/
+/db/schema.rb
 
 /config/model_blackbox.yml
 
