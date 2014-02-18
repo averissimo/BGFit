@@ -23,7 +23,7 @@
 # '<abbr title="required">*</abbr>'. In other words, if you configure formtastic.required
 # in your locale, it will replace the abbr title properly. But if you don't want to use
 # abbr tag, you can simply give a string as below
-Formtastic::FormBuilder.required_string = "<br/><sup title='required'>(required)</sup>"
+Formtastic::FormBuilder.required_string = "<sup title='required'>(required)</sup>"
 
 # Set the string that will be appended to the labels/fieldsets which are optional
 # Defaults to an empty string ("") and also accepts procs (see required_string above)

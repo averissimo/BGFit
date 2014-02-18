@@ -1,9 +1,0 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-
-one:
-  original_data: MyText
-  experiment: 
-
-two:
-  original_data: MyText
-  experiment: 

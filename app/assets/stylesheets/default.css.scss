@@ -3,7 +3,7 @@
 
 $header: 33px;
 $header_line: 27px;
-$tab: 3em; // also in results.css / custom_tables.css
+$tab: 39px; // also in results.css / custom_tables.css
 $width: 1000px;
 
 //
@@ -102,7 +102,7 @@ padding-left: $padding;
 }
 
 #logo {
-  margin-bottom:1em;
+  padding-top:1em;
   display:block;
 }
 
@@ -410,4 +410,8 @@ div#experiment_chart {
 
 ul.p {
   margin-left:39px;
+}
+
+.partial-hide {
+  overflow: hidden;
 }

@@ -40,7 +40,7 @@ class Ability
     can [:new,:index],:models
     
     # Specific to ProxyDynaModel object
-    can [:calculate] , :proxy_dyna_models do |obj|
+    can [:calculate,:history] , :proxy_dyna_models do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
 
@@ -54,7 +54,7 @@ class Ability
 
     
     # Dyna Model
-    can [:new,:create], :dyna_models, DynaModel do |dm|
+    can [:new,:create,:export], :dyna_models, DynaModel do |dm|
       !user.nil?
     end
     

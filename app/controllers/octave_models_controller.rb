@@ -17,7 +17,7 @@ class OctaveModelsController < ApplicationController
 
   def estimator
     @engine = Octave::Engine.new
-    @engine.eval 'addpath(genpath("/home/averissimo/work/pneumosys/model_blackbox/toolbox"));'
+    @engine.eval 'addpath(genpath("' + MODEL_BLACKBOX["base_path"] + '"));'
     @engine.addpath(File.dirname(@octave_model.model.path))
     @engine.addpath(File.dirname(@octave_model.estimator.path))
     method_params = if request.post? then
@@ -25,13 +25,16 @@ class OctaveModelsController < ApplicationController
     elsif request.get?
       request.query_parameters.to_param
     end
+    logger.info( method_params.inspect )
+    logger.info( "#{@octave_model.estimator_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}');" )
     @response = @engine.eval "#{@octave_model.estimator_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}');"
+    logger.info( @response.to_s )
     respond_with(@octave_model)
   end
 
   def solver
     @engine = Octave::Engine.new
-    @engine.eval 'addpath(genpath("/home/averissimo/work/pneumosys/model_blackbox/toolbox"));'
+    @engine.eval 'addpath(genpath("' + MODEL_BLACKBOX["base_path"] + '"));'
     @engine.addpath(File.dirname(@octave_model.model.path))
     @engine.addpath(File.dirname(@octave_model.solver.path))
     method_params = if request.post? then
