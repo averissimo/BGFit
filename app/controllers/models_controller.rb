@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class ModelsController < ApplicationController
-  respond_to :html, :json, :js
+  respond_to :html, :json, :js, :csv
   before_filter :authenticate_user!, :except => [:index,:show,:public]
   
   load_and_authorize_resource :except => :new_measurement

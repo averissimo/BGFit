@@ -57,10 +57,10 @@ end
 ### Rails 4 Compatible ###
 
 # Change history
-gem 'paper_trail', github: 'airblade/paper_trail', branch: 'master' # Rails4 ok
+gem 'paper_trail'#, github: 'airblade/paper_trail', branch: 'master' # Rails4 ok
 
 # Forms
-gem 'formtastic', github: 'justinfrench/formtastic', branch: 'master' #Rails4 ok
+gem 'formtastic'#, github: 'justinfrench/formtastic', branch: 'master' #Rails4 ok
 
 # User management
 gem 'devise' , '3.0.2' # Rails4 ok
@@ -72,9 +72,9 @@ gem 'kaminari' # Rails4 ok
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails' #Rails4 ok
 gem 'jquery-ui-rails' #Rails4 ok
 
-gem 'simple-navigation', github: 'andi/simple-navigation' # Rails4 ok
+gem 'simple-navigation', github: 'andi/simple-navigation', :tag => 'v3.11.0' # Rails4 ok
 
-gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git" # Rails4 ok
+gem "paperclip"#, :git => "git://github.com/thoughtbot/paperclip.git" # Rails4 ok
 
 gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record' # Rails4 ok - with master branch
 gem 'delayed_job_web' # Rails4 unknown
