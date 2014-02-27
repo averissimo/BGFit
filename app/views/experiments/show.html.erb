@@ -42,6 +42,15 @@
 		]
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	context_menu << { :key => :model, 
+			:name => 'Download all', 
+			:url => model_experiment_path(@experiment.model,@experiment,format: :csv),
+			:options => {
+				:container_class => 'menu',
+				:class => ("text" if can?(:update, @experiment))
+			}
+		}
+		menu = render_navigation :items => context_menu
 %>
 
 <h1><%= @experiment.title %> (experiment)</h1>
