@@ -47,7 +47,7 @@ class PermittedParams < Struct.new(:params,:user)
   end
   
   def measurement_attributes
-    attr_hash = [:description,:date, :title, :original_data, :lines_attributes => line_attributes(true) ] 
+    attr_hash = [:experiment_id,:description,:date, :title, :original_data, :lines_attributes => line_attributes(true) ] 
     attr_hash.concat [:minor_step] if user && user.admin?
     attr_hash
   end

@@ -1,0 +1,6 @@
+time,n,index
+<%- @experiment.measurements.each do |m| %>
+<%- m.lines.map do |l| %> 
+<%= l.x.to_s %>,<%= l.y.to_s %>,<%= m.id %>
+<%- end %>
+<%- end %>
