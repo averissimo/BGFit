@@ -36,7 +36,7 @@
 			:url => model_path(@experiment.model),
 			:options => {
 				:container_class => 'menu',
-				:class => ("text" if can?(:update, @experiment))
+				:class => ("text")
 			}
 		}
 		]
@@ -47,7 +47,7 @@
 			:url => model_experiment_path(@experiment.model,@experiment,format: :csv),
 			:options => {
 				:container_class => 'menu',
-				:class => ("text" if can?(:update, @experiment))
+				:class => ("text")
 			}
 		}
 		menu = render_navigation :items => context_menu
