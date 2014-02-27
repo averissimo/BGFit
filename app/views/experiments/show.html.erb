@@ -11,15 +11,15 @@
 				:container_class => 'menu'
 			}
 		},
-        {
-            :key => :new, 
-            :name => t('.dyna'), 
-            :url => new_experiment_proxy_dyna_model_path(@experiment),
-            :options => {
-                :if => Proc.new { can?(:update, @experiment) },
-                :container_class => 'menu'
-            }
-        },
+      {
+          :key => :new, 
+          :name => t('.dyna'), 
+          :url => new_experiment_proxy_dyna_model_path(@experiment),
+          :options => {
+              :if => Proc.new { can?(:update, @experiment) },
+              :container_class => 'menu'
+          }
+      },
 		{
 			:key => :edit, 
 			:name => 'Edit', 
