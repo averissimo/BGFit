@@ -31,6 +31,13 @@ class ProxyDynaModelsController < ApplicationController
     redirect_to [@experiment,@measurement]
   end
 
+  def revert
+    @proxy_dyna_model = ProxyDynaModel.find(params[:id] )
+    timestamp = @proxy_dyna_model.versions.find(params[:timestamp]).reify.updated_at
+    new_model = @proxy_dyna_model.revert_to_version( timestamp )
+    redirect_to [new_model]
+  end
+
   def calculate
     @proxy_dyna_model = ProxyDynaModel.find(params[:id] )
     custom_params = @proxy_dyna_model.dyna_model.params.collect do |param|
@@ -46,7 +53,9 @@ class ProxyDynaModelsController < ApplicationController
     
     respond_with @proxy_dyna_model 
   end
-
+  
+  def history
+  end
 
   def new
     if params[:experiment_id]
@@ -79,14 +88,29 @@ class ProxyDynaModelsController < ApplicationController
     @model = @experiment.model
     authorize! :update, @experiment
 
-    #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])
-    respond_with @proxy_dyna_model do | format |
-      if @proxy_dyna_model.save
-        flash[:notice] = t('flash.actions.create.notice', :resource_name => "Proxy Dyna Model")
-      else
-        format.html { render action: "new" }
-        format.json { render json: @proxy_dyna_model.errors, status: :unprocessable_entity }
+    if params[:proxy_dyna_model][:for_measurements].blank? || params[:proxy_dyna_model][:for_measurements] == "0"
+      is_saved = @proxy_dyna_model.save
+      
+      #@proxy_dyna_model = ProxyDynaModel.new(params[:dyna_model])
+      respond_with @proxy_dyna_model do | format |
+        if is_saved 
+          flash[:notice] = t('flash.actions.create.notice', :resource_name => "Proxy Dyna Model")
+        else
+          format.html { render action: "new" }
+          format.json { render json: @proxy_dyna_model.errors, status: :unprocessable_entity }
+        end
+    end
+    elsif @experiment
+      @experiment.measurements.each do |m|
+        p = m.proxy_dyna_models.build params[:proxy_dyna_model]
+        unless p.save
+          flash[:notice] = [] if flash[:notice].blank?
+          p.errors.each do |key,value|
+            flash[:notice] << "error #{m.id} (#{m.title}): #{value}"
+          end
+        end
       end
+      respond_with @experiment
     end
   end
   

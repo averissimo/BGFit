@@ -17,6 +17,10 @@
 
 module DynaModelsHelper
   
+  def next_step_list
+    {"By URL" => "urls","By Equation" => "equation"}
+  end
+  
   def params_merge(new_param,param_name,input_params=nil)
     input_params ||= params
     result = input_params.clone
@@ -45,7 +49,7 @@ module DynaModelsHelper
   end
 
   def csv_title_line_for_proxy_dyna_model(dyna_model)
-    result = ["title"]
+    result = ["measurement title"]
     dyna_model.params.order(:code).each do |param|
       next if param.output_only?
       result << param.code

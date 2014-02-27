@@ -33,16 +33,6 @@
 			}
 		},
 		{
-			:key => :new, 
-			:name => t('action.dyna_model.new'),
-			:url => new_dyna_model_param_path(@dyna_model),
-			:options => {
-				:if => Proc.new { can?(:update, @dyna_model) },
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
             :key => :generate, 
             :name => "Generate source",
             :url => url_for([:definition,@dyna_model]),
@@ -59,26 +49,6 @@
 			:options => {
 				:container_class => 'menu',
 				:class => ("text" if can?( :update,@dyna_model) || can?(:estimate, @dyna_model) || can?(:stats,@dyna_model))
-			}
-		},
-		{
-			:key => :back, 
-			:name => t('navigation.back'),
-			:url => url_for(:back),
-			:options => {
-				:unless => Proc.new { url_for(:back) == "javascript:history.back()" },
-				:container_class => 'menu',
-				:class => "text"
-			}
-		},
-		{
-			:key => :home, 
-			:name => t('navigation.goto' , destination: t('navigation.home').downcase),
-			:url => root_url,
-			:options => {
-				:if => Proc.new { url_for(:back) == "javascript:history.back()" },
-				:container_class => 'menu',
-				:class => "text"
 			}
 		}]
 	menu = nil
@@ -149,6 +119,9 @@
 		end
 	end
 %>
+<%= content_tag :div, class: "text-center", style: "margin-bottom: 2em;" do %>
+<%= link_to 'Add new parameter' , [:new,@dyna_model,:param],remote: true, class: "add btn blank"%>
+<% end -%>
 
 <div class="menu">
 	<%= menu %>

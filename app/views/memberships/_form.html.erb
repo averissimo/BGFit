@@ -1,5 +1,5 @@
 <%= semantic_form_for([@group,@membership]) do |f| %>
-  <%= f.semantic_errors :state %>
+  <%= form_errors(f) %>
 
   <%= f.inputs do %>
   	<%= f.input :user_email, :as => :email,:required => true %>

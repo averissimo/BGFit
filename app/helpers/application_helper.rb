@@ -17,6 +17,16 @@
 
 module ApplicationHelper
   
+  # method to add nested fields duynamically
+  def link_to_add_fields(name, f, association,class_name="add_fields")
+    new_object = f.object.send(association).klass.new
+    id = new_object.object_id
+    fields = f.fields_for(association, new_object, child_index: id) do |builder|
+      render(association.to_s.singularize + "_fields", f: builder, new_class: "new")
+    end
+    link_to(name, '#', class: class_name, data: {id: id, fields: fields.gsub("\n", "")})
+  end
+  
   def back_menu(fallback=nil)
     back = []
     back << {
@@ -172,12 +182,19 @@ module ApplicationHelper
   def google_chart(measurements,proxy_dyna_models) 
       
       content_tag :div, class: "proxy_dyna_model_chart auto-load", style: "display:none" do 
-        [content_tag( :div, class: "chart") do 
+        [content_tag( :div, id: "chart-errors") do 
+          [tag("br"),
+          content_tag(:div, "" , class: "one_tab")].join(" ").html_safe
+        end,
+        content_tag( :div, class: "chart") do 
           [tag("br"),
           content_tag(:div, "loading.." , class: "one_tab")].join(" ").html_safe
         end,
         content_tag(:div, class: "options", style: "display:none;") do
-          link_to "Download chart as .svg", "#", class: "download svg", download: "download.svg"
+          link_to "Download chart as .svg", "#", class: "download svg", download: "chart.svg"
+        end,
+        content_tag(:div, class: "options", style: "display:none;") do
+          link_to "Download chart as .png", "#", class: "download png", download: "chart.png"
         end,
         content_tag(:div, class: "model-data", style: "display:none;") do
           proxy_dyna_models.collect do |pdm|
@@ -193,5 +210,10 @@ module ApplicationHelper
       end
     end  
 
-  
+  def form_errors(form_object)    
+    return "" if form_object.object.errors.blank?
+    content_tag :div,class:"form_errors" do
+       form_object.semantic_errors *form_object.object.errors.keys
+     end
+  end
 end

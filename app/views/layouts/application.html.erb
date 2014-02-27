@@ -63,14 +63,16 @@
 			</div>
 			
 			<%- flash.each do |key, value| %>
-    		  	<%= content_tag(:div, :class => "flash #{key}") do %>
-	    		  	<%- if value.is_a?(String)%>
-	    		    		<%= value.html_safe %>
-	    		    <%- else %>
-	    		    		<%= value.join("<br/>").html_safe %>
-	    		    <%- end %>
-    		    <%= link_to "<div class='right'>x</div>".html_safe , "#" , class: "close_flash"%>
-    		    <%- end %>
+			    <% unless value.nil? -%>
+        		  	<%= content_tag(:div, :class => "flash #{key}") do %>
+    	    		  	<%- if value.is_a?(String)%>
+    	    		    		<%= value.html_safe %>
+    	    		    <%- else %>
+    	    		    		<%= value.join("<br/>").html_safe %>
+    	    		    <%- end %>
+        		        <%= link_to "<div class='right'>x</div>".html_safe , "#" , class: "close_flash"%>
+        		    <%- end %>
+    		    <% end -%>
     		  <%- end %>
 			</div>
 			
@@ -84,16 +86,23 @@
     		</div>
     
     		<div id="content">
-    	      <div class="logo"><%= link_to image_tag("logo.png" , width: "200" , height:"63" , title: "BGFIT: data modelign" , class: "noborder") , root_path%>
+    	      <div id="logo"><%= link_to image_tag("logo.png" , width: "200" , height:"63" , title: "BGFIT: data modelign" , class: "noborder") , root_path%></div>
     			<%= yield %>
-    		  </div>
     		</div>
 		</div>
 		
 		</div>
 		
 		<div id="footer">
+  		<div>
+  		  <span>
+    		  <a href="http://www.biomedcentral.com/1471-2105/14/283">Veríssimo, A., Paixão, L., Neves, A. R. &amp; Vinga, S.
+    		  <br/>BGFit: management and automated fitting of biological growth curves. BMC Bioinformatics 14, 283 (2013).</a>
+    		  <br/>http://kdbio.inesc-id.pt<br/><br/>
+  		  </span>
+      </div>
 			<%= render_navigation %>
+			<a class="twitter_logo" href="http://twitter.com/bgfit_modeling">@bgfit_modeling</a>
 			<a href="mailto:averissimo@kdbio.inesc-id.pt">averissimo@kdbio.inesc-id.pt</a>
 			<br/>
 			<span><%= Time.now.year %>  KDBIO | INESC-ID</span>

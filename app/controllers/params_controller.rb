@@ -19,7 +19,7 @@ class ParamsController < ApplicationController
 
   load_and_authorize_resource :except => [:new,:create]
 
-  respond_to :html, :json
+  respond_to :html, :json, :js
   before_filter :authenticate_user!, :except => [:index,:show]
   def index
     @dyna_model = DynaModel.find(params[:dyna_model_id])
@@ -33,7 +33,6 @@ class ParamsController < ApplicationController
 
   def new
     @dyna_model = DynaModel.find(params[:dyna_model_id])
-    #authorize! :update, @dyna_model
     @param = @dyna_model.params.build
     respond_with [@dyna_model,@param]
   end

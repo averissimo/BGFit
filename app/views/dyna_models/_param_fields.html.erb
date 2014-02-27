@@ -1,0 +1,13 @@
+<fieldset>
+    <legend>&nbsp;New Parameter&nbsp;(<%= link_to "x", "#" , class: "remove_fields" , title: "Remove Parameter" %>)</legend>
+<%= f.input :code , hint: false %>
+<%= f.input :human_title , hint: false %>
+<%= f.input :output_only, hint: false %>
+<%= f.input :initial_condition, hint: false %>
+<%= f.input :top, hint: false %>
+<%= f.input :bottom, hint: false %>
+<%= f.input :description, :input_html => { rows: 2, class: "autogrow"  }%>
+<%= f.hidden_field :id %>
+<%= f.hidden_field :_destroy %>
+<div class="options"><%= link_to "remove", "#" , class: "remove_fields" %></div>
+</fieldset>

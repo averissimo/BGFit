@@ -1,0 +1,29 @@
+
+
+<%= collection_table(@proxy_dyna_model.show_versions , :class => 'formatted dataTable') do |t| 
+            t.header :version
+            t.header :updated_at, "Was updated", class: "no-sort"
+            t.header :rmse
+            #t.header :bias
+            #t.header :accuracy
+            t.header :r_square
+            t.header :user, "User"
+            t.header :revert, "", class: "no-sort"
+
+        
+            t.rows.alternate = :odd
+            t.rows.each do |row, param, index|
+                row.version index + 1
+                row.updated_at (time_ago_in_words(param.updated_at) + " ago")
+                user_id = if param.version.nil? && @proxy_dyna_model.versions.size > 0 then @proxy_dyna_model.versions.last.whodunnit elsif param.version.nil? then "" else param.version.whodunnit end
+                row.user User.find(user_id).email_trimmed if user_id.present?
+                if param.version.present?
+                    row.revert link_to("revert to this version", revert_proxy_dyna_model_path(@proxy_dyna_model, timestamp: param.version.id))
+                else
+                    row.revert "current version"
+                end
+            end
+        end %>
+
+
+<div class="clear"></div>

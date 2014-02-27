@@ -1,5 +1,5 @@
 <%= semantic_form_for([@datable,@proxy_dyna_model]) do |f| %>
-  <%= f.semantic_errors :state %>
+  <%= form_errors(f) %>
   
   <%= f.inputs do %>
   	<%= f.input :title %>
@@ -14,9 +14,16 @@
 	<% end %>
   <% end %>
   
+  <% if @proxy_dyna_model.new_record? && @proxy_dyna_model.experiment %>
+       <%= f.input :for_measurements, as: :boolean %>
+    <% end -%>
+  
   <%= f.actions do %>
   	<%= f.action :submit, :as => :button %>
-  	<%= f.action :cancel, :as => :link , label: t('form.cancel')%>	
+    <div class="menu">
+        <%= menu %>
+    </div>
+
   <% end%>
    
 <% end %>

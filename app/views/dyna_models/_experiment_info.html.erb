@@ -33,6 +33,6 @@
         end
     %>
     <%- else %>
-        <div><p><%= link_to "show measurements", experiment_detail_params(e.id,"experiment_detail") , class: "expand_detail show_more btn blank btn_small", remote:true %></p></div>
+        <div><p><%= link_to "show measurements", experiment_detail_params(e.id,"experiment_detail") , remote: true, class: "expand_detail btn blank btn_small" %></p></div>
     <%- end %>
 </div>

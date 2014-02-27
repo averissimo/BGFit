@@ -15,7 +15,7 @@
         t.rows.alternate = :odd
         t.rows.each do |row, measure, index|
             # Notice there's no need to explicitly define the title
-            row.model           word_wrap(measure.model.title,:line_width => 40).gsub(/\n/, '<br/>')
+            row.model           word_wrap(measure.model.title,:line_width => 40).gsub(/\n/, '<br/>').html_safe
             row.experiment      measure.experiment.title
             row.title           measure.title
             row.date            measure.date
@@ -23,6 +23,7 @@
             row.show_h          link_to t('action.show').downcase, [measure.experiment,measure] if can? :read, measure
             row.csv             link_to t('action.download_data').downcase, experiment_measurement_path(measure.experiment,measure, :format => :csv) if can? :read, measure
         #   row.exp             link_to 'download .exp', experiment_measurement_path(measure.experiment,measure, :format => :exp)
+            row.destroy_h       link_to t('action.remove').downcase, [measure.experiment,measure], confirm: 'Are you sure?', method: :delete if @experiment.present? && can?(:destroy, measure)
         end
     end
 %>

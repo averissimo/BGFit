@@ -24,6 +24,8 @@ class ProxyDynaModel < ActiveRecord::Base
   
   accepts_nested_attributes_for :simulation
   
+  attr_accessor :for_measurements
+  
   validate :validate_title
   
   before_save :update_params
@@ -33,9 +35,6 @@ class ProxyDynaModel < ActiveRecord::Base
   validates :dyna_model, :presence => { :message => 'A model must be choosen.' }
   
   scope :viewable, lambda { |user,only_mine=false| 
-    joins( :measurement => :experiment ).where( 
-      Experiment.arel_table[:model_id].in(  Model.viewable(user,only_mine).map { |m| m.id } )
-    )
   }
   
   scope :experiment_is, lambda { |experiment|
@@ -103,6 +102,42 @@ class ProxyDynaModel < ActiveRecord::Base
       else
         self.dyna_model.title + ': ' + title_pdm
       end
+    end
+    
+    #
+    # Recall Version
+    def revert_to_version(timestamp)
+      self.transaction do
+        new_model = self.version_at(timestamp)
+        new_model.updated_at = Time.now
+        new_model.perform_clean_stats
+        new_model.save
+        new_model.proxy_params.each do |p|
+          p.version_at(timestamp).save
+        end
+        new_model.json = nil
+        new_model.json_cache # call solver and calculate statistical data
+        return new_model
+      end
+    end
+    
+    #
+    # Show unique versions, with different statistical values
+    def show_versions
+      list = self.versions.where(event: "update").collect do |v|
+        if v.reify.rmse.nil?
+          nil
+        else
+          v.reify
+        end
+      end
+      
+      list = list.compact.uniq_by do |u| 
+        # create a unique string
+        u.rmse.to_s + "|" + u.bias.to_s + "|" + u.accuracy.to_s + "|" + u.r_square.to_s
+      end.sort_by(&:updated_at)
+      
+      list << self
     end
     
     #
@@ -280,7 +315,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.accuracy = 10 ** (dataset[:accu] / size )
       self.rmse = Math.sqrt( dataset[:rmse] / size )
       if dataset[:r_square_tot] == 0
-        clean_stats "cannot calculate statistical_measures, try again with a different range."
+        "cannot calculate statistical_measures, try again with a different range."
         return nil
       end
       self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]
@@ -320,7 +355,6 @@ class ProxyDynaModel < ActiveRecord::Base
           else
             response = call_http_get(request_hash)
           end    
-          
           if response.body.blank?
             clean_stats "empty response"
             return
@@ -355,7 +389,7 @@ class ProxyDynaModel < ActiveRecord::Base
       self.proxy_params.each do |d_p|
         d_p.value = result[d_p.param.code] if !result[d_p.param.code].nil?
         temp_param = params.find { |par| par.id == d_p.param_id }
-        debugger if temp_param.nil?
+
         d_p.top = temp_param.top
         d_p.bottom = temp_param.bottom
         d_p.save
@@ -425,7 +459,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def convert_param(original_args)
       flag = false
       self.proxy_params.each { |param|
-        temp = /#{param.code} = (?<value>[0-9]+[.]?[0-9]*)/.match(original_args)
+        temp = /#{param.code} = (?<value>[-]?[0-9]+[.]?[0-9]*)/.match(original_args)
         if temp
           param.value = temp[:value]
           flag = true if param.save
@@ -490,7 +524,6 @@ class ProxyDynaModel < ActiveRecord::Base
 
 
     def simulated_values
-      debugger
       if self.measurement
         simulated_lines( self.measurement.lines_no_death_phase(no_death_phase) )
       elsif self.experiment
@@ -581,8 +614,9 @@ class ProxyDynaModel < ActiveRecord::Base
         hash[:minor_step] = self.measurement.minor_step_cache.to_s unless self.measurement.minor_step_cache.nil? || self.measurement.minor_step_cache == 0  
       else
         # experiments
-        hash[:start] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.min_by { |l| l.x }.x
-        hash[:end] = self.experiment.measurements.collect(&:lines_no_death_phase).flatten.max_by { |l| l.x }.x
+        lines_aux = self.experiment.measurements.collect{|m|m.lines_no_death_phase(self.no_death_phase)}.flatten
+        hash[:start] = lines_aux.min_by { |l| l.x }.x
+        hash[:end] = lines_aux.max_by { |l| l.x }.x
         minor_step = self.experiment.measurements.select(Measurement.arel_table[:minor_step].minimum.as("min_minor_step")).first.min_minor_step
         hash[:minor_step] = minor_step if minor_step.present? || minor_step == 0
       end
@@ -602,11 +636,11 @@ class ProxyDynaModel < ActiveRecord::Base
       
       # TODO make death phase optional
       if self.experiment.nil?
-        x_array = self.measurement.x_array(false,no_death_phase)
+        x_array = self.measurement.x_array(log_flag,no_death_phase)
         y_array = self.measurement.y_array(log_flag,no_death_phase)
       else
         x_array = experiment.measurements.collect { |m|
-          m.x_array(false,no_death_phase).to_s
+          m.x_array(log_flag,no_death_phase).to_s
         }.join('];[')
         
         y_array = experiment.measurements.collect { |m|
@@ -817,7 +851,7 @@ class ProxyDynaModel < ActiveRecord::Base
             prev_sim_value = simulated_value
             simulated_value = json_parsed.shift # pops first element of json_parsed
           end
-          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil" if simulated_value.nil?
+          logger.error "[proxy_dyna_model.statistical_data_measurement] simulated_value is nil at line.x = " + line.x.to_s if simulated_value.nil?
           # checks if current simulated value timepoint is greater or equal than timepoint
           value = nil
           if simulated_value[0] > line.x

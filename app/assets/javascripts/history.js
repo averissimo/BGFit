@@ -54,13 +54,13 @@ $(function() {
   $('body').attr('data-state-href', location.href);
   
   $(getA).
-    live('ajax:beforeSend', function(xhr) {
+    on('ajax:beforeSend', function(xhr) {
       pushPageState(getState(this), "Loading...", this.href);
       window.title = "Loading...";
     });
 
   $(getForm).
-    live('ajax:beforeSend', function(xhr) {
+    on('ajax:beforeSend', function(xhr) {
       var href = $(this).attr("action") + "?" + $(this).serialize();
       
       pushPageState(getState(this), 'Loading...', href);
@@ -68,7 +68,7 @@ $(function() {
     });
     
   $('body').
-    live('ajax:complete', function(xhr) {
+    on('ajax:complete', function(xhr) {
       $('body').attr('data-state-href', location.href);
       if ( $('.to_remove') ) {
     	  $('.to_remove').remove();

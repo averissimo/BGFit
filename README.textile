@@ -2,41 +2,48 @@ h1. == BGFit ==
 
 h2. Description
 
-The Bacterial Growth Fitting application (BGFit) is a web-based software application that serves both as:
+BGFit provides a web-based unified platform, where a rich set of dynamic models can be fitted to experimental time-series data, further allowing to efficiently manage the results in a structured and hierarchical way.
 
-# an automated fitting tool for experimental using an extensible set of dynamic models and;
-# a data repository that holds and manages experimental data.
+The data managing system allows to organize projects, experiments and measurements data and also to define teams with different editing and viewing permission.
 
-It is extensible to new dynamic models using a distributed architecture allowing users to define their own models and fit their data. Furthermore, each extension contributes to a richer environment, where other scientists can easily test and compare different approaches by different models to better extract and understand the information described in the data.
-
-The application is described in the context of bacterial growth data fitting, but it is also applicable to other types of 2 dimensional data, e.g. data from cancer growth experiments or macroeconomic data.
+Several dynamic and algebraic models are already implemented, such as Polynomial Regression, Gompertz, Baranyi, Logistic and Live Cell Fraction models and the user can add easily new models thus expanding current ones.
 
 h2. General Information
+
+Publications, discussing results obtained with the help of BGFit, are asked to reference the following paper and webpage:
+
+* Veríssimo, A., Paixão, L., Neves, A. R. & Vinga, S. BGFit: management and automated fitting of biological growth curves. BMC Bioinformatics 14, 283 (2013). (http://kdbio.inesc-id.pt/bgfit)
 
 "INESC-ID":http://www.inesc-id.pt/
 "KDBIO Research Group":http://www.inesc-id.pt/intranet/laboratoriogrupo/kdbio/kdbio.php
 
-contact developer at: averissimo(at)kdbio.inesc-id.pt
+Contact developer at: averissimo (at) kdbio (dot) inesc-id (dot) pt
 
 h2. Requirements
 
-* "RVM":https://rvm.io/
-* "Ruby":http://www.ruby-lang.org/ (1.9.3)
+* "Ruby":http://www.ruby-lang.org/ (1.9.3 or 2.0.0)
 * "MySQL 5":http://www.mysql.com/
 * "Ruby on Rails":http://rubyonrails.org/ (3.1.3)
+* "liboctave (3.6.4+), libmysqlclient"
 
 h2. Installation
 
-<pre>$ git submodule init
-
-$ git submodule update
+<pre>$ git clone https://github.com/averissimo/BGFit.git
 
 $ gem install bundler
 
-$ gem install rails -v 3.2.8
-
 $ bundle install</pre>
 
+Create mysql database.
+
+Fill database.yml with mysql settings.
+
+<pre>$ rake db:migrate
+
+$ rake specs:features
+(to perform tests)
+
+$ rails s</pre>
 
 h2. Acknowledgments
 

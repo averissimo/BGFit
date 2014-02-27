@@ -18,12 +18,19 @@
 class DynaModel < ActiveRecord::Base
   has_many :params, :dependent => :destroy
   has_many :proxy_dyna_models, :dependent => :destroy
+  has_many :options, class_name: "DynaModelOption"
   
+  accepts_nested_attributes_for :options, allow_destroy: true, :reject_if => proc { |attributes| attributes['name'].blank? }
+  accepts_nested_attributes_for :params, allow_destroy: true, :reject_if => proc { |attributes| attributes['code'].blank? }
+  
+  belongs_to :octave_model
   belongs_to :owner, :class_name => 'User'
   
   validates_uniqueness_of :title
   validate :validate_solver, :validate_estimation
-  validates :title, :solver, :presence => true
+  validates :title, :presence => true
+  
+  attr_accessor :next_step
   
   has_paper_trail
 
@@ -89,6 +96,7 @@ class DynaModel < ActiveRecord::Base
   end
   
   private
+    
   #
   def validate_solver
     return if self.solver.nil? || self.solver.blank?

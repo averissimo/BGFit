@@ -57,8 +57,9 @@ if typeof google isnt 'undefined'
     setup_m = {
       timeout: 10000,
       dataType: 'json',
-      error: (jqXHR, textStatus, errorThrown) =>
-        #alert(textStatus)
+      error: (jqXHR, textStatus, errorThrown) ->
+        error_text = "There was a problem retrieving data (<a href=\"" + @url + "\">" + @url + "</a>). Error description: " + textStatus
+        $("#chart-errors").append($("<p>" + error_text + "</p>"))
     }
     setup = {
       timeout: 10000,
@@ -67,20 +68,28 @@ if typeof google isnt 'undefined'
         #alert(textStatus)
     }
     
-    $('a.hide').live 'click' , (event) =>
+    $('a.hide').on 'click' , (event) =>
       top = $(event.currentTarget).parents('.proxy_dyna_model_chart').slideUp()
       false
     
-    $('a.download.svg').live 'hover' , (event) =>
+    $('a.download.svg').on 'hover' , (event) =>
       $(event.currentTarget).prop('href','#')
     
-    $('a.download.svg').live 'click' , (event) =>
+    $('a.download.svg').on 'click' , (event) =>
       target = $(event.currentTarget)
       base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart svg').parent()[0].innerHTML
-
+      
       target.prop('href','data:image/svg;base64,'+ btoa(base64))
       true
-        
+    
+    $('a.download.png').on 'click' , (event) =>
+      target = $(event.currentTarget)
+      base64 = target.parents('div.proxy_dyna_model_chart').find('div.chart svg').parent()[0]
+      imgData = getImgData(base64)
+      target.prop('href',imgData)
+      true
+      
+
     process_google_chart = (el,data) ->
       calculate_view_window( data, options )
       chart = new google.visualization.ScatterChart el
@@ -129,10 +138,9 @@ if typeof google isnt 'undefined'
       list = []
       $(el).parent().find('.measurement-data div').each (i,measurement_data) =>
         setup_m.url = $(measurement_data).attr('data-source') 
-        m_ajax = $.ajax setup_m
-        m_ajax.done (json) =>
+        m_ajax = $.ajax(setup_m).done (json) =>
           list.push json
-          #
+
           if list.length != $(el).parent().find('.measurement-data div').length
             return # is not the final measurement
           # 
@@ -191,6 +199,7 @@ if typeof google isnt 'undefined'
       $(element).parent().children('div.chart').each (index,el) =>
         #
         $(el).html("<br/><div class=\"one_tab\">loading...</div>")
+        $(el).parent().slideDown("slow","easeInCirc")
         if $(el).parent().find('.model-data div').length <= 0
           process_measurement( el , data )
         #
@@ -249,7 +258,7 @@ if typeof google isnt 'undefined'
     #
     # Estimate specific javascript
     #    
-    $('a.estimate_chart').live 'click' , (event) =>
+    $('a.estimate_chart').on 'click' , (event) =>
       target = $(event.currentTarget)
       wrapper = target.parents('.experiments').find('.proxy_dyna_model_chart')
       # set the measurement title to the chart
@@ -271,7 +280,7 @@ if typeof google isnt 'undefined'
     #
     
           
-    $('h5.button').live 'click' , (event) =>
+    $('h5.button').on 'click' , (event) =>
       target = $(event.currentTarget)
       wrapper = $(target).parent().children('div.toggle')
       if wrapper.is(":visible") 

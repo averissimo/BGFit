@@ -2,7 +2,7 @@
 	context_menu = [
 		{
 			:key => :back, 
-			:name => "Back to dyna model", 
+			:name => "Back to " + DynaModel.model_name.human.downcase, 
 			:url => dyna_model_path(@dyna_model),
 			:options => {
 				:container_class => 'menu',
@@ -15,8 +15,4 @@
 %>
 <h1>New parameter</h1>
 
-<%= render 'form' %>
-
-<div class="menu">
-	<%= menu %>
-</div>
+<%= render 'form', menu: menu %>

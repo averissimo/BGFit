@@ -3,7 +3,25 @@
 
 en:
   formtastic:
+    placeholders:
+      measurement:
+        date: "click here to select date"
+      param:
+        code: "starts with a letter and cannot contain spaces"
+        top: "top range value for estimation"
+        bottom: "top range value for estimation"
+        human_title: "name for interface, can contain html"
+    labels:
+      proxy_dyna_model:
+        for_measurements: Apply dyna model to all measurements
     hints:
+      param:
+        output_only: "checked if the parameter is not used as an input"
+        initial_condition: "checked if it's the initial condition for a differential equation"
+        code: "logical name for parameter that starts with a letter and no spaces"
+        human_title: "name for presenting in the application's interface. Can contain html"
+        bottom: "default bottom range value when fitting curves"
+        top: "default top range value when fitting curves"
       model:
         is_published: if checked then the data is visible to the world, otherwise, only owner and associated teams can view it.
         description: text describing the scope of this project
@@ -17,3 +35,4 @@ en:
         no_death_phase: "removes any sequential values in the end that show a declining pattern"
         original_data: "use this textbox to manually define the parameter's value"
         dyna_model: "Model can only be choose when creating, if you wish to change you need to remove it first."
+        for_measurements: if checked it will associate this model with all measurements
