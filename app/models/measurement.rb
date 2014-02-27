@@ -31,6 +31,8 @@ class Measurement < ActiveRecord::Base
  
   scope :published, lambda { joins(:experiment).where( Experiment.arel_table[:model_id].in( Model.published.map { |m| m.id } )) }
  
+  validate :experiment_in_same_model
+ 
   has_paper_trail :skip => [:original_data]
 
   public
@@ -253,4 +255,12 @@ class Measurement < ActiveRecord::Base
     def can_edit(user=nil)
       experiment.model.can_edit(user)
     end
+    
+  private
+  
+  def experiment_in_same_model
+    if Experiment.find(self.experiment_id_was).model_id != self.experiment.model_id
+      errors.add(:experiment, "cannot change to experiment in different model.")
+    end
+  end
 end
