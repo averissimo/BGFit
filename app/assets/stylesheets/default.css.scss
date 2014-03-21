@@ -26,6 +26,22 @@ body {
   overflow-y: scroll;
 }
 
+h1 {
+  font-size: 2.2em;
+}
+h2 {
+  font-size: 2em;
+}
+
+h3 {
+  font-size: 1.8em;
+}
+
+
+h1,h2,h3 {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
 #login_menu {
   @extend #content;
   ul.menu {
@@ -147,10 +163,17 @@ padding-left: $padding;
 
 #feedback {
   position: absolute;
-  right: -14em;
-  #-webkit-transform: rotate(90deg);
-  #-moz-transform: rotate(90deg);
-  #transform: rotate(90deg);
+  left: $width + $padding*2;
+  
+  -ms-transform: translateY(100px) rotate(-90deg);
+  -webkit-transform: translateY(100px) rotate(-90deg);
+  -moz-transform: translateY(100px) rotate(-90deg);
+  transform: translateY(100px) rotate(-90deg);
+  
+  -ms-transform-origin:0% 0%;;
+  -webkit-transform-origin:0% 0%;;
+  transform-origin: 0% 0%;
+  
   padding: 10px 10px 10px 10px;
   font-weight: bold;
   background-color: white;
@@ -158,8 +181,9 @@ padding-left: $padding;
   text-align: center;
   
   border-right: 1px solid #5EB935;
-  border-left: 1px solid #5EB935;
+  border-top: 1px solid #5EB935;
   border-bottom: 1px solid #5EB935;
+  border-left: 1px solid #5EB935;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
   
@@ -167,8 +191,8 @@ padding-left: $padding;
 
 #feedback-wrapper{
   position: absolute;
-  width: $width;
-  top: 0;
+  wdith: $width;
+  top: $padding * 3;
 }
 
 //
