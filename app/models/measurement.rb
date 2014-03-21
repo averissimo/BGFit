@@ -259,8 +259,10 @@ class Measurement < ActiveRecord::Base
   private
   
   def experiment_in_same_model
-    if Experiment.find(self.experiment_id_was).model_id != self.experiment.model_id
-      errors.add(:experiment, "cannot change to experiment in different model.")
+    unless self.new_record?
+      if Experiment.find(self.experiment_id_was).model_id != self.experiment.model_id
+        errors.add(:experiment, "cannot change to experiment in different model.")
+      end
     end
   end
 end
