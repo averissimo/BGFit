@@ -150,7 +150,7 @@ class ProxyDynaModel < ActiveRecord::Base
         else
           p.param.human_title + "=" + p.value.to_s
         end
-      }.compact.join(",")
+      }.compact.join(", ")
     end
     
     # Does not allow to save data in this field 
