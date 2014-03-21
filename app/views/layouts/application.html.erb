@@ -37,7 +37,12 @@
 	<body>
 		<div id="main-content">
 		<div id="fixed-header">
-		    <div id="header-wrapper">
+      <div id="header-wrapper">
+	
+	    <div id="feedback-wrapper">
+  		  <div id="feedback">Feedback is<br/>welcomed!<br/><span class="no-weight"><a href="https://docs.google.com/forms/d/1Ssqd5HpP24H48MPQoAI7-GOIaih4HKg9YYLcW_98YbE/viewform" target="_blank">click here</a></span></div>
+  		</div>
+	
 			<div id="header" 
 			 <%-if Rails.env != "production" && Rails.env == "pre-production"%>style="background-color: #F78400!important;"
 			 <%- elsif Rails.env != "production" && Rails.env == "test"%>style="background-color: #FF00FF!important;"
@@ -94,11 +99,18 @@
 		</div>
 		
 		<div id="footer">
-  		<div>
-  		  <span>
-    		  <a href="http://www.biomedcentral.com/1471-2105/14/283">Veríssimo, A., Paixão, L., Neves, A. R. &amp; Vinga, S.
-    		  <br/>BGFit: management and automated fitting of biological growth curves. BMC Bioinformatics 14, 283 (2013).</a>
-    		  <br/>http://kdbio.inesc-id.pt<br/><br/>
+  		<div class='tooltip padding-bottom-2em'>
+  		  <span>Publications, discussing results obtained with the help of BGFit, <br/>are asked to reference the following paper and webpage:<br/>Veríssimo et. al (<a href="javascript:void(0)">click for full citation</a>)</span>
+  		  <span class='tooltip-text' style="margin-left: 0;padding-left:0">
+    		  Veríssimo, A., Paixão, L., Neves, A. R. &amp; Vinga, S.
+    		  <br/>BGFit: management and automated fitting of biological growth curves. BMC Bioinformatics 14, 283 (2013).
+  		    <ul class="small no-margin-left">
+            <li><a class="a-dark" href="http://www.biomedcentral.com/1471-2105/14/283" class="show_more btn blank btn_small">BMC Bioinformatics</a></li>
+            <li><a class="a-dark" href="http://www.biomedcentral.com/pubmed/24067087 " class="show_more btn blank btn_small">Pubmed</a></li>
+            <li><a class="a-dark" href="http://www.citeulike.org/posturl?url=http://www.biomedcentral.com/1471-2105/14/283" class="show_more btn blank btn_small">Citeulike</a></li>
+            <li><a class="a-dark" href="http://www.mendeley.com/import/?url=http://www.biomedcentral.com/1471-2105/14/283" class="show_more btn blank btn_small">Mendeley</a></li>
+          </ul>
+    		  <br/>webpage: http://kdbio.inesc-id.pt/bgfit<br/><br/>
   		  </span>
       </div>
 			<%= render_navigation %>

@@ -145,6 +145,32 @@ padding-left: $padding;
     }
 }
 
+#feedback {
+  position: absolute;
+  right: -14em;
+  #-webkit-transform: rotate(90deg);
+  #-moz-transform: rotate(90deg);
+  #transform: rotate(90deg);
+  padding: 10px 10px 10px 10px;
+  font-weight: bold;
+  background-color: white;
+  
+  text-align: center;
+  
+  border-right: 1px solid #5EB935;
+  border-left: 1px solid #5EB935;
+  border-bottom: 1px solid #5EB935;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  
+}
+
+#feedback-wrapper{
+  position: absolute;
+  width: $width;
+  top: 0;
+}
+
 //
 //
 //
@@ -390,6 +416,10 @@ div.field {
 // Specific
 ////////////////////////////////
 
+.tooltip-text {
+  display: none;
+}
+
 .options {
   width: 100%;
   text-align: right;
@@ -405,7 +435,7 @@ div#experiment_chart {
 } 
 
 .gray {
-  color: #555;
+  color: $gray;
 }
 
 ul.p {
@@ -414,4 +444,36 @@ ul.p {
 
 .partial-hide {
   overflow: hidden;
+}
+
+//
+//
+//
+//
+//
+// Helpers
+///////////////////////////////
+
+.no-weight {
+  font-weight: normal;
+}
+
+.no-margin-left {
+  margin-left: 0;
+}
+
+.a-dark {
+  text-decoration: none;
+  color: $gray;
+  &:visited { }
+  &:active,
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+    color: white;
+  }
+}
+
+.padding-bottom-2em {
+  padding-bottom: 2em;
 }

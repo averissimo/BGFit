@@ -1,6 +1,5 @@
 <% 
-	def context_menu 
-	  result = [
+	context_menu = [
 		{
 			:key => :new, 
 			:name => t('navigation.new' , model: Experiment.model_name.human), 
@@ -52,9 +51,9 @@
 			}
 		}
 		]
-	end
+
 	menu = nil
-	content_for(:context_menu) { render_navigation(:items => context_menu.delete_if { |i| i[:show_in_top] == false }) }
+	content_for(:context_menu) { render_navigation(:items => context_menu.reject { |i| i[:show_in_top] == false }) }
 	menu = render_navigation( items: context_menu)
 
 %>

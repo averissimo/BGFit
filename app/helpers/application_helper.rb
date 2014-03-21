@@ -159,6 +159,7 @@ module ApplicationHelper
         :name => t('devise.my_team').pluralize,
         :url => groups_path,
         :options => {
+          title: 'Manage teams that I participate',
           :if => Proc.new { user_signed_in? },
           :container_class => 'menu'
         }
@@ -172,7 +173,7 @@ module ApplicationHelper
           :method => :delete,
           :container_class => 'menu'
         }
-      },]
+      }]
     menu = nil
     render_navigation :items => link_array
   end
