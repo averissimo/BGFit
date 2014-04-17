@@ -50,7 +50,7 @@ group :test do
   gem "factory_girl_rails" # Rails4 ok
   gem "capybara" # Rails4 ok
   gem "guard-rspec" # Rails4 ok
-  gem "database_cleaner", '~>1.0.0' # Rails4 ok from v1.0.0
+  gem "database_cleaner", '~>1' # Rails4 ok from v1.0.0
 end
 
 
