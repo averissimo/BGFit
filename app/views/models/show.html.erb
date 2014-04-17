@@ -37,22 +37,25 @@
 			:options => {
 				:if => Proc.new { can?(:update, @model) },
 				:container_class => 'menu',
-				:class => ("text" if can?(:update, @model))
-	       	}
-       	},
-       	{
-            :key => :index, 
-            :name => "Goto public " + Model.model_name.human.pluralize.downcase, 
-            :url => models_path,
-            :options => {
-                :if => Proc.new { cannot?(:update, @model) },
-                :container_class => 'menu',
-                :class => ("text" if can?(:update, @model))
-            }
-        }
+				:class => ("text")
+     	}
+   	},
+		{
+			:key => :download, 
+			:name => 'Download all', 
+			:show_in_top => false,
+			:url => model_path(@model,format: :csv),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
+		}
 		]
+
 	menu = nil
-	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:context_menu) { render_navigation(:items => context_menu.reject { |i| i[:show_in_top] == false }) }
+	menu = render_navigation( items: context_menu)
+
 %>
 <% content_for(:title) { t('title.detail' , model: Model.model_name.human) } %>
 

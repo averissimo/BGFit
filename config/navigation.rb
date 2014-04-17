@@ -50,11 +50,11 @@ SimpleNavigation::Configuration.run do |navigation|
     #                            against the current URI.  You may also use a proc, or the symbol <tt>:subpath</tt>. 
     #
     primary.dom_class = 'menu'
-    primary.item :home, 'Home', root_path
-    primary.item :models, Model.model_name.human.pluralize, models_path , :highlights_on => /^.*\/(projects|experiments|measurements|proxy_models)/ , :if => Proc.new{ current_user }
-    primary.item :public, "Public projects", public_models_path , :highlights_on => /^.*\/(projects\/public)/
-    primary.item :dyna_models, DynaModel.model_name.human.pluralize, dyna_models_path , :highlights_on => /^.*\/models/
-    primary.item :docmentation, "Documentation", documentation_path , :highlights_on => /^.*\/documentation/
+    primary.item :home, 'Home', root_path, title: "Go to home page"
+    primary.item :models, Model.model_name.human.pluralize, models_path , :highlights_on => /^.*\/(projects|experiments|measurements|proxy_models)/ , :if => Proc.new{ current_user }, title: "Access your projects <span class='gray'>(and create new ones)</span>"
+    primary.item :public, "Public projects", public_models_path , :highlights_on => /^.*\/(projects\/public)/, title: "See all published projects"
+    primary.item :dyna_models, DynaModel.model_name.human.pluralize, dyna_models_path , :highlights_on => /^.*\/models/, title: "Library of all dynamic models implemented in BGFit <span class='gray'>(you can always add your own model with the wizard)</span>"
+    primary.item :documentation, "Documentation", documentation_path , :highlights_on => /^.*\/documentation/, title: "Wiki and sources"
 
     # Add an item which has a sub navigation (same params, but with block)
     ##primary.item :key_2, 'name', url, options do |sub_nav|

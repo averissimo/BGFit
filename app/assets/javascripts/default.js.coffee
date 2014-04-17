@@ -67,8 +67,19 @@ jQuery ->
     el.animate { height: Math.round(height) , opacity: opacity }, time , "easeInOutCirc"
     el.find("*").toggleDisabled()
     
+  $('.unhide-prev').on 'click', (e) ->
+    div = $(@).prev('div')
+    hide_partial(1500 , 1 , div.prop("data-height") , div)
+    div.removeProp("data-height")
+    $(@).fadeOut()
+    
   $(".partial-hide").each ->
     h = $(@).height()
+    if h / HIDE > 400
+      h = 800
+    else if h / HIDE < 150
+      return
+    $(@).next('a.unhide-prev').show()
     $(@).prop("data-height",h)
     hide_partial(0,0.6, h / HIDE,$(@))
 

@@ -14,6 +14,7 @@
 
   <%= f.inputs do %>
   	<!--<%= f.input :experiment, :input_html => { :disabled => true  }%>-->
+    <%= f.input :experiment, as: :radio, collection: Hash[@experiment.model.experiments.map{|b| [b.title + " (#{b.id})",b.id]}] %>
   	<%= f.input :title %>
   	<%= f.input :description %>  
     <%= f.input :date , label:"Date",as: :string, input_html: {class: "date_picker"} %>

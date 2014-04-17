@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '3.2.17'
 
 gem 'mysql2'
 
@@ -47,34 +47,34 @@ end
 
 gem "rspec-rails", :group => [:test, :development]
 group :test do
-  gem "factory_girl_rails"
-  gem "capybara"
-  gem "guard-rspec"
-  gem "database_cleaner"
+  gem "factory_girl_rails" # Rails4 ok
+  gem "capybara" # Rails4 ok
+  gem "guard-rspec" # Rails4 ok
+  gem "database_cleaner", '~>1' # Rails4 ok from v1.0.0
 end
 
 
 ### Rails 4 Compatible ###
 
 # Change history
-gem 'paper_trail', github: 'airblade/paper_trail', branch: 'master' # Rails4 ok
+gem 'paper_trail', '~>3.0.1' # Rails4 ok
 
 # Forms
-gem 'formtastic', github: 'justinfrench/formtastic', branch: 'master' #Rails4 ok
+gem 'formtastic'#, github: 'justinfrench/formtastic', branch: 'master' #Rails4 ok
 
 # User management
-gem 'devise' , '3.0.2' # Rails4 ok
+gem 'devise' # Rails4 ok
 
 # Pagination
 gem 'kaminari' # Rails4 ok
 
 # Power-up tables
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails' #Rails4 ok
-gem 'jquery-ui-rails' #Rails4 ok
+gem 'jquery-ui-rails', '~>4.0.2'                                       #Rails4 ok
 
-gem 'simple-navigation', github: 'andi/simple-navigation' # Rails4 ok
+gem 'simple-navigation' # Rails4 ok
 
-gem "paperclip", :git => "git://github.com/thoughtbot/paperclip.git" # Rails4 ok
+gem "paperclip", '~>3.5.1' # Rails4 ok
 
 gem 'delayed_job_active_record', github: 'collectiveidea/delayed_job_active_record' # Rails4 ok - with master branch
 gem 'delayed_job_web' # Rails4 unknown

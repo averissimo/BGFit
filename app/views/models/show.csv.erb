@@ -1,0 +1,8 @@
+time,n,measurement_id,experiment_id
+<%- @model.experiments.each do |e| %>
+<%- e.measurements.each do |m| %>
+<%- m.lines.map do |l| %> 
+<%= l.x.to_s %>,<%= l.y.to_s %>,<%= m.id %>,<%= e.id %>
+<%- end %>
+<%- end %>
+<%- end %>

@@ -1,8 +1,8 @@
 <% 
 	javascript 'https://www.google.com/jsapi'
 	
-	context_menu = [
-		{
+	def context_menu 
+		result = [{
 			:key => :new, 
 			:name => t('.dyna'), 
 			:url => new_measurement_proxy_dyna_model_path(@measurement),
@@ -32,6 +32,7 @@
 		},
 		{
 			:key => :new, 
+			:show_in_top => false,
 			:name => t('.new-line'), 
 			:url => new_measurement_line_path(@measurement),
 			:options => {
@@ -50,7 +51,7 @@
 			}
 		},
 		{
-			:key => :index, 
+			:key => :index_model, 
 			:name => t('navigation.goto' , destination: Model.model_name.human.downcase), 
 			:url => url_for(@model),
 			:options => {
@@ -58,9 +59,12 @@
 				:class => "text"
 			}
 		}]
+	end
 	menu = nil
-	content_for(:context_menu) { menu = render_navigation :items => context_menu }
+	content_for(:context_menu) { render_navigation(:items => context_menu.delete_if { |i| i[:show_in_top] == false }) }
+	menu = render_navigation( :items => context_menu )
 	content_for(:title) { t('title.detail' , model: Measurement.model_name.human) }
+	
 %>
 
 <h1><%= @measurement.experiment.title %>: <%= @measurement.title %><% if @measurement.date %> (<%= @measurement.date %>)<% end %></h1>
@@ -78,6 +82,8 @@
 <%= simple_format empty(@measurement.description,"description") %>
 
 <h3>Measured data (<%= pluralize(@measurement.lines.length, 'line')%>)</h3>
+<div class="text-center">
+<div class="partial-hide">
 <%= 
 	collection_table(@measurement.lines, :id => 'lines' , :class => 'formatted dataTable') do |t|
 		t.header :x
@@ -100,6 +106,11 @@
 	end
 %>
 
+</div>
+
+<a class="unhide-prev" style="display:none;" href="javascript:void(0)">show all measurements</a>
+
+</div>
 <div class="options">
 	<%= link_to "Download table as .csv" , experiment_measurement_path(@experiment,@measurement, :format => :csv), class: "download" %>
 </div>
