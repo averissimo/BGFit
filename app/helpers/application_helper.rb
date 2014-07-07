@@ -16,7 +16,18 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 module ApplicationHelper
-  
+
+  # method to create a link out
+  def a_out(text, link, negative=false, html_options = {})
+    class_names = negative ? "out-link-neg" : "out-link-pos"
+    # set default html options
+    html_options[:class]  = "out-link " + class_names + html_options[:class].to_s
+    html_options[:target] = "_blank"
+    #
+    text += image_tag( "navigation/trans.png", class: "out-link-img noborder")
+    link_to text.html_safe, link, html_options
+  end
+
   # method to add nested fields duynamically
   def link_to_add_fields(name, f, association,class_name="add_fields")
     new_object = f.object.send(association).klass.new
@@ -24,14 +35,14 @@ module ApplicationHelper
     fields = f.fields_for(association, new_object, child_index: id) do |builder|
       render(association.to_s.singularize + "_fields", f: builder, new_class: "new")
     end
-    link_to(name, '#', class: class_name, data: {id: id, fields: fields.gsub("\n", "")})
+    link_to(name, 'javascript:void(0);', class: class_name, data: {id: id, fields: fields.gsub("\n", "")})
   end
-  
+
   def back_menu(fallback=nil)
     back = []
     back << {
-      :key => :back, 
-      :name => 'Back', 
+      :key => :back,
+      :name => 'Back',
       :url => url_for(:back),
       :options => {
         :unless => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back)},
@@ -39,11 +50,11 @@ module ApplicationHelper
         :class => "text"
       }
     }
-    
+
     if fallback
       back << {
-      :key => fallback[:key], 
-      :name => fallback[:name], 
+      :key => fallback[:key],
+      :name => fallback[:name],
       :url => fallback[:path],
       :options => {
         :if => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back) },
@@ -53,52 +64,52 @@ module ApplicationHelper
     }
     else
       back << {
-      :key => :home, 
-      :name => 'Goto to home', 
+      :key => :home,
+      :name => 'Goto to home',
       :url => root_path,
       :options => {
         :if => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back) },
         :container_class => 'menu',
         :class => "text"
       }
-    }  
+    }
     end
     back
   end
-  
+
   def remote_activated?
     defined?(no_remote_flag).nil?
   end
-    
+
   def data_sig(array,method=:id)
     array.map(&method).hash.to_s
   end
-  
+
   def can_column?(method,array )
     array.map { |m|
       return true if can? method , m
     }.include?(true)
   end
-  
+
   def total_pages(count)
    if count > 1
      " in #{count} pages"
    else
      ""
-   end 
+   end
   end
-  
+
   def sortable(column, klass, prefix="",title=nil,pref=nil)
     title ||= column.titleize
     css_class = column == sort_column(klass,pref) ? "current #{sort_direction}" : nil
-    direction = column == sort_column(klass,pref).name  && sort_direction == "asc" ? "desc" : "asc"     
+    direction = column == sort_column(klass,pref).name  && sort_direction == "asc" ? "desc" : "asc"
     link_to title, params.merge("#{prefix}sort" => column, "#{prefix}direction" => direction), {:class => css_class, remote:true}
   end
-  
+
   def javascript(*files)
     content_for(:head) { javascript_include_tag(*files) }
   end
-  
+
   def show(string)
     if string.nil? || string.blank? || string.strip.blank?
       "(" + t('aux.not_defined').downcase + ")"
@@ -106,7 +117,7 @@ module ApplicationHelper
       string
     end
   end
-  
+
   def empty(text,type=nil)
     if text.nil? || text.blank? || text.strip.blank?
       type ||= ""
@@ -115,12 +126,12 @@ module ApplicationHelper
       text
     end
   end
-  
+
   def login_menu
     link_array = [
       {
-        :key => :sign_up, 
-        :name => t('devise.sign_up'), 
+        :key => :sign_up,
+        :name => t('devise.sign_up'),
         :url => new_user_registration_path,
         :options => {
           :unless => Proc.new {user_signed_in?},
@@ -128,8 +139,8 @@ module ApplicationHelper
         }
       },
       {
-        :key => :login, 
-        :name => t('devise.login'), 
+        :key => :login,
+        :name => t('devise.login'),
         :url => new_user_session_path,
         :options => {
           :unless => Proc.new { user_signed_in? },
@@ -137,7 +148,7 @@ module ApplicationHelper
         }
       },
       {
-        :key => :user, 
+        :key => :user,
         :name => (if user_signed_in? then current_user.email else 'user' end),
         :url => edit_user_registration_path,
         :options => {
@@ -146,7 +157,7 @@ module ApplicationHelper
         }
       },
       {
-        :key => :edit, 
+        :key => :edit,
         :name => t('devise.edit'),
         :url => edit_user_registration_path,
         :options => {
@@ -155,7 +166,7 @@ module ApplicationHelper
         }
       },
       {
-        :key => :teams, 
+        :key => :teams,
         :name => t('devise.my_team').pluralize,
         :url => groups_path,
         :options => {
@@ -165,8 +176,8 @@ module ApplicationHelper
         }
       },
       {
-        :key => :logout, 
-        :name => t('devise.logout'), 
+        :key => :logout,
+        :name => t('devise.logout'),
         :url => destroy_user_session_path,
         :options => {
           :if => Proc.new { user_signed_in? },
@@ -180,14 +191,14 @@ module ApplicationHelper
 
   #
   # helper function to generate google charts
-  def google_chart(measurements,proxy_dyna_models) 
-      
-      content_tag :div, class: "proxy_dyna_model_chart auto-load", style: "display:none" do 
-        [content_tag( :div, id: "chart-errors") do 
+  def google_chart(measurements,proxy_dyna_models)
+
+      content_tag :div, class: "proxy_dyna_model_chart auto-load", style: "display:none" do
+        [content_tag( :div, id: "chart-errors") do
           [tag("br"),
           content_tag(:div, "" , class: "one_tab")].join(" ").html_safe
         end,
-        content_tag( :div, class: "chart") do 
+        content_tag( :div, class: "chart") do
           [tag("br"),
           content_tag(:div, "loading.." , class: "one_tab")].join(" ").html_safe
         end,
@@ -199,19 +210,19 @@ module ApplicationHelper
         end,
         content_tag(:div, class: "model-data", style: "display:none;") do
           proxy_dyna_models.collect do |pdm|
-            content_tag :div , pdm.title_join, data: { source: proxy_dyna_model_path(pdm, :format => :json) } 
+            content_tag :div , pdm.title_join, data: { source: proxy_dyna_model_path(pdm, :format => :json) }
           end.join.html_safe
         end,
         content_tag(:div, class: "measurement-data", style: "display:none;") do
           measurements.collect do |m|
-            content_tag :div , m.title , data: { source: measurement_path(m,:format=>:json) } 
+            content_tag :div , m.title , data: { source: measurement_path(m,:format=>:json) }
           end.join.html_safe
         end
        ].join(" ").html_safe
       end
-    end  
+    end
 
-  def form_errors(form_object)    
+  def form_errors(form_object)
     return "" if form_object.object.errors.blank?
     content_tag :div,class:"form_errors" do
        form_object.semantic_errors *form_object.object.errors.keys

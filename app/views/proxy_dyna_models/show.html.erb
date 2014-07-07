@@ -1,10 +1,10 @@
-<% 
+<%
 	javascript 'https://www.google.com/jsapi'
-	
+
 	context_menu = [
 		{
-			:key => :edit, 
-			:name => 'Edit this proxy model', 
+			:key => :edit,
+			:name => 'Edit this proxy model',
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
 				:container_class => 'menu',
@@ -12,8 +12,8 @@
 			}
 		},
 		{
-            :key => :history, 
-            :name => 'Show history', 
+            :key => :history,
+            :name => 'Show history',
             :url => url_for([:history,@proxy_dyna_model]),
             :options => {
                 :link => {
@@ -26,8 +26,8 @@
             }
         },
 		{
-			:key => :index, 
-			:name => 'Goto measurement', 
+			:key => :index,
+			:name => 'Goto measurement',
 			:url => Proc.new {url_for([@proxy_dyna_model.measurement.experiment,@proxy_dyna_model.measurement])},
 			:options => {
 				:unless => Proc.new { @proxy_dyna_model.measurement.nil? },
@@ -36,8 +36,8 @@
 			}
 		},
         {
-            :key => :index, 
-            :name => 'Goto experiment', 
+            :key => :index,
+            :name => 'Goto experiment',
             :url => Proc.new {url_for([@proxy_dyna_model.experiment])},
             :options => {
                 :unless => Proc.new { @proxy_dyna_model.experiment.nil? },
@@ -46,8 +46,8 @@
             }
         },
         {
-            :key => :model, 
-            :name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase), 
+            :key => :model,
+            :name => t('navigation.goto' , destination: DynaModel.model_name.human.downcase),
             :url => url_for([@proxy_dyna_model.dyna_model]),
             :options => {
                 :container_class => 'menu',
@@ -94,13 +94,13 @@
 <%= form_tag( calculate_proxy_dyna_model_path(@proxy_dyna_model) , method: :put) do |f| %>
 
 	<div class="one_tab">
-		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted dataTable') do |t| 
+		<%= collection_table(@proxy_dyna_model.proxy_params , :class => 'formatted dataTable') do |t|
 			t.header :title
 			t.header :value, "Estimated parameter"
 			t.header :description
 			t.header :bottom, "Bottom range for estimation"
 			t.header :top, "Top range for estimation"
-		
+
 			t.rows.alternate = :odd
 			t.rows.each do |row, param, index|
 				row.title 	param.param.human_title.html_safe
@@ -114,32 +114,64 @@
 			<%= link_to "Download table as .csv" , url_for([@proxy_dyna_model])+".csv", class: "download" %>
 		</div>
 	</div>
-	
+
 <div class="action text-center">
 	<table class="formatted dataTable">
 		<thead>
 			<tr>
-				<th class="no-sort" scope="col">RMSE</th>
-				<th class="no-sort" scope="col">R<sup>2</sup></th>
-				<th class="no-sort" scope="col">Bias</th>
-				<th class="no-sort" scope="col">Accuracy</th>
+				<th class="tooltip no-sort fake-link" scope="col">
+					RMSE
+					<span class="info-i hide-text">click here for more information
+						<span class="tooltip-text">
+							<%= image_tag("formulas/rmse.png", class: "noborder") %>
+							<br/><br/> For more information: <%= a_out "link to Wikipedia article", "http://en.wikipedia.org/wiki/Root-mean-square_deviation", true %>
+						</span>
+					</span>
+				</th>
+				<th class="tooltip no-sort" scope="col">
+					R<sup>2</sup>
+					<span class="info-i hide-text">click here for more information
+						<span class="tooltip-text">
+							<%= image_tag("formulas/r_square.png", class: "noborder") %>
+							<br/><br/> For more information: <%= a_out "link to Wikipedia article", "http://en.wikipedia.org/wiki/Coefficient_of_determination", true %>
+						</span>
+					</span>
+				</th>
+				<th class="tooltip no-sort" scope="col">
+					Bias
+					<span class="info-i hide-text">click here for more information
+						<span class="tooltip-text">
+							<%= image_tag("formulas/bias.png", class: "noborder") %>
+							<br/><br/> For more information check <span class="italic">Ross, T. <span class="bold">Indices for performance evaluation of predictive models in food microbiology.</span> Journal of Applied Bacteriology 81, 501–508 (1996).</span> (<%= a_out "link to journal article", "http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2672.1996.tb03539.x/abstract", true %> )
+						</span>
+					</span>
+				</th>
+				<th class="tooltip no-sort" scope="col">
+						Accuracy
+						<span class="info-i hide-text">click here for more information
+							<span class="tooltip-text">
+								<%= image_tag("formulas/accuracy.png", class: "noborder") %>
+								<br/><br/> For more information check <span class="italic">Ross, T. <span class="bold">Indices for performance evaluation of predictive models in food microbiology.</span> Journal of Applied Bacteriology 81, 501–508 (1996).</span> (<%= a_out "link to journal article", "http://onlinelibrary.wiley.com/doi/10.1111/j.1365-2672.1996.tb03539.x/abstract", true %> )
+							</span>
+						</span>
+				</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td title="<%=@proxy_dyna_model.rmse%>"><%= @proxy_dyna_model.round(:rmse)%></td>
-				<td title="<%=@proxy_dyna_model.r_square%>"><%= @proxy_dyna_model.round(:r_square)%></td>
-				<td title="<%=@proxy_dyna_model.bias%>"><%= @proxy_dyna_model.round(:bias)%></td>
-				<td title="<%=@proxy_dyna_model.accuracy%>"><%= @proxy_dyna_model.round(:accuracy)%></td>
+				<td title="exact value: <%=@proxy_dyna_model.rmse%>"><%= @proxy_dyna_model.round(:rmse)%></td>
+				<td title="exact value: <%=@proxy_dyna_model.r_square%>"><%= @proxy_dyna_model.round(:r_square)%></td>
+				<td title="exact value: <%=@proxy_dyna_model.bias%>"><%= @proxy_dyna_model.round(:bias)%></td>
+				<td title="exact value: <%=@proxy_dyna_model.accuracy%>"><%= @proxy_dyna_model.round(:accuracy)%></td>
 			</tr>
 		</tbody>
 	</table>
 	<fieldset class="left actions formtastic" style="border:0;">
 	<ol>
 		<%- if can? :calculate, @proxy_dyna_model %>
-	
+
 		<li class="action"><%= button_tag "estimate parameters".capitalize , disable_with: "calculating, please wait..." %></li>
-	
+
 	<%- end %>
 	<div class="menu">
 	<%= menu %>
@@ -162,7 +194,3 @@
     <%- end %>
 
 <%- end %>
-
-
-
-

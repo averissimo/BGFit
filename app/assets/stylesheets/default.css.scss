@@ -80,7 +80,7 @@ padding-left: $padding;
     padding-top:1px;
     }
     font-size:80%;
-    
+
   }
 }
 
@@ -114,7 +114,7 @@ padding-left: $padding;
   margin:auto;
   border-bottom-right-radius: $radius;
   border-bottom-left-radius: $radius;
-  
+
 }
 
 #logo {
@@ -164,29 +164,29 @@ padding-left: $padding;
 #feedback {
   position: absolute;
   left: $width + $padding*2;
-  
+
   -ms-transform: translateY(100px) rotate(-90deg);
   -webkit-transform: translateY(100px) rotate(-90deg);
   -moz-transform: translateY(100px) rotate(-90deg);
   transform: translateY(100px) rotate(-90deg);
-  
+
   -ms-transform-origin:0% 0%;;
   -webkit-transform-origin:0% 0%;;
   transform-origin: 0% 0%;
-  
+
   padding: 10px 10px 10px 10px;
   font-weight: bold;
   background-color: white;
-  
+
   text-align: center;
-  
+
   border-right: 1px solid #5EB935;
   border-top: 1px solid #5EB935;
   border-bottom: 1px solid #5EB935;
   border-left: 1px solid #5EB935;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px;
-  
+
 }
 
 #feedback-wrapper{
@@ -339,7 +339,7 @@ div.menu {
 }
 
 .flash {
-  
+
 }
 .notice {
   background-color: #FFF6BF;
@@ -393,6 +393,35 @@ a {
     text-decoration: underline;
     color: black;
   }
+  &.out-link {
+    text-decoration: none;
+    &:visited { }
+    &:active,
+    &:hover,
+    &:focus {
+      text-decoration: underline;
+    }
+    & img.out-link-img {
+      //background-size: 30px;
+      background-repeat: no-repeat;
+      width: 10px;
+      vertical-align: top;
+    }
+    &.out-link-pos {
+      & img.out-link-img{
+        background-image: image-url('navigation/out.svg');
+        background-position: 0 0;
+      }
+      color: #1122CC;
+    }
+    &.out-link-neg {
+      & img.out-link-img{
+        background-image: image-url('navigation/out.svg');
+        background-position: -10px 0px;
+      }
+      color: #42B4E6;
+    }
+  }
 }
 
 h5.button {
@@ -415,7 +444,7 @@ div.field {
   label {
     font-weight: bold;
   }
-  
+
   input,
   textarea,
   select {
@@ -456,7 +485,7 @@ div#experiment_chart {
 
 .new {
   margin-bottom:2em;
-} 
+}
 
 .gray {
   color: $gray;
@@ -498,6 +527,39 @@ ul.p {
   }
 }
 
+.hide {
+  display:none;
+}
+
+.hide-text{
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.fake-link:hover {
+  cursor: pointer;
+}
+
 .padding-bottom-2em {
   padding-bottom: 2em;
+}
+
+.info-i {
+  background-image: image-url('info.png');
+  background-repeat: no-repeat;
+  background-position: top right;
+
+  float:right;
+
+  width: 12px;
+  height: 13px;
+
+  /* Hide the text. */
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  &:hover {
+    @extend .fake-link:hover;
+  }
 }

@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#if (history && history.pushState)    
+#if (history && history.pushState)
 #  $(window).bind "popstate", ()->
 #    jQuery ->
 #      if history.state == "ajax"
@@ -26,7 +26,7 @@
 #  $('a[title],input[title]').qtip( {
 #    show: 'mouseover',
 #    hide: 'mouseout',
-#    style: { 
+#    style: {
 #      width: 300,
 #      padding: 5,
 #      color: 'black',
@@ -40,14 +40,15 @@
 #    }
 #  })
 
+# generate date picker
 $(document).on 'page:load ready' , ->
   $('.date_picker').datepicker()
-
+  
 jQuery ->
   $('div.flash a.close_flash').on 'click', (e)->
     div = $(@).parent().slideToggle();
     false
-  
+
   if $('#menu .menu a, #login-menu .menu a')
     for el in $('#menu .menu a, #login-menu .menu a')
       weight = $(el).css("font-weight")
@@ -55,24 +56,24 @@ jQuery ->
       width = $(el).width()
       $(el).css("font-weight" , weight )
       $(el).width(width+4)
-  
+
   HIDE = 2
-  
+
   $.fn.toggleDisabled = ->
     @each ->
       @disabled = !@disabled;
       @
-  
+
   hide_partial = (time,opacity,height,el)->
     el.animate { height: Math.round(height) , opacity: opacity }, time , "easeInOutCirc"
     el.find("*").toggleDisabled()
-    
+
   $('.unhide-prev').on 'click', (e) ->
     div = $(@).prev('div')
     hide_partial(1500 , 1 , div.prop("data-height") , div)
     div.removeProp("data-height")
     $(@).fadeOut()
-    
+
   $(".partial-hide").each ->
     h = $(@).height()
     if h / HIDE > 400
@@ -87,7 +88,7 @@ jQuery ->
     div = $(@).parentsUntil("div").parent().find('#table_params')
     hide_partial(1500 , 1 , div.prop("data-height") , div)
     div.removeProp("data-height")
-  
+
   $('input#param_1').on 'change', (e)->
     div = $(@).parentsUntil("div").parent().find('#table_params')
     div.prop("data-height",div.height())
