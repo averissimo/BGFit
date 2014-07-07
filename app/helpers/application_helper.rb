@@ -154,9 +154,9 @@ module ApplicationHelper
       {
         :key => :cite,
         :name => t('devise.cite'),
-        :url => "javascript:void(0)",
+        :url => documentation_path,
         :options => {
-          title: "<span class='no-margin-left bold'>Veríssimo et al. (2013)</span><br/>click to get complete reference",
+          title: "<span class='no-margin-left bold'>Veríssimo et al., BMC Bioinformatics (2013)</span><br/>click to get complete reference",
           :container_class => 'menu',
           :class => "bold"
         }
