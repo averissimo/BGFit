@@ -19,7 +19,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-  
+
     # Model structure
     can :read, [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_view(user) # all classes have this method implemented
@@ -27,18 +27,22 @@ class Ability
     can [:update,:edit,:show,:new,:create,:destroy], [:models,:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
-    
+
+    can [:import], [:models] do |obj|
+      obj.can_edit(user) # all classes have this method implemented
+    end
+
     can [:summary], [:measurements] do |obj|
       obj.can_view(user) # all classes have this method implemented
     end
-    
+
     can [:new], [:experiments,:measurements,:lines,:proxy_dyna_models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
-    
+
     can :index, [:experiments,:measurements,:lines,:proxy_dyna_models]
     can [:new,:index],:models
-    
+
     # Specific to ProxyDynaModel object
     can [:calculate,:history] , :proxy_dyna_models do |obj|
       obj.can_edit(user) # all classes have this method implemented
@@ -52,44 +56,44 @@ class Ability
       obj.can_edit(user) # all classes have this method implemented
     end
 
-    
+
     # Dyna Model
     can [:new,:create,:export], :dyna_models, DynaModel do |dm|
       !user.nil?
     end
-    
+
     can [:update,:edit,:destroy,:show,:index,:definition, :estimator, :simulator], :dyna_models, DynaModel do |dm|
       !user.nil? && ( !dm.only_owner_can_change || dm.owner_id == user.id )
     end
-    
+
     # Params (for Dyna Models)
     can [:edit,:update,:destroy], :params, Param do |p|
       true
       #!user.nil? && ( !p.dyna_model.only_owner_can_change? || p.dyna_model.owner_id == user.id )
     end
-    
+
     # Group
     can [:update,:edit,:show,:destroy], :groups, Group do |g|
       true #!user.nil? && g.can_access(user)
     end
-   
+
     can [:new, :index,:create], :groups
-    
+
     can [:new,:create,:destroy], :accessibles, Accessible do |acc|
       user.present? && acc.group.users.find{ |u| u.id == user.id}.present?
     end
-    
+
     can [:destroy,:new,:create], :memberships, Membership do |memb|
       user.present? && memb.group.can_edit(user)
-    end 
+    end
 
     # Any user can do
     can :read, :dyna_models
-    
+
     can [:stats,:estimate,:calculate,:experiment_detail], :dyna_models do
       user.present?
     end
-    
+
     can :access, :all if user.present? && user.admin?
 
   end
