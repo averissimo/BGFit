@@ -471,6 +471,9 @@ div.field {
 
 .tooltip-text {
   display: none;
+  & p {
+    @extend .no-margin-left;
+  }
 }
 
 .options {

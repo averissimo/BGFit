@@ -17,6 +17,28 @@
 
 module ApplicationHelper
 
+  # method to generate information field
+  def gen_info( title, type, info_msg='click here for more information',&block )
+    content = capture(&block)
+
+    info_txt = content_tag( :span, class: "info-i hide-text" ) do
+      info_msg
+    end
+
+    tooltip_txt = content_tag( :span, class: "tooltip-text" ) do
+      content
+    end
+
+    title_txt = content_tag( :span, title )
+
+    content_tag type.to_s do
+      content_tag :span, class:"tooltip fake-link inline-block" do
+        title_txt + info_txt + tooltip_txt
+      end
+    end
+
+  end
+
   # method to create a link out
   def a_out(text, link, negative=false, html_options = {})
     class_names = negative ? "out-link-neg" : "out-link-pos"

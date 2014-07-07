@@ -27,13 +27,7 @@
 </div>
 
 <div class="options">
-  <span class="tooltip fake-link">
-    click here for the definition of RMSE
-    <span class='info-i hide-text'>click here for more information</span>
-    <span class='tooltip-text'>
-      <span>Root Mean Square Error (RMSE):</span><br/><br/>
-      <%= image_tag("formulas/rmse.png", class: "noborder") %>
-      <br/><br/> For more information: <%= a_out("link to Wikipedia article", "http://en.wikipedia.org/wiki/Root-mean-square_deviation", true) %>
-    </span>
-  </span>
+  <%= gen_info "Click here for the definition of RMSE", :div do %>
+    <%= render "definitions/rmse" %>
+  <%- end  %>
 </div>
