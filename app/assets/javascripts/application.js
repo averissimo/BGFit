@@ -10,4 +10,5 @@
 //= require dataTables/jquery.dataTables
 //= require jquery.autogrowtextarea
 //= require charts_default
+//= require modernizr
 //= require_tree .

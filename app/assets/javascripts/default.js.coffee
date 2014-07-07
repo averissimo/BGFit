@@ -43,7 +43,10 @@
 # generate date picker
 $(document).on 'page:load ready' , ->
   $('.date_picker').datepicker()
-  
+
+  if (!Modernizr.svg)
+    $("img[src$='.svg']").attr("src", fallback)
+
 jQuery ->
   $('div.flash a.close_flash').on 'click', (e)->
     div = $(@).parent().slideToggle();

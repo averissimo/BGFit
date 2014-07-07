@@ -9,6 +9,7 @@ gem 'mysql2'
 
 group :assets do
     gem 'sass-rails',   '~> 3.2.3'
+    gem 'modernizr-rails'
 end
 # !!!!!!!
 # changed in order to allow js.coffee views being rendered in production mode
