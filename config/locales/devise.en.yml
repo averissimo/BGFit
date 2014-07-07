@@ -17,6 +17,7 @@ en:
     edit: Edit profile
     my_team: My team
     logout: Logout
+    cite: Cite this application
     failure:
       already_authenticated: 'You are already logged in.'
       unauthenticated: 'You need to login or sign up before continuing.'

@@ -11,32 +11,14 @@
   <strong>Several dynamic and algebraic models are already implemented</strong>, such as <i>Polynomial Regression</i>, <i>Gompertz</i>, <i>Baranyi</i>, <i>Logistic</i> and <i>Live Cell Fraction</i> models and the user can add easily new models thus expanding current ones.
 </p>
 
-<div class="text-justify">
-  <p class="medium">
-    Publications, discussing results obtained with the help of BGFit, are asked to reference the following paper and webpage:
-  </p>
-  <div class="one_tab">
-    <p class="medium">
-      <i>Veríssimo, A., Paixão, L., Neves, A. R. &amp; Vinga, S.
-      BGFit: management and automated fitting of biological growth curves. BMC Bioinformatics 14, 283 (2013).</i>
-    </p>
-    <p>
-      <span class="small">
-        <a href="http://www.biomedcentral.com/1471-2105/14/283" class="show_more btn blank btn_small">BMC Bioinformatics</a>
-        <a href="http://www.biomedcentral.com/pubmed/24067087 " class="show_more btn blank btn_small">Pubmed</a>
-        <a href="http://www.citeulike.org/posturl?url=http://www.biomedcentral.com/1471-2105/14/283" class="show_more btn blank btn_small">Citeulike</a>
-        <a href="http://www.mendeley.com/import/?url=http://www.biomedcentral.com/1471-2105/14/283" class="show_more btn blank btn_small">Mendeley</a>
-      </span>
-    </p>
-  </div>
-</div>
+<%= render "definitions/cite" %>
 
 </div>
 
 <div class="twitter">
     <h3>Latest news:</h3>
     <a href="https://twitter.com/bgfit_modeling" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @bgfit_modeling</a>
-    
+
     <a class="twitter-timeline" data-chrome="noheader nofooter" data-dnt="true" href="https://twitter.com/bgfit_modeling" data-widget-id="411173928631939072">News by @bgfit_modeling</a>
 
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
@@ -98,9 +80,9 @@
                 <dd>These are implementation of models that are associated with the set of data that will model this set <i class="gray">(either measurement or experiment)</i></dd>
             </dl>
         </div>
-    
+
     </div>
-    
+
     <div class="tip">
         <h4>Manage data: (structure for data-management)</h4>
         <div style="display:hidden;" class="preview">
@@ -113,15 +95,15 @@
                    <li>Experiment: Folder to organize and aggregate data by typology</li>
                    <li>Measurement: Actual data</li>
                </ul>
-    
+
                 <p>
                    <%= image_tag "structure.png" , :width => '700'%>
                 </p>
         </div>
     </div>
-    
+
     <div class="tip">
-    
+
         <h4>Navigation:</h4>
         <div style="display:hidden;" class="preview">
             <p>The top toolbar has all the navigation links in this web application.</p>
@@ -135,7 +117,7 @@
             	<%= image_tag "menu.png"%>
             	</span>
         	</p>
-    
+
             <p>
             	Additionnaly, there are some contextual actions, depending on the active page, which can be accessed next to the <i>&gt;</i> symbol in orange, as shown in the image below
             	<br/>
@@ -147,5 +129,5 @@
 </div>
 
 <div style="clear:both;">
-  
+
 </div>

@@ -152,10 +152,21 @@ module ApplicationHelper
   def login_menu
     link_array = [
       {
+        :key => :cite,
+        :name => t('devise.cite'),
+        :url => "javascript:void(0)",
+        :options => {
+          title: "<span class='no-margin-left bold'>Veríssimo et al. (2013)</span><br/>click to get complete reference",
+          :container_class => 'menu',
+          :class => "bold"
+        }
+      },
+      {
         :key => :sign_up,
         :name => t('devise.sign_up'),
         :url => new_user_registration_path,
         :options => {
+          title: "Register a new acount",
           :unless => Proc.new {user_signed_in?},
           :container_class => 'menu'
         }
@@ -165,6 +176,7 @@ module ApplicationHelper
         :name => t('devise.login'),
         :url => new_user_session_path,
         :options => {
+          title: "Login to your existing account",
           :unless => Proc.new { user_signed_in? },
           :container_class => 'menu'
         }
@@ -174,6 +186,7 @@ module ApplicationHelper
         :name => (if user_signed_in? then current_user.email else 'user' end),
         :url => edit_user_registration_path,
         :options => {
+          title: "<span class='bold'>This is your registered email</span><br/>click to change account details",
           :if => Proc.new { user_signed_in? },
           :container_class => 'menu'
         }
@@ -183,6 +196,7 @@ module ApplicationHelper
         :name => t('devise.edit'),
         :url => edit_user_registration_path,
         :options => {
+          title: "Change account details",
           :if => Proc.new { user_signed_in? },
           :container_class => 'menu'
         }
@@ -202,6 +216,7 @@ module ApplicationHelper
         :name => t('devise.logout'),
         :url => destroy_user_session_path,
         :options => {
+          title: "Logout of this session",
           :if => Proc.new { user_signed_in? },
           :method => :delete,
           :container_class => 'menu'
