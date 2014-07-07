@@ -93,10 +93,10 @@ class Model < ActiveRecord::Base
   #
   # Generate an array of Hashes, which has all the newly created experiments and measurements
   #  in addition, it has, for each measurement, and index of the respective column
-  #  it could be: x, y, z or notes
+  #  it could be: x, y, z or note
   def create_index(file, prefix, spreadsheet)
 
-    possible_tags = ["x", "y", "z", "notes"]
+    possible_tags = ["x", "y", "z", "note"]
 
     # Get all experiments name and create new ones
     experiments = [] # start with an empty array of experiments
@@ -171,7 +171,7 @@ class Model < ActiveRecord::Base
  def create_measurements(meas_hash,exp,spreadsheet,original_title)
    #
    essential_tags = [:x, :y]
-   text_tags = [:notes]
+   text_tags = [:note]
    #
 
    meas = meas_hash[:obj]
@@ -217,17 +217,12 @@ class Model < ActiveRecord::Base
      tags.each_with_index do |t,index|
        begin
          # for text tags just set the value
-         if text_tags.include? t
-           new_line.send tag_setters[index], spreadsheet.cell(pos,meas_hash[:columns][t])
-         else # for all rest, set as a float
-           cell_val = spreadsheet.cell(pos,meas_hash[:columns][t])
-           val = unless cell_val.is_a? Float
-             Float(cell_val)
-           else
-             cell_val
-           end
-           new_line.send tag_setters[index], val
-         end
+         cell_val = spreadsheet.cell(pos,meas_hash[:columns][t])
+         next if cell_val.nil?
+         #
+         cell_val = Float(cell_val) if !text_tags.include?(t) && !cell_val.is_a?(Float)
+         #
+         new_line.send tag_setters[index], cell_val
        rescue Exception => e
          return "Discarded Experiment: '#{original_title}' / Measurement: '#{meas.title}' with internatl error: " + e.message
        end

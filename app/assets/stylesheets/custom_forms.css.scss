@@ -8,14 +8,17 @@ form {
 
 .formtastic li.input {
  overflow: visible;
+ &.file input {
+   border: 0;
+ }
  & label.label {
-  position: relative;  
+  position: relative;
  }
 }
 
 .formtastic .fragments .label label,
 .formtastic .choices .label label {
- position: relative; 
+ position: relative;
  overflow: visible;
 }
 
@@ -46,16 +49,16 @@ sup[title=required] {
 input,
 textarea { padding: 4px 8px; border: 1px solid #aaa; background: #fff; padding-left: 1em;}
 
-textarea.autogrow { 
+textarea.autogrow {
   height: auto;
 }
 
-textarea { 
+textarea {
   height: 7em;
 }
 .formtastic .stringish input {
   line-height: 22px;
-  padding-left: 0.5em; 
+  padding-left: 0.5em;
 }
 
 .formtastic .fragments .label, .formtastic .choices .label {
@@ -63,7 +66,7 @@ textarea {
 }
 
 .formtastic .input fieldset legend.label {
-  
+
   width: 23%;
   display:block;
   padding-right: 2%;
@@ -99,7 +102,7 @@ form.formtastic div.params{
     border: solid 1px rgb(94, 185, 53);
     padding:2em;
     margin-bottom:2em;
-  }  
+  }
 }
 
 ::-webkit-input-placeholder { font-size: 0.7em; }
