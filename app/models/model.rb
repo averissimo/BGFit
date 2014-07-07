@@ -31,6 +31,9 @@ class Model < ActiveRecord::Base
 
   validates :title, :presence => {:message => 'Title cannot be blank'}
 
+
+  attr_accessor :file, :prefix
+
   # Fulltext support using sunspot
   #scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
   scope :dyna_model_is, lambda { |dyna_model|
@@ -102,9 +105,9 @@ class Model < ActiveRecord::Base
       #
       #
       # Generate new experiment or find existing one
-      new_exp = { obj: nil, measurements: [] }
+      new_exp = { obj: nil, original_title: exp, measurements: [] }
       # generate new title with prefix
-      new_title = prefix.blank? ? exp : prefix + " - " + exp
+      new_title = prefix.strip.blank? ? exp : prefix + " - " + exp
       # check if experiments has already been created
       if ( tmp = experiments.find { |e| e[:obj].title == new_title } ).nil?
         new_exp[:obj] = self.experiments.build title: new_title
@@ -142,7 +145,7 @@ class Model < ActiveRecord::Base
     experiments
   end
 
- def import(file, prefix="import")
+ def import(file, prefix="")
 
    # Open the spreadsheet (format agnostic)
    spreadsheet = Model.open_spreadsheet(file)
@@ -154,15 +157,18 @@ class Model < ActiveRecord::Base
      exp = e[:obj] # get actual object
      # iterate all measurement
      e[:measurements].each do |meas_hash|
-       discarded << create_measurements(meas_hash,exp,spreadsheet)
+       discarded << create_measurements(meas_hash,exp,spreadsheet,e[:original_title])
      end
+     exp.save
    end
-   debugger
-   raise discarded.join("\n") if discarded.compact.size > 0
+   discarded.compact
 
  end
-
- def create_measurements(meas_hash,exp,spreadsheet)
+ #
+ #
+ #
+ # create individual measurements
+ def create_measurements(meas_hash,exp,spreadsheet,original_title)
    #
    essential_tags = [:x, :y]
    text_tags = [:notes]
@@ -176,19 +182,19 @@ class Model < ActiveRecord::Base
    end
    #
    unless count_essential == essential_tags.size
-     return "Experiment: #{exp.title} / Measurement: #{meas.title}: it does not have all tags: #{essential_tags.join(", ")}"
+     return "Discarded Experiment: '#{original_title}' / Measurement: '#{meas.title}': it does not have all tags: #{essential_tags.join(", ")}"
    end
 
    # discard any measurement which essential tags columns do not match sizes
    essential_cols = []
    essential_tags.collect do |tag|
      essential_cols << spreadsheet.column(meas_hash[:columns][tag]).reject do |s|
-       s.nil? || s.strip.blank?
+       s.nil? || ( s.is_a?(String) && s.strip.blank? )
      end
    end
    #
    unless essential_cols.map(&:size).uniq.size == 1
-     return "Experiment: #{exp.title} / Measurement: #{meas.title}: columns size do not match for: #{essential_tags.join(", ")}"
+     return "Discarded Experiment: '#{original_title}' / Measurement: '#{meas.title}': columns size do not match for: #{essential_tags.join(", ")}"
    end
 
    #
@@ -214,11 +220,16 @@ class Model < ActiveRecord::Base
          if text_tags.include? t
            new_line.send tag_setters[index], spreadsheet.cell(pos,meas_hash[:columns][t])
          else # for all rest, set as a float
-           val = Float(spreadsheet.cell(pos,meas_hash[:columns][t]))
+           cell_val = spreadsheet.cell(pos,meas_hash[:columns][t])
+           val = unless cell_val.is_a? Float
+             Float(cell_val)
+           else
+             cell_val
+           end
            new_line.send tag_setters[index], val
          end
        rescue Exception => e
-         return "Experiment: #{exp.title} / Measurement exception: " + e.message
+         return "Discarded Experiment: '#{original_title}' / Measurement: '#{meas.title}' with internatl error: " + e.message
        end
 
      end
@@ -228,9 +239,9 @@ class Model < ActiveRecord::Base
 
  def self.open_spreadsheet(file)
    case File.extname(file.original_filename)
-   when ".csv"  then Roo::CSV.new(file.path, packed: nil, file_warnign: :ignore)
-   when ".xls"  then Roo::Excel.new(file.path, packed: nil, file_warnign: :ignore)
-   when ".xlsx" then Roo::Excelx.new(file.path, packed: nil, file_warnign: :ignore)
+   when ".csv"  then Roo::CSV.new(file.path, packed: nil, file_warning: :ignore, extension: :csv)
+   when ".xls"  then Roo::Excel.new(file.path, packed: nil, file_warning: :ignore, extension: :xls)
+   when ".xlsx" then Roo::Excelx.new(file.path, packed: nil, file_warning: :ignore, extension: :xlsx)
    else raise "Unknown file type: #{file.original_filename}"
    end
  end

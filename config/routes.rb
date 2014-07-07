@@ -38,7 +38,7 @@ BacteriaGrowth::Application.routes.draw do
   resources :models, path: :projects do
     member do
       get :new_measurement
-      post :import
+      put :import
     end
     resources :experiments
     resources :accessibles, :only => [:new, :create, :destroy]

@@ -27,8 +27,8 @@ class ModelsController < ApplicationController
   # importing spreadsheets
   def import
     @model = Model.find(params[:id])
-    @model.import(params[:file])
-    raise "error"
+    discarded = @model.import(permitted_params.model[:file], permitted_params.model[:prefix]  )
+    flash[:notice] = ["Spreadsheet imported."].concat discarded
     respond_with @model, notice: "Spreadsheet imported."
   end
 

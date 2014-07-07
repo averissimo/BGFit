@@ -93,16 +93,33 @@
 
 </p>
 
-<h3>Import new spreadsheet</h3>
+<h3>Upload data from a spreadsheet</h3>
 
+<div class="tip">
+<div style="display:hidden;" class="preview">
+		<p>Upload a spreadsheet (csv, xls or xlsx) with experiments and different replicates as measurements.</p>
+</div>
+<div class="detail">
+		<p>Upload a spreadsheet (csv, xls or xlsx) with experiments and different replicates as measurements.</p>
+		<p>Data is organized vertically accepting data for each Row, such as:</p>
+			<ul>
+				<li>Row 1 / Column #: Names of experiment</li>
+				<li>Row 2 / Column #: Names of measurement</li>
+				<li>Row 3 / Column #: Name of attribute ('x', 'y' are mandatory - 'z', 'notes' are supported)</li>
+			</ul>
+			<p>Each measurement in the file will have at least 2 columns identifying 'x' and 'y' values. <%= a_out "See the example file", root_url + "example.xls" %>.</p>
 
-<h2>Import Products</h2>
-
-<%= form_tag import_model_path(@model), multipart: true do %>
-  <%= file_field_tag :file %>
-  <%= submit_tag "Import" %>
-<% end %>
-
+		<%= semantic_form_for @model, url: import_model_path(@model), multipart: true do |f| %>
+			<%= f.inputs do %>
+				<%= f.input :file, as: :file, hint: "accepted formats: csv (separated by comma), xls or xlsx"  %>
+				<%= f.input :prefix, as: :string, hint: "Prefix for the experiments' titles" %>
+			<%- end  %>
+			<%= f.actions do %>
+				<%= f.action :submit, label: "Upload" %>
+			<%- end  %>
+		<% end %>
+</div>
+</div>
 
 
 <%- if @experiments.present? || cannot?( :update, @model) %>
