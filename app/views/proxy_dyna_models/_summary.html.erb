@@ -1,5 +1,5 @@
 <div>
-    <%= 
+    <%=
         collection_table(@proxy_dyna_models, :id => 'proxy_dyna_,model' , :class => 'formatted dataTable') do |t|
             t.header :title,        DynaModel.model_name.human
             t.header :params,       Param.model_name.pluralize
@@ -9,7 +9,7 @@
             t.header :csv,          "", class: "no-sort" if can_column? :read , @proxy_dyna_models
             t.header(:edit_h,       "", class: "no-sort") if can_column? :update, @proxy_dyna_models
             t.header(:destroy_h,    "", class: "no-sort") if can_column? :update, @proxy_dyna_models
-    
+
             t.rows.alternate = :odd
             t.rows.each do |row, proxy_dyna_model, index|
                 # Notice there's no need to explicitly define the title
@@ -24,4 +24,16 @@
             end
         end
 %>
+</div>
+
+<div class="options">
+  <span class="tooltip fake-link">
+    click here for the definition of RMSE
+    <span class='info-i hide-text'>click here for more information</span>
+    <span class='tooltip-text'>
+      <span>Root Mean Square Error (RMSE):</span><br/><br/>
+      <%= image_tag("formulas/rmse.png", class: "noborder") %>
+      <br/><br/> For more information: <%= a_out("link to Wikipedia article", "http://en.wikipedia.org/wiki/Root-mean-square_deviation", true) %>
+    </span>
+  </span>
 </div>
