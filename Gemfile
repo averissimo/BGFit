@@ -31,7 +31,7 @@ gem 'jquery-rails'
 
 # To use debugger
 #gem 'ruby-debug19', :require => 'ruby-debug'
-#gem 'debugger', group: ['development','test']
+gem 'debugger', group: ['development','test']
 
 group :test do
   # Pretty printed test output
@@ -108,3 +108,5 @@ gem 'fancy_irb'
 gem 'wirb'
 gem "octave-ruby" # Rails4 unknown - but should work
 #### Not dependant on Rails
+
+gem 'roo' # for importing spreadsheets

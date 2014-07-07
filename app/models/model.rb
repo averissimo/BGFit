@@ -15,73 +15,225 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+require 'roo'
+
 class Model < ActiveRecord::Base
   has_many :experiments, :dependent => :destroy
   has_many :accessibles, :as => :permitable
-  
+
   has_many :groups, through: :accessibles, as: :permitable
 
   accepts_nested_attributes_for :experiments
-  
+
   has_many :permissions
-  
+
   belongs_to :owner, :class_name => 'User'
-   
+
   validates :title, :presence => {:message => 'Title cannot be blank'}
-   
+
   # Fulltext support using sunspot
   #scope :search_is, lambda { |search| where(Model.arel_table[:id].in( search.hits.map(&:primary_key)) ) }
-  scope :dyna_model_is, lambda { |dyna_model| 
+  scope :dyna_model_is, lambda { |dyna_model|
     joins(:experiments => {:measurements => :proxy_dyna_models}).where(ProxyDynaModel.arel_table[:dyna_model_id].eq(dyna_model.id)).group(Model.arel_table[:id]).order(Model.arel_table[:id]) }
-  
-  scope :viewable, lambda { |user,only_mine=false| 
+
+  scope :viewable, lambda { |user,only_mine=false|
     if user.nil? then
       where( self.arel_table[:is_published].eq(true))
     else
-      includes( Group.arel_table.name => Membership.arel_table.name ).where( 
+      includes( Group.arel_table.name => Membership.arel_table.name ).where(
           Model.arel_table[:owner_id].eq(user.id)
-          .or( Model.arel_table[:is_published].eq(true).and(!only_mine) ) 
+          .or( Model.arel_table[:is_published].eq(true).and(!only_mine) )
           .or( Membership.arel_table[:user_id].eq(user.id) )
           ).group( Model.arel_table[:id] )
     end
   }
-  
+
   scope :published, lambda { |user=nil|
     if user.nil? || !user.admin then
       where( Model.arel_table[:is_published].eq( true ))
     end
   }
-  
+
   has_paper_trail
-  
+
   # Fulltext support using sunspot
   #searchable do
   #  text :title, :boost => 5
   #  text :description
   #end
-  
+
   public
     def description_trimmed
       return "" if description.nil?
       if description.length > 97
-        return description[0..97] + "..." 
+        return description[0..97] + "..."
       else
         return description
       end
     end
-    
+
     def can_view(user=nil)
       is_published? || (!user.nil? && ( user.admin? || can?(user,GlobalConstants::PERMISSIONS[:read]) || can_edit(user) ) )
     end
-    
+
     def can_edit(user=nil)
       user.present? && ( user.admin? || self.new_record? || (owner_id.present? && owner.id.equal?(user.id)) || can?(user,GlobalConstants::PERMISSIONS[:write]) )
     end
-    
+
     def can?(user=nil,arg)
       return true if user.present? && user.admin?
       accessible = self.accessibles.find { |a| a.group.users.include?(user) }
        !accessible.nil? && !accessible.blank? && accessible.permission_level == arg
     end
+
+  #
+  #
+  # Generate an array of Hashes, which has all the newly created experiments and measurements
+  #  in addition, it has, for each measurement, and index of the respective column
+  #  it could be: x, y, z or notes
+  def create_index(file, prefix, spreadsheet)
+
+    possible_tags = ["x", "y", "z", "notes"]
+
+    # Get all experiments name and create new ones
+    experiments = [] # start with an empty array of experiments
+    spreadsheet.row(1).each_with_index do |exp, index|
+      ref = index + 1
+      #
+      #
+      # Generate new experiment or find existing one
+      new_exp = { obj: nil, measurements: [] }
+      # generate new title with prefix
+      new_title = prefix.blank? ? exp : prefix + " - " + exp
+      # check if experiments has already been created
+      if ( tmp = experiments.find { |e| e[:obj].title == new_title } ).nil?
+        new_exp[:obj] = self.experiments.build title: new_title
+        experiments << new_exp
+      else
+        new_exp = tmp # this can be done as the object is referenced
+      end # from here method will work with new_exp
+
+      #
+      #
+      # Generate new replicate or find existing one
+      replicate_title = spreadsheet.cell(2,ref) # taken from second row of the experiments' column
+      # try to find an existing replicate with same title
+      if ( tmp = new_exp[:measurements].find { |o| o[:obj].title == replicate_title } ).nil?
+        # other attributes will be determined using possible_tags var
+        new_replicate = {obj: nil, columns: {}}
+        new_replicate[:obj] = new_exp[:obj].measurements.build title: replicate_title
+        new_exp[:measurements] << new_replicate
+      else
+        new_replicate = tmp # this can be done as the object is referenced
+      end # from here method will work with new_exp
+
+      #
+      #
+      # Set the attribute (we consider this to be different at every column)
+      attr_title = spreadsheet.cell(3,ref) # taken from third row of the experiments' column
+      # don't do anything if symbol is not in possible tags
+      next unless possible_tags.include? attr_title
+
+      attr_sym = attr_title.to_sym # convert to symbol
+
+      new_replicate[:columns][attr_sym] = ref # save the column index
+
+    end
+    experiments
+  end
+
+ def import(file, prefix="import")
+
+   # Open the spreadsheet (format agnostic)
+   spreadsheet = Model.open_spreadsheet(file)
+   experiments = create_index(file, prefix, spreadsheet)
+
+   discarded = []
+
+   experiments.each do |e|
+     exp = e[:obj] # get actual object
+     # iterate all measurement
+     e[:measurements].each do |meas_hash|
+       discarded << create_measurements(meas_hash,exp,spreadsheet)
+     end
+   end
+   debugger
+   raise discarded.join("\n") if discarded.compact.size > 0
+
+ end
+
+ def create_measurements(meas_hash,exp,spreadsheet)
+   #
+   essential_tags = [:x, :y]
+   text_tags = [:notes]
+   #
+
+   meas = meas_hash[:obj]
+
+   # discard any measurements that don't have essential tags
+   count_essential = meas_hash[:columns].keys.inject(0) do |count,o|
+     essential_tags.include?(o) ? count + 1 : count
+   end
+   #
+   unless count_essential == essential_tags.size
+     return "Experiment: #{exp.title} / Measurement: #{meas.title}: it does not have all tags: #{essential_tags.join(", ")}"
+   end
+
+   # discard any measurement which essential tags columns do not match sizes
+   essential_cols = []
+   essential_tags.collect do |tag|
+     essential_cols << spreadsheet.column(meas_hash[:columns][tag]).reject do |s|
+       s.nil? || s.strip.blank?
+     end
+   end
+   #
+   unless essential_cols.map(&:size).uniq.size == 1
+     return "Experiment: #{exp.title} / Measurement: #{meas.title}: columns size do not match for: #{essential_tags.join(", ")}"
+   end
+
+   #
+   #
+   # Generate new lines
+   tags = meas_hash[:columns].keys # get existing keys in measurement
+   len = essential_cols.first.size # get size of measurement
+
+   offset = 4
+   # generate tags for setters.
+   #  ex: :x=
+   tag_setters = tags.collect do |t|
+     (t.to_s + "=").to_sym
+   end
+   # going to iterate on every line of data from spreadsheet
+   (4..len).each do |i|
+     pos = i # jump experiment / measuremet / attribute
+     new_line = meas.lines.build # create new line
+
+     tags.each_with_index do |t,index|
+       begin
+         # for text tags just set the value
+         if text_tags.include? t
+           new_line.send tag_setters[index], spreadsheet.cell(pos,meas_hash[:columns][t])
+         else # for all rest, set as a float
+           val = Float(spreadsheet.cell(pos,meas_hash[:columns][t]))
+           new_line.send tag_setters[index], val
+         end
+       rescue Exception => e
+         return "Experiment: #{exp.title} / Measurement exception: " + e.message
+       end
+
+     end
+   end
+   nil
+ end
+
+ def self.open_spreadsheet(file)
+   case File.extname(file.original_filename)
+   when ".csv"  then Roo::CSV.new(file.path, packed: nil, file_warnign: :ignore)
+   when ".xls"  then Roo::Excel.new(file.path, packed: nil, file_warnign: :ignore)
+   when ".xlsx" then Roo::Excelx.new(file.path, packed: nil, file_warnign: :ignore)
+   else raise "Unknown file type: #{file.original_filename}"
+   end
+ end
+
 
 end

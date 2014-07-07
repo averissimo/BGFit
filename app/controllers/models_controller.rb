@@ -18,12 +18,20 @@
 class ModelsController < ApplicationController
   respond_to :html, :json, :js, :csv
   before_filter :authenticate_user!, :except => [:index,:show,:public]
-  
+
   load_and_authorize_resource :except => :new_measurement
-  
+
   #TODO move to initializer once all controllers have this support
   include ActiveModel::ForbiddenAttributesProtection
-  
+
+  # importing spreadsheets
+  def import
+    @model = Model.find(params[:id])
+    @model.import(params[:file])
+    raise "error"
+    respond_with @model, notice: "Spreadsheet imported."
+  end
+
   # GET /models
   # GET /models.json
   def index
@@ -33,7 +41,7 @@ class ModelsController < ApplicationController
     #end
     @models = Model.viewable(current_user,true).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
     @measurements = Measurement.viewable(current_user,true).custom_sort.page(params[:m_page]).per(10)
-    
+
     respond_with @models
   end
 
@@ -44,10 +52,10 @@ class ModelsController < ApplicationController
     #end
     @models = Model.published(current_user).order(sort_column(Model,"title").send(sort_direction)).page(params[:page])
     @measurements = Measurement.published.custom_sort.page(params[:m_page]).per(10)
-    
+
     respond_with @models do |format|
       format.html { render "index"  }
-      format.js { render "index" }  
+      format.js { render "index" }
     end
   end
 
@@ -74,7 +82,7 @@ class ModelsController < ApplicationController
     @measurements = Measurement.model_is(@model).custom_sort.page(params[:m_page]).per(10)
     @accessibles = @model.accessibles
     exp_title = params[:experiment_title]
-    exp_title ||= t('experiments.default.title') 
+    exp_title ||= t('experiments.default.title')
     @experiment = @model.experiments.find_or_create_by_title(exp_title)
     @experiment.description = t('experiments.default.description')
     @experiment.default = true
@@ -94,7 +102,7 @@ class ModelsController < ApplicationController
   def create
     @model = Model.new(permitted_params.model)
     @model.owner = current_user
-    
+
     respond_with @model do | format |
       if @model.save
         flash[:notice] = t('flash.actions.create.notice', :resource_name => "Model")
@@ -109,7 +117,7 @@ class ModelsController < ApplicationController
   # PUT /models/1.json
   def update
     @model = Model.find(params[:id])
-    
+
     respond_with @model do |format|
       if @model.update_attributes(permitted_params.model)
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Model")
@@ -128,5 +136,5 @@ class ModelsController < ApplicationController
     @model.destroy
     respond_with(@model, :location => models_path)
   end
-  
+
 end

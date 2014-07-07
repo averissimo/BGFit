@@ -1,8 +1,8 @@
-<% 
+<%
 	context_menu = [
 		{
-			:key => :new, 
-			:name => t('navigation.new' , model: Experiment.model_name.human), 
+			:key => :new,
+			:name => t('navigation.new' , model: Experiment.model_name.human),
 			:url => url_for([:new,@model,:experiment]),
 			:options => {
 				:if => Proc.new { can?(:update, @model) },
@@ -11,8 +11,8 @@
 			}
 		},
 		{
-			:key => :edit, 
-			:name => t('action.edit'), 
+			:key => :edit,
+			:name => t('action.edit'),
 			:url => url_for([:edit,@model]),
 			:options => {
 				:if => Proc.new { can?(:update, @model) },
@@ -21,8 +21,8 @@
 			}
 		},
 		{
-			:key => :new_group, 
-			:name => 'Associate team', 
+			:key => :new_group,
+			:name => 'Associate team',
 			:url => new_model_accessible_path(@model),
 			:options => {
 				:if => Proc.new { can?(:update, @model) },
@@ -31,8 +31,8 @@
 			}
 		},
 		{
-			:key => :index, 
-			:name => t('navigation.index' , model: Model.model_name.human.pluralize), 
+			:key => :index,
+			:name => t('navigation.index' , model: Model.model_name.human.pluralize),
 			:url => models_path,
 			:options => {
 				:if => Proc.new { can?(:update, @model) },
@@ -41,8 +41,8 @@
      	}
    	},
 		{
-			:key => :download, 
-			:name => 'Download all', 
+			:key => :download,
+			:name => 'Download all',
 			:show_in_top => false,
 			:url => model_path(@model,format: :csv),
 			:options => {
@@ -79,7 +79,7 @@
 <%- else %>
   <%= Model.model_name.human %> is not yet public
 <%- end %>
-<%- # TODO: add can edit? 
+<%- # TODO: add can edit?
 %>
 
 <%- if @accessibles.present? %>
@@ -92,6 +92,18 @@
 <%- end %>
 
 </p>
+
+<h3>Import new spreadsheet</h3>
+
+
+<h2>Import Products</h2>
+
+<%= form_tag import_model_path(@model), multipart: true do %>
+  <%= file_field_tag :file %>
+  <%= submit_tag "Import" %>
+<% end %>
+
+
 
 <%- if @experiments.present? || cannot?( :update, @model) %>
     <div id="experiments_listing">

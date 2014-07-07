@@ -5,7 +5,7 @@ BacteriaGrowth::Application.routes.draw do
   get "/404", :to => "errors#not_found"
 
   get "/delayed_job" => DelayedJobWeb, :anchor => false
-  match "/documentation" , via: :get, controller: :home, action: "documentation", as: "documentation"  
+  match "/documentation" , via: :get, controller: :home, action: "documentation", as: "documentation"
 
   resources :octave_models do
     get :estimator, on: :member
@@ -13,7 +13,7 @@ BacteriaGrowth::Application.routes.draw do
     get :solver, on: :member
     post :solver, on: :member
   end
-    
+
   resources :groups, path: :teams do
     resources :memberships, :only => [:new, :create, :destroy]
   end
@@ -38,6 +38,7 @@ BacteriaGrowth::Application.routes.draw do
   resources :models, path: :projects do
     member do
       get :new_measurement
+      post :import
     end
     resources :experiments
     resources :accessibles, :only => [:new, :create, :destroy]
@@ -53,14 +54,14 @@ BacteriaGrowth::Application.routes.draw do
         get :regression
         put :update_regression
         get :summary
-      end   
+      end
       resources :lines
       #
       resources :proxy_dyna_models, path: :proxy_models
     end
 
   resources :proxy_dyna_models, path: :proxy_models, :except => [:new, :create] do
-    
+
     member do
       put :calculate
       get :history
@@ -68,6 +69,6 @@ BacteriaGrowth::Application.routes.draw do
     end
     resources :proxy_params
   end
-  
+
   root :to => "home#index"
 end
