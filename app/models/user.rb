@@ -21,24 +21,24 @@ class User < ActiveRecord::Base
   has_many :owned_models, :class_name => 'Model'
   has_many :owned_dyna_models, :class_name => 'DynaModel'
   has_many :octave_models
-  
+
   #todo: use pluck in 3.2
   scope :remove_group_users, ->(group) { where( User.arel_table[:id].not_in( Membership.where(Membership.arel_table[:group_id].eq(group.id)).collect { |a| a.user_id } )) }
-  scope :groups_from, ->(user) { 
-    joins( :memberships ).where( Membership.arel_table[:user_id].eq(user.id) )  
+  scope :groups_from, ->(user) {
+    joins( :memberships ).where( Membership.arel_table[:user_id].eq(user.id) )
   }
-  
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable, :confirmable
 
   def email_trimmed
     #(email[0..(email[/.*@/].size * 2 / 3)]+"(...)"+email[/@.*\./].chop+"(...)").sub("@"," (dot) ")
     email[0..(email[/.*@/].size - 2)]
   end
-  
+
   def email_at
     email.gsub(/@/,' (at) ').gsub(/\./,' (dot) ')
   end
