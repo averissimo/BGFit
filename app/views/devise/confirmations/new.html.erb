@@ -1,12 +1,19 @@
+<% content_for(:title) { "Resend confirmation instructions" } %>
 <h2>Resend confirmation instructions</h2>
 
-<%= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f| %>
+
+<%= semantic_form_for(resource, :as => resource_name, :url => confirmation_path(resource_name)) do |f| %>
   <%= devise_error_messages! %>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
-
-  <div><%= f.submit "Resend confirmation instructions" %></div>
+<%= f.inputs do %>
+  <%= f.input :email, as: :email %>
 <% end %>
 
-<%= render "devise/shared/links" %>
+
+<%= f.actions do %>
+   <%= f.action :submit, :as => :button, :label => "Resend", :disable_with => 'Resending...' %>
+
+   <%= render "devise/shared/links" %>
+<% end %>
+
+<% end %>

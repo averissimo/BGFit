@@ -1,4 +1,4 @@
-<% 
+<%
 	context_menu = [].concat(back_menu)
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
@@ -11,9 +11,9 @@
 
   <%= f.inputs do %>
 	<%= f.input :email, as: :email %>
-  	<%= f.input :password, as: :password %>
-  	<%= f.input :password_confirmation, as: :password %>
-  	<%= f.input :current_password, as: :password, :hint => "(we need your current password to confirm your changes)" %>
+	<%= f.input :password, as: :password %>
+  <%= f.input :password_confirmation, as: :password %>
+  <%= f.input :current_password, as: :password, :hint => "(we need your current password to confirm your changes)" %>
   <% end %>
 
 
@@ -21,6 +21,6 @@
   	<%= f.action :submit, :as => :button, :label => "Update" %>
   	<div class="menu">
 		<%= menu %>
-	</div>	
+	</div>
   <% end%>
 <% end %>

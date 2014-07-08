@@ -1,18 +1,4 @@
-<%
-	context_menu = [
-		{
-			:key => :sign_up,
-			:name => 'Sign up',
-			:url => new_registration_path(resource_name),
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		}].concat(back_menu)
-	menu = nil
-	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	content_for(:title) { "Login" }
-%>
+<%	content_for(:title) { "Login" } %>
 <h2>Login</h2>
 
 <%= semantic_form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
@@ -28,18 +14,8 @@
 
    <%= f.actions do %>
    	 <%= f.action :submit, :as => :button, :label => "Login", :disable_with => 'Logging in...' %>
+			<%= render "devise/shared/links" %>
 
-  	<div class="menu">
-			<%= menu %>
-		</div>
-		<div class="m-top" style="clear:both"></div>
-		<%- if devise_mapping.recoverable? && controller_name != 'passwords' %>
-			<div class=""><%= link_to "Forgot your password?", new_password_path(resource_name) %></div>
-		<% end -%>
-
-		<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-			<div class=""><%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %></div>
-		<% end -%>
 
    <% end %>
 

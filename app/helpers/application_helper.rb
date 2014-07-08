@@ -87,7 +87,7 @@ module ApplicationHelper
     else
       back << {
       :key => :home,
-      :name => 'Goto to home',
+      :name => 'Home',
       :url => root_path,
       :options => {
         :if => Proc.new { url_for(:back) == "javascript:history.back()" ||  url_for( only_path: false) == url_for(:back) ||  url_for() == url_for(:back) },

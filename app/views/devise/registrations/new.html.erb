@@ -1,19 +1,5 @@
-<% 
-	context_menu = [
-		{
-			:key => :login, 
-			:name => 'Login', 
-			:url => new_session_path(resource_name),
-			:options => {
-				:container_class => 'menu',
-				:class => "text"
-			}
-		}
-		].concat(back_menu)
-	menu = nil
-	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-%>
-<h2>Sign up</h2>
+<% content_for(:title) { "Login" } %>
+<h2>Login</h2>
 
 <%= semantic_form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
   <%= devise_error_messages! %>
@@ -25,17 +11,23 @@
   <% end %>
 
   <%= f.actions do %>
+  <div><span class="italic">Note:</span> By creating an account you <span class="bold italic">agree with the terms &amp; conditions below</span> (we made it simple, three key points only).</div>
+  <div class="m-top"></div>
   	<%= f.action :submit, :as => :button %>
-  	<div class="menu">
-		<%= menu %>
-	</div>
+  	<%= render "devise/shared/links" %>
   <% end%>
-  
-   		
-  	
-  
+
 <% end %>
 
-
-
 <div class="clear"></div>
+
+<h3>Terms &amp; Conditions</h3>
+
+<div class="w-70">
+<p><span class="bold italic">Confidentiality:</span> No data will ever be used by the administrators of the website (<%= a_out "André Veríssimo", "http://web.tecnico.ulisboa.pt/andre.verissimo/" %> and <%= a_out "Susana Vinga", "http://web.tecnico.ulisboa.pt/susanavinga/" %>).</p>
+
+<p><span class="bold italic">Intellectual Property:</span> All of BGFit code has been released under an Open Source license, and as such it can be reviewed and used as far as the license allows. <span class="bold">However All data is owned by each user.</span>
+
+<p><span class="bold italic">Privacy:</span> We will never use or sell any user email or additional information. We use google analytics to keep track of BGFit usage, but it cannot be tracked to individual user.</p>
+</p>
+</div>
