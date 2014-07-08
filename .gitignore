@@ -40,6 +40,7 @@ config/database.yml
 /db/schema.rb
 
 /config/model_blackbox.yml
+/config/email.yml
 
 *.sql
 Gemfile.lock
