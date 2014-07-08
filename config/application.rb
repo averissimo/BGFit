@@ -48,8 +48,10 @@ module BacteriaGrowth
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-    
+
     # 404
     config.exceptions_app = self.routes
+
+    Rails.application.routes.default_url_options[:script_name] = ActionController::Base.config.relative_url_root || '/'
   end
 end
