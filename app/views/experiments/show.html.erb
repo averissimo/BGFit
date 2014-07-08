@@ -1,10 +1,11 @@
-<% 
+<%
 	javascript 'https://www.google.com/jsapi'
 
-	context_menu = [
+	def context_menu
+		[
 		{
-			:key => :new, 
-			:name => 'New measurement', 
+			:key => :new,
+			:name => 'New measurement',
 			:url => url_for([:new,@experiment,:measurement]),
 			:options => {
 				:if => Proc.new { can?(:update, @experiment) },
@@ -12,8 +13,8 @@
 			}
 		},
       {
-          :key => :new, 
-          :name => t('.dyna'), 
+          :key => :new,
+          :name => t('.dyna'),
           :url => new_experiment_proxy_dyna_model_path(@experiment),
           :options => {
               :if => Proc.new { can?(:update, @experiment) },
@@ -21,8 +22,8 @@
           }
       },
 		{
-			:key => :edit, 
-			:name => 'Edit', 
+			:key => :edit,
+			:name => 'Edit',
 			:url => url_for([:edit,@model,@experiment]),
 			:options => {
 				:if => Proc.new { can?(:update, @experiment) },
@@ -31,19 +32,30 @@
 			}
 		},
 		{
-			:key => :model, 
-			:name => t('navigation.goto' , destination: Model.model_name.human.downcase), 
+			:key => :model,
+			:name => t('navigation.goto' , destination: Model.model_name.human.downcase),
 			:url => model_path(@experiment.model),
 			:options => {
 				:container_class => 'menu',
 				:class => ("text")
 			}
+		},
+		{
+			:key => :download,
+			:name => 'Download all',
+			:show_in_top => false,
+			:url => model_experiment_path(@model,@experiment,format: :csv),
+			:options => {
+				:container_class => 'menu',
+				:class => "text"
+			}
 		}
 		]
+	end
 	menu = nil
 	content_for(:context_menu) { menu = render_navigation :items => context_menu }
-	context_menu << { :key => :model, 
-			:name => 'Download all', 
+	context_menu << { :key => :model,
+			:name => 'Download all',
 			:url => model_experiment_path(@experiment.model,@experiment,format: :csv),
 			:options => {
 				:container_class => 'menu',
@@ -79,5 +91,3 @@
 <h3>Measurements chart</h3>
 
 <%= google_chart( @experiment.measurements , @proxy_dyna_models )%>
-
-
