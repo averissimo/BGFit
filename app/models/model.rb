@@ -157,7 +157,12 @@ class Model < ActiveRecord::Base
      exp = e[:obj] # get actual object
      # iterate all measurement
      e[:measurements].each do |meas_hash|
-       discarded << create_measurements(meas_hash,exp,spreadsheet,e[:original_title])
+       ret_value = create_measurements(meas_hash,exp,spreadsheet,e[:original_title])
+       # remove the measurment from the experiment so it won't be created
+       unless ret_value.nil?
+         del_measurement = exp.measurements.delete(meas_hash[:obj])
+         discarded << ret_value
+       end
      end
      exp.save
    end
