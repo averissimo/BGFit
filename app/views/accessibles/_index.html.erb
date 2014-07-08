@@ -1,18 +1,14 @@
-<div id="teams_listing">
-    <h4>Teams with access</h4>
-      <%= 
-    	collection_table(@accessibles, :id => 'teams' , :class => 'formatted dataTable') do |t|
-    		t.header :title,		Group.human_attribute_name(:title)
-    		t.header :permission_level,	Group.human_attribute_name(:permission_level)
-    		t.header :destroy_h,	"", class: "no-sort"
-    
-    		t.rows.alternate = :odd
-        	t.rows.each do |row, accesible, index|
-    			# Notice there's no need to explicitly define the title
-    			row.title			accesible.group.title
-    			row.permission_level		accesible.permission_human
-    			row.destroy_h		link_to t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete
-    		end
-    	end
-    %>
-</div>
+
+
+
+<% @accessibles.each do |accesible| %>
+<span>
+  <span class="bold"><%=  accesible.group.title %></span>
+  <span class="italic">
+    (<%= accesible.permission_human %> permissions
+    <span title="<%= t('action.remove').downcase %> '<%=  accesible.group.title %>' from <%= @model %> <%= Model.model_name.human %>">
+      | <%= link_to(t('action.remove').downcase, [@model,accesible], confirm: 'Are you sure?', method: :delete) %>
+    </span>
+  )</span>
+</span>
+<%- end  %>

@@ -39,6 +39,7 @@ BacteriaGrowth::Application.routes.draw do
     member do
       get :new_measurement
       put :import
+      get :upload
     end
     resources :experiments
     resources :accessibles, :only => [:new, :create, :destroy]

@@ -40,6 +40,7 @@ h3 {
 
 h1,h2,h3,h4,h5 {
   font-family: 'Merriweather', serif;
+  margin-bottom: 0em;
 }
 
 #login_menu {
@@ -405,7 +406,8 @@ a {
       //background-size: 30px;
       background-repeat: no-repeat;
       width: 10px;
-      vertical-align: top;
+      //vertical-align: top;
+      height: 18px;
     }
     &.out-link-pos {
       & img.out-link-img{

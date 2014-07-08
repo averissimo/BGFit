@@ -28,7 +28,7 @@ class Ability
       obj.can_edit(user) # all classes have this method implemented
     end
 
-    can [:import], [:models] do |obj|
+    can [:import, :upload], [:models] do |obj|
       obj.can_edit(user) # all classes have this method implemented
     end
 

@@ -2,7 +2,8 @@ $tab: 3em; // also in results.css / default.css
 
 table.formatted {
   //margin-left: $tab;
-  padding-bottom:2em;
+  //padding-bottom:2em;
+  padding-bottom:0px;
   tr {
     border-bottom: solid 1px #808080;
     th,
@@ -41,8 +42,8 @@ table.formatted {
         margin-top: -8px;
         right: 0px;
       }
-    }  
-  }  
+    }
+  }
 }
 
 

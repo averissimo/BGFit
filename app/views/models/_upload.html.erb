@@ -1,0 +1,13 @@
+<div id="upload-file">
+  <%= render 'models/upload_info' %>
+
+  <%= semantic_form_for @model, url: import_model_path(@model), multipart: true do |f| %>
+    <%= f.inputs do %>
+      <%= f.input :file, as: :file, hint: "Accepted Formats: <span class='italic'>.csv, .xls, .xlsx</span>. See #{a_out "example.xls", root_url + "example.xls"} or #{a_out "example_2.xlsx", root_url + "example_2.xlsx"}".html_safe  %>
+      <%= f.input :prefix, as: :string, hint: "Prefix for the experiments' titles" %>
+    <%- end  %>
+    <%= f.actions do %>
+      <%= f.action :submit, label: "Upload", :as => :button %>
+    <%- end  %>
+  <% end %>
+</div>

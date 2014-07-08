@@ -25,6 +25,12 @@ class ModelsController < ApplicationController
   include ActiveModel::ForbiddenAttributesProtection
 
   # importing spreadsheets
+  def upload
+    @model = Model.find(params[:id])
+    respond_with @model
+  end
+
+  # importing spreadsheets
   def import
     @model = Model.find(params[:id])
     discarded = @model.import(permitted_params.model[:file], permitted_params.model[:prefix]  )
