@@ -1,8 +1,9 @@
 <p>Upload a spreadsheet (.csv, .xls or .xlsx) with experiments and different replicates as measurements.</p>
-<p>Data is organized vertically accepting data for each Row, such as:</p>
+<p>Only the first sheet is imported and data is organized by columns with different information per row, such as:</p>
   <ul>
-    <li>Row 1 / Column #: Names of experiment</li>
-    <li>Row 2 / Column #: Names of measurement</li>
-    <li>Row 3 / Column #: Name of attribute ('x', 'y' are mandatory / 'z', 'note' are also supported)</li>
+    <li>Row 1 / Column #: Names of experiment;</li>
+    <li>Row 2 / Column #: Names of measurement;</li>
+    <li>Row 3 / Column #: Name of attribute ('x', 'y' are mandatory / 'z', 'note' are also supported);</li>
+    <li>Row 4+ / Column #: Numbers or for a note column it also accepts strings.</li>
   </ul>
   <p>Each measurement in the file will have at least 2 columns identifying 'x' and 'y' values.</p>
