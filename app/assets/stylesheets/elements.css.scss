@@ -3,23 +3,3 @@ $dt_width:13em;
 
 dl.inline dt { width: $dt_width; float:left; text-align:right; } // clear to force it to the next line
 dl.inline dd { width: auto; margin-left: $dt_width + 1em; }
-
-.italic {
-  font-style: italic;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.inline-block {
-  display: inline-block;
-}
-
-.m-top {
-  margin-top: 1em;
-}
-
-.w-70 {
-  width: 70%;
-}

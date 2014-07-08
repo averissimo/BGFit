@@ -1,6 +1,6 @@
 <%
-	context_menu = [
-		{
+	def context_menu
+		[{
 			:key => :new,
 			:name => t('navigation.new' , model: Experiment.model_name.human),
 			:url => url_for([:new,@model,:experiment]),
@@ -51,7 +51,7 @@
 			}
 		}
 		]
-
+	end
 	menu = nil
 	content_for(:context_menu) { render_navigation(:items => context_menu.reject { |i| i[:show_in_top] == false }) }
 	menu = render_navigation( items: context_menu)
@@ -61,13 +61,13 @@
 
 <h1><%= @model.title %></h1>
 
-<p>
+
 <%- if @model.description.nil? || @model.description.blank? %>
-(no description provided)
+<p>(no description provided)</p>
 <%- else %>
   <%= simple_format @model.description %>
 <%- end %>
-</p>
+
 
 <p><span class="italic bold"><%= Model.human_attribute_name(:owner) %>:</span>  <%= @model.owner.email_at %></p>
 <p><span class="italic bold">Domain:</span>
@@ -81,6 +81,7 @@
 </p>
 
 <div id="teams_listing">
+	<%- if @accessibles.present? || can?( :update, @model) %>
 	<p><span class="italic bold">Teams with access:</span>
 		<%- if @accessibles.present? %>
 		<%= render "accessibles/index"%>
@@ -91,8 +92,10 @@
 		</span>
 		<%- end %>
 	</p>
+	<%- end %>
 </div>
 
+<%- if can?( :upload, @model) %>
 <h4>Upload data from a spreadsheet</h4>
 
 	<div class="tip">
@@ -105,6 +108,7 @@
 		</div>
 	<%= link_to 'Choose file here' ,[:upload,@model],remote:true, class: "btn one_tab"%> <%= a_out "See the example file (.xls)", root_url + "example.xls" %> or <%= a_out "another example file (.xlsx)", root_url + "example_2.xlsx" %></p>
 
+<%- end %>
 
 <%- if @experiments.present? || cannot?( :update, @model) %>
     <div id="experiments_listing">

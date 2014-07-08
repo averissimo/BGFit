@@ -4,19 +4,19 @@
     <h4><%= e.title%> <%= link_to "(show " + Experiment.model_name.human.downcase + ")" , e , class: "small-link" %></h4>
     <%- pdms = e.proxy_dyna_models.dyna_model_is(@dyna_model).where( ProxyDynaModel.arel_table[:rmse].not_eq(nil) ) %>
     <%- if pdms.present? %>
-    <%= 
-        
+    <%=
+
         collection_table( pdms, :id => 'measurements' , :class => 'formatted dataTable') do |t|
             t.header :title,        ProxyDynaModel.human_attribute_name(:title)
             param_list = @dyna_model.params.where(Param.arel_table[:output_only].not_eq(true))
             param_list.each do |param|
-                t.header param.code, param.human_title.html_safe    
+                t.header param.code, param.human_title.html_safe
             end
             t.header :rmse
             t.header :bias
             t.header :accuracy
             t.header :show , ""
-    
+
             t.rows.alternate = :odd
             t.rows.each do |row, pdm, index|
                 # Notice there's no need to explicitly define the title
@@ -25,8 +25,7 @@
                    begin
                    row.send(param.code.to_sym, pdm.proxy_params.where( param_id: param.id).first.value.round(5))
                    rescue
-                      debugger
-                      raise Exception 
+                      raise Exception
                    end
                 end
                 row.rmse pdm.rmse.round(5)
@@ -40,11 +39,10 @@
 
 
     <div id="experiment_<%=e.id%>">
-            <%= render partial: "experiment_info.html", :locals => { :e => e} %>        
+            <%= render partial: "experiment_info.html", :locals => { :e => e} %>
     </div>
 
 <%- end %>
 
 <hr/>
 </div>
-

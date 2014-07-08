@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.17'
+gem 'rails', '3.2.19'
 
 gem 'mysql2'
 
@@ -31,7 +31,7 @@ gem 'jquery-rails'
 
 # To use debugger
 #gem 'ruby-debug19', :require => 'ruby-debug'
-gem 'debugger', group: ['development','test']
+gem 'byebug', group: ['development','test']
 
 group :test do
   # Pretty printed test output

@@ -5,6 +5,9 @@ $header: 33px;
 $header_line: 27px;
 $tab: 39px; // also in results.css / custom_tables.css
 $width: 1000px;
+$gray:#aaa;
+$radius:5px;
+$padding:30px;
 
 //
 //
@@ -40,7 +43,7 @@ h3 {
 
 h1,h2,h3,h4,h5 {
   font-family: 'Merriweather', serif;
-  margin-bottom: 0em;
+  margin-bottom: 1em;
 }
 
 #login_menu {
@@ -53,11 +56,6 @@ h1,h2,h3,h4,h5 {
     }
   }
 }
-
-$gray:#aaa;
-$radius:5px;
-$padding:30px;
-
 
 #content_wrapper {
 padding-left: $padding;
@@ -358,14 +356,6 @@ div.menu {
 }
 
 
-.center {
-  margin: 0 auto;
-}
-
-.text-center {
-  text-align:center;
-}
-
 img {
   border: 1px solid #333;
   margin-left: 2em;
@@ -471,6 +461,33 @@ div.field {
 // Specific
 ////////////////////////////////
 
+.italic { font-style: italic; }
+.bold { font-weight: bold; }
+.no-weight { font-weight: normal; }
+
+.inline-block { display: inline-block; }
+
+.m-top { margin-top: 1em; }
+.no-margin-left { margin-left: 0; }
+
+.padding-bottom-2em { padding-bottom: 2em; }
+
+.w-70 { width: 70%; }
+
+.hide { display:none; }
+
+.hide-text{
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.fake-link:hover { cursor: pointer; }
+
+.center { margin: 0 auto; }
+.text-center { text-align:center; }
+
+
 .tooltip-text {
   display: none;
   & p {
@@ -492,9 +509,7 @@ div#experiment_chart {
   margin-bottom:2em;
 }
 
-.gray {
-  color: $gray;
-}
+.gray { color: $gray; }
 
 ul.p {
   margin-left:39px;
@@ -512,14 +527,6 @@ ul.p {
 // Helpers
 ///////////////////////////////
 
-.no-weight {
-  font-weight: normal;
-}
-
-.no-margin-left {
-  margin-left: 0;
-}
-
 .a-dark {
   text-decoration: none;
   color: $gray;
@@ -532,23 +539,6 @@ ul.p {
   }
 }
 
-.hide {
-  display:none;
-}
-
-.hide-text{
-  text-indent: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.fake-link:hover {
-  cursor: pointer;
-}
-
-.padding-bottom-2em {
-  padding-bottom: 2em;
-}
 
 .info-i {
   background-image: image-url('info.png');
