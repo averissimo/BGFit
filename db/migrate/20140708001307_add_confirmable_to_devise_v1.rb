@@ -1,4 +1,8 @@
 class AddConfirmableToDeviseV1 < ActiveRecord::Migration
+  def self.up
+    User.update_all(:confirmed_at => Time.now)
+  end
+  
   def change
     change_table(:users) do |t|
       t.string   :confirmation_token
