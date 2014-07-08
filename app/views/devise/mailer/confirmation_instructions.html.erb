@@ -1,5 +1,27 @@
-<p>Welcome <%= @email %>!</p>
+<%= image-url "logo.png" %>
+
+<p>Welcome <%= @email %> to BGFit!</p>
 
 <p>You can confirm your account email through the link below:</p>
 
 <p><%= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token) %></p>
+
+<p>For more information please consult the documentation page, wiki or GitHub.</p>
+<ul>
+  <li>Documentation: <%= documentation_path() %></li>
+  <li>Wiki: <%= link_to "http://kdbio.inesc-id.pt/bgfit/wiki/index.php/Welcome_to_BGFIT_Wiki!", "http://kdbio.inesc-id.pt/bgfit/wiki/index.php/Welcome_to_BGFIT_Wiki!" %></li>
+  <li>Github: <%= link_to "https://github.com/averissimo/BGFit", "https://github.com/averissimo/BGFit" %>
+</ul>
+
+<p>If you are lookinng for something more specific, we welcome you to submit a feedback form at <%= link_to "http://bit.ly/1offE3s", "https://docs.google.com/forms/d/1Ssqd5HpP24H48MPQoAI7-GOIaih4HKg9YYLcW_98YbE/viewform" %> or send an email by replying to this email (or to <%= mail_to "averissimo@kdbio.inesc-id.pt", "averissimo@kdbio.inesc-id.pt" %>)</p>
+
+<p>Follow us at <%= link_to "@bgfit_modeling", "https://twitter.com/bgfit_modeling" %>.</p>
+
+<p>Kind regards,</p>
+
+<div style=";color:rgb(51,51,51);font-family:Verdana;">
+  <p>
+    <span style="font-weight:bold">André</span><br/>
+    <span style="font-size: 80%">on behalf of the BGFit team</span> 
+  </p>
+</p>
