@@ -1,8 +1,8 @@
-<% 
+<%
 	context_menu = [
 		{
-			:key => :sign_up, 
-			:name => 'Sign up', 
+			:key => :sign_up,
+			:name => 'Sign up',
 			:url => new_registration_path(resource_name),
 			:options => {
 				:container_class => 'menu',
@@ -19,23 +19,30 @@
   <%= devise_error_messages! %>
 
     <%= f.inputs do %>
-  	<%= f.input :email, as: :email %>
-  	<%= f.input :password, as: :password %>
-  	<% if devise_mapping.rememberable? -%>
-  	<%= f.input :remember_me, as: :boolean %>
-  	<% end -%>
+	  	<%= f.input :email, as: :email %>
+	  	<%= f.input :password, as: :password %>
+	  	<% if devise_mapping.rememberable? -%>
+	  		<%= f.input :remember_me, as: :boolean %>
+	  	<% end -%>
   	<% end %>
-  
+
    <%= f.actions do %>
-  	<%= f.action :submit, :as => :button, :label => "Login", :disable_with => 'Logging in...' %>
-  	<li class="action link_action">
-  	</li>
+   	 <%= f.action :submit, :as => :button, :label => "Login", :disable_with => 'Logging in...' %>
+
   	<div class="menu">
-		<%= menu %>
-	</div>	
-  	
+			<%= menu %>
+		</div>
+		<div class="m-top" style="clear:both"></div>
+		<%- if devise_mapping.recoverable? && controller_name != 'passwords' %>
+			<div class=""><%= link_to "Forgot your password?", new_password_path(resource_name) %></div>
+		<% end -%>
+
+		<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
+			<div class=""><%= link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name) %></div>
+		<% end -%>
+
    <% end %>
-  
+
 <% end %>
 
 <div class="clear"></div>
