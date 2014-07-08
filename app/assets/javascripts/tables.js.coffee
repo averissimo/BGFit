@@ -32,9 +32,9 @@ root.convert_tables = () ->
       $('div:not(.dataTables_wrapper) > table.dataTable-no_sort').dataTable temp_options
     catch error
       #
-    
-      
-jQuery ->
+
+
+$(document).on 'page:load ready' , ->
   root.convert_tables()
 
 root.getImgData = (chartContainer) ->
@@ -49,14 +49,13 @@ root.getImgData = (chartContainer) ->
     'position: absolute; ' +
     'top: ' + (-svg.prop('height').baseVal.value * 2) + 'px;' +
     'left: ' + (-svg.prop('width').baseVal.value * 2) + 'px;')
-    
+
   document.body.appendChild(canvas)
   canvg(canvas, chartArea.html())
   imgData = canvas.toDataURL("image/png")
   canvas.parentNode.removeChild(canvas)
   return imgData
-  
+
 root.saveAsImg = (chartContainer) ->
   imgData = getImgData(chartContainer)
   window.location = imgData.replace("image/png", "image/octet-stream")
-  
