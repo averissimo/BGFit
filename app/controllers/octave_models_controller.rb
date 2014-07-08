@@ -43,6 +43,7 @@ class OctaveModelsController < ApplicationController
       request.query_parameters.to_param
     end
     @response = @engine.eval "#{@octave_model.solver_file_name.gsub(/[.]m/,'')}('#{method_params.html_safe}');" 
+    logger.info "\n\nresponse: " + @response.to_s + "\n\n"
     respond_with(@octave_model)
   end
 

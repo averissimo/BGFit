@@ -166,7 +166,7 @@ class Measurement < ActiveRecord::Base
      self.original_data.split(/\n/).each_with_index do |l,y|
 
        line = Line.new
-       l.split(/(\t|[ ]+)/).each_with_index do |el , y2|
+       l.strip.split(/(\t|[ ]+)/).each_with_index do |el , y2|
 
          el = el.gsub("," , ".")
          next if el.match(/N.*A/) || el == nil || el == ""
