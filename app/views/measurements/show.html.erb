@@ -64,7 +64,6 @@
 	content_for(:context_menu) { render_navigation(:items => context_menu.delete_if { |i| i[:show_in_top] == false }) }
 	menu = render_navigation( :items => context_menu )
 	content_for(:title) { t('title.detail' , model: Measurement.model_name.human) }
-
 %>
 
 <h1><%= @measurement.experiment.title %>: <%= @measurement.title %><% if @measurement.date %> (<%= @measurement.date %>)<% end %></h1>

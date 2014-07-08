@@ -19,20 +19,20 @@ class MeasurementsController < ApplicationController
   respond_to :html, :json, :csv
 
   before_filter :determine_models , :only => [ :show, :edit, :destroy, :update, :update_regression, :regression ]
-  before_filter :authenticate_user!, :except => [:index,:show]
+  before_filter :authenticate_user!, :except => [:index,:show, :regression]
 
   load_and_authorize_resource :except => [:new,:create]
 
   #TODO move to initializer once all controllers have this support
   include ActiveModel::ForbiddenAttributesProtection
-  
+
   # GET /measurements
   # GET /measurements.json
   def index
     @model = Model.find(params[:model_id])
     @experiment = @model.experiments.find(params[:experiment_id])
     @measurements = Measurement.find(params[:id])
-    
+
     respond_with [@experiment,@measurements] do | format|
       format.html { redirect_to [@model,@experiment] }
       format.json { render json: @measurements }
@@ -45,23 +45,23 @@ class MeasurementsController < ApplicationController
     @proxy_dyna_models = @measurement.proxy_dyna_models
     @log_flag = params[:log] == "true"
     respond_with(@experiment,@measurement) do |format|
-      format.csv { 
+      format.csv {
         csv = render_to_string :csv => @measurement
-        send_data  csv, :filename => 
+        send_data  csv, :filename =>
           @model.title +
-          ' - ' + 
+          ' - ' +
           @experiment.title.to_s +
           ' - ' +
           @measurement.date.to_s +
           ' - ' +
           @measurement.title +
-          '.csv'  
+          '.csv'
       }
-      format.exp { 
+      format.exp {
         exp = render_to_string :exp => @measurement
-        send_data  exp, :filename => 
+        send_data  exp, :filename =>
           @model.title +
-          ' - ' + 
+          ' - ' +
           @experiment.title.to_s +
           ' - ' +
           @measurement.date.to_s +
@@ -70,7 +70,7 @@ class MeasurementsController < ApplicationController
           '.exp'
       }
     end
-    
+
   end
 
   # GET /measurements/new
@@ -80,12 +80,12 @@ class MeasurementsController < ApplicationController
     @model = @experiment.model
     date = @experiment.measurements.last.date if @experiment.measurements.length > 0
     @measurement = @experiment.measurements.build
-    
+
     authorize! :update, @experiment
     if @experiment.measurements.length > 0
       @measurement.date = date
     end
-    
+
     respond_with(@experiment,@measurement)
   end
 
@@ -124,7 +124,7 @@ class MeasurementsController < ApplicationController
       @measurement.remove_all_lines
       @measurement.convert_original_data
     end
-    
+
     respond_with(@experiment,@measurement) do |format|
       if @measurement.save
         flash[:notice] = t('flash.actions.update.notice', :resource_name => "Measurement")
@@ -159,13 +159,13 @@ class MeasurementsController < ApplicationController
     flash[:notice] = t('flash.actions.destroy.notice_complex', :resource_name => "Measurement", title: @measurement.title)
     respond_with(@experiment,@measurement, :location => [@model,@experiment])
   end
-  
+
   def summary
     respond_with(@measurement)
   end
-  
+
   private
-  
+
   def determine_models
     @measurement = Measurement.find(params[:id])
     @experiment = @measurement.experiment
