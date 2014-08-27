@@ -8,8 +8,8 @@ en:
         date: "click here to select date"
       param:
         code: "starts with a letter and cannot contain spaces"
-        top: "top range value for estimation"
-        bottom: "top range value for estimation"
+        top: "top value for estimation range"
+        bottom: "bottom value for estimation range"
         human_title: "name for interface, can contain html"
     labels:
       proxy_dyna_model:
