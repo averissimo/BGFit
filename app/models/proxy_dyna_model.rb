@@ -318,6 +318,8 @@ class ProxyDynaModel < ActiveRecord::Base
         "cannot calculate statistical_measures, try again with a different range."
         return nil
       end
+      byebug
+      dataset[:r_square_err] = dataset[:rmse]
       self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]
       self.notes ||= ""
       self.save
@@ -866,14 +868,14 @@ class ProxyDynaModel < ActiveRecord::Base
           end
           if @y_mean.nil?
             @y_mean = 0
-            lines = self.measurement.lines_no_death_phase() if self.measurement.present?
-            lines = self.experiment.measurements.collect(&:lines_no_death_phase).flatten if self.experiment.present?
+            lines = self.measurement.lines_no_death_phase(no_death_phase) if self.measurement.present?
+            lines = self.experiment.measurements.collect{ |m| m.lines_no_death_phase(no_death_phase)}.flatten if self.experiment.present?
             lines.each{ |el| @y_mean += el.y_value() }
             @y_mean = @y_mean.to_f / lines.size
           end
-          hash[:rmse] +=  ( value - line.y_value() ) ** 2
-          hash[:r_square_err] = hash[:rmse]
-          hash[:r_square_tot] += ( line.y_value() - @y_mean ) ** 2
+          hash[:rmse]         += ( value - line.y_value ) ** 2
+          #hash[:r_square_err] = hash[:rmse]
+          hash[:r_square_tot] += ( value - @y_mean ) ** 2
           hash[:bias] = Math.log( (value / line.y_value()).abs ).abs
           hash[:accu] = Math.log( (value / line.y_value()).abs )
         end
