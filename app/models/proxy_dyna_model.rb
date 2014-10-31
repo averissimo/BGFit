@@ -318,7 +318,6 @@ class ProxyDynaModel < ActiveRecord::Base
         "cannot calculate statistical_measures, try again with a different range."
         return nil
       end
-      byebug
       dataset[:r_square_err] = dataset[:rmse]
       self.r_square = 1 - dataset[:r_square_err] / dataset[:r_square_tot]
       self.notes ||= ""
