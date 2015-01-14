@@ -46,7 +46,7 @@
   		</div>
 
 			<div id="header"
-			 <%-if Rails.env != "production" && Rails.env == "pre-production"%>style="background-color: #F78400!important;"
+			 <%-if Rails.env != "production" && Rails.env == "pre"%>style="background-color: #F78400!important;"
 			 <%- elsif Rails.env != "production" && Rails.env == "test"%>style="background-color: #FF00FF!important;"
 			 <%- elsif Rails.env != "production"%>style="background-color: #7F0000!important;"
 			 <%-end%>>

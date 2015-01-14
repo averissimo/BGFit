@@ -7,7 +7,7 @@ development:
 test:
   <<: *defaults
   
-pre-production:
+pre:
   <<: *defaults
 
 production:

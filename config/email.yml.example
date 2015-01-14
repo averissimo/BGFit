@@ -7,7 +7,7 @@ production:
   authentication: plain
   enable_starttls_auto: true
   
-pre-production:
+pre:
   user_name: user_name
   address: kdbio.inesc-id.pt
   port: 25
