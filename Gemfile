@@ -106,7 +106,7 @@ gem 'cancan', github: 'ryanb/cancan', branch: '2.0' # Rails4 Unknown!!
 gem 'hirb'
 gem 'fancy_irb'
 gem 'wirb'
-gem "octave-ruby" # Rails4 unknown - but should work
+gem "octave-ruby", github: 'mkfs/octave-ruby' # Rails4 unknown - but should work
 #### Not dependant on Rails
 
 gem 'roo' # for importing spreadsheets

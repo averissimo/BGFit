@@ -16,18 +16,13 @@
 % Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 function [ string_output,output ] = <%=@dyna_model.simulator_m_name(false)%>( test_data , draw_plot ) % << change
-%GOMPERTZA_SIM Summary of this function goes here
-%   Detailed explanation goes here
-    if nargin > 0 && test_data
-        if test_data == 1
-          s = test_query('simulator','<%=@dyna_model.title.downcase%>');
-        else
-          s = test_data;
-        end
-        input = qs2struct(s);
-    else
-        input = qs2struct(getenv('QUERY_STRING'));
-    end
+    %% get input values
+    % if test_data == 0 or not defined, then it gets input
+    %  from the environment variable "QUERY_STRING", which is used in cgi
+    %  script.
+    % Otherwise, it should get from test_query or from the argument itself
+    if ~exist('test_data','var'), test_data = 0; end
+    input = get_inputs( nargin, test_data, 'simulator', '<%= @dyna_model.title.downcase %>');
 
     try
         %
