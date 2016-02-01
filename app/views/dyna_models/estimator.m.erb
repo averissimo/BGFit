@@ -17,18 +17,13 @@
 
 function [output_string,output] = <%=@dyna_model.estimator_m_name(false)%>(test_data, draw_plot, debug)
 %
-    %% get inputs
-    % input paramters are in the environment variable "QUERY_STRING"
-    if nargin > 0 && test_data
-        if test_data == 1
-          s = test_query('estimator','<%=@dyna_model.title.downcase%>');
-        else
-          s = test_data;
-        end
-        input = qs2struct(s);
-    else
-        input = qs2struct(getenv('QUERY_STRING'));
-    end
+    %% get input values
+    % if test_data == 0 or not defined, then it gets input
+    %  from the environment variable "QUERY_STRING", which is used in cgi
+    %  script.
+    % Otherwise, it should get from test_query or from the argument itself
+    if ~exist('test_data','var'), test_data = 0; end
+    input = get_inputs( nargin, test_data, 'estimator', '<%= @dyna_model.title.downcase %>');    %
 
     %% define model
     model = @<%=@dyna_model.model_m_name(false)%>; % << change

@@ -17,9 +17,16 @@ class OctaveModelsController < ApplicationController
 
   def estimator
     @engine = Octave::Engine.new
+    @engine.eval 'pkg(\'load\',\'optim\');'
     @engine.eval 'addpath(genpath("' + MODEL_BLACKBOX["base_path"] + '"));'
     @engine.addpath(File.dirname(@octave_model.model.path))
     @engine.addpath(File.dirname(@octave_model.estimator.path))
+    #
+    logger.info 'pkg(\'load\',\'optim\');'
+    logger.info 'addpath(genpath("' + MODEL_BLACKBOX["base_path"] + '"));'
+    logger.info 'addpath("' + File.dirname(@octave_model.model.path) + '");'
+    logger.info 'addpath("' + File.dirname(@octave_model.estimator.path) + '");'
+    #
     method_params = if request.post? then
       request.request_parameters.to_param
     elsif request.get?
@@ -34,6 +41,7 @@ class OctaveModelsController < ApplicationController
 
   def solver
     @engine = Octave::Engine.new
+    @engine.eval 'pkg(\'load\',\'optim\');'
     @engine.eval 'addpath(genpath("' + MODEL_BLACKBOX["base_path"] + '"));'
     @engine.addpath(File.dirname(@octave_model.model.path))
     @engine.addpath(File.dirname(@octave_model.solver.path))
