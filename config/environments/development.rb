@@ -30,6 +30,7 @@ BacteriaGrowth::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
+  config.action_controller.relative_url_root = "/dev"
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
   # Raise exception on mass assignment protection for Active Record models
