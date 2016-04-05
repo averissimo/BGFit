@@ -114,13 +114,15 @@
 			row.description		param.description_trimmed.gsub(/\n/, '<br/>')
 			row.top				param.top
 			row.bottom			param.bottom
-			row.edit_h			link_to t('action.edit').downcase, [:edit,@dyna_model,param]
-			row.destroy_h		link_to t('action.remove').downcase, [@dyna_model,param], confirm: t('action.confirm'), method: :delete
+			row.edit_h			link_to t('action.edit').downcase, [:edit,@dyna_model,param] if can? :update, param
+			row.destroy_h		link_to t('action.remove').downcase, [@dyna_model,param], confirm: t('action.confirm'), method: :delete if can? :destroy, param
 		end
 	end
 %>
-<%= content_tag :div, class: "text-center", style: "margin-bottom: 2em;" do %>
+<%- if can? :update, @dyna_model %>
+<%= content_tag :div, class: "text-center", style: "margin-bottom: 2em;" do %>	
 <%= link_to 'Add new parameter' , [:new,@dyna_model,:param],remote: true, class: "add btn blank"%>
+<% end -%>
 <% end -%>
 
 <div class="menu">
