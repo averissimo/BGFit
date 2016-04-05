@@ -12,12 +12,12 @@ h2. General Information
 
 Publications, discussing results obtained with the help of BGFit, are asked to reference the following paper and webpage:
 
-* Veríssimo, A., Paixão, L., Neves, A. R. & Vinga, S. BGFit: management and automated fitting of biological growth curves. BMC Bioinformatics 14, 283 (2013). (http://kdbio.inesc-id.pt/bgfit)
+* Veríssimo, A., Paixão, L., Neves, A. R. & Vinga, S. BGFit: management and automated fitting of biological growth curves. BMC Bioinformatics 14, 283 (2013). (http://sels.tecnico.ulisboa.pt/bgfit)
 
 "INESC-ID":http://www.inesc-id.pt/
 "KDBIO Research Group":http://www.inesc-id.pt/intranet/laboratoriogrupo/kdbio/kdbio.php
 
-Contact developer at: averissimo (at) kdbio (dot) inesc-id (dot) pt
+Contact developer at: andre.verissimo (at) tecnico (dot) ulisboa (dot) pt
 
 h2. Requirements
 
