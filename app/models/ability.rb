@@ -67,9 +67,9 @@ class Ability
     end
 
     # Params (for Dyna Models)
-    can [:edit,:update,:destroy], :params, Param do |p|
-      true
-      #!user.nil? && ( !p.dyna_model.only_owner_can_change? || p.dyna_model.owner_id == user.id )
+    can [:create,:edit,:update,:destroy], :params, Param do |p|
+      #true
+      !user.nil? && ( !p.dyna_model.only_owner_can_change? || p.dyna_model.owner_id == user.id )
     end
 
     # Group
