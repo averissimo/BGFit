@@ -17,7 +17,7 @@ Publications, discussing results obtained with the help of BGFit, are asked to r
 "INESC-ID":http://www.inesc-id.pt/
 "KDBIO Research Group":http://www.inesc-id.pt/intranet/laboratoriogrupo/kdbio/kdbio.php
 
-Contact developer at: andre.verissimo (at) tecnico (dot) ulisboa (dot) pt
+Contact developer at: andre (dot) verissimo (at) tecnico (dot) ulisboa (dot) pt
 
 h2. Requirements
 
