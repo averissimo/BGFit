@@ -380,6 +380,9 @@ class ProxyDynaModel < ActiveRecord::Base
           self.json = nil
           # TODO: locale it!
           clean_stats('Error: Error when calling estimator.',e)
+	  logger.info('---------- response body ---')
+	  logger.info(response.body)
+	  logger.info('-------------')
           return
       end
       if result["error"]
