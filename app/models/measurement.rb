@@ -164,7 +164,7 @@ class Measurement < ActiveRecord::Base
      return if original_data.nil?
      self.original_data = original_data.gsub(/\r/,'')
      self.original_data.split(/\n/).each_with_index do |l,y|
-
+       next if l.strip.length == 0
        line = Line.new
        l.strip.split(/(\t|[ ]+)/).each_with_index do |el , y2|
 
