@@ -46,8 +46,8 @@ class Model < ActiveRecord::Base
       includes( Group.arel_table.name => Membership.arel_table.name ).where(
           Model.arel_table[:owner_id].eq(user.id)
           .or( Model.arel_table[:is_published].eq(true).and(!only_mine) )
-          .or( Membership.arel_table[:user_id].eq(user.id) )
-          ).group( Model.arel_table[:id] )
+          .or( Membership.arel_table[:user_id].eq(user.id) ))
+      .group( Model.arel_table[:id], Group.arel_table[:id], Membership.arel_table[:id] )
     end
   }
 
