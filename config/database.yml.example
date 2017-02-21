@@ -1,32 +1,23 @@
+defaults: &defaults
+  adapter: postgresql
+  encoding: unicode
+  host: postgres
+  pool: 5
+  username: bgfit
+  password: "password"
 
 development:
-  adapter: mysql2
-  encoding: utf8
+  <<: *defaults
   database: bgfit_dev
-  pool: 5
-  username: kdbio
-  password: "123456"
 
 test:
-  adapter: mysql2
-  encoding: utf8
-  database: bgfit_dev
-  pool: 5
-  username: kdbio
-  password: "123456"
+  <<: *defaults
+  database: bgfit_test
 
 pre:
-  adapter: mysql2
-  encoding: utf8
+  <<: *defaults
   database: bgfit_pre
-  pool: 5
-  username: kdbio
-  password: "123456"
 
 production:
-  adapter: mysql2
-  encoding: utf8
+  <<: *defaults
   database: bgfit_prd
-  pool: 5
-  username: kdbio_prd
-  password: "123456"

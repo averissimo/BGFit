@@ -1,7 +1,7 @@
 <div>
 <h1>Listing <%= pluralize(@models.length, Model.model_name.human.downcase)%></h1>
 
-<%= 
+<%=
     collection_table(@models, :id => 'models' , :class => 'formatted dataTable-no_sort' , "data-sig" => data_sig(@models) ) do |t|
         t.header :created_at,	sortable("created_at",Model,"",nil,Model.human_attribute_name(:created_at).downcase)
         t.header :updated_at,	sortable("updated_at",Model,"",nil,Model.human_attribute_name(:updated_at).downcase)
