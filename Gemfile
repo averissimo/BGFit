@@ -1,9 +1,15 @@
 source 'http://rubygems.org'
 
+if RUBY_VERSION =~ /2.1/ # assuming you're running Ruby ~1.9
+   Encoding.default_external = Encoding::UTF_8
+   Encoding.default_internal = Encoding::UTF_8
+end
+
 gem 'rails', '3.2.19'
 
-gem 'mysql2'
-
+gem 'pg'
+#gem 'mysql2', '0.3.14'
+#gem 'activerecord-mysql2-adapter'
 # Gems used only for assets and not required
 # in production environments by default.
 
@@ -73,7 +79,7 @@ gem 'kaminari' # Rails4 ok
 gem 'jquery-datatables-rails', github: 'rweng/jquery-datatables-rails' #Rails4 ok
 gem 'jquery-ui-rails', '~>4.0.2'                                       #Rails4 ok
 
-gem 'simple-navigation' # Rails4 ok
+gem 'simple-navigation', '~>3.13.0' # Rails4 ok
 
 gem "paperclip", '~>3.5.1' # Rails4 ok
 
