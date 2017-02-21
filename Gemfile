@@ -39,6 +39,8 @@ gem 'jquery-rails'
 #gem 'ruby-debug19', :require => 'ruby-debug'
 gem 'byebug', group: ['development','test']
 
+gem 'test-unit'
+
 group :test do
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
