@@ -266,8 +266,8 @@ class DynaModelsController < ApplicationController
     # saves the octave model
     @dyna_model.octave_model = @octave_model
     # stores the URL paths
-    @dyna_model.solver = solver_octave_model_path(@octave_model,format: :json, only_path: false)
-    @dyna_model.estimation = estimator_octave_model_path(@octave_model,format: :json, only_path: false)
+    @dyna_model.solver = "https://sels.tecnico.ulisboa.pt" + solver_octave_model_path(@octave_model,format: :json)
+    @dyna_model.estimation = "https://sels.tecnico.ulisboa.pt" + estimator_octave_model_path(@octave_model,format: :json)
 
   end
 

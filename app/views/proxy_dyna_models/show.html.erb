@@ -4,7 +4,7 @@
 	context_menu = [
 		{
 			:key => :edit,
-			:name => 'Edit this proxy model',
+			:name => 'Edit proxy model',
 			:url => url_for([:edit,@proxy_dyna_model]),
 			:options => {
 				:if => Proc.new { can?(:calculate, @proxy_dyna_model) },

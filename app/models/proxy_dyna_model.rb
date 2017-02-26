@@ -727,7 +727,7 @@ class ProxyDynaModel < ActiveRecord::Base
     end
 
     def call_http_generic(uri, request)
-      res = Net::HTTP.start(uri.host, uri.port) {|http|
+      res = Net::HTTP.start(uri.host, uri.port, :use_ssl => (uri.port == 443)) {|http|
         timeout = 1540
         http.open_timeout = timeout
         http.read_timeout = timeout
