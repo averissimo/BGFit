@@ -720,6 +720,7 @@ class ProxyDynaModel < ActiveRecord::Base
     def call_http_post(request_hash)
       uri = URI(request_hash.delete(:url))
       logger.info {"[proxy_dyna_model.call_http_post] #{uri.to_s} | form: #{request_hash.inspect}"}
+      logger.info "url: #{get_estimation_url}"
 
       request = Net::HTTP::Post.new uri.request_uri
       request.set_form_data(request_hash)
