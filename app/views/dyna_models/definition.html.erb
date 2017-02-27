@@ -1,5 +1,5 @@
 <%
-    javascript 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured'
+    javascript 'https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&delayStartupUntil=configured'
     
     context_menu = [
         {
@@ -18,7 +18,7 @@
 %>
 <h1>Generate <%= DynaModel.model_name.human %> Octave/Matlab</h1>
 
-<p><%= link_to "Help page" , "http://oracle.inesc-id.pt/wiki/Modeling-Extensions/overview" , class: "btn blank"%>Reference the tutorial on the model extensions for more information, especially on how to deploy</p>
+<p><%= link_to "Help page" , "https://sels.tecnico.ulisboa.pt/bgfit/wiki/Modeling-Extensions/overview" , class: "btn blank"%>Reference the tutorial on the model extensions for more information, especially on how to deploy</p>
 
 <h3>Download links</h3>
 <%- if @dyna_model.equation.present? && @dyna_model.eq_type.present? && @dyna_model.eq_type == GlobalConstants::EQUATION_TYPE[:Differential] && !@dyna_model.params.find {|p| p.initial_condition }%>
