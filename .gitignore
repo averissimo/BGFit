@@ -43,6 +43,5 @@ config/database.yml
 /config/email.yml
 
 *.sql
-Gemfile.lock
 .settings
 .c9*

@@ -37,7 +37,7 @@ gem 'jquery-rails'
 
 # To use debugger
 #gem 'ruby-debug19', :require => 'ruby-debug'
-gem 'byebug', group: ['development','test']
+gem 'byebug', '10.0.2',  group: ['development','test']
 
 gem 'test-unit'
 
@@ -117,4 +117,7 @@ gem 'wirb'
 gem "octave-ruby", github: 'mkfs/octave-ruby' # Rails4 unknown - but should work
 #### Not dependant on Rails
 
-gem 'roo' # for importing spreadsheets
+gem 'roo', '2.7.1' # for importing spreadsheets
+
+gem 'nokogiri', '1.9.1'
+gem 'xpath', '3.1.0'
