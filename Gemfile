@@ -7,7 +7,7 @@ end
 
 gem 'rails', '3.2.19'
 
-gem 'pg'
+gem 'pg', '0.21'
 #gem 'mysql2', '0.3.14'
 #gem 'activerecord-mysql2-adapter'
 # Gems used only for assets and not required
